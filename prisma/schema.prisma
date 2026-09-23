@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// جدول المستويات الدراسية
+model Level {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  resources Resource[]
+  createdAt DateTime   @default(now())
+}
+
+// جدول المواد الدراسية
+model Subject {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  resources Resource[]
+  createdAt DateTime   @default(now())
+}
+
+// جدول الموارد التعليمية
+model Resource {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  fileType    String
+  fileUrl     String?  // لتخزين رابط الملف المرفوع
+  isPremium   Boolean  @default(false)
+  price       Float    @default(0)
+  downloads   Int      @default(0)
+  views       Int      @default(0)
+  levelId     Int
+  subjectId   Int
+  level       Level    @relation(fields: [levelId], references: [id])
+  subject     Subject  @relation(fields: [subjectId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// جدول المقالات/المستجدات
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  category    String
+  content     String
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
