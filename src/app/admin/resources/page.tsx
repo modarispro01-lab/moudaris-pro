@@ -81,8 +81,7 @@ export default async function AdminResourcesPage() {
             <label className="block text-sm font-bold text-slate-600 mb-1">ملف المورد * <span className="text-xs font-normal text-slate-400">(PDF, Word, Excel, PowerPoint)</span></label>
             <input 
               type="file" 
-              name="file" 
-              required 
+              name="file"  
               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-bold file:bg-primary file:text-white hover:file:bg-primary/90" 
             />
