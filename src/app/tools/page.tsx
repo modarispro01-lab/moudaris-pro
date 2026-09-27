@@ -28,12 +28,12 @@ const tools = [
     status: 'متاح الآن',
   },
   {
-    id: 'schedule',
+    id: 'emploi-du-temps',
     title: 'مولد استعمال الزمن',
     description: 'نظم حصصك الأسبوعية بسهولة مع قوالب جاهزة.',
     icon: Calendar,
     color: 'bg-secondary',
-    status: 'قريباً',
+    status: 'متاح الآن',
   },
   {
     id: 'certificates',
