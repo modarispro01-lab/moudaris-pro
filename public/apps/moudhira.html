@@ -1303,7 +1303,7 @@ delete allData["المستوى الرابع"]["اللغة العربية"]["ال
 delete allData["المستوى الخامس"]["اللغة العربية"]["المسار 3"];/* =====================================================
 4.5 رقعة تصحيح 2026/2027 — الدفعة 4: تحديث الواجهة
 ===================================================== */
-document.querySelector('.header-meta').textContent = 'النسخة 5.1 • قاعدة بيانات محدثة 2026/2027 • إضافة المستوى الأول (عربية + فرنسية) • عربية الرابع والخامس: مساران فقط وفق الوثائق الرسمية';
+document.querySelector('.header-meta').textContent = 'النسخة 5.3 • قاعدة 2026/2027 • فرنسة كاملة للمذكرة الفرنسية • تصحيحات إملائية';
 console.log('✅ رقعة 5.1 محملة: عربية وفرنسية الأول مضافتان، والمسار 3 محذوف من الرابع والخامس');/* =====================================================
 4.6 رقعة تصحيح 2026/2027 — الدفعة 5: إصلاح مسارات الفرنسية (الخامس والسادس)
 (تمت إضافة مسارين مستقلين Parcours 1 و Parcours 2 بدلاً من المسار المشترك)
@@ -1430,7 +1430,7 @@ if(allData["المستوى الخامس"]["اللغة الفرنسية"]["مسا
 if(allData["المستوى الخامس"]["اللغة الفرنسية"]["المسار الواحد"]) delete allData["المستوى الخامس"]["اللغة الفرنسية"]["المسار الواحد"];
 
 // تحديث واجهة المستخدم لإظهار التصحيح
-document.querySelector('.header-meta').textContent = 'النسخة 5.2 • قاعدة بيانات محدثة 2026/2027 • إصلاح مسارات الفرنسية للخامس والسادس (Parcours 1 & 2)';
+document.querySelector('.header-meta').textContent = 'النسخة 5.3 • قاعدة 2026/2027 • فرنسة كاملة للمذكرة الفرنسية • تصحيحات إملائية';
 console.log('✅ رقعة 5.2 محملة: تم فصل مساري الفرنسية للخامس والسادس بنجاح');/* =====================================================
    5. متغيرات الحالة العامة
 ===================================================== */
@@ -1727,6 +1727,9 @@ function resetEditFields(){
 /* =====================================================
    10. توليد المذكرة
 ===================================================== */
+const TR_LEVELS={'المستوى الأول':'1re année','المستوى الثاني':'2e année','المستوى الثالث':'3e année','المستوى الرابع':'4e année','المستوى الخامس':'5e année','المستوى السادس':'6e année'};
+const TR_SUBJECTS={'اللغة الفرنسية':'Français','اللغة العربية':'Arabe','الرياضيات':'Mathématiques'};
+const TR_PATHS={'المسار المشترك':'Parcours commun','المسار الواحد':'Parcours unique','المسار الأول':'Parcours 1','المسار الثاني':'Parcours 2','المسار 1':'Parcours 1','المسار 2':'Parcours 2'};
 function gen(){
   const lvl = $('level').value;
   const sub = $('subject').value;
@@ -1740,6 +1743,9 @@ function gen(){
   const isFrench = sub.includes('فرنسية');
   const type = isFrench?'fr':(sub.includes('رياضيات')?'math':'ar');
   const contentDir = isFrench?'dir="ltr"':'dir="rtl"';
+const trL = s => isFrench?(TR_LEVELS[s]||s):s;
+const trP = s => isFrench?(TR_PATHS[s]||s):s;
+const trS = s => isFrench?(TR_SUBJECTS[s]||s):s;
   let cur = $('start').value;
   const gs = [$('g1').value,$('g2').value,$('g3').value,$('g4').value];
   const classes = ['f1','f2','f3','f4'];
@@ -1751,8 +1757,8 @@ function gen(){
     const l = getGroupLesson(g);
     const pth = getGroupPathway(g);
     const glv = getGroupLevel(g);
-    levelsUsed.push(glv);
-    usedPathways.add(pth);
+    levelsUsed.push(trL(glv));
+    usedPathways.add(trP(pth));
     const e = addMinutes(cur, duration);
     let content;
     if(!l){
@@ -1765,7 +1771,7 @@ function gen(){
         + `</table><div class="objective"><b>${isFrench?'Objectifs':'الأهداف'}:</b> ${escapeHtml(l.objectives)}</div>`;
     }
     rows += `<tr class="${classes[i]}" ${contentDir}>
-      <td class="group">${isFrench?'Groupe':'الفوج'}<br>${escapeHtml(gs[i])}<br><span style="font-size:8px;background:rgba(30,60,114,.12);color:var(--math);padding:2px 5px;border-radius:8px;display:inline-block;margin-top:3px">${escapeHtml(glv)}</span><br><span style="font-size:8px;background:rgba(123,44,191,.15);color:#7b2cbf;padding:2px 5px;border-radius:8px;display:inline-block;margin-top:3px">${escapeHtml(pth)}</span></td>
+      <td class="group">${isFrench?'Groupe':'الفوج'}<br>${escapeHtml(gs[i])}<br><span style="font-size:8px;background:rgba(30,60,114,.12);color:var(--math);padding:2px 5px;border-radius:8px;display:inline-block;margin-top:3px">${escapeHtml(trL(glv))}</span><br><span style="font-size:8px;background:rgba(123,44,191,.15);color:#7b2cbf;padding:2px 5px;border-radius:8px;display:inline-block;margin-top:3px">${escapeHtml(trP(pth))}</span></td>
       <td class="time">${cur}<br>—<br>${e}<br>${duration} ${isFrench?'min':'د'}</td>
       <td class="content">${content}</td>
       <td class="tools">${l?`<b>${isFrench?'Matériel':'الوسائل'}:</b><br>${escapeHtml(l.materials)}<br><br><b>${isFrench?'Devoirs':'الممارسة/الواجب'}:</b><br>${escapeHtml(l.independent)}`:'—'}</td>
@@ -1784,22 +1790,22 @@ function gen(){
   const notesBlock = notes ? `<div style="margin-top:10px;padding:10px;background:rgba(214,122,26,.1);border:1px solid var(--warning);border-radius:8px"><b>📝 ${isFrench?'Notes de l\'enseignant':'ملاحظات المعلم'}:</b><br>${escapeHtml(notes).replace(/\n/g,'<br>')}</div>`:'';
   const matCls = type;
   const dateVal = $('date').value;
-  const dateFormatted = dateVal ? new Date(dateVal).toLocaleDateString('ar-MA',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '........';
+  const dateFormatted = dateVal ? new Date(dateVal).toLocaleDateString(isFrench?'fr-FR':'ar-MA',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '........';
   const pathwaysStr = [...usedPathways].join(' + ');
   $('out').innerHTML = `
   <div class="title">
-    <span class="badge ${matCls}">${escapeHtml([...new Set(levelsUsed)].join(' + ')||lvl)}</span>
-    <span class="badge ${matCls}">${sub}</span>
+    <span class="badge ${matCls}">${escapeHtml([...new Set(levelsUsed)].join(' + ')||trL(lvl))}</span>
+    <span class="badge ${matCls}">${escapeHtml(trS(sub))}</span>
     <span class="badge path">${escapeHtml(pathwaysStr)}</span>
-    ${isFrench?'Fiche Journalière —':'المذكرة اليومية —'} الدعم المكثف
+    ${isFrench?'Fiche Journalière — Soutien intensif':'المذكرة اليومية — الدعم المكثف'}
   </div>
   <div class="meta">
     <div>${isFrench?'Date':'التاريخ'}: ${dateFormatted}</div>
     <div>${isFrench?'École':'المؤسسة'}: ${escapeHtml($('school').value||'........')}</div>
-    <div>${isFrench?'Niveau':'المستوى'}: ${escapeHtml([...new Set(levelsUsed)].join(' + ')||lvl)}</div>
-    <div>${isFrench?'Matière':'المادة'}: ${sub}</div>
+    <div>${isFrench?'Niveau':'المستوى'}: ${escapeHtml([...new Set(levelsUsed)].join(' + ')||trL(lvl))}</div>
+    <div>${isFrench?'Matière':'المادة'}: ${escapeHtml(trS(sub))}</div>
     <div>${isFrench?'Parcours':'المسارات'}: ${escapeHtml(pathwaysStr)}</div>
-    <div>${isFrench?'Groupes':'الأفواج'}: ${toArabicNum(groupCount)}</div>
+    <div>${isFrench?'Groupes':'الأفواج'}: ${isFrench?groupCount:toArabicNum(groupCount)}</div>
   </div>
   <table>
     <tr>
@@ -1812,7 +1818,7 @@ function gen(){
     ${rows}
   </table>
   ${notesBlock}
-  <p class="small">💡 كل فوج يدرس مستواه ومساره الخاصين — يمكن للأستاذ الجمع بين مستويات مختلفة في نفس اليوم (${duration} ${isFrench?'min':'دقيقة'} لكل فوج). المسارات المستخدمة: ${escapeHtml(pathwaysStr)}</p>
+  <p class="small">${isFrench?`💡 Chaque groupe suit son propre niveau et parcours — l'enseignant peut combiner plusieurs niveaux le même jour (${duration} min par groupe). Parcours utilisés : ${escapeHtml(pathwaysStr)}`:`💡 كل فوج يدرس مستواه ومساره الخاصين — يمكن للأستاذ الجمع بين مستويات مختلفة في نفس اليوم (${duration} دقيقة لكل فوج). المسارات المستخدمة: ${escapeHtml(pathwaysStr)}`}</p>
   `;
 }
 
