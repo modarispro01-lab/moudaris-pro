@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استعمال الزمن - برنامج دعم التعلمات الأساس</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap');
+
+        :root {
+            --primary: #1a5276;
+            --primary-light: #2980b9;
+            --primary-dark: #0e2f44;
+            --secondary: #148f77;
+            --secondary-light: #1abc9c;
+            --accent: #e74c3c;
+            --accent-light: #ff6b6b;
+            --gold: #f39c12;
+            --gold-light: #f1c40f;
+            --bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --border: #dce1e8;
+            --success: #27ae60;
+            --morning: #3498db;
+            --afternoon: #e67e22;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 30px rgba(26, 82, 118, 0.3);
+        }
+
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            animation: headerShine 8s ease-in-out infinite;
+        }
+
+        @keyframes headerShine {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 20px); }
+        }
+
+        .app-header h1 {
+            font-size: 1.8em;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .app-header .subtitle {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-top: 5px;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .app-header .badge {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--primary-dark);
+            padding: 4px 18px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            background: white;
+            padding: 12px 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 10px 24px;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text);
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+            background: #eaf2f8;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(26, 82, 118, 0.3);
+        }
+
+        .nav-tab .tab-icon { font-size: 1.2em; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover { box-shadow: var(--shadow-lg); }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title .icon { font-size: 1.3em; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            font-size: 0.92em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group label .req { color: var(--accent); font-weight: 800; }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.95em;
+            color: var(--text);
+            background: #fafbfc;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-light);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.1);
+        }
+
+        .form-group input::placeholder { color: #bdc3c7; }
+
+        .form-group input[type="time"] {
+            font-size: 1.1em;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 1px;
+            color: var(--primary-dark);
+        }
+
+        .time-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-input-wrapper .time-separator {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3em;
+        }
+
+        .time-input-wrapper .form-group { flex: 1; }
+
+        .period-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .period-badge.morning {
+            background: linear-gradient(135deg, #fef9e7, #fdebd0);
+            color: #b7791f;
+            border: 1px solid #f39c12;
+        }
+
+        .period-badge.afternoon {
+            background: linear-gradient(135deg, #ebf5fb, #d6eaf8);
+            color: #1a5276;
+            border: 1px solid #3498db;
+        }
+
+        .period-badge.break {
+            background: linear-gradient(135deg, #fef9e7, #fdebd0);
+            color: #b7791f;
+            border: 1px solid #f39c12;
+        }
+
+        .period-badge.error {
+            background: linear-gradient(135deg, #fdedec, #fadbd8);
+            color: #c0392b;
+            border: 1px solid #e74c3c;
+        }
+
+        .period-badge.outside {
+            background: linear-gradient(135deg, #f4ecf7, #e8daef);
+            color: #6c3483;
+            border: 1px solid #8e44ad;
+        }
+
+        .multi-select-box {
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+        }
+
+        .multi-select-box:focus-within {
+            border-color: var(--primary-light);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.1);
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+        }
+
+        .checkbox-item { position: relative; }
+
+        .checkbox-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            color: var(--text);
+            transition: all 0.25s ease;
+            text-align: center;
+            user-select: none;
+            margin: 0;
+        }
+
+        .checkbox-item label:hover {
+            border-color: var(--primary-light);
+            background: #eaf2f8;
+            transform: translateY(-1px);
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + label {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 3px 10px rgba(26, 82, 118, 0.25);
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + label::before {
+            content: '✓ ';
+            margin-left: 4px;
+            font-weight: 800;
+        }
+
+        .selected-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+            min-height: 28px;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            animation: tagIn 0.3s ease;
+        }
+
+        @keyframes tagIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .tag .tag-remove {
+            cursor: pointer;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: background 0.2s;
+        }
+
+        .tag .tag-remove:hover { background: rgba(255,255,255,0.5); }
+
+        .empty-tags-msg {
+            color: var(--text-light);
+            font-size: 0.82em;
+            font-style: italic;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(26, 82, 118, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(26, 82, 118, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #2ecc71);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+        }
+
+        .btn-danger:hover { transform: translateY(-2px); }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.85em;
+            border-radius: 8px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .schedule-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.88em;
+            min-width: 900px;
+        }
+
+        .schedule-table thead th {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 14px 8px;
+            font-weight: 700;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.15);
+            white-space: nowrap;
+        }
+
+        .schedule-table thead th.day-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            min-width: 100px;
+        }
+
+        .schedule-table thead th.time-header {
+            background: linear-gradient(135deg, #1a3c5e, var(--primary-dark));
+            min-width: 80px;
+        }
+
+        .schedule-table tbody td {
+            border: 1px solid var(--border);
+            padding: 6px;
+            text-align: center;
+            vertical-align: middle;
+            min-height: 55px;
+            height: 55px;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .schedule-table tbody td:hover { background: #f8f9fa; }
+
+        .schedule-table tbody td.time-cell {
+            background: linear-gradient(135deg, #eaf2f8, #d6eaf8);
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.85em;
+            white-space: nowrap;
+            min-width: 80px;
+        }
+
+        .schedule-table tbody tr.break-row td {
+            background: linear-gradient(135deg, #fef9e7, #fdebd0) !important;
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 0.85em;
+            padding: 6px;
+            height: 30px;
+        }
+
+        .schedule-table tbody tr.period-header td {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light)) !important;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9em;
+            padding: 8px;
+        }
+
+        .schedule-table tbody tr.afternoon-header td {
+            background: linear-gradient(135deg, var(--afternoon), #f39c12) !important;
+        }
+
+        .session-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 45px;
+            border-radius: 6px;
+            padding: 4px;
+            cursor: default;
+            position: relative;
+        }
+
+        .session-cell.filled {
+            border-radius: 8px;
+            padding: 4px 6px;
+        }
+
+        .session-cell.math { background: linear-gradient(135deg, #ebf5fb, #d6eaf8); border-right: 3px solid #3498db; }
+        .session-cell.arabic { background: linear-gradient(135deg, #eafaf1, #d5f5e3); border-right: 3px solid #27ae60; }
+        .session-cell.french { background: linear-gradient(135deg, #fef9e7, #fdebd0); border-right: 3px solid #f39c12; }
+        .session-cell.science { background: linear-gradient(135deg, #f4ecf7, #e8daef); border-right: 3px solid #8e44ad; }
+        .session-cell.islamic { background: linear-gradient(135deg, #fdf2e9, #fae5d3); border-right: 3px solid #e67e22; }
+        .session-cell.social { background: linear-gradient(135deg, #fdedec, #fadbd8); border-right: 3px solid #e74c3c; }
+        .session-cell.other { background: linear-gradient(135deg, #f2f3f4, #e5e7e9); border-right: 3px solid #95a5a6; }
+
+        .session-subject {
+            font-weight: 700;
+            font-size: 0.82em;
+            color: var(--text);
+        }
+
+        .session-meta {
+            font-size: 0.68em;
+            color: var(--text-light);
+            font-weight: 600;
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .session-meta .meta-tag {
+            background: rgba(0,0,0,0.06);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .session-delete {
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .session-cell:hover .session-delete { display: flex; }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+            background: white;
+            border: 2px solid var(--primary);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .info-table td {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            font-size: 0.9em;
+        }
+
+        .info-table .info-label {
+            font-weight: 700;
+            color: var(--primary);
+            background: #eaf2f8;
+            white-space: nowrap;
+            width: 120px;
+        }
+
+        .info-table .info-value {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .info-table .info-value .tag-inline {
+            display: inline-block;
+            background: var(--primary-light);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin: 2px;
+            font-weight: 700;
+        }
+
+        .sessions-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .session-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border-right: 4px solid var(--primary-light);
+            transition: all 0.2s;
+        }
+
+        .session-item:hover {
+            background: #eaf2f8;
+            transform: translateX(-3px);
+        }
+
+        .session-item-info {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .session-item-info span { font-size: 0.88em; font-weight: 600; }
+
+        .session-item-info .badge-day {
+            background: var(--primary);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 6px;
+            font-size: 0.82em;
+        }
+
+        .session-item-info .badge-time {
+            background: var(--secondary);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 6px;
+            font-size: 0.82em;
+        }
+
+        .session-item-info .badge-subject {
+            background: var(--gold);
+            color: var(--primary-dark);
+            padding: 3px 12px;
+            border-radius: 6px;
+            font-size: 0.82em;
+        }
+
+        .session-item-info .badge-level {
+            background: #8e44ad;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 6px;
+            font-size: 0.82em;
+        }
+
+        .session-item-info .badge-group {
+            background: #16a085;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 6px;
+            font-size: 0.82em;
+        }
+
+        .signatures {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+
+        .signature-box {
+            flex: 1 1 0;
+            min-width: 0;
+            text-align: center;
+            padding: 10px 8px;
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+        }
+
+        .signature-box .sig-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }
+
+        .signature-box .sig-line {
+            border-top: 1px solid var(--text-light);
+            margin-top: 15px;
+            padding-top: 4px;
+            font-size: 0.8em;
+            color: var(--text-light);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .empty-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .empty-state p { font-size: 1.1em; font-weight: 600; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--primary-dark);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.95em;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            transition: transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--accent); }
+
+        .subject-info-card {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #eaf2f8, #d6eaf8);
+            border: 1px solid var(--primary-light);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .subject-info-card.visible { display: block; }
+
+        .subject-info-card .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            font-size: 0.88em;
+            font-weight: 600;
+        }
+
+        .subject-info-card .info-row:last-child { margin-bottom: 0; }
+
+        .subject-info-card .info-label {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .subject-info-card .info-value {
+            color: var(--text);
+        }
+
+        @page {
+            size: A4 landscape;
+            margin: 5mm;
+        }
+
+        @media print {
+            html, body {
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .app-header, .nav-tabs, .no-print, .session-delete, .toast {
+                display: none !important;
+            }
+
+            .section { display: none !important; }
+            /* ✅ إصلاح سلسلة الارتفاعات: بدون هذا السطر يبقى ارتفاع الجدول تلقائياً */
+            #section-preview {
+                display: block !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+            #printSection {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                height: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            /* جدول المعلومات: مضغوط وثابت العرض */
+            .info-table {
+                font-size: 0.8em !important;
+                table-layout: fixed !important;
+            }
+            .info-table td { padding: 5px 10px !important; }
+
+            /* شريط العنوان: مضغوط */
+            #printSection > div[style*="gradient"] {
+                padding: 8px !important;
+                font-size: 0.95em !important;
+            }
+
+            /* ✅ الجدول يتمدد ليملأ كامل المساحة المتبقية من الصفحة */
+            .schedule-wrapper {
+                flex: 1 1 auto !important;
+                display: flex !important;
+                box-shadow: none !important;
+                overflow: hidden !important;
+                border-radius: 0 !important;
+                min-height: 0 !important;
+            }
+
+            .schedule-table {
+                font-size: 0.8em !important;
+                min-width: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                table-layout: fixed !important;
+            }
+
+            .schedule-table thead th { padding: 8px 4px !important; }
+            .schedule-table thead th.day-header { min-width: 0 !important; }
+
+            .schedule-table tbody td {
+                height: auto !important;
+                min-height: 0 !important;
+                padding: 5px 4px !important;
+            }
+
+            /* ✅ توزيع الارتفاع الزائد من الجدول بالتساوي على جميع الصفوف */
+            .schedule-table tbody tr { height: 1% !important; }
+            .schedule-table tbody tr.break-row { height: auto !important; }
+            .schedule-table tbody tr.period-header { height: auto !important; }
+
+            /* تكبير محتوى الخلية لملء الفراغ داخل الصفوف الممتدة */
+            .schedule-subject { font-size: 0.95em !important; }
+            .session-meta { font-size: 0.78em !important; margin-top: 4px !important; }
+            .session-meta .meta-tag { padding: 2px 8px !important; }
+            .schedule-table tbody td.time-cell { font-size: 0.9em !important; }
+
+            /* التوقيعات: ملاصقة لأسفل الصفحة ومضغوطة */
+            .signatures {
+                flex: 0 0 auto !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                display: flex !important;
+                page-break-inside: avoid !important;
+                margin-top: 5px !important;
+                padding-top: 5px !important;
+                gap: 15px !important;
+            }
+            .signature-box { padding: 4px 6px !important; }
+            .signature-box .sig-title { margin-bottom: 12px !important; font-size: 0.85em !important; }
+            .signature-box .sig-line { margin-top: 10px !important; font-size: 0.72em !important; }
+
+            .session-cell { min-height: 0 !important; }
+            .session-cell:hover .session-delete { display: none !important; }
+        }
+
+        @media (max-width: 768px) {
+            .app-header h1 { font-size: 1.3em; }
+            .nav-tab { padding: 8px 14px; font-size: 0.82em; }
+            .form-grid { grid-template-columns: 1fr; }
+            /* التوقيعات تبقى أفقية حتى على الشاشات الصغيرة */
+            .card { padding: 18px; }
+            .checkbox-grid { grid-template-columns: repeat(3, 1fr); }
+            .time-input-wrapper { flex-direction: column; }
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-info {
+            background: #eaf2f8;
+            color: var(--primary);
+            border-right: 4px solid var(--primary-light);
+        }
+
+        .alert-warning {
+            background: #fef9e7;
+            color: #7d6608;
+            border-right: 4px solid var(--gold);
+        }
+
+        .time-info-box {
+            background: linear-gradient(135deg, #eaf2f8, #d6eaf8);
+            border: 1px solid var(--primary-light);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            font-size: 0.88em;
+            font-weight: 600;
+        }
+
+        .time-info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .time-info-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .time-info-item .dot.morning { background: #f39c12; }
+        .time-info-item .dot.break { background: #95a5a6; }
+        .time-info-item .dot.afternoon { background: #3498db; }
+
+        .legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="app-header">
+        <h1>📅 استعمال الزمن</h1>
+        <div class="subtitle">فترة برنامج دعم التعلمات الأساس</div>
+        <div class="badge">🏫 المدرسة الرائدة</div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav-tabs no-print">
+        <button class="nav-tab active" onclick="showSection('info', this)">
+            <span class="tab-icon">📋</span> المعلومات
+        </button>
+        <button class="nav-tab" onclick="showSection('sessions', this)">
+            <span class="tab-icon">📝</span> الحصص
+        </button>
+        <button class="nav-tab" onclick="showSection('preview', this)">
+            <span class="tab-icon">👁️</span> المعاينة
+        </button>
+    </div>
+
+    <div class="container">
+
+        <!-- ===== SECTION 1: INFO ===== -->
+        <div id="section-info" class="section active">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">🏫</span> المعلومات الشخصية والمؤسسية
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><span class="req">*</span> المؤسسة</label>
+                        <input type="text" id="schoolName" placeholder="مثال: م.م. الأمل">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="req">*</span> الموسم الدراسي</label>
+                        <input type="text" id="schoolYear" placeholder="2025 / 2026" value="2025 / 2026">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="req">*</span> اسم الأستاذ(ة)</label>
+                        <input type="text" id="teacherName" placeholder="الاسم الكامل">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم التأجير</label>
+                        <input type="text" id="payrollNum" placeholder="رقم التأجير">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">🎓</span> المستويات الدراسية المُدرَّسة
+                </div>
+                <div class="alert alert-info">
+                    💡 اختر مستوى دراسياً واحداً أو عدة مستويات تدرسها خلال فترة الدعم
+                </div>
+                <div class="multi-select-box">
+                    <div class="checkbox-grid" id="levelsGrid"></div>
+                </div>
+                <div class="selected-tags" id="selectedLevelsTags">
+                    <span class="empty-tags-msg">لم يتم اختيار أي مستوى بعد...</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">👥</span> الأفواج المُدرَّسة
+                </div>
+                <div class="alert alert-info">
+                    💡 اختر فوجاً واحداً أو عدة أفواج تدرسها خلال فترة الدعم
+                </div>
+                <div class="multi-select-box">
+                    <div class="checkbox-grid" id="groupsGrid"></div>
+                </div>
+                <div class="selected-tags" id="selectedGroupsTags">
+                    <span class="empty-tags-msg">لم يتم اختيار أي فوج بعد...</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="saveInfo()">
+                    💾 حفظ المعلومات
+                </button>
+                <button class="btn btn-outline" onclick="showSection('sessions', document.querySelectorAll('.nav-tab')[1])">
+                    التالي: إضافة الحصص ←
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== SECTION 2: SESSIONS ===== -->
+        <div id="section-sessions" class="section">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">➕</span> إضافة حصة جديدة
+                </div>
+
+                <div class="time-info-box">
+                    <div class="time-info-item">
+                        <span class="dot morning"></span>
+                        <span>☀️ الفترة الصباحية: <strong>08:00 - 12:40</strong></span>
+                    </div>
+                    <div class="time-info-item">
+                        <span class="dot break"></span>
+                        <span>🔄 الانتقال: <strong>12:40 - 12:50</strong> (10 د)</span>
+                    </div>
+                    <div class="time-info-item">
+                        <span class="dot afternoon"></span>
+                        <span>🌙 الفترة المسائية: <strong>12:50 - 17:30</strong></span>
+                    </div>
+                </div>
+
+                <div id="noLevelsWarning" class="alert alert-warning" style="display:none;">
+                    ⚠️ يجب اختيار مستوى وفوج واحد على الأقل من تبويب "المعلومات" أولاً
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><span class="req">*</span> اليوم</label>
+                        <select id="sessionDay">
+                            <option value="">-- اختر اليوم --</option>
+                            <option value="الاثنين">الاثنين</option>
+                            <option value="الثلاثاء">الثلاثاء</option>
+                            <option value="الأربعاء">الأربعاء</option>
+                            <option value="الخميس">الخميس</option>
+                            <option value="الجمعة">الجمعة</option>
+                            <option value="السبت">السبت</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="req">*</span> المادة</label>
+                        <select id="sessionSubject" onchange="onSubjectChange()">
+                            <option value="">-- اختر المادة --</option>
+                            <option value="الرياضيات">الرياضيات</option>
+                            <option value="اللغة العربية">اللغة العربية</option>
+                            <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                            <option value="النشاط العلمي">النشاط العلمي</option>
+                            <option value="التربية الإسلامية">التربية الإسلامية</option>
+                            <option value="الاجتماعيات">الاجتماعيات</option>
+                            <option value="التربية الفنية">التربية الفنية</option>
+                            <option value="أخرى">أخرى</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="req">*</span> المستوى</label>
+                        <select id="sessionLevel">
+                            <option value="">-- اختر المستوى --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="req">*</span> الفوج</label>
+                        <select id="sessionGroup">
+                            <option value="">-- اختر الفوج --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Subject Info Card -->
+                <div id="subjectInfoCard" class="subject-info-card">
+                    <div class="info-row">
+                        <span class="info-label">📖 المادة:</span>
+                        <span class="info-value" id="siSubject">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">⏱️ مدة الحصة:</span>
+                        <span class="info-value" id="siDuration">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">👥 عدد الأفواج:</span>
+                        <span class="info-value" id="siGroups">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">📊 عدد الحصص في الفترة:</span>
+                        <span class="info-value" id="siSessions">-</span>
+                    </div>
+                </div>
+
+                <!-- TIME INPUTS -->
+                <div style="margin-top:20px; padding:18px; background:#f8f9fa; border-radius:12px; border:1px dashed var(--border);">
+                    <label style="font-weight:700; color:var(--primary); margin-bottom:10px; display:block; font-size:0.95em;">
+                        🕐 وقت الحصة (إدخال يدوي)
+                    </label>
+                    <div class="time-input-wrapper">
+                        <div class="form-group">
+                            <label><span class="req">*</span> وقت البداية</label>
+                            <input type="time" id="sessionStart" onchange="onStartTimeChange()">
+                        </div>
+                        <span class="time-separator">←</span>
+                        <div class="form-group">
+                            <label><span class="req">*</span> وقت النهاية</label>
+                            <input type="time" id="sessionEnd" onchange="updatePeriodBadge()">
+                        </div>
+                    </div>
+                    <div id="periodBadgeContainer" style="margin-top:8px;"></div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="addSession()">
+                        ➕ إضافة الحصة
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="clearAllSessions()">
+                        🗑️ حذف الكل
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">📑</span> قائمة الحصص المضافة
+                    <span id="sessionCount" style="margin-right:auto; background:var(--primary); color:white; padding:2px 12px; border-radius:20px; font-size:0.8em;">0</span>
+                </div>
+                <div id="sessionsList" class="sessions-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <p>لم تتم إضافة أي حصة بعد</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group no-print">
+                <button class="btn btn-primary" onclick="showSection('preview', document.querySelectorAll('.nav-tab')[2])">
+                    👁️ معاينة الجدول
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== SECTION 3: PREVIEW ===== -->
+        <div id="section-preview" class="section">
+            <div class="card no-print" style="margin-bottom:15px;">
+                <div class="btn-group" style="margin:0; justify-content:center;">
+                    <button class="btn btn-primary" onclick="printSchedule()">
+                        🖨️ طباعة الجدول
+                    </button>
+                    <button class="btn btn-outline" onclick="showSection('sessions', document.querySelectorAll('.nav-tab')[1])">
+                        ✏️ تعديل الحصص
+                    </button>
+                </div>
+            </div>
+
+            <div id="printSection">
+                <table class="info-table" id="infoTable">
+                    <tr>
+                        <td class="info-label">المؤسسة:</td>
+                        <td class="info-value" id="dispSchool">---</td>
+                        <td class="info-label">الموسم الدراسي:</td>
+                        <td class="info-value" id="dispYear">---</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">المستوى/المستويات:</td>
+                        <td class="info-value" id="dispLevel" colspan="3">---</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">الفوج/الأفواج:</td>
+                        <td class="info-value" id="dispGroup" colspan="3">---</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">الأستاذ(ة):</td>
+                        <td class="info-value" id="dispTeacher">---</td>
+                        <td class="info-label">رقم التأجير:</td>
+                        <td class="info-value" id="dispPayroll">---</td>
+                    </tr>
+                </table>
+
+                <div style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color:white; text-align:center; padding:12px; font-weight:800; font-size:1.1em; border: 2px solid var(--primary); border-top:none;">
+                    استعمال الزمن – فترة برنامج دعم التعلمات الأساس
+                </div>
+
+                <div class="schedule-wrapper">
+                    <table class="schedule-table" id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th class="time-header">الوقت</th>
+                                <th class="day-header">الاثنين</th>
+                                <th class="day-header">الثلاثاء</th>
+                                <th class="day-header">الأربعاء</th>
+                                <th class="day-header">الخميس</th>
+                                <th class="day-header">الجمعة</th>
+                                <th class="day-header">السبت</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="legend no-print">
+                    <div class="legend-item"><div class="legend-color" style="background:#3498db;"></div> الرياضيات</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#27ae60;"></div> اللغة العربية</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#f39c12;"></div> اللغة الفرنسية</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#8e44ad;"></div> النشاط العلمي</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#e67e22;"></div> التربية الإسلامية</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#e74c3c;"></div> الاجتماعيات</div>
+                </div>
+
+                <div class="signatures">
+                    <div class="signature-box">
+                        <div class="sig-title">المفتش(ة)</div>
+                        <div class="sig-line">التوقيع والختم</div>
+                    </div>
+                    <div class="signature-box">
+                        <div class="sig-title">المدير(ة)</div>
+                        <div class="sig-line">التوقيع والختم</div>
+                    </div>
+                    <div class="signature-box">
+                        <div class="sig-title">الأستاذ(ة)</div>
+                        <div class="sig-line">التوقيع</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let appData = {
+            info: {
+                school: '',
+                year: '2025 / 2026',
+                levels: [],
+                groups: [],
+                teacher: '',
+                payroll: ''
+            },
+            sessions: []
+        };
+
+        const DAYS_ORDER = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+        const ALL_LEVELS = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس'];
+        const ALL_GROUPS = ['الفوج 1', 'الفوج 2', 'الفوج 3', 'الفوج 4'];
+
+        const MORNING_START = '08:00';
+        const MORNING_END = '12:40';
+        const TRANSITION_START = '12:40';
+        const TRANSITION_END = '12:50';
+        const AFTERNOON_START = '12:50';
+        const AFTERNOON_END = '17:30';
+
+        const SUBJECT_CONFIG = {
+            'اللغة العربية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+            'الرياضيات': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+            'اللغة الفرنسية': { duration: 135, maxGroups: 2, sessionsPerPeriod: 2 },
+            'النشاط العلمي': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+            'التربية الإسلامية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+            'الاجتماعيات': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+            'التربية الفنية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+            'أخرى': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 }
+        };
+
+        const SUBJECT_CLASS = {
+            'الرياضيات': 'math',
+            'اللغة العربية': 'arabic',
+            'اللغة الفرنسية': 'french',
+            'النشاط العلمي': 'science',
+            'التربية الإسلامية': 'islamic',
+            'الاجتماعيات': 'social',
+            'التربية الفنية': 'other',
+            'أخرى': 'other'
+        };
+
+        function initMultiSelects() {
+            const levelsGrid = document.getElementById('levelsGrid');
+            levelsGrid.innerHTML = ALL_LEVELS.map(lvl => `
+                <div class="checkbox-item">
+                    <input type="checkbox" id="lvl-${lvl}" value="${lvl}" onchange="updateSelectedLevels()">
+                    <label for="lvl-${lvl}">${lvl}</label>
+                </div>
+            `).join('');
+
+            const groupsGrid = document.getElementById('groupsGrid');
+            groupsGrid.innerHTML = ALL_GROUPS.map(grp => `
+                <div class="checkbox-item">
+                    <input type="checkbox" id="grp-${grp}" value="${grp}" onchange="updateSelectedGroups()">
+                    <label for="grp-${grp}">${grp}</label>
+                </div>
+            `).join('');
+        }
+
+        function updateSelectedLevels() {
+            const checkboxes = document.querySelectorAll('#levelsGrid input[type="checkbox"]');
+            const selected = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
+            appData.info.levels = selected;
+            renderTags('selectedLevelsTags', selected, 'level');
+            updateSessionLevelOptions();
+            saveToStorage();
+        }
+
+        function updateSelectedGroups() {
+            const checkboxes = document.querySelectorAll('#groupsGrid input[type="checkbox"]');
+            const selected = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
+            appData.info.groups = selected;
+            renderTags('selectedGroupsTags', selected, 'group');
+            updateSessionGroupOptions();
+            saveToStorage();
+        }
+
+        function renderTags(containerId, items, type) {
+            const container = document.getElementById(containerId);
+            if (items.length === 0) {
+                container.innerHTML = `<span class="empty-tags-msg">لم يتم اختيار أي ${type === 'level' ? 'مستوى' : 'فوج'} بعد...</span>`;
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <span class="tag">
+                    ${item}
+                    <span class="tag-remove" onclick="removeTag('${type}', '${item}')">✕</span>
+                </span>
+            `).join('');
+        }
+
+        function removeTag(type, value) {
+            // ✅ إصلاح: تحذير عند حذف مستوى/فوج مستعمل في حصص موجودة
+            const inUse = appData.sessions.some(s =>
+                type === 'level' ? s.level === value : s.group === value
+            );
+            if (inUse) {
+                const what = type === 'level' ? 'مستوى' : 'فوج';
+                if (!confirm(`⚠️ هناك حصص مضافة تستعمل "${value}".
+حذف ال${what} لن يحذف تلك الحصص (ستبقى بقيمة قديمة).
+هل تريد المتابعة؟`)) {
+                    return;
+                }
+            }
+            const checkboxId = type === 'level' ? `lvl-${value}` : `grp-${value}`;
+            const checkbox = document.getElementById(checkboxId);
+            if (checkbox) {
+                checkbox.checked = false;
+                if (type === 'level') updateSelectedLevels();
+                else updateSelectedGroups();
+            }
+        }
+
+        function updateSessionLevelOptions() {
+            const sel = document.getElementById('sessionLevel');
+            const current = sel.value;
+            sel.innerHTML = '<option value="">-- اختر المستوى --</option>';
+            appData.info.levels.forEach(lvl => {
+                sel.innerHTML += `<option value="${lvl}">${lvl}</option>`;
+            });
+            if (appData.info.levels.includes(current)) sel.value = current;
+            checkSessionsWarning();
+        }
+
+        function updateSessionGroupOptions() {
+            const sel = document.getElementById('sessionGroup');
+            const current = sel.value;
+            sel.innerHTML = '<option value="">-- اختر الفوج --</option>';
+            appData.info.groups.forEach(grp => {
+                sel.innerHTML += `<option value="${grp}">${grp}</option>`;
+            });
+            if (appData.info.groups.includes(current)) sel.value = current;
+            checkSessionsWarning();
+        }
+
+        function checkSessionsWarning() {
+            const warning = document.getElementById('noLevelsWarning');
+            if (appData.info.levels.length === 0 || appData.info.groups.length === 0) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+
+        function onSubjectChange() {
+            const subject = document.getElementById('sessionSubject').value;
+            const infoCard = document.getElementById('subjectInfoCard');
+
+            if (!subject || !SUBJECT_CONFIG[subject]) {
+                infoCard.classList.remove('visible');
+                return;
+            }
+
+            const config = SUBJECT_CONFIG[subject];
+            infoCard.classList.add('visible');
+
+            document.getElementById('siSubject').textContent = subject;
+            document.getElementById('siDuration').textContent = `${config.duration} دقيقة (${formatDuration(config.duration)})`;
+            document.getElementById('siGroups').textContent = `${config.maxGroups} أفواج`;
+            document.getElementById('siSessions').textContent = `${config.sessionsPerPeriod} حصص`;
+
+            onStartTimeChange();
+        }
+
+        function formatDuration(minutes) {
+            const h = Math.floor(minutes / 60);
+            const m = minutes % 60;
+            if (h === 0) return `${m} دقيقة`;
+            if (m === 0) return `${h} ساعة`;
+            return `${h} ساعة و ${m} دقيقة`;
+        }
+
+        function onStartTimeChange() {
+            const start = document.getElementById('sessionStart').value;
+            const subject = document.getElementById('sessionSubject').value;
+
+            if (!start || !subject || !SUBJECT_CONFIG[subject]) {
+                updatePeriodBadge();
+                return;
+            }
+
+            const config = SUBJECT_CONFIG[subject];
+            const endTime = addMinutes(start, config.duration);
+            document.getElementById('sessionEnd').value = endTime;
+
+            updatePeriodBadge();
+        }
+
+        function addMinutes(timeStr, minutes) {
+            const [h, m] = timeStr.split(':').map(Number);
+            const totalMinutes = h * 60 + m + minutes;
+            const newH = Math.floor(totalMinutes / 60) % 24;
+            const newM = totalMinutes % 60;
+            return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+        }
+
+        function detectPeriod(timeStr) {
+            if (!timeStr) return null;
+            if (timeStr >= MORNING_START && timeStr <= MORNING_END) return 'morning';
+            if (timeStr >= TRANSITION_START && timeStr < TRANSITION_END) return 'transition';
+            if (timeStr >= AFTERNOON_START && timeStr <= AFTERNOON_END) return 'afternoon';
+            return 'outside';
+        }
+
+        function updatePeriodBadge() {
+            const start = document.getElementById('sessionStart').value;
+            const end = document.getElementById('sessionEnd').value;
+            const container = document.getElementById('periodBadgeContainer');
+
+            if (!start && !end) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            if (start) {
+                const p = detectPeriod(start);
+                if (p === 'morning') html += `<span class="period-badge morning">☀️ الفترة الصباحية (08:00 - 12:40)</span> `;
+                else if (p === 'afternoon') html += `<span class="period-badge afternoon">🌙 الفترة المسائية (12:50 - 17:30)</span> `;
+                else if (p === 'transition') html += `<span class="period-badge break">🔄 فترة الانتقال بين الفترتين (12:40 - 12:50)</span> `;
+                else if (p === 'outside') html += `<span class="period-badge outside">⚠️ خارج أوقات الدراسة</span> `;
+            }
+
+            if (start && end) {
+                if (end <= start) {
+                    html += `<span class="period-badge error">⚠️ وقت النهاية يجب أن يكون بعد البداية</span>`;
+                } else {
+                    const startPeriod = detectPeriod(start);
+                    if (startPeriod === 'morning' && end > MORNING_END) {
+                        html += `<span class="period-badge error">⚠️ الحصة الصباحية لا يمكن أن تتجاوز 12:40</span>`;
+                    }
+                    if (startPeriod === 'afternoon' && end > AFTERNOON_END) {
+                        html += `<span class="period-badge error">⚠️ الحصة المسائية لا يمكن أن تتجاوز 17:30</span>`;
+                    }
+                    if (startPeriod === 'transition') {
+                        html += `<span class="period-badge error">⚠️ لا يمكن بدء حصة خلال فترة الانتقال</span>`;
+                    }
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        function showSection(name, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('section-' + name).classList.add('active');
+            if (btn) btn.classList.add('active');
+
+            if (name === 'preview') buildSchedule();
+            if (name === 'sessions') {
+                updateSessionLevelOptions();
+                updateSessionGroupOptions();
+                checkSessionsWarning();
+            }
+        }
+
+        function saveInfo() {
+            appData.info.school = document.getElementById('schoolName').value.trim();
+            appData.info.year = document.getElementById('schoolYear').value.trim();
+            appData.info.teacher = document.getElementById('teacherName').value.trim();
+            appData.info.payroll = document.getElementById('payrollNum').value.trim();
+
+            if (!appData.info.school || !appData.info.teacher) {
+                showToast('يرجى ملء اسم المؤسسة والأستاذ', 'error');
+                return;
+            }
+            if (appData.info.levels.length === 0) {
+                showToast('يرجى اختيار مستوى دراسي واحد على الأقل', 'error');
+                return;
+            }
+            if (appData.info.groups.length === 0) {
+                showToast('يرجى اختيار فوج واحد على الأقل', 'error');
+                return;
+            }
+
+            saveToStorage();
+            showToast('✅ تم حفظ المعلومات بنجاح', 'success');
+        }
+
+        function addSession() {
+            const day = document.getElementById('sessionDay').value;
+            const start = document.getElementById('sessionStart').value;
+            const end = document.getElementById('sessionEnd').value;
+            const subject = document.getElementById('sessionSubject').value;
+            const level = document.getElementById('sessionLevel').value;
+            const group = document.getElementById('sessionGroup').value;
+
+            if (!day || !start || !end || !subject || !level || !group) {
+                showToast('يرجى ملء جميع حقول الحصة', 'error');
+                return;
+            }
+
+            if (end <= start) {
+                showToast('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية', 'error');
+                return;
+            }
+
+            const config = SUBJECT_CONFIG[subject];
+            if (config) {
+                const actualDuration = timeDiffMinutes(start, end);
+                if (actualDuration !== config.duration) {
+                    showToast(`⚠️ مدة حصة ${subject} يجب أن تكون ${config.duration} دقيقة (حالياً: ${actualDuration} دقيقة)`, 'error');
+                    return;
+                }
+            }
+
+            const period = detectPeriod(start);
+
+            if (period === 'transition') {
+                showToast('⚠️ لا يمكن إضافة حصة خلال فترة الانتقال (12:40 - 12:50)', 'error');
+                return;
+            }
+
+            if (period === 'outside') {
+                showToast('⚠️ الوقت خارج أوقات الدراسة (الصباحية: 08:00-12:40 / المسائية: 12:50-17:30)', 'error');
+                return;
+            }
+
+            if (period === 'morning' && end > MORNING_END) {
+                showToast('⚠️ الحصة الصباحية لا يمكن أن تتجاوز 12:40', 'error');
+                return;
+            }
+            if (period === 'afternoon' && end > AFTERNOON_END) {
+                showToast('⚠️ الحصة المسائية لا يمكن أن تتجاوز 17:30', 'error');
+                return;
+            }
+
+            // ✅ إصلاح: كشف التعارض الزمني الحقيقي (تداخل الفترات) بدل التحقق الضيق من التطابق الكامل
+            const conflict = appData.sessions.find(s =>
+                s.day === day && s.start < end && start < s.end
+            );
+            if (conflict) {
+                showToast(`⚠️ تعارض زمني مع حصة ${conflict.subject} (${conflict.start} - ${conflict.end})`, 'error');
+                return;
+            }
+
+            appData.sessions.push({
+                id: Date.now(),
+                day, period, start, end, subject, level, group
+            });
+
+            saveToStorage();
+            renderSessionsList();
+            showToast('✅ تمت إضافة الحصة بنجاح', 'success');
+
+            document.getElementById('sessionDay').value = '';
+            document.getElementById('sessionStart').value = '';
+            document.getElementById('sessionEnd').value = '';
+            document.getElementById('sessionSubject').value = '';
+            document.getElementById('periodBadgeContainer').innerHTML = '';
+            document.getElementById('subjectInfoCard').classList.remove('visible');
+        }
+
+        function deleteSession(id) {
+            appData.sessions = appData.sessions.filter(s => s.id !== id);
+            saveToStorage();
+            renderSessionsList();
+            // ✅ إصلاح: تحديث المعاينة إذا كانت ظاهرة عند الحذف منها
+            if (document.getElementById('section-preview').classList.contains('active')) {
+                buildSchedule();
+            }
+            showToast('🗑️ تم حذف الحصة', 'success');
+        }
+
+        function clearAllSessions() {
+            if (appData.sessions.length === 0) return;
+            if (confirm('هل أنت متأكد من حذف جميع الحصص؟')) {
+                appData.sessions = [];
+                saveToStorage();
+                renderSessionsList();
+                if (document.getElementById('section-preview').classList.contains('active')) {
+                    buildSchedule();
+                }
+                showToast('🗑️ تم حذف جميع الحصص', 'success');
+            }
+        }
+
+        function renderSessionsList() {
+            const container = document.getElementById('sessionsList');
+            const countEl = document.getElementById('sessionCount');
+            countEl.textContent = appData.sessions.length;
+
+            if (appData.sessions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <p>لم تتم إضافة أي حصة بعد</p>
+                    </div>`;
+                return;
+            }
+
+            // ✅ إصلاح: ترتيب القائمة حسب اليوم ثم وقت البداية
+            const sorted = [...appData.sessions].sort((a, b) =>
+                DAYS_ORDER.indexOf(a.day) - DAYS_ORDER.indexOf(b.day) ||
+                a.start.localeCompare(b.start)
+            );
+
+            container.innerHTML = sorted.map(s => `
+                <div class="session-item">
+                    <div class="session-item-info">
+                        <span class="badge-day">${s.day}</span>
+                        <span class="badge-time">${s.start} - ${s.end}</span>
+                        <span class="badge-subject">${s.subject}</span>
+                        <span class="badge-level">${s.level}</span>
+                        <span class="badge-group">${s.group}</span>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="deleteSession(${s.id})">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        // ===== BUILD SCHEDULE (مع دمج الخانات ROWSPAN) =====
+        function buildSchedule() {
+            document.getElementById('dispSchool').textContent = appData.info.school || '---';
+            document.getElementById('dispYear').textContent = appData.info.year || '---';
+            document.getElementById('dispTeacher').textContent = appData.info.teacher || '---';
+            document.getElementById('dispPayroll').textContent = appData.info.payroll || '---';
+
+            const dispLevel = document.getElementById('dispLevel');
+            if (appData.info.levels.length > 0) {
+                dispLevel.innerHTML = appData.info.levels.map(l => `<span class="tag-inline">${l}</span>`).join(' ');
+            } else {
+                dispLevel.textContent = '---';
+            }
+
+            const dispGroup = document.getElementById('dispGroup');
+            if (appData.info.groups.length > 0) {
+                dispGroup.innerHTML = appData.info.groups.map(g => `<span class="tag-inline">${g}</span>`).join(' ');
+            } else {
+                dispGroup.textContent = '---';
+            }
+
+            const tbody = document.getElementById('scheduleBody');
+            tbody.innerHTML = '';
+
+            if (appData.sessions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="padding:40px; text-align:center; color:var(--text-light); font-weight:600;">
+                            📭 لا توجد حصص مضافة بعد
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            const morningSessions = appData.sessions.filter(s => s.period === 'morning');
+            const afternoonSessions = appData.sessions.filter(s => s.period === 'afternoon');
+
+            let html = '';
+
+            if (morningSessions.length > 0) {
+                html += renderPeriod('☀️ الفترة الصباحية', 'period-header', morningSessions);
+            }
+
+            if (afternoonSessions.length > 0) {
+                html += `
+                    <tr class="break-row" style="background: linear-gradient(135deg, #fef5e7, #fadbd8) !important;">
+                        <td colspan="7" style="color:#8e44ad;">🔄 فترة الانتقال بين الفترتين (10 دقائق) - 12:40 → 12:50</td>
+                    </tr>`;
+                html += renderPeriod('🌙 الفترة المسائية', 'period-header afternoon-header', afternoonSessions);
+            }
+
+            tbody.innerHTML = html;
+        }
+
+        // ===== RENDER PERIOD WITH ROWSPAN MERGING (مُصحّح بالكامل) =====
+        function renderPeriod(title, headerClass, sessions) {
+            const slots = getUniqueTimeSlots(sessions);
+
+            // ✅ إصلاح: إخفاء خانة فقط إذا كانت محتواة "بشكل صارم" داخل فترة حصة أطول
+            const hidden = new Set();
+            sessions.forEach(s => {
+                slots.forEach(sl => {
+                    const strictlyInside =
+                        (s.start < sl.start && s.end >= sl.end) ||
+                        (s.start <= sl.start && s.end > sl.end);
+                    if (strictlyInside) hidden.add(sl.start + '|' + sl.end);
+                });
+            });
+
+            const visible = slots.filter(sl => !hidden.has(sl.start + '|' + sl.end));
+            const rows = visible.length > 0 ? visible : slots;
+
+            // ✅ إصلاح: حساب صفوف الاستراحة المدرجة بين الخانات لأخذها في الاعتبار داخل rowspan
+            const hasBreakBefore = rows.map((sl, i) =>
+                i > 0 && timeDiffMinutes(rows[i - 1].end, sl.start) >= 10
+            );
+
+            const slotIndex = {};
+            rows.forEach((sl, i) => { slotIndex[sl.start + '|' + sl.end] = i; });
+
+            const vis = sessions.map(s => {
+                const covered = rows.filter(sl => sl.start >= s.start && sl.end <= s.end);
+                return { s, covered };
+            }).filter(v => v.covered.length > 0);
+
+            vis.forEach(v => {
+                v.first = v.covered[0];
+                const firstIdx = slotIndex[v.first.start + '|' + v.first.end];
+                const lastIdx = firstIdx + v.covered.length - 1;
+                let breaks = 0;
+                for (let i = firstIdx + 1; i <= lastIdx; i++) {
+                    if (hasBreakBefore[i]) breaks++;
+                }
+                v.span = v.covered.length + breaks;
+            });
+
+            let html = `<tr class="${headerClass}">
+                <td colspan="7">${title} (${rows[0].start} - ${rows[rows.length - 1].end})</td>
+            </tr>`;
+
+            rows.forEach((slot, idx) => {
+                if (hasBreakBefore[idx]) {
+                    const gap = timeDiffMinutes(rows[idx - 1].end, slot.start);
+                    html += `<tr class="break-row"><td colspan="7">☕ استراحة (${gap} دقائق)</td></tr>`;
+                }
+
+                let cells = `<td class="time-cell">${slot.start}<br>↓<br>${slot.end}</td>`;
+
+                DAYS_ORDER.forEach(day => {
+                    // بفضل كشف التعارض: حصة واحدة فقط تغطي خانة معينة في اليوم الواحد
+                    const starter = vis.find(v =>
+                        v.s.day === day &&
+                        v.first.start === slot.start && v.first.end === slot.end
+                    );
+
+                    if (starter) {
+                        cells += `<td rowspan="${starter.span}" style="padding:3px;">${sessionCellHtml(starter.s)}</td>`;
+                    } else {
+                        const coveredEarlier = vis.some(v =>
+                            v.s.day === day &&
+                            v.covered.some(sl => sl.start === slot.start && sl.end === slot.end)
+                        );
+                        if (!coveredEarlier) cells += `<td></td>`;
+                    }
+                });
+
+                html += `<tr>${cells}</tr>`;
+            });
+
+            return html;
+        }
+
+        function sessionCellHtml(session) {
+            const cls = SUBJECT_CLASS[session.subject] || 'other';
+            return `
+                <div class="session-cell filled ${cls}" style="height:auto; min-height:45px; margin-bottom:2px;">
+                    <button class="session-delete no-print" onclick="deleteSession(${session.id})">✕</button>
+                    <div class="session-subject">${session.subject}</div>
+                    <div class="session-meta">
+                        <span class="meta-tag">${session.level}</span>
+                        <span class="meta-tag">${session.group}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getUniqueTimeSlots(sessions) {
+            const slotMap = {};
+            sessions.forEach(s => {
+                const key = `${s.start}-${s.end}`;
+                if (!slotMap[key]) {
+                    slotMap[key] = { start: s.start, end: s.end };
+                }
+            });
+            return Object.values(slotMap).sort((a, b) => a.start.localeCompare(b.start));
+        }
+
+        function timeDiffMinutes(t1, t2) {
+            const [h1, m1] = t1.split(':').map(Number);
+            const [h2, m2] = t2.split(':').map(Number);
+            return (h2 * 60 + m2) - (h1 * 60 + m1);
+        }
+
+        // ===== طباعة احترافية: ملاءمة تلقائية في صفحة A4 أفقية واحدة =====
+        const PAGE_W_MM = 297 - 10; // A4 landscape - هوامش 5مم من الجهتين
+        const PAGE_H_MM = 210 - 10;
+
+        function pxToMm(px) { return px * 25.4 / 96; }
+
+        function fitToOnePage() {
+            const el = document.getElementById('printSection');
+            // إعادة ضبط أي تحجيم سابق لأخذ القياس الحقيقي
+            el.style.zoom = '';
+            el.style.transform = '';
+            el.style.transformOrigin = '';
+
+            buildSchedule();
+
+            const rect = el.getBoundingClientRect();
+            const scale = Math.min(1, PAGE_W_MM / pxToMm(rect.width), PAGE_H_MM / pxToMm(rect.height));
+
+            if (scale < 1) {
+                if (CSS.supports('zoom', '1')) {
+                    el.style.zoom = scale; // Chrome / Edge / Safari
+                } else {
+                    el.style.transformOrigin = 'top center'; // Firefox
+                    el.style.transform = 'scale(' + scale + ')';
+                }
+            }
+            return scale;
+        }
+
+        function resetPrintFit() {
+            const el = document.getElementById('printSection');
+            el.style.zoom = '';
+            el.style.transform = '';
+            el.style.transformOrigin = '';
+        }
+
+        function printSchedule() {
+            showSection('preview', document.querySelectorAll('.nav-tab')[2]);
+            requestAnimationFrame(() => {
+                fitToOnePage();
+                setTimeout(() => {
+                    window.print();
+                    setTimeout(resetPrintFit, 400);
+                }, 60);
+            });
+        }
+
+        function showToast(msg, type = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function saveToStorage() {
+            try {
+                localStorage.setItem('scheduleApp_v10', JSON.stringify(appData));
+            } catch (e) {
+                console.warn('تعذر الحفظ في localStorage:', e);
+            }
+        }
+
+        function loadFromStorage() {
+            // ✅ إصلاح: قراءة النسخة الجديدة ثم القديمة، مع حماية من البيانات الفاسدة
+            let raw = null;
+            try {
+                raw = localStorage.getItem('scheduleApp_v10') || localStorage.getItem('scheduleApp_v9');
+            } catch (e) {
+                raw = null;
+            }
+            if (!raw) return;
+
+            let data;
+            try {
+                data = JSON.parse(raw);
+            } catch (e) {
+                console.warn('بيانات محفوظة غير صالحة، سيتم تجاهلها.');
+                return;
+            }
+
+            if (!data || typeof data !== 'object') return;
+
+            appData = {
+                info: Object.assign({
+                    school: '', year: '2025 / 2026', levels: [], groups: [], teacher: '', payroll: ''
+                }, data.info || {}),
+                sessions: Array.isArray(data.sessions) ? data.sessions : []
+            };
+
+            document.getElementById('schoolName').value = appData.info.school;
+            document.getElementById('schoolYear').value = appData.info.year;
+            document.getElementById('teacherName').value = appData.info.teacher;
+            document.getElementById('payrollNum').value = appData.info.payroll;
+
+            appData.info.levels.forEach(lvl => {
+                const cb = document.getElementById(`lvl-${lvl}`);
+                if (cb) cb.checked = true;
+            });
+            updateSelectedLevels();
+
+            appData.info.groups.forEach(grp => {
+                const cb = document.getElementById(`grp-${grp}`);
+                if (cb) cb.checked = true;
+            });
+            updateSelectedGroups();
+
+            renderSessionsList();
+        }
+
+        initMultiSelects();
+        loadFromStorage();
+    </script>
+    <script>
+/* ==== رقعة 5.4: تغيير العنوان + فرنسة كاملة لاستعمال الزمن ==== */
+(function(){
+const AR_FIX = [
+ ["فترة برنامج دعم التعلمات الأساس","فترة الدعم المكثف — Remédiation intensive"],
+ ["برنامج دعم التعلمات الأساس","الدعم المكثف — Remédiation intensive"]
+];
+const FR_MAP = [
+ ["استعمال الزمن – فترة الدعم المكثف — Remédiation intensive","Emploi du temps – Période de Remédiation intensive"],
+ ["استعمال الزمن - فترة الدعم المكثف — Remédiation intensive","Emploi du temps – Période de Remédiation intensive"],
+ ["فترة الدعم المكثف — Remédiation intensive","Période de Remédiation intensive"],
+ ["استعمال الزمن","Emploi du temps"],
+ ["المعلومات الشخصية والمؤسسية","Informations personnelles et institutionnelles"],
+ ["اسم الأستاذ(ة)","Nom de l'enseignant(e)"],
+ ["الأستاذ(ة)","Enseignant(e)"],
+ ["المفتش(ة)","Inspecteur(trice)"],
+ ["المدير(ة)","Directeur(trice)"],
+ ["التوقيع والختم","Signature et cachet"],
+ ["رقم التأجير","N° de solde"],
+ ["الموسم الدراسي","Année scolaire"],
+ ["المستويات الدراسية المُدرَّسة","Niveaux enseignés"],
+ ["الأفواج المُدرَّسة","Groupes enseignés"],
+ ["المستوى/المستويات","Niveau(x)"],
+ ["الفوج/الأفواج","Groupe(s)"],
+ ["المؤسسة","Établissement"],
+ ["الوقت","Horaire"],
+ ["الاثنين","Lundi"],["الثلاثاء","Mardi"],["الأربعاء","Mercredi"],["الخميس","Jeudi"],["الجمعة","Vendredi"],["السبت","Samedi"],["الأحد","Dimanche"],
+ ["الفترة الصباحية","Session du matin"],
+ ["الفترة المسائية","Session de l'après-midi"],
+ ["الانتقال","Transition"],
+ ["استراحة","Pause"],
+ ["اللغة الفرنسية","Français"],
+ ["اللغة العربية","Arabe"],
+ ["الرياضيات","Mathématiques"],
+ ["النشاط العلمي","Sciences"],
+ ["التربية الإسلامية","Éducation islamique"],
+ ["الاجتماعيات","Éveil"],
+ ["التربية الفنية","Arts plastiques"],
+ ["قائمة الحصص المضافة","Liste des séances ajoutées"],
+ ["لم تتم إضافة أي حصة بعد","Aucune séance ajoutée"],
+ ["إضافة حصة جديدة","Ajouter une séance"],
+ ["إضافة حصة","Ajouter une séance"],
+ ["حذف الكل","Tout supprimer"],
+ ["معاينة الجدول","Aperçu du tableau"],
+ ["طباعة الجدول","Imprimer le tableau"],
+ ["تعديل الحصص","Modifier les séances"],
+ ["حفظ المعلومات","Enregistrer les informations"],
+ ["مدة الحصة","Durée de la séance"],
+ ["وقت البداية","Heure de début"],
+ ["وقت النهاية","Heure de fin"],
+ ["المادة","Matière"],
+ ["المستوى","Niveau"],
+ ["الفوج","Groupe"],
+ ["المعلومات","Informations"],
+ ["الحصص","Séances"],
+ ["المعاينة","Aperçu"]
+];
+const REV_MAP = FR_MAP.map(p=>[p[1],p[0]]);
+let frMode = false, applying = false;
+
+function skipNode(n){
+  const p = n.parentElement;
+  if(!p) return true;
+  return !!p.closest('select,option,input,textarea,script,style,#langToggle');
+}
+function applyMap(pairs){
+  applying = true;
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+  const nodes = [];
+  while(w.nextNode()) nodes.push(w.currentNode);
+  nodes.forEach(n=>{
+    if(skipNode(n)) return;
+    let t = n.nodeValue, ch = false;
+    for(const [a,b] of pairs){ if(t.includes(a)){ t = t.split(a).join(b); ch = true; } }
+    if(ch) n.nodeValue = t;
+  });
+  applying = false;
+}
+function refresh(){
+  applyMap(AR_FIX);
+  if(frMode) applyMap(FR_MAP);
+  document.title = frMode ? "Emploi du temps – Remédiation intensive" : "استعمال الزمن – فترة الدعم المكثف";
+}
+function autoDetect(){
+  const t = document.body.innerText || "";
+  const fr = (t.match(/الفرنسية|Français/g)||[]).length;
+  const ot = (t.match(/الرياضيات|اللغة العربية|Mathématiques|Arabe/g)||[]).length;
+  if(fr>0 && ot===0 && !frMode){ frMode = true; btn.textContent='🇲🇦 العربية'; refresh(); }
+}
+// زر التبديل
+const btn = document.createElement('button');
+btn.id='langToggle';
+btn.textContent='🇫🇷 Français';
+btn.style.cssText='position:fixed;bottom:20px;left:20px;z-index:9999;padding:10px 18px;border-radius:24px;border:none;background:#1769aa;color:#fff;font-weight:bold;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)';
+btn.onclick=()=>{
+  if(frMode){ frMode=false; applyMap(REV_MAP); refresh(); btn.textContent='🇫🇷 Français'; }
+  else { frMode=true; refresh(); btn.textContent='🇲🇦 العربية'; }
+};
+document.body.appendChild(btn);
+const st = document.createElement('style');
+st.textContent = '@media print{#langToggle{display:none!important}}';
+document.head.appendChild(st);
+// تحديث تلقائي عند أي تغيير في الصفحة
+let timer=null;
+const mo = new MutationObserver(()=>{ if(applying) return; clearTimeout(timer); timer=setTimeout(()=>{ refresh(); autoDetect(); },250); });
+mo.observe(document.body,{childList:true,subtree:true,characterData:true});
+document.addEventListener('click',()=>setTimeout(()=>{ refresh(); autoDetect(); },80));
+window.addEventListener('beforeprint',()=>{ refresh(); autoDetect(); });
+document.addEventListener('DOMContentLoaded',()=>{ refresh(); });
+refresh();
+})();
+</script>
+</body>
+</html>
