@@ -1110,7 +1110,39 @@
                     <span class="empty-tags-msg">لم يتم اختيار أي فوج بعد...</span>
                 </div>
             </div>
+<div class="card">
+    <div class="card-title">
+        <span class="icon">🕒</span> توقيت الفترات حسب اختيار المؤسسة
+    </div>
 
+    <div class="alert alert-info">
+        💡 لم يعد التوقيت موحداً إجبارياً. يمكن للمؤسسة تحديد بداية ونهاية كل فترة، مع بقاء الحصص على نفس التوقيت المُدخل وعدم نقلها تلقائياً.
+    </div>
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label><span class="req">*</span> بداية الفترة الصباحية</label>
+            <input type="time" id="timingMorningStart" value="08:00" onchange="onTimingChange()">
+        </div>
+
+        <div class="form-group">
+            <label><span class="req">*</span> نهاية الفترة الصباحية</label>
+            <input type="time" id="timingMorningEnd" value="12:40" onchange="onTimingChange()">
+        </div>
+
+        <div class="form-group">
+            <label><span class="req">*</span> بداية الفترة المسائية</label>
+            <input type="time" id="timingAfternoonStart" value="12:50" onchange="onTimingChange()">
+        </div>
+
+        <div class="form-group">
+            <label><span class="req">*</span> نهاية الفترة المسائية</label>
+            <input type="time" id="timingAfternoonEnd" value="17:30" onchange="onTimingChange()">
+        </div>
+    </div>
+
+    <div id="timingMessage" style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+</div>
             <div class="btn-group">
                 <button class="btn btn-primary" onclick="saveInfo()">
                     💾 حفظ المعلومات
@@ -1128,20 +1160,7 @@
                     <span class="icon">➕</span> إضافة حصة جديدة
                 </div>
 
-                <div class="time-info-box">
-                    <div class="time-info-item">
-                        <span class="dot morning"></span>
-                        <span>☀️ الفترة الصباحية: <strong>08:00 - 12:40</strong></span>
-                    </div>
-                    <div class="time-info-item">
-                        <span class="dot break"></span>
-                        <span>🔄 الانتقال: <strong>12:40 - 12:50</strong> (10 د)</span>
-                    </div>
-                    <div class="time-info-item">
-                        <span class="dot afternoon"></span>
-                        <span>🌙 الفترة المسائية: <strong>12:50 - 17:30</strong></span>
-                    </div>
-                </div>
+                <div class="time-info-box" id="timeInfoBox"></div>
 
                 <div id="noLevelsWarning" class="alert alert-warning" style="display:none;">
                     ⚠️ يجب اختيار مستوى وفوج واحد على الأقل من تبويب "المعلومات" أولاً
@@ -1345,808 +1364,1113 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        let appData = {
-            info: {
-                school: '',
-                year: '2025 / 2026',
-                levels: [],
-                groups: [],
-                teacher: '',
-                payroll: ''
-            },
-            sessions: []
-        };
+    const DEFAULT_TIMING = {
+        morningStart: '08:00',
+        morningEnd: '12:40',
+        afternoonStart: '12:50',
+        afternoonEnd: '17:30'
+    };
 
-        const DAYS_ORDER = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    const STORAGE_KEY = 'scheduleApp_v11';
 
-        const ALL_LEVELS = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس'];
-        const ALL_GROUPS = ['الفوج 1', 'الفوج 2', 'الفوج 3', 'الفوج 4'];
+    let appData = {
+        info: {
+            school: '',
+            year: '2025 / 2026',
+            levels: [],
+            groups: [],
+            teacher: '',
+            payroll: '',
+            timing: { ...DEFAULT_TIMING }
+        },
+        sessions: []
+    };
 
-        const MORNING_START = '08:00';
-        const MORNING_END = '12:40';
-        const TRANSITION_START = '12:40';
-        const TRANSITION_END = '12:50';
-        const AFTERNOON_START = '12:50';
-        const AFTERNOON_END = '17:30';
+    let TIMING = { ...DEFAULT_TIMING };
 
-        const SUBJECT_CONFIG = {
-            'اللغة العربية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
-            'الرياضيات': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
-            'اللغة الفرنسية': { duration: 135, maxGroups: 2, sessionsPerPeriod: 2 },
-            'النشاط العلمي': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
-            'التربية الإسلامية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
-            'الاجتماعيات': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
-            'التربية الفنية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
-            'أخرى': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 }
-        };
+    const DAYS_ORDER = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
-        const SUBJECT_CLASS = {
-            'الرياضيات': 'math',
-            'اللغة العربية': 'arabic',
-            'اللغة الفرنسية': 'french',
-            'النشاط العلمي': 'science',
-            'التربية الإسلامية': 'islamic',
-            'الاجتماعيات': 'social',
-            'التربية الفنية': 'other',
-            'أخرى': 'other'
-        };
+    const ALL_LEVELS = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس'];
+    const ALL_GROUPS = ['الفوج 1', 'الفوج 2', 'الفوج 3', 'الفوج 4'];
 
-        function initMultiSelects() {
-            const levelsGrid = document.getElementById('levelsGrid');
-            levelsGrid.innerHTML = ALL_LEVELS.map(lvl => `
-                <div class="checkbox-item">
-                    <input type="checkbox" id="lvl-${lvl}" value="${lvl}" onchange="updateSelectedLevels()">
-                    <label for="lvl-${lvl}">${lvl}</label>
-                </div>
-            `).join('');
+    const SUBJECT_CONFIG = {
+        'اللغة العربية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+        'الرياضيات': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+        'اللغة الفرنسية': { duration: 135, maxGroups: 2, sessionsPerPeriod: 2 },
+        'النشاط العلمي': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+        'التربية الإسلامية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+        'الاجتماعيات': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+        'التربية الفنية': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 },
+        'أخرى': { duration: 65, maxGroups: 4, sessionsPerPeriod: 4 }
+    };
 
-            const groupsGrid = document.getElementById('groupsGrid');
-            groupsGrid.innerHTML = ALL_GROUPS.map(grp => `
-                <div class="checkbox-item">
-                    <input type="checkbox" id="grp-${grp}" value="${grp}" onchange="updateSelectedGroups()">
-                    <label for="grp-${grp}">${grp}</label>
-                </div>
-            `).join('');
+    const SUBJECT_CLASS = {
+        'الرياضيات': 'math',
+        'اللغة العربية': 'arabic',
+        'اللغة الفرنسية': 'french',
+        'النشاط العلمي': 'science',
+        'التربية الإسلامية': 'islamic',
+        'الاجتماعيات': 'social',
+        'التربية الفنية': 'other',
+        'أخرى': 'other'
+    };
+
+    function initMultiSelects() {
+        const levelsGrid = document.getElementById('levelsGrid');
+        levelsGrid.innerHTML = ALL_LEVELS.map(lvl => `
+            <div class="checkbox-item">
+                <input type="checkbox" id="lvl-${lvl}" value="${lvl}" onchange="updateSelectedLevels()">
+                <label for="lvl-${lvl}">${lvl}</label>
+            </div>
+        `).join('');
+
+        const groupsGrid = document.getElementById('groupsGrid');
+        groupsGrid.innerHTML = ALL_GROUPS.map(grp => `
+            <div class="checkbox-item">
+                <input type="checkbox" id="grp-${grp}" value="${grp}" onchange="updateSelectedGroups()">
+                <label for="grp-${grp}">${grp}</label>
+            </div>
+        `).join('');
+    }
+
+    function updateSelectedLevels() {
+        const checkboxes = document.querySelectorAll('#levelsGrid input[type="checkbox"]');
+        const selected = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
+        appData.info.levels = selected;
+        renderTags('selectedLevelsTags', selected, 'level');
+        updateSessionLevelOptions();
+        saveToStorage();
+    }
+
+    function updateSelectedGroups() {
+        const checkboxes = document.querySelectorAll('#groupsGrid input[type="checkbox"]');
+        const selected = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
+        appData.info.groups = selected;
+        renderTags('selectedGroupsTags', selected, 'group');
+        updateSessionGroupOptions();
+        saveToStorage();
+    }
+
+    function renderTags(containerId, items, type) {
+        const container = document.getElementById(containerId);
+        if (items.length === 0) {
+            container.innerHTML = `<span class="empty-tags-msg">لم يتم اختيار أي ${type === 'level' ? 'مستوى' : 'فوج'} بعد...</span>`;
+            return;
         }
+        container.innerHTML = items.map(item => `
+            <span class="tag">
+                ${item}
+                <span class="tag-remove" onclick="removeTag('${type}', '${item}')">✕</span>
+            </span>
+        `).join('');
+    }
 
-        function updateSelectedLevels() {
-            const checkboxes = document.querySelectorAll('#levelsGrid input[type="checkbox"]');
-            const selected = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
-            appData.info.levels = selected;
-            renderTags('selectedLevelsTags', selected, 'level');
-            updateSessionLevelOptions();
-            saveToStorage();
-        }
-
-        function updateSelectedGroups() {
-            const checkboxes = document.querySelectorAll('#groupsGrid input[type="checkbox"]');
-            const selected = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
-            appData.info.groups = selected;
-            renderTags('selectedGroupsTags', selected, 'group');
-            updateSessionGroupOptions();
-            saveToStorage();
-        }
-
-        function renderTags(containerId, items, type) {
-            const container = document.getElementById(containerId);
-            if (items.length === 0) {
-                container.innerHTML = `<span class="empty-tags-msg">لم يتم اختيار أي ${type === 'level' ? 'مستوى' : 'فوج'} بعد...</span>`;
-                return;
-            }
-            container.innerHTML = items.map(item => `
-                <span class="tag">
-                    ${item}
-                    <span class="tag-remove" onclick="removeTag('${type}', '${item}')">✕</span>
-                </span>
-            `).join('');
-        }
-
-        function removeTag(type, value) {
-            // ✅ إصلاح: تحذير عند حذف مستوى/فوج مستعمل في حصص موجودة
-            const inUse = appData.sessions.some(s =>
-                type === 'level' ? s.level === value : s.group === value
-            );
-            if (inUse) {
-                const what = type === 'level' ? 'مستوى' : 'فوج';
-                if (!confirm(`⚠️ هناك حصص مضافة تستعمل "${value}".
+    function removeTag(type, value) {
+        const inUse = appData.sessions.some(s =>
+            type === 'level' ? s.level === value : s.group === value
+        );
+        if (inUse) {
+            const what = type === 'level' ? 'مستوى' : 'فوج';
+            if (!confirm(`⚠️ هناك حصص مضافة تستعمل "${value}".
 حذف ال${what} لن يحذف تلك الحصص (ستبقى بقيمة قديمة).
 هل تريد المتابعة؟`)) {
-                    return;
-                }
-            }
-            const checkboxId = type === 'level' ? `lvl-${value}` : `grp-${value}`;
-            const checkbox = document.getElementById(checkboxId);
-            if (checkbox) {
-                checkbox.checked = false;
-                if (type === 'level') updateSelectedLevels();
-                else updateSelectedGroups();
-            }
-        }
-
-        function updateSessionLevelOptions() {
-            const sel = document.getElementById('sessionLevel');
-            const current = sel.value;
-            sel.innerHTML = '<option value="">-- اختر المستوى --</option>';
-            appData.info.levels.forEach(lvl => {
-                sel.innerHTML += `<option value="${lvl}">${lvl}</option>`;
-            });
-            if (appData.info.levels.includes(current)) sel.value = current;
-            checkSessionsWarning();
-        }
-
-        function updateSessionGroupOptions() {
-            const sel = document.getElementById('sessionGroup');
-            const current = sel.value;
-            sel.innerHTML = '<option value="">-- اختر الفوج --</option>';
-            appData.info.groups.forEach(grp => {
-                sel.innerHTML += `<option value="${grp}">${grp}</option>`;
-            });
-            if (appData.info.groups.includes(current)) sel.value = current;
-            checkSessionsWarning();
-        }
-
-        function checkSessionsWarning() {
-            const warning = document.getElementById('noLevelsWarning');
-            if (appData.info.levels.length === 0 || appData.info.groups.length === 0) {
-                warning.style.display = 'block';
-            } else {
-                warning.style.display = 'none';
-            }
-        }
-
-        function onSubjectChange() {
-            const subject = document.getElementById('sessionSubject').value;
-            const infoCard = document.getElementById('subjectInfoCard');
-
-            if (!subject || !SUBJECT_CONFIG[subject]) {
-                infoCard.classList.remove('visible');
                 return;
             }
+        }
+        const checkboxId = type === 'level' ? `lvl-${value}` : `grp-${value}`;
+        const checkbox = document.getElementById(checkboxId);
+        if (checkbox) {
+            checkbox.checked = false;
+            if (type === 'level') updateSelectedLevels();
+            else updateSelectedGroups();
+        }
+    }
 
-            const config = SUBJECT_CONFIG[subject];
-            infoCard.classList.add('visible');
+    function updateSessionLevelOptions() {
+        const sel = document.getElementById('sessionLevel');
+        const current = sel.value;
+        sel.innerHTML = '<option value="">-- اختر المستوى --</option>';
+        appData.info.levels.forEach(lvl => {
+            sel.innerHTML += `<option value="${lvl}">${lvl}</option>`;
+        });
+        if (appData.info.levels.includes(current)) sel.value = current;
+        checkSessionsWarning();
+    }
 
-            document.getElementById('siSubject').textContent = subject;
-            document.getElementById('siDuration').textContent = `${config.duration} دقيقة (${formatDuration(config.duration)})`;
-            document.getElementById('siGroups').textContent = `${config.maxGroups} أفواج`;
-            document.getElementById('siSessions').textContent = `${config.sessionsPerPeriod} حصص`;
+    function updateSessionGroupOptions() {
+        const sel = document.getElementById('sessionGroup');
+        const current = sel.value;
+        sel.innerHTML = '<option value="">-- اختر الفوج --</option>';
+        appData.info.groups.forEach(grp => {
+            sel.innerHTML += `<option value="${grp}">${grp}</option>`;
+        });
+        if (appData.info.groups.includes(current)) sel.value = current;
+        checkSessionsWarning();
+    }
 
-            onStartTimeChange();
+    function checkSessionsWarning() {
+        const warning = document.getElementById('noLevelsWarning');
+        if (appData.info.levels.length === 0 || appData.info.groups.length === 0) {
+            warning.style.display = 'block';
+        } else {
+            warning.style.display = 'none';
+        }
+    }
+
+    function onSubjectChange() {
+        const subject = document.getElementById('sessionSubject').value;
+        const infoCard = document.getElementById('subjectInfoCard');
+
+        if (!subject || !SUBJECT_CONFIG[subject]) {
+            infoCard.classList.remove('visible');
+            return;
         }
 
-        function formatDuration(minutes) {
-            const h = Math.floor(minutes / 60);
-            const m = minutes % 60;
-            if (h === 0) return `${m} دقيقة`;
-            if (m === 0) return `${h} ساعة`;
-            return `${h} ساعة و ${m} دقيقة`;
-        }
+        const config = SUBJECT_CONFIG[subject];
+        infoCard.classList.add('visible');
 
-        function onStartTimeChange() {
-            const start = document.getElementById('sessionStart').value;
-            const subject = document.getElementById('sessionSubject').value;
+        document.getElementById('siSubject').textContent = subject;
+        document.getElementById('siDuration').textContent = `${config.duration} دقيقة (${formatDuration(config.duration)})`;
+        document.getElementById('siGroups').textContent = `${config.maxGroups} أفواج`;
+        document.getElementById('siSessions').textContent = `${config.sessionsPerPeriod} حصص`;
 
-            if (!start || !subject || !SUBJECT_CONFIG[subject]) {
-                updatePeriodBadge();
-                return;
-            }
+        onStartTimeChange();
+    }
 
-            const config = SUBJECT_CONFIG[subject];
-            const endTime = addMinutes(start, config.duration);
-            document.getElementById('sessionEnd').value = endTime;
+    function formatDuration(minutes) {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        if (h === 0) return `${m} دقيقة`;
+        if (m === 0) return `${h} ساعة`;
+        return `${h} ساعة و ${m} دقيقة`;
+    }
 
+    function onStartTimeChange() {
+        const start = document.getElementById('sessionStart').value;
+        const subject = document.getElementById('sessionSubject').value;
+
+        if (!start || !subject || !SUBJECT_CONFIG[subject]) {
             updatePeriodBadge();
+            return;
         }
 
-        function addMinutes(timeStr, minutes) {
-            const [h, m] = timeStr.split(':').map(Number);
-            const totalMinutes = h * 60 + m + minutes;
-            const newH = Math.floor(totalMinutes / 60) % 24;
-            const newM = totalMinutes % 60;
-            return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+        const config = SUBJECT_CONFIG[subject];
+        const endTime = addMinutes(start, config.duration);
+        document.getElementById('sessionEnd').value = endTime;
+
+        updatePeriodBadge();
+    }
+
+    function addMinutes(timeStr, minutes) {
+        const [h, m] = timeStr.split(':').map(Number);
+        const totalMinutes = h * 60 + m + minutes;
+        const newH = Math.floor(totalMinutes / 60) % 24;
+        const newM = totalMinutes % 60;
+        return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+    }
+
+    function getTiming() {
+        return TIMING;
+    }
+
+    function validateTiming(t) {
+        const errors = [];
+
+        if (!t.morningStart || !t.morningEnd || !t.afternoonStart || !t.afternoonEnd) {
+            errors.push('يرجى تحديد جميع أوقات الفترات');
+            return errors;
         }
 
-        function detectPeriod(timeStr) {
-            if (!timeStr) return null;
-            if (timeStr >= MORNING_START && timeStr <= MORNING_END) return 'morning';
-            if (timeStr >= TRANSITION_START && timeStr < TRANSITION_END) return 'transition';
-            if (timeStr >= AFTERNOON_START && timeStr <= AFTERNOON_END) return 'afternoon';
-            return 'outside';
+        if (t.morningStart >= t.morningEnd) {
+            errors.push('بداية الفترة الصباحية يجب أن تكون قبل نهايتها');
         }
 
-        function updatePeriodBadge() {
-            const start = document.getElementById('sessionStart').value;
-            const end = document.getElementById('sessionEnd').value;
-            const container = document.getElementById('periodBadgeContainer');
-
-            if (!start && !end) {
-                container.innerHTML = '';
-                return;
-            }
-
-            let html = '';
-            if (start) {
-                const p = detectPeriod(start);
-                if (p === 'morning') html += `<span class="period-badge morning">☀️ الفترة الصباحية (08:00 - 12:40)</span> `;
-                else if (p === 'afternoon') html += `<span class="period-badge afternoon">🌙 الفترة المسائية (12:50 - 17:30)</span> `;
-                else if (p === 'transition') html += `<span class="period-badge break">🔄 فترة الانتقال بين الفترتين (12:40 - 12:50)</span> `;
-                else if (p === 'outside') html += `<span class="period-badge outside">⚠️ خارج أوقات الدراسة</span> `;
-            }
-
-            if (start && end) {
-                if (end <= start) {
-                    html += `<span class="period-badge error">⚠️ وقت النهاية يجب أن يكون بعد البداية</span>`;
-                } else {
-                    const startPeriod = detectPeriod(start);
-                    if (startPeriod === 'morning' && end > MORNING_END) {
-                        html += `<span class="period-badge error">⚠️ الحصة الصباحية لا يمكن أن تتجاوز 12:40</span>`;
-                    }
-                    if (startPeriod === 'afternoon' && end > AFTERNOON_END) {
-                        html += `<span class="period-badge error">⚠️ الحصة المسائية لا يمكن أن تتجاوز 17:30</span>`;
-                    }
-                    if (startPeriod === 'transition') {
-                        html += `<span class="period-badge error">⚠️ لا يمكن بدء حصة خلال فترة الانتقال</span>`;
-                    }
-                }
-            }
-
-            container.innerHTML = html;
+        if (t.afternoonStart >= t.afternoonEnd) {
+            errors.push('بداية الفترة المسائية يجب أن تكون قبل نهايتها');
         }
 
-        function showSection(name, btn) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('section-' + name).classList.add('active');
-            if (btn) btn.classList.add('active');
+        if (t.morningEnd > t.afternoonStart) {
+            errors.push('نهاية الفترة الصباحية يجب ألا تتجاوز بداية الفترة المسائية');
+        }
 
-            if (name === 'preview') buildSchedule();
-            if (name === 'sessions') {
-                updateSessionLevelOptions();
-                updateSessionGroupOptions();
-                checkSessionsWarning();
+        return errors;
+    }
+
+    function renderTimingMessage(errors = []) {
+        const el = document.getElementById('timingMessage');
+        if (!el) return;
+
+        if (errors.length) {
+            el.innerHTML = errors.map(e => `<span class="period-badge error">⚠️ ${e}</span>`).join(' ');
+            return;
+        }
+
+        const t = TIMING;
+        const gap = timeDiffMinutes(t.morningEnd, t.afternoonStart);
+
+        el.innerHTML = `
+            <span class="period-badge morning">☀️ ${t.morningStart} - ${t.morningEnd}</span>
+            <span class="period-badge break">🔄 ${gap > 0 ? gap + ' دقائق' : 'بدون فجوة'}</span>
+            <span class="period-badge afternoon">🌙 ${t.afternoonStart} - ${t.afternoonEnd}</span>
+        `;
+    }
+
+    function applyTimingFromInputs(showErrorToast = false) {
+        const ms = document.getElementById('timingMorningStart');
+        if (!ms) return true;
+
+        const me = document.getElementById('timingMorningEnd');
+        const as = document.getElementById('timingAfternoonStart');
+        const ae = document.getElementById('timingAfternoonEnd');
+
+        const candidate = {
+            morningStart: ms.value || '',
+            morningEnd: me.value || '',
+            afternoonStart: as.value || '',
+            afternoonEnd: ae.value || ''
+        };
+
+        const errors = validateTiming(candidate);
+        renderTimingMessage(errors);
+
+        if (errors.length) {
+            if (showErrorToast) showToast(errors[0], 'error');
+            return false;
+        }
+
+        TIMING = { ...candidate };
+        appData.info.timing = { ...candidate };
+
+        updateTimeInfoBox();
+        updatePeriodBadge();
+        saveToStorage();
+
+        const previewSection = document.getElementById('section-preview');
+        if (previewSection && previewSection.classList.contains('active')) {
+            buildSchedule();
+        }
+
+        return true;
+    }
+
+    function onTimingChange() {
+        applyTimingFromInputs(false);
+    }
+
+    function updateTimeInfoBox() {
+        const box = document.getElementById('timeInfoBox');
+        if (!box) return;
+
+        const t = TIMING;
+        const gap = timeDiffMinutes(t.morningEnd, t.afternoonStart);
+
+        box.innerHTML = `
+            <div class="time-info-item">
+                <span class="dot morning"></span>
+                <span>☀️ الفترة الصباحية: <strong>${t.morningStart} - ${t.morningEnd}</strong></span>
+            </div>
+            <div class="time-info-item">
+                <span class="dot break"></span>
+                <span>🔄 الانتقال: <strong>${t.morningEnd} - ${t.afternoonStart}</strong>${gap > 0 ? ` (${gap} د)` : ' (بدون انتقال)'}</span>
+            </div>
+            <div class="time-info-item">
+                <span class="dot afternoon"></span>
+                <span>🌙 الفترة المسائية: <strong>${t.afternoonStart} - ${t.afternoonEnd}</strong></span>
+            </div>
+        `;
+    }
+
+    function detectPeriod(timeStr) {
+        if (!timeStr) return null;
+
+        const t = getTiming();
+
+        if (timeStr >= t.morningStart && timeStr < t.morningEnd) return 'morning';
+        if (timeStr >= t.morningEnd && timeStr < t.afternoonStart) return 'transition';
+        if (timeStr >= t.afternoonStart && timeStr <= t.afternoonEnd) return 'afternoon';
+
+        return 'outside';
+    }
+
+    function isSessionValid(session) {
+        const period = detectPeriod(session.start);
+
+        if (period === 'morning') {
+            return session.end <= TIMING.morningEnd;
+        }
+
+        if (period === 'afternoon') {
+            return session.end <= TIMING.afternoonEnd;
+        }
+
+        return false;
+    }
+
+    function updatePeriodBadge() {
+        const start = document.getElementById('sessionStart').value;
+        const end = document.getElementById('sessionEnd').value;
+        const container = document.getElementById('periodBadgeContainer');
+
+        if (!container) return;
+
+        if (!start && !end) {
+            container.innerHTML = '';
+            return;
+        }
+
+        const t = TIMING;
+        let html = '';
+
+        if (start) {
+            const p = detectPeriod(start);
+
+            if (p === 'morning') {
+                html += `<span class="period-badge morning">☀️ الفترة الصباحية (${t.morningStart} - ${t.morningEnd})</span> `;
+            } else if (p === 'afternoon') {
+                html += `<span class="period-badge afternoon">🌙 الفترة المسائية (${t.afternoonStart} - ${t.afternoonEnd})</span> `;
+            } else if (p === 'transition') {
+                html += `<span class="period-badge break">🔄 فترة الانتقال (${t.morningEnd} - ${t.afternoonStart})</span> `;
+            } else if (p === 'outside') {
+                html += `<span class="period-badge outside">⚠️ خارج التوقيت المحدد للمؤسسة</span> `;
             }
         }
 
-        function saveInfo() {
-            appData.info.school = document.getElementById('schoolName').value.trim();
-            appData.info.year = document.getElementById('schoolYear').value.trim();
-            appData.info.teacher = document.getElementById('teacherName').value.trim();
-            appData.info.payroll = document.getElementById('payrollNum').value.trim();
-
-            if (!appData.info.school || !appData.info.teacher) {
-                showToast('يرجى ملء اسم المؤسسة والأستاذ', 'error');
-                return;
-            }
-            if (appData.info.levels.length === 0) {
-                showToast('يرجى اختيار مستوى دراسي واحد على الأقل', 'error');
-                return;
-            }
-            if (appData.info.groups.length === 0) {
-                showToast('يرجى اختيار فوج واحد على الأقل', 'error');
-                return;
-            }
-
-            saveToStorage();
-            showToast('✅ تم حفظ المعلومات بنجاح', 'success');
-        }
-
-        function addSession() {
-            const day = document.getElementById('sessionDay').value;
-            const start = document.getElementById('sessionStart').value;
-            const end = document.getElementById('sessionEnd').value;
-            const subject = document.getElementById('sessionSubject').value;
-            const level = document.getElementById('sessionLevel').value;
-            const group = document.getElementById('sessionGroup').value;
-
-            if (!day || !start || !end || !subject || !level || !group) {
-                showToast('يرجى ملء جميع حقول الحصة', 'error');
-                return;
-            }
-
+        if (start && end) {
             if (end <= start) {
-                showToast('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية', 'error');
-                return;
-            }
+                html += `<span class="period-badge error">⚠️ وقت النهاية يجب أن يكون بعد البداية</span>`;
+            } else {
+                const startPeriod = detectPeriod(start);
 
-            const config = SUBJECT_CONFIG[subject];
-            if (config) {
-                const actualDuration = timeDiffMinutes(start, end);
-                if (actualDuration !== config.duration) {
-                    showToast(`⚠️ مدة حصة ${subject} يجب أن تكون ${config.duration} دقيقة (حالياً: ${actualDuration} دقيقة)`, 'error');
-                    return;
+                if (startPeriod === 'morning' && end > t.morningEnd) {
+                    html += `<span class="period-badge error">⚠️ الحصة الصباحية لا يمكن أن تتجاوز ${t.morningEnd}</span>`;
+                }
+
+                if (startPeriod === 'afternoon' && end > t.afternoonEnd) {
+                    html += `<span class="period-badge error">⚠️ الحصة المسائية لا يمكن أن تتجاوز ${t.afternoonEnd}</span>`;
+                }
+
+                if (startPeriod === 'transition') {
+                    html += `<span class="period-badge error">⚠️ لا يمكن بدء حصة خلال فترة الانتقال (${t.morningEnd} - ${t.afternoonStart})</span>`;
                 }
             }
-
-            const period = detectPeriod(start);
-
-            if (period === 'transition') {
-                showToast('⚠️ لا يمكن إضافة حصة خلال فترة الانتقال (12:40 - 12:50)', 'error');
-                return;
-            }
-
-            if (period === 'outside') {
-                showToast('⚠️ الوقت خارج أوقات الدراسة (الصباحية: 08:00-12:40 / المسائية: 12:50-17:30)', 'error');
-                return;
-            }
-
-            if (period === 'morning' && end > MORNING_END) {
-                showToast('⚠️ الحصة الصباحية لا يمكن أن تتجاوز 12:40', 'error');
-                return;
-            }
-            if (period === 'afternoon' && end > AFTERNOON_END) {
-                showToast('⚠️ الحصة المسائية لا يمكن أن تتجاوز 17:30', 'error');
-                return;
-            }
-
-            // ✅ إصلاح: كشف التعارض الزمني الحقيقي (تداخل الفترات) بدل التحقق الضيق من التطابق الكامل
-            const conflict = appData.sessions.find(s =>
-                s.day === day && s.start < end && start < s.end
-            );
-            if (conflict) {
-                showToast(`⚠️ تعارض زمني مع حصة ${conflict.subject} (${conflict.start} - ${conflict.end})`, 'error');
-                return;
-            }
-
-            appData.sessions.push({
-                id: Date.now(),
-                day, period, start, end, subject, level, group
-            });
-
-            saveToStorage();
-            renderSessionsList();
-            showToast('✅ تمت إضافة الحصة بنجاح', 'success');
-
-            document.getElementById('sessionDay').value = '';
-            document.getElementById('sessionStart').value = '';
-            document.getElementById('sessionEnd').value = '';
-            document.getElementById('sessionSubject').value = '';
-            document.getElementById('periodBadgeContainer').innerHTML = '';
-            document.getElementById('subjectInfoCard').classList.remove('visible');
         }
 
-        function deleteSession(id) {
-            appData.sessions = appData.sessions.filter(s => s.id !== id);
+        container.innerHTML = html;
+    }
+
+    function showSection(name, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('section-' + name).classList.add('active');
+        if (btn) btn.classList.add('active');
+
+        if (name === 'preview') buildSchedule();
+
+        if (name === 'sessions') {
+            updateSessionLevelOptions();
+            updateSessionGroupOptions();
+            checkSessionsWarning();
+            updateTimeInfoBox();
+        }
+
+        if (name === 'info') {
+            renderTimingMessage(validateTiming(TIMING));
+        }
+    }
+
+    function saveInfo() {
+        appData.info.school = document.getElementById('schoolName').value.trim();
+        appData.info.year = document.getElementById('schoolYear').value.trim();
+        appData.info.teacher = document.getElementById('teacherName').value.trim();
+        appData.info.payroll = document.getElementById('payrollNum').value.trim();
+
+        if (!applyTimingFromInputs(true)) return;
+
+        if (!appData.info.school || !appData.info.teacher) {
+            showToast('يرجى ملء اسم المؤسسة والأستاذ', 'error');
+            return;
+        }
+
+        if (appData.info.levels.length === 0) {
+            showToast('يرجى اختيار مستوى دراسي واحد على الأقل', 'error');
+            return;
+        }
+
+        if (appData.info.groups.length === 0) {
+            showToast('يرجى اختيار فوج واحد على الأقل', 'error');
+            return;
+        }
+
+        appData.info.timing = { ...TIMING };
+        saveToStorage();
+        showToast('✅ تم حفظ المعلومات بنجاح', 'success');
+    }
+
+    function addSession() {
+        const day = document.getElementById('sessionDay').value;
+        const start = document.getElementById('sessionStart').value;
+        const end = document.getElementById('sessionEnd').value;
+        const subject = document.getElementById('sessionSubject').value;
+        const level = document.getElementById('sessionLevel').value;
+        const group = document.getElementById('sessionGroup').value;
+
+        if (!day || !start || !end || !subject || !level || !group) {
+            showToast('يرجى ملء جميع حقول الحصة', 'error');
+            return;
+        }
+
+        if (end <= start) {
+            showToast('⚠️ وقت النهاية يجب أن يكون بعد وقت البداية', 'error');
+            return;
+        }
+
+        const config = SUBJECT_CONFIG[subject];
+        if (config) {
+            const actualDuration = timeDiffMinutes(start, end);
+            if (actualDuration !== config.duration) {
+                showToast(`⚠️ مدة حصة ${subject} يجب أن تكون ${config.duration} دقيقة (حالياً: ${actualDuration} دقيقة)`, 'error');
+                return;
+            }
+        }
+
+        const t = TIMING;
+        const period = detectPeriod(start);
+
+        if (period === 'transition') {
+            showToast(`⚠️ لا يمكن إضافة حصة خلال فترة الانتقال (${t.morningEnd} - ${t.afternoonStart})`, 'error');
+            return;
+        }
+
+        if (period === 'outside') {
+            showToast(`⚠️ الوقت خارج التوقيت المحدد للمؤسسة (صباحية: ${t.morningStart}-${t.morningEnd} / مسائية: ${t.afternoonStart}-${t.afternoonEnd})`, 'error');
+            return;
+        }
+
+        if (period === 'morning' && end > t.morningEnd) {
+            showToast(`⚠️ الحصة الصباحية لا يمكن أن تتجاوز ${t.morningEnd}`, 'error');
+            return;
+        }
+
+        if (period === 'afternoon' && end > t.afternoonEnd) {
+            showToast(`⚠️ الحصة المسائية لا يمكن أن تتجاوز ${t.afternoonEnd}`, 'error');
+            return;
+        }
+
+        const conflict = appData.sessions.find(s =>
+            s.day === day && s.start < end && start < s.end
+        );
+
+        if (conflict) {
+            showToast(`⚠️ تعارض زمني مع حصة ${conflict.subject} (${conflict.start} - ${conflict.end})`, 'error');
+            return;
+        }
+
+        appData.sessions.push({
+            id: Date.now(),
+            day,
+            period,
+            start,
+            end,
+            subject,
+            level,
+            group
+        });
+
+        saveToStorage();
+        renderSessionsList();
+        showToast('✅ تمت إضافة الحصة بنجاح', 'success');
+
+        document.getElementById('sessionDay').value = '';
+        document.getElementById('sessionStart').value = '';
+        document.getElementById('sessionEnd').value = '';
+        document.getElementById('sessionSubject').value = '';
+        document.getElementById('periodBadgeContainer').innerHTML = '';
+        document.getElementById('subjectInfoCard').classList.remove('visible');
+    }
+
+    function deleteSession(id) {
+        appData.sessions = appData.sessions.filter(s => s.id !== id);
+        saveToStorage();
+        renderSessionsList();
+
+        const previewSection = document.getElementById('section-preview');
+        if (previewSection && previewSection.classList.contains('active')) {
+            buildSchedule();
+        }
+
+        showToast('🗑️ تم حذف الحصة', 'success');
+    }
+
+    function clearAllSessions() {
+        if (appData.sessions.length === 0) return;
+
+        if (confirm('هل أنت متأكد من حذف جميع الحصص؟')) {
+            appData.sessions = [];
             saveToStorage();
             renderSessionsList();
-            // ✅ إصلاح: تحديث المعاينة إذا كانت ظاهرة عند الحذف منها
-            if (document.getElementById('section-preview').classList.contains('active')) {
+
+            const previewSection = document.getElementById('section-preview');
+            if (previewSection && previewSection.classList.contains('active')) {
                 buildSchedule();
             }
-            showToast('🗑️ تم حذف الحصة', 'success');
+
+            showToast('🗑️ تم حذف جميع الحصص', 'success');
+        }
+    }
+
+    function renderSessionsList() {
+        const container = document.getElementById('sessionsList');
+        const countEl = document.getElementById('sessionCount');
+        countEl.textContent = appData.sessions.length;
+
+        if (appData.sessions.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>لم تتم إضافة أي حصة بعد</p>
+                </div>`;
+            return;
         }
 
-        function clearAllSessions() {
-            if (appData.sessions.length === 0) return;
-            if (confirm('هل أنت متأكد من حذف جميع الحصص؟')) {
-                appData.sessions = [];
-                saveToStorage();
-                renderSessionsList();
-                if (document.getElementById('section-preview').classList.contains('active')) {
-                    buildSchedule();
-                }
-                showToast('🗑️ تم حذف جميع الحصص', 'success');
-            }
-        }
+        const sorted = [...appData.sessions].sort((a, b) =>
+            DAYS_ORDER.indexOf(a.day) - DAYS_ORDER.indexOf(b.day) ||
+            a.start.localeCompare(b.start)
+        );
 
-        function renderSessionsList() {
-            const container = document.getElementById('sessionsList');
-            const countEl = document.getElementById('sessionCount');
-            countEl.textContent = appData.sessions.length;
+        container.innerHTML = sorted.map(s => {
+            const valid = isSessionValid(s);
+            const itemStyle = valid ? '' : 'border-right-color:#e74c3c; background:#fff5f5;';
+            const invalidBadge = valid ? '' : '<span class="period-badge error">خارج التوقيت الحالي</span>';
 
-            if (appData.sessions.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📭</div>
-                        <p>لم تتم إضافة أي حصة بعد</p>
-                    </div>`;
-                return;
-            }
-
-            // ✅ إصلاح: ترتيب القائمة حسب اليوم ثم وقت البداية
-            const sorted = [...appData.sessions].sort((a, b) =>
-                DAYS_ORDER.indexOf(a.day) - DAYS_ORDER.indexOf(b.day) ||
-                a.start.localeCompare(b.start)
-            );
-
-            container.innerHTML = sorted.map(s => `
-                <div class="session-item">
+            return `
+                <div class="session-item" style="${itemStyle}">
                     <div class="session-item-info">
                         <span class="badge-day">${s.day}</span>
                         <span class="badge-time">${s.start} - ${s.end}</span>
                         <span class="badge-subject">${s.subject}</span>
                         <span class="badge-level">${s.level}</span>
                         <span class="badge-group">${s.group}</span>
+                        ${invalidBadge}
                     </div>
                     <button class="btn btn-danger btn-sm" onclick="deleteSession(${s.id})">🗑️</button>
                 </div>
-            `).join('');
-        }
-
-        // ===== BUILD SCHEDULE (مع دمج الخانات ROWSPAN) =====
-        function buildSchedule() {
-            document.getElementById('dispSchool').textContent = appData.info.school || '---';
-            document.getElementById('dispYear').textContent = appData.info.year || '---';
-            document.getElementById('dispTeacher').textContent = appData.info.teacher || '---';
-            document.getElementById('dispPayroll').textContent = appData.info.payroll || '---';
-
-            const dispLevel = document.getElementById('dispLevel');
-            if (appData.info.levels.length > 0) {
-                dispLevel.innerHTML = appData.info.levels.map(l => `<span class="tag-inline">${l}</span>`).join(' ');
-            } else {
-                dispLevel.textContent = '---';
-            }
-
-            const dispGroup = document.getElementById('dispGroup');
-            if (appData.info.groups.length > 0) {
-                dispGroup.innerHTML = appData.info.groups.map(g => `<span class="tag-inline">${g}</span>`).join(' ');
-            } else {
-                dispGroup.textContent = '---';
-            }
-
-            const tbody = document.getElementById('scheduleBody');
-            tbody.innerHTML = '';
-
-            if (appData.sessions.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" style="padding:40px; text-align:center; color:var(--text-light); font-weight:600;">
-                            📭 لا توجد حصص مضافة بعد
-                        </td>
-                    </tr>`;
-                return;
-            }
-
-            const morningSessions = appData.sessions.filter(s => s.period === 'morning');
-            const afternoonSessions = appData.sessions.filter(s => s.period === 'afternoon');
-
-            let html = '';
-
-            if (morningSessions.length > 0) {
-                html += renderPeriod('☀️ الفترة الصباحية', 'period-header', morningSessions);
-            }
-
-            if (afternoonSessions.length > 0) {
-                html += `
-                    <tr class="break-row" style="background: linear-gradient(135deg, #fef5e7, #fadbd8) !important;">
-                        <td colspan="7" style="color:#8e44ad;">🔄 فترة الانتقال بين الفترتين (10 دقائق) - 12:40 → 12:50</td>
-                    </tr>`;
-                html += renderPeriod('🌙 الفترة المسائية', 'period-header afternoon-header', afternoonSessions);
-            }
-
-            tbody.innerHTML = html;
-        }
-
-        // ===== RENDER PERIOD WITH ROWSPAN MERGING (مُصحّح بالكامل) =====
-        function renderPeriod(title, headerClass, sessions) {
-            const slots = getUniqueTimeSlots(sessions);
-
-            // ✅ إصلاح: إخفاء خانة فقط إذا كانت محتواة "بشكل صارم" داخل فترة حصة أطول
-            const hidden = new Set();
-            sessions.forEach(s => {
-                slots.forEach(sl => {
-                    const strictlyInside =
-                        (s.start < sl.start && s.end >= sl.end) ||
-                        (s.start <= sl.start && s.end > sl.end);
-                    if (strictlyInside) hidden.add(sl.start + '|' + sl.end);
-                });
-            });
-
-            const visible = slots.filter(sl => !hidden.has(sl.start + '|' + sl.end));
-            const rows = visible.length > 0 ? visible : slots;
-
-            // ✅ إصلاح: حساب صفوف الاستراحة المدرجة بين الخانات لأخذها في الاعتبار داخل rowspan
-            const hasBreakBefore = rows.map((sl, i) =>
-                i > 0 && timeDiffMinutes(rows[i - 1].end, sl.start) >= 10
-            );
-
-            const slotIndex = {};
-            rows.forEach((sl, i) => { slotIndex[sl.start + '|' + sl.end] = i; });
-
-            const vis = sessions.map(s => {
-                const covered = rows.filter(sl => sl.start >= s.start && sl.end <= s.end);
-                return { s, covered };
-            }).filter(v => v.covered.length > 0);
-
-            vis.forEach(v => {
-                v.first = v.covered[0];
-                const firstIdx = slotIndex[v.first.start + '|' + v.first.end];
-                const lastIdx = firstIdx + v.covered.length - 1;
-                let breaks = 0;
-                for (let i = firstIdx + 1; i <= lastIdx; i++) {
-                    if (hasBreakBefore[i]) breaks++;
-                }
-                v.span = v.covered.length + breaks;
-            });
-
-            let html = `<tr class="${headerClass}">
-                <td colspan="7">${title} (${rows[0].start} - ${rows[rows.length - 1].end})</td>
-            </tr>`;
-
-            rows.forEach((slot, idx) => {
-                if (hasBreakBefore[idx]) {
-                    const gap = timeDiffMinutes(rows[idx - 1].end, slot.start);
-                    html += `<tr class="break-row"><td colspan="7">☕ استراحة (${gap} دقائق)</td></tr>`;
-                }
-
-                let cells = `<td class="time-cell">${slot.start}<br>↓<br>${slot.end}</td>`;
-
-                DAYS_ORDER.forEach(day => {
-                    // بفضل كشف التعارض: حصة واحدة فقط تغطي خانة معينة في اليوم الواحد
-                    const starter = vis.find(v =>
-                        v.s.day === day &&
-                        v.first.start === slot.start && v.first.end === slot.end
-                    );
-
-                    if (starter) {
-                        cells += `<td rowspan="${starter.span}" style="padding:3px;">${sessionCellHtml(starter.s)}</td>`;
-                    } else {
-                        const coveredEarlier = vis.some(v =>
-                            v.s.day === day &&
-                            v.covered.some(sl => sl.start === slot.start && sl.end === slot.end)
-                        );
-                        if (!coveredEarlier) cells += `<td></td>`;
-                    }
-                });
-
-                html += `<tr>${cells}</tr>`;
-            });
-
-            return html;
-        }
-
-        function sessionCellHtml(session) {
-            const cls = SUBJECT_CLASS[session.subject] || 'other';
-            return `
-                <div class="session-cell filled ${cls}" style="height:auto; min-height:45px; margin-bottom:2px;">
-                    <button class="session-delete no-print" onclick="deleteSession(${session.id})">✕</button>
-                    <div class="session-subject">${session.subject}</div>
-                    <div class="session-meta">
-                        <span class="meta-tag">${session.level}</span>
-                        <span class="meta-tag">${session.group}</span>
-                    </div>
-                </div>
             `;
+        }).join('');
+    }
+
+    function buildSchedule() {
+        document.getElementById('dispSchool').textContent = appData.info.school || '---';
+        document.getElementById('dispYear').textContent = appData.info.year || '---';
+        document.getElementById('dispTeacher').textContent = appData.info.teacher || '---';
+        document.getElementById('dispPayroll').textContent = appData.info.payroll || '---';
+
+        const dispLevel = document.getElementById('dispLevel');
+        if (appData.info.levels.length > 0) {
+            dispLevel.innerHTML = appData.info.levels.map(l => `<span class="tag-inline">${l}</span>`).join(' ');
+        } else {
+            dispLevel.textContent = '---';
         }
 
-        function getUniqueTimeSlots(sessions) {
-            const slotMap = {};
-            sessions.forEach(s => {
-                const key = `${s.start}-${s.end}`;
-                if (!slotMap[key]) {
-                    slotMap[key] = { start: s.start, end: s.end };
-                }
+        const dispGroup = document.getElementById('dispGroup');
+        if (appData.info.groups.length > 0) {
+            dispGroup.innerHTML = appData.info.groups.map(g => `<span class="tag-inline">${g}</span>`).join(' ');
+        } else {
+            dispGroup.textContent = '---';
+        }
+
+        const tbody = document.getElementById('scheduleBody');
+        tbody.innerHTML = '';
+
+        if (appData.sessions.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="padding:40px; text-align:center; color:var(--text-light); font-weight:600;">
+                        📭 لا توجد حصص مضافة بعد
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        const t = TIMING;
+
+        const normalized = appData.sessions.map(s => {
+            const period = detectPeriod(s.start);
+            const valid =
+                (period === 'morning' && s.end <= t.morningEnd) ||
+                (period === 'afternoon' && s.end <= t.afternoonEnd);
+
+            return { ...s, period, valid };
+        });
+
+        const invalidSessions = normalized.filter(s => !s.valid);
+        const morningSessions = normalized.filter(s => s.valid && s.period === 'morning');
+        const afternoonSessions = normalized.filter(s => s.valid && s.period === 'afternoon');
+
+        let html = '';
+
+        if (invalidSessions.length > 0) {
+            html += `
+                <tr class="break-row">
+                    <td colspan="7" style="color:#c0392b; background:#fdedec !important;">
+                        ⚠️ ${invalidSessions.length} حصة خارج التوقيت الحالي للمؤسسة. عدّل التوقيت أو الحصص لتظهر في الجدول.
+                    </td>
+                </tr>`;
+        }
+
+        if (morningSessions.length > 0) {
+            html += renderPeriod(
+                `☀️ الفترة الصباحية (${t.morningStart} - ${t.morningEnd})`,
+                'period-header',
+                morningSessions
+            );
+        }
+
+        if (
+            morningSessions.length > 0 &&
+            afternoonSessions.length > 0 &&
+            t.morningEnd < t.afternoonStart
+        ) {
+            const gap = timeDiffMinutes(t.morningEnd, t.afternoonStart);
+            html += `
+                <tr class="break-row">
+                    <td colspan="7">
+                        🔄 فترة الانتقال (${t.morningEnd} → ${t.afternoonStart})${gap > 0 ? ` - ${gap} دقائق` : ''}
+                    </td>
+                </tr>`;
+        }
+
+        if (afternoonSessions.length > 0) {
+            html += renderPeriod(
+                `🌙 الفترة المسائية (${t.afternoonStart} - ${t.afternoonEnd})`,
+                'period-header afternoon-header',
+                afternoonSessions
+            );
+        }
+
+        if (!html) {
+            html = `
+                <tr>
+                    <td colspan="7" style="padding:40px; text-align:center; color:var(--text-light); font-weight:600;">
+                        📭 لا توجد حصص صالحة داخل التوقيت الحالي للمؤسسة
+                    </td>
+                </tr>`;
+        }
+
+        tbody.innerHTML = html;
+    }
+
+    function renderPeriod(title, headerClass, sessions) {
+        const slots = getUniqueTimeSlots(sessions);
+
+        const hidden = new Set();
+        sessions.forEach(s => {
+            slots.forEach(sl => {
+                const strictlyInside =
+                    (s.start < sl.start && s.end >= sl.end) ||
+                    (s.start <= sl.start && s.end > sl.end);
+                if (strictlyInside) hidden.add(sl.start + '|' + sl.end);
             });
-            return Object.values(slotMap).sort((a, b) => a.start.localeCompare(b.start));
-        }
+        });
 
-        function timeDiffMinutes(t1, t2) {
-            const [h1, m1] = t1.split(':').map(Number);
-            const [h2, m2] = t2.split(':').map(Number);
-            return (h2 * 60 + m2) - (h1 * 60 + m1);
-        }
+        const visible = slots.filter(sl => !hidden.has(sl.start + '|' + sl.end));
+        const rows = visible.length > 0 ? visible : slots;
 
-        // ===== طباعة احترافية: ملاءمة تلقائية في صفحة A4 أفقية واحدة =====
-        const PAGE_W_MM = 297 - 10; // A4 landscape - هوامش 5مم من الجهتين
-        const PAGE_H_MM = 210 - 10;
+        const hasBreakBefore = rows.map((sl, i) =>
+            i > 0 && timeDiffMinutes(rows[i - 1].end, sl.start) >= 10
+        );
 
-        function pxToMm(px) { return px * 25.4 / 96; }
+        const slotIndex = {};
+        rows.forEach((sl, i) => { slotIndex[sl.start + '|' + sl.end] = i; });
 
-        function fitToOnePage() {
-            const el = document.getElementById('printSection');
-            // إعادة ضبط أي تحجيم سابق لأخذ القياس الحقيقي
-            el.style.zoom = '';
-            el.style.transform = '';
-            el.style.transformOrigin = '';
+        const vis = sessions.map(s => {
+            const covered = rows.filter(sl => sl.start >= s.start && sl.end <= s.end);
+            return { s, covered };
+        }).filter(v => v.covered.length > 0);
 
-            buildSchedule();
+        vis.forEach(v => {
+            v.first = v.covered[0];
+            const firstIdx = slotIndex[v.first.start + '|' + v.first.end];
+            const lastIdx = firstIdx + v.covered.length - 1;
+            let breaks = 0;
+            for (let i = firstIdx + 1; i <= lastIdx; i++) {
+                if (hasBreakBefore[i]) breaks++;
+            }
+            v.span = v.covered.length + breaks;
+        });
 
-            const rect = el.getBoundingClientRect();
-            const scale = Math.min(1, PAGE_W_MM / pxToMm(rect.width), PAGE_H_MM / pxToMm(rect.height));
+        let html = `<tr class="${headerClass}">
+            <td colspan="7">${title}</td>
+        </tr>`;
 
-            if (scale < 1) {
-                if (CSS.supports('zoom', '1')) {
-                    el.style.zoom = scale; // Chrome / Edge / Safari
+        rows.forEach((slot, idx) => {
+            if (hasBreakBefore[idx]) {
+                const gap = timeDiffMinutes(rows[idx - 1].end, slot.start);
+                html += `<tr class="break-row"><td colspan="7">☕ استراحة (${gap} دقائق)</td></tr>`;
+            }
+
+            let cells = `<td class="time-cell">${slot.start}<br>↓<br>${slot.end}</td>`;
+
+            DAYS_ORDER.forEach(day => {
+                const starter = vis.find(v =>
+                    v.s.day === day &&
+                    v.first.start === slot.start && v.first.end === slot.end
+                );
+
+                if (starter) {
+                    cells += `<td rowspan="${starter.span}" style="padding:3px;">${sessionCellHtml(starter.s)}</td>`;
                 } else {
-                    el.style.transformOrigin = 'top center'; // Firefox
-                    el.style.transform = 'scale(' + scale + ')';
+                    const coveredEarlier = vis.some(v =>
+                        v.s.day === day &&
+                        v.covered.some(sl => sl.start === slot.start && sl.end === slot.end)
+                    );
+                    if (!coveredEarlier) cells += `<td></td>`;
                 }
-            }
-            return scale;
-        }
-
-        function resetPrintFit() {
-            const el = document.getElementById('printSection');
-            el.style.zoom = '';
-            el.style.transform = '';
-            el.style.transformOrigin = '';
-        }
-
-        function printSchedule() {
-            showSection('preview', document.querySelectorAll('.nav-tab')[2]);
-            requestAnimationFrame(() => {
-                fitToOnePage();
-                setTimeout(() => {
-                    window.print();
-                    setTimeout(resetPrintFit, 400);
-                }, 60);
             });
-        }
 
-        function showToast(msg, type = '') {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = 'toast ' + type + ' show';
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
+            html += `<tr>${cells}</tr>`;
+        });
 
-        function saveToStorage() {
-            try {
-                localStorage.setItem('scheduleApp_v10', JSON.stringify(appData));
-            } catch (e) {
-                console.warn('تعذر الحفظ في localStorage:', e);
+        return html;
+    }
+
+    function sessionCellHtml(session) {
+        const cls = SUBJECT_CLASS[session.subject] || 'other';
+        return `
+            <div class="session-cell filled ${cls}" style="height:auto; min-height:45px; margin-bottom:2px;">
+                <button class="session-delete no-print" onclick="deleteSession(${session.id})">✕</button>
+                <div class="session-subject">${session.subject}</div>
+                <div class="session-meta">
+                    <span class="meta-tag">${session.level}</span>
+                    <span class="meta-tag">${session.group}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function getUniqueTimeSlots(sessions) {
+        const slotMap = {};
+        sessions.forEach(s => {
+            const key = `${s.start}-${s.end}`;
+            if (!slotMap[key]) {
+                slotMap[key] = { start: s.start, end: s.end };
+            }
+        });
+        return Object.values(slotMap).sort((a, b) => a.start.localeCompare(b.start));
+    }
+
+    function timeDiffMinutes(t1, t2) {
+        const [h1, m1] = t1.split(':').map(Number);
+        const [h2, m2] = t2.split(':').map(Number);
+        return (h2 * 60 + m2) - (h1 * 60 + m1);
+    }
+
+    const PAGE_W_MM = 297 - 10;
+    const PAGE_H_MM = 210 - 10;
+
+    function pxToMm(px) {
+        return px * 25.4 / 96;
+    }
+
+    function fitToOnePage() {
+        const el = document.getElementById('printSection');
+        el.style.zoom = '';
+        el.style.transform = '';
+        el.style.transformOrigin = '';
+
+        buildSchedule();
+
+        const rect = el.getBoundingClientRect();
+        const scale = Math.min(1, PAGE_W_MM / pxToMm(rect.width), PAGE_H_MM / pxToMm(rect.height));
+
+        if (scale < 1) {
+            if (CSS.supports('zoom', '1')) {
+                el.style.zoom = scale;
+            } else {
+                el.style.transformOrigin = 'top center';
+                el.style.transform = 'scale(' + scale + ')';
             }
         }
+        return scale;
+    }
 
-        function loadFromStorage() {
-            // ✅ إصلاح: قراءة النسخة الجديدة ثم القديمة، مع حماية من البيانات الفاسدة
-            let raw = null;
-            try {
-                raw = localStorage.getItem('scheduleApp_v10') || localStorage.getItem('scheduleApp_v9');
-            } catch (e) {
-                raw = null;
-            }
-            if (!raw) return;
+    function resetPrintFit() {
+        const el = document.getElementById('printSection');
+        el.style.zoom = '';
+        el.style.transform = '';
+        el.style.transformOrigin = '';
+    }
 
-            let data;
-            try {
-                data = JSON.parse(raw);
-            } catch (e) {
-                console.warn('بيانات محفوظة غير صالحة، سيتم تجاهلها.');
-                return;
-            }
+    function printSchedule() {
+        showSection('preview', document.querySelectorAll('.nav-tab')[2]);
+        requestAnimationFrame(() => {
+            fitToOnePage();
+            setTimeout(() => {
+                window.print();
+                setTimeout(resetPrintFit, 400);
+            }, 60);
+        });
+    }
 
-            if (!data || typeof data !== 'object') return;
+    function showToast(msg, type = '') {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast ' + type + ' show';
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
 
-            appData = {
-                info: Object.assign({
-                    school: '', year: '2025 / 2026', levels: [], groups: [], teacher: '', payroll: ''
-                }, data.info || {}),
-                sessions: Array.isArray(data.sessions) ? data.sessions : []
-            };
+    function saveToStorage() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        } catch (e) {
+            console.warn('تعذر الحفظ في localStorage:', e);
+        }
+    }
 
-            document.getElementById('schoolName').value = appData.info.school;
-            document.getElementById('schoolYear').value = appData.info.year;
-            document.getElementById('teacherName').value = appData.info.teacher;
-            document.getElementById('payrollNum').value = appData.info.payroll;
+    function setInputValue(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.value = value || '';
+    }
 
-            appData.info.levels.forEach(lvl => {
-                const cb = document.getElementById(`lvl-${lvl}`);
-                if (cb) cb.checked = true;
-            });
-            updateSelectedLevels();
+    function loadFromStorage() {
+        let raw = null;
 
-            appData.info.groups.forEach(grp => {
-                const cb = document.getElementById(`grp-${grp}`);
-                if (cb) cb.checked = true;
-            });
-            updateSelectedGroups();
-
-            renderSessionsList();
+        try {
+            raw = localStorage.getItem(STORAGE_KEY) ||
+                  localStorage.getItem('scheduleApp_v10') ||
+                  localStorage.getItem('scheduleApp_v9');
+        } catch (e) {
+            raw = null;
         }
 
-        initMultiSelects();
-        loadFromStorage();
-    </script>
+        if (!raw) {
+            updateTimeInfoBox();
+            renderTimingMessage([]);
+            return;
+        }
+
+        let data;
+        try {
+            data = JSON.parse(raw);
+        } catch (e) {
+            console.warn('بيانات محفوظة غير صالحة، سيتم تجاهلها.');
+            updateTimeInfoBox();
+            renderTimingMessage([]);
+            return;
+        }
+
+        if (!data || typeof data !== 'object') {
+            updateTimeInfoBox();
+            renderTimingMessage([]);
+            return;
+        }
+
+        const savedInfo = data.info || {};
+
+        let savedTiming = Object.assign({}, DEFAULT_TIMING, savedInfo.timing || {});
+        if (validateTiming(savedTiming).length > 0) {
+            savedTiming = { ...DEFAULT_TIMING };
+        }
+
+        appData = {
+            info: Object.assign({
+                school: '',
+                year: '2025 / 2026',
+                levels: [],
+                groups: [],
+                teacher: '',
+                payroll: ''
+            }, savedInfo, {
+                timing: savedTiming
+            }),
+            sessions: Array.isArray(data.sessions) ? data.sessions : []
+        };
+
+        TIMING = { ...appData.info.timing };
+
+        setInputValue('schoolName', appData.info.school);
+        setInputValue('schoolYear', appData.info.year);
+        setInputValue('teacherName', appData.info.teacher);
+        setInputValue('payrollNum', appData.info.payroll);
+
+        setInputValue('timingMorningStart', TIMING.morningStart);
+        setInputValue('timingMorningEnd', TIMING.morningEnd);
+        setInputValue('timingAfternoonStart', TIMING.afternoonStart);
+        setInputValue('timingAfternoonEnd', TIMING.afternoonEnd);
+
+        appData.info.levels.forEach(lvl => {
+            const cb = document.getElementById(`lvl-${lvl}`);
+            if (cb) cb.checked = true;
+        });
+        updateSelectedLevels();
+
+        appData.info.groups.forEach(grp => {
+            const cb = document.getElementById(`grp-${grp}`);
+            if (cb) cb.checked = true;
+        });
+        updateSelectedGroups();
+
+        renderTimingMessage([]);
+        updateTimeInfoBox();
+        renderSessionsList();
+    }
+
+    initMultiSelects();
+    loadFromStorage();
+</script>
     <script>
-/* ==== رقعة 5.4: تغيير العنوان + فرنسة كاملة لاستعمال الزمن ==== */
+/* ==== رقعة 5.4-v2: عنوان جديد + فرنسة كاملة + زر التحويل العائم ==== */
 (function(){
-const AR_FIX = [
- ["فترة برنامج دعم التعلمات الأساس","فترة الدعم المكثف — Remédiation intensive"],
- ["برنامج دعم التعلمات الأساس","الدعم المكثف — Remédiation intensive"]
-];
-const FR_MAP = [
- ["استعمال الزمن – فترة الدعم المكثف — Remédiation intensive","Emploi du temps – Période de Remédiation intensive"],
- ["استعمال الزمن - فترة الدعم المكثف — Remédiation intensive","Emploi du temps – Période de Remédiation intensive"],
- ["فترة الدعم المكثف — Remédiation intensive","Période de Remédiation intensive"],
- ["استعمال الزمن","Emploi du temps"],
- ["المعلومات الشخصية والمؤسسية","Informations personnelles et institutionnelles"],
- ["اسم الأستاذ(ة)","Nom de l'enseignant(e)"],
- ["الأستاذ(ة)","Enseignant(e)"],
- ["المفتش(ة)","Inspecteur(trice)"],
- ["المدير(ة)","Directeur(trice)"],
- ["التوقيع والختم","Signature et cachet"],
- ["رقم التأجير","N° de solde"],
- ["الموسم الدراسي","Année scolaire"],
- ["المستويات الدراسية المُدرَّسة","Niveaux enseignés"],
- ["الأفواج المُدرَّسة","Groupes enseignés"],
- ["المستوى/المستويات","Niveau(x)"],
- ["الفوج/الأفواج","Groupe(s)"],
- ["المؤسسة","Établissement"],
- ["الوقت","Horaire"],
- ["الاثنين","Lundi"],["الثلاثاء","Mardi"],["الأربعاء","Mercredi"],["الخميس","Jeudi"],["الجمعة","Vendredi"],["السبت","Samedi"],["الأحد","Dimanche"],
- ["الفترة الصباحية","Session du matin"],
- ["الفترة المسائية","Session de l'après-midi"],
- ["الانتقال","Transition"],
- ["استراحة","Pause"],
- ["اللغة الفرنسية","Français"],
- ["اللغة العربية","Arabe"],
- ["الرياضيات","Mathématiques"],
- ["النشاط العلمي","Sciences"],
- ["التربية الإسلامية","Éducation islamique"],
- ["الاجتماعيات","Éveil"],
- ["التربية الفنية","Arts plastiques"],
- ["قائمة الحصص المضافة","Liste des séances ajoutées"],
- ["لم تتم إضافة أي حصة بعد","Aucune séance ajoutée"],
- ["إضافة حصة جديدة","Ajouter une séance"],
- ["إضافة حصة","Ajouter une séance"],
- ["حذف الكل","Tout supprimer"],
- ["معاينة الجدول","Aperçu du tableau"],
- ["طباعة الجدول","Imprimer le tableau"],
- ["تعديل الحصص","Modifier les séances"],
- ["حفظ المعلومات","Enregistrer les informations"],
- ["مدة الحصة","Durée de la séance"],
- ["وقت البداية","Heure de début"],
- ["وقت النهاية","Heure de fin"],
- ["المادة","Matière"],
- ["المستوى","Niveau"],
- ["الفوج","Groupe"],
- ["المعلومات","Informations"],
- ["الحصص","Séances"],
- ["المعاينة","Aperçu"]
-];
-const REV_MAP = FR_MAP.map(p=>[p[1],p[0]]);
-let frMode = false, applying = false;
+  /* 1) تصحيح العنوان مباشرة في الواجهة */
+  function setText(sel, txt){ const el = document.querySelector(sel); if(el) el.textContent = txt; }
+  setText('.app-header .subtitle', 'فترة الدعم المكثف — Remédiation intensive');
+  var printTitle = document.querySelector('#printSection > div[style*="gradient"]');
+  if(printTitle) printTitle.textContent = 'استعمال الزمن – فترة الدعم المكثف';
+  document.title = 'استعمال الزمن – فترة الدعم المكثف';
 
-function skipNode(n){
-  const p = n.parentElement;
-  if(!p) return true;
-  return !!p.closest('select,option,input,textarea,script,style,#langToggle');
-}
-function applyMap(pairs){
-  applying = true;
-  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
-  const nodes = [];
-  while(w.nextNode()) nodes.push(w.currentNode);
-  nodes.forEach(n=>{
-    if(skipNode(n)) return;
-    let t = n.nodeValue, ch = false;
-    for(const [a,b] of pairs){ if(t.includes(a)){ t = t.split(a).join(b); ch = true; } }
-    if(ch) n.nodeValue = t;
+  /* 2) خرائط الترجمة */
+  var FR_MAP = [
+    ["استعمال الزمن – فترة الدعم المكثف","Emploi du temps – Période de Remédiation intensive"],
+    ["استعمال الزمن - فترة الدعم المكثف","Emploi du temps – Période de Remédiation intensive"],
+    ["فترة الدعم المكثف — Remédiation intensive","Période de Remédiation intensive"],
+    ["استعمال الزمن","Emploi du temps"],
+    ["المعلومات الشخصية والمؤسسية","Informations personnelles et institutionnelles"],
+    ["اسم الأستاذ(ة)","Nom de l'enseignant(e)"],
+    ["الأستاذ(ة)","Enseignant(e)"],
+    ["المفتش(ة)","Inspecteur(trice)"],
+    ["المدير(ة)","Directeur(trice)"],
+    ["التوقيع والختم","Signature et cachet"],
+    ["التوقيع","Signature"],
+    ["رقم التأجير","N° de matricule"],
+    ["الموسم الدراسي","Année scolaire"],
+    ["المستويات الدراسية المُدرَّسة","Niveaux enseignés"],
+    ["الأفواج المُدرَّسة","Groupes enseignés"],
+    ["المستوى/المستويات","Niveau(x)"],
+    ["الفوج/الأفواج","Groupe(s)"],
+    ["المؤسسة","Établissement"],
+    ["الوقت","Horaire"],
+    ["الاثنين","Lundi"],["الثلاثاء","Mardi"],["الأربعاء","Mercredi"],
+    ["الخميس","Jeudi"],["الجمعة","Vendredi"],["السبت","Samedi"],["الأحد","Dimanche"],
+    ["الفترة الصباحية","Session du matin"],
+    ["الفترة المسائية","Session de l'après-midi"],
+    ["فترة الانتقال","Transition"],
+    ["الانتقال","Transition"],
+    ["استراحة","Pause"],
+    ["دقائق","minutes"],
+["دقيقة","minute"],
+    ["اللغة الفرنسية","Français"],
+    ["اللغة العربية","Arabe"],
+    ["الرياضيات","Mathématiques"],
+    ["النشاط العلمي","Sciences"],
+    ["التربية الإسلامية","Éducation islamique"],
+    ["الاجتماعيات","Éveil"],
+    ["التربية الفنية","Arts plastiques"],
+    ["أخرى","Autre"],
+    ["قائمة الحصص المضافة","Liste des séances ajoutées"],
+    ["لم تتم إضافة أي حصة بعد","Aucune séance ajoutée"],
+    ["إضافة حصة جديدة","Ajouter une séance"],
+    ["إضافة الحصة","Ajouter la séance"],
+    ["حذف الكل","Tout supprimer"],
+    ["معاينة الجدول","Aperçu du tableau"],
+    ["طباعة الجدول","Imprimer le tableau"],
+    ["تعديل الحصص","Modifier les séances"],
+    ["حفظ المعلومات","Enregistrer les informations"],
+    ["المعلومات","Informations"],
+    ["الحصص","Séances"],
+    ["المعاينة","Aperçu"],
+    ["مدة الحصة","Durée de la séance"],
+    ["وقت البداية","Heure de début"],
+    ["وقت النهاية","Heure de fin"],
+    ["وقت الحصة (إدخال يدوي)","Heure de la séance (saisie manuelle)"],
+    ["المادة","Matière"],
+    ["المستوى","Niveau"],
+    ["الفوج","Groupe"],
+    ["اليوم","Jour"],
+    ["عدد الأفواج","Nombre de groupes"],
+    ["عدد الحصص في الفترة","Nombre de séances"],
+    ["لم يتم اختيار أي مستوى بعد...","Aucun niveau sélectionné..."],
+    ["لم يتم اختيار أي فوج بعد...","Aucun groupe sélectionné..."],
+    ["اختر مستوى دراسياً واحداً أو عدة مستويات تدرسها خلال فترة الدعم","Choisissez un ou plusieurs niveaux enseignés"],
+    ["اختر فوجاً واحداً أو عدة أفواج تدرسها خلال فترة الدعم","Choisissez un ou plusieurs groupes"],
+    ["يجب اختيار مستوى وفوج واحد على الأقل من تبويب \"المعلومات\" أولاً","Veuillez sélectionner au moins un niveau et un groupe"],
+    ["بداية الفترة الصباحية","Début du matin"],
+    ["نهاية الفترة الصباحية","Fin du matin"],
+    ["بداية الفترة المسائية","Début de l'après-midi"],
+    ["نهاية الفترة المسائية","Fin de l'après-midi"],
+    ["إعدادات التوقيت (حسب مؤسستك)","Paramètres horaires (selon votre établissement)"],
+    ["يمكنك تغيير هذه الأوقات لتناسب توقيت مدرستك","Modifiez ces horaires selon votre établissement"],
+    ["التالي: إضافة الحصص","Suivant : Ajouter les séances"],
+    ["لا توجد حصص مضافة بعد","Aucune séance ajoutée"]
+  ];
+  var REV_MAP = FR_MAP.map(function(p){ return [p[1], p[0]]; });
+
+  var frMode = false, applying = false;
+
+  function skipNode(n){
+    var p = n.parentElement;
+    if(!p) return true;
+    return !!p.closest('select,option,input,textarea,script,style,#langToggle');
+  }
+  function applyMap(pairs){
+    applying = true;
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    var nodes = [];
+    while(w.nextNode()) nodes.push(w.currentNode);
+    nodes.forEach(function(n){
+      if(skipNode(n)) return;
+      var t = n.nodeValue, ch = false;
+      for(var i=0;i<pairs.length;i++){
+        var a = pairs[i][0], b = pairs[i][1];
+        if(t.indexOf(a) > -1){ t = t.split(a).join(b); ch = true; }
+      }
+      if(ch) n.nodeValue = t;
+    });
+    applying = false;
+  }
+  function refresh(){
+    if(frMode) applyMap(FR_MAP);
+    document.title = frMode ? "Emploi du temps – Période de Remédiation intensive" : "استعمال الزمن – فترة الدعم المكثف";
+  }
+
+  /* 3) زر التحويل العائم */
+  var btn = document.createElement('button');
+  btn.id = 'langToggle';
+  btn.textContent = '🇫🇷 Français';
+  btn.style.cssText = 'position:fixed;bottom:20px;left:20px;z-index:99999;padding:12px 20px;border-radius:26px;border:none;background:#1769aa;color:#fff;font-family:Cairo,sans-serif;font-weight:bold;font-size:15px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.35);transition:transform .2s';
+  btn.onmouseenter = function(){ btn.style.transform = 'scale(1.06)'; };
+  btn.onmouseleave = function(){ btn.style.transform = 'scale(1)'; };
+  btn.onclick = function(){
+    if(frMode){
+      frMode = false;
+      applyMap(REV_MAP);
+      btn.textContent = '🇫🇷 Français';
+      btn.style.background = '#1769aa';
+    } else {
+      frMode = true;
+      applyMap(FR_MAP);
+      btn.textContent = '🇲🇦 العربية';
+      btn.style.background = '#c0392b';
+    }
+    refresh();
+  };
+  document.body.appendChild(btn);
+
+  var st = document.createElement('style');
+  st.textContent = '@media print{#langToggle{display:none!important}}';
+  document.head.appendChild(st);
+
+  /* 4) تحديث تلقائي عند أي تغيير في الصفحة */
+  var timer = null;
+  var mo = new MutationObserver(function(){
+    if(applying) return;
+    clearTimeout(timer);
+    timer = setTimeout(refresh, 250);
   });
-  applying = false;
-}
-function refresh(){
-  applyMap(AR_FIX);
-  if(frMode) applyMap(FR_MAP);
-  document.title = frMode ? "Emploi du temps – Remédiation intensive" : "استعمال الزمن – فترة الدعم المكثف";
-}
-function autoDetect(){
-  const t = document.body.innerText || "";
-  const fr = (t.match(/الفرنسية|Français/g)||[]).length;
-  const ot = (t.match(/الرياضيات|اللغة العربية|Mathématiques|Arabe/g)||[]).length;
-  if(fr>0 && ot===0 && !frMode){ frMode = true; btn.textContent='🇲🇦 العربية'; refresh(); }
-}
-// زر التبديل
-const btn = document.createElement('button');
-btn.id='langToggle';
-btn.textContent='🇫🇷 Français';
-btn.style.cssText='position:fixed;bottom:20px;left:20px;z-index:9999;padding:10px 18px;border-radius:24px;border:none;background:#1769aa;color:#fff;font-weight:bold;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)';
-btn.onclick=()=>{
-  if(frMode){ frMode=false; applyMap(REV_MAP); refresh(); btn.textContent='🇫🇷 Français'; }
-  else { frMode=true; refresh(); btn.textContent='🇲🇦 العربية'; }
-};
-document.body.appendChild(btn);
-const st = document.createElement('style');
-st.textContent = '@media print{#langToggle{display:none!important}}';
-document.head.appendChild(st);
-// تحديث تلقائي عند أي تغيير في الصفحة
-let timer=null;
-const mo = new MutationObserver(()=>{ if(applying) return; clearTimeout(timer); timer=setTimeout(()=>{ refresh(); autoDetect(); },250); });
-mo.observe(document.body,{childList:true,subtree:true,characterData:true});
-document.addEventListener('click',()=>setTimeout(()=>{ refresh(); autoDetect(); },80));
-window.addEventListener('beforeprint',()=>{ refresh(); autoDetect(); });
-document.addEventListener('DOMContentLoaded',()=>{ refresh(); });
-refresh();
+  mo.observe(document.body, {childList:true, subtree:true, characterData:true});
+  document.addEventListener('click', function(){ setTimeout(refresh, 80); });
+  window.addEventListener('beforeprint', refresh);
+
+  refresh();
+  console.log('✅ رقعة 5.4-v2 محملة: العنوان محدّث + زر التحويل جاهز');
 })();
 </script>
 </body>
