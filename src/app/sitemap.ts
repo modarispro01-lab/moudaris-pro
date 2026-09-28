@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://moudarispro.vercel.app'; // سنغيرها بعد النشر
+  const baseUrl = 'https://moudaris-pro.vercel.app'; // سنغيرها بعد النشر
 
   // جلب كل الموارد والأخبار من قاعدة البيانات
   const resources = await prisma.resource.findMany({

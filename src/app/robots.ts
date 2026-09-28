@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/api/'], // منع فهرسة لوحة التحكم والـ API
     },
-    sitemap: 'https://moudarispro.vercel.app/sitemap.xml',
+    sitemap: 'https://moudaris-pro.vercel.app/sitemap.xml',
   };
 }

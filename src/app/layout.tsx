@@ -29,11 +29,11 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://moudarispro.vercel.app"), // سنغيرها لاحقاً
+  metadataBase: new URL("https://moudaris-pro.vercel.app"), // سنغيرها لاحقاً
   openGraph: {
     type: "website",
     locale: "ar_MA",
-    url: "https://moudarispro.vercel.app",
+    url: "https://moudaris-pro.vercel.app",
     siteName: "MoudarisPro",
     title: "MoudarisPro | كل أدوات الأستاذ المغربي في مكان واحد",
     description:
