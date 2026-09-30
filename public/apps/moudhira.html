@@ -3091,5 +3091,32 @@ window.addEventListener('load',function(){setTimeout(hookButton,300);setTimeout(
 console.log('✅ رقعة 5.23: توقيت بداية مستقل لكل يوم في الأسبوع');
 })();
 </script>
+<script>
+/* ==== رقعة 5.24: فرض اتجاه الجدول الرئيسي حسب المادة (فرنسية LTR / عربية RTL) ==== */
+(function(){
+function fixTablesDir(){
+var isFr=false;
+try{ isFr=(typeof currentType==='function')&&currentType()==='fr'; }catch(e){}
+var out=document.getElementById('out');
+if(!out)return;
+out.querySelectorAll('table').forEach(function(tb){
+var r0=tb.rows&&tb.rows[0];
+if(!r0)return;
+var t=(r0.textContent||'');
+var isMain=(/Groupe|الفوج/.test(t))&&(/Horaire|التوقيت/.test(t));
+if(!isMain)return;
+tb.setAttribute('dir', isFr?'ltr':'rtl');
+});
+}
+window.fixTablesDir=fixTablesDir;
+if(typeof gen==='function'){
+var prev=window.gen;
+window.gen=function(){var r=prev.apply(this,arguments);fixTablesDir();return r;};
+}
+window.addEventListener('beforeprint',fixTablesDir);
+window.addEventListener('load',function(){setTimeout(fixTablesDir,150);});
+console.log('✅ رقعة 5.24: جدول الفرنسية LTR (Groupe/Horaire يساراً) والعربية RTL بدون تغيير');
+})();
+</script>
 </body>
 </html>
