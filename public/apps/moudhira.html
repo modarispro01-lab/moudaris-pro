@@ -370,15 +370,34 @@ function getMaterialConfig(sub){
 /* =====================================================
    3. مراحل سير الدرس حسب المادة
 ===================================================== */
-function buildStages(type,l){
+function buildStages(type,l,lvl){
 const D=(name,def)=>{const k=type+'|'+name;return stageDurations[k]||def;};
-if(type==='math')return[
-['حساب ذهني',D('حساب ذهني','10 د'),l.routine],
-['الأعداد',D('الأعداد','20 د'),l.numbers],
-['العمليات وحل المسائل',D('العمليات وحل المسائل','20 د'),l.ops],
-['عمل فردي على الكراسة',D('عمل فردي على الكراسة','10 د'),'الإنتاج / التصحيح'],
-['لعبة',D('لعبة','10 د'),l.game]
+const J=function(){var a=[],i=0;for(;i<arguments.length;i++){var v=arguments[i];if(v&&String(v).trim())a.push(String(v).trim());}return a.join(' — ');};
+const isRev=[6,12,18,24].indexOf(Number(l&&l.lesson))>-1;
+const isL1=/^(1|الأول|الأول ابتدائي|المستوى الأول)$/.test(String(lvl==null?'':lvl).trim());
+if(type==='math'){
+if(isRev){
+if(isL1)return[
+['افتتاح الحصة',D('افتتاح الحصة','10 د'),l.routine],
+['أنشطة المراجعة والتوليف',D('أنشطة المراجعة والتوليف','25 د'),J(l.numbers,l.independent)],
+['تمرير رائز التتبع',D('تمرير رائز التتبع','20 د'),l.ops],
+['اختتام الحصة',D('اختتام الحصة','10 د'),J(l.game,'لعبة تربوية قصيرة: سباق الأعداد بالتصفيق أو لعبة من اختيار الأستاذ(ة)')]
 ];
+return[
+['أنشطة المراجعة والتوليف — أنشطة الكراسة',D('أنشطة المراجعة والتوليف — أنشطة الكراسة','30 د'),J(l.routine,l.numbers)],
+['تمرير رائز التصديق على البنية',D('تمرير رائز التصديق على البنية','25 د'),J(l.ops,l.independent)],
+['اختتام الحصة',D('اختتام الحصة','10 د'),l.game]
+];
+}
+const q1=isL1?'أنشطة التفكير المنطقي':'الأعداد';
+const q2=isL1?'أنشطة العد والحساب':'العمليات وحل المسائل';
+return[
+['افتتاح الحصة',D('افتتاح الحصة','10 د'),l.routine],
+['النشاط الرئيسي',D('النشاط الرئيسي','30 د'),'القسم الأول: '+q1+': '+(l.numbers||'')+'  |  القسم الثاني: '+q2+': '+(l.ops||'')],
+['الممارسة المستقلة',D('الممارسة المستقلة','15 د'),l.independent],
+['اختتام الحصة',D('اختتام الحصة','10 د'),l.game]
+];
+}
 if(type==='ar')return[
 ['افتتاح الحصة',D('افتتاح الحصة','3 د'),'تعلّم سلوك اليوم: كيف أشتغل مع زميلي؟'],
 ['نشاط اعتيادي',D('نشاط اعتيادي','7 د'),l.routine],
@@ -400,7 +419,7 @@ return[
 ===================================================== */
 let stageDurations = JSON.parse(localStorage.getItem('stageDurations_v11')||'{}');
 function defaultDurations(type){
-if(type==='math')return[['حساب ذهني','10 د'],['الأعداد','20 د'],['العمليات وحل المسائل','20 د'],['عمل فردي على الكراسة','10 د'],['لعبة','10 د']];
+if(type==='math')return[['افتتاح الحصة','10 د'],['النشاط الرئيسي','30 د'],['الممارسة المستقلة','15 د'],['اختتام الحصة','10 د']];
 if(type==='ar')return[['افتتاح الحصة','3 د'],['نشاط اعتيادي','7 د'],['تحدث وإغناء المعجم','15 د'],['أنشطة القراءة والكتابة','35 د'],['لعبة واختتام الحصة','10 د']];
 return[['Rituel','10′'],['Vocabulaire','30′'],['Lecture','40′'],['Écriture','20′'],['Pratique autonome','20′'],['Jeu','10′']];
 }
@@ -1764,7 +1783,7 @@ const trS = s => isFrench?(TR_SUBJECTS[s]||s):s;
     if(!l){
       content = `<b style="color:var(--danger)">⚠️ ${isFrench?'Aucune leçon sélectionnée':'لم يتم اختيار حصة لهذا الفوج'}</b>`;
     } else {
-      const st = buildStages(type,l);
+      const st = buildStages(type,l,glv);
       const head = isFrench?['Étape','Durée','Contenu et déroulement']:['المرحلة','المدة','المحتوى وسير الدرس'];
       content = `<table class="stages" ${contentDir}><tr><th class="st-name">${head[0]}</th><th class="st-dur">${head[1]}</th><th>${head[2]}</th></tr>`
         + st.map(s=>`<tr><td class="st-name">${escapeHtml(s[0])}</td><td class="st-dur">${escapeHtml(s[1])}</td><td>${escapeHtml(s[2]||'')}</td></tr>`).join('')
