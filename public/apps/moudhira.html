@@ -361,12 +361,19 @@ const toast = (msg,color='success') => {
    2. إعدادات المادة (عدد الأفواج + المدة)
 ===================================================== */
 function getMaterialConfig(sub){
-  if(sub && sub.includes('فرنسية')){
-    return { groups: 2, duration: 135, label: 'الفرنسية: فوجان × 135 دقيقة' };
-  }
-  return { groups: 4, duration: 65, label: '4 أفواج × 65 دقيقة' };
+const lvlEl=document.getElementById('level');
+const lvl=lvlEl?String(lvlEl.value||''):'';
+const isL1=/الأول/.test(lvl);
+if(sub && sub.includes('فرنسية')){
+if(isL1) return { groups: 4, duration: 65, label: 'الفرنسية م1: 4 أفواج × 65 دقيقة' };
+return { groups: 2, duration: 135, label: 'الفرنسية م2-م6: فوجان × 135 دقيقة' };
 }
-
+if(sub && sub.includes('عربية')){
+if(isL1) return { groups: 2, duration: 135, label: 'العربية م1: فوجان × 135 دقيقة' };
+return { groups: 4, duration: 65, label: 'العربية م2-م6: 4 أفواج × 65 دقيقة' };
+}
+return { groups: 4, duration: 65, label: 'الرياضيات: 4 أفواج × 65 دقيقة' };
+}
 /* =====================================================
    3. مراحل سير الدرس حسب المادة
 ===================================================== */
@@ -416,12 +423,12 @@ return[
 ];
 }
 return[
-['Rituel',D('Rituel','10′'),l.routine],
+["Rituel d'ouverture",D("Rituel d'ouverture",'10′'),l.routine],
 ['Vocabulaire',D('Vocabulaire','30′'),l.numbers],
-['Lecture',D('Lecture','40′'),l.ops],
-['Écriture',D('Écriture','20′'),'Écrire les mots et les phrases simples'],
-['Pratique autonome',D('Pratique autonome','20′'),l.independent],
-['Jeu',D('Jeu','10′'),l.game]
+[isL1?'Prélecture':'Lecture - écriture',D('Lecture - écriture','80′'),l.ops],
+
+
+['Clôture',D('Clôture','15′'),l.game]
 ];
 }
 /* =====================================================
@@ -2548,6 +2555,540 @@ const keys=Object.keys(allData['المستوى السادس']['اللغة الع
 if(keys[0])apply(keys[0],P1);
 if(keys[1])apply(keys[1],P2);
 console.log('✅ رقعة 5.13: محتوى العربية للمستوى السادس (مساران) محدّث من مصفوفة 2026/2027');
+})();
+</script>
+<script>
+/* ==== رقعة 5.15: مزامنة عناوين حقول تبويب "تعديل الحصة" مع مراحل 2026/2027 ==== */
+(function(){
+const MAP={
+math:[
+['التهيئة','افتتاح الحصة (الطقوس الرياضية)'],
+['القراءة / الأعداد','النشاط الرئيسي — القسم الأول: الأعداد / أنشطة التفكير المنطقي (م1)'],
+['الحساب / التعبير','النشاط الرئيسي — القسم الثاني: العمليات وحل المسائل / أنشطة العد والحساب (م1)'],
+['الممارسة / الواجب','الممارسة المستقلة (أنشطة الكراسة)'],
+['الألعاب / الإنتاج','اختتام الحصة (لعبة)']
+],
+ar:[
+['التهيئة','افتتاح الحصة (النشاط الاعتيادي)'],
+['القراءة / الأعداد','أنشطة قرائية / أنشطة ما قبل القراءة (م1)'],
+['الحساب / التعبير','أنشطة كتابية / أنشطة ما قبل الكتابة (م1)'],
+['الممارسة / الواجب','الممارسة / أنشطة الصفحة'],
+['الألعاب / الإنتاج','اختتام الحصة (الألعاب)']
+],
+fr:[
+['التهيئة',"Rituel d'ouverture (Comportement / Dictée flash)"],
+['القراءة / الأعداد','Vocabulaire'],
+['الحساب / التعبير','Lecture - écriture / Prélecture (م1)'],
+['الممارسة / الواجب','Pratique / Activités de la page'],
+['الألعاب / الإنتاج','Clôture (Jeu)']
+]
+};
+function relabel(){
+let type='ar';
+try{ type = (typeof currentType==='function') ? currentType() : 'ar'; }catch(e){}
+const rules = MAP[type] || MAP.ar;
+document.querySelectorAll('label,div,span,td,th,b,strong').forEach(function(el){
+if(el.children.length) return;
+const txt = el.textContent.trim();
+if(!txt) return;
+if(!el.dataset.origLabel) el.dataset.origLabel = txt;
+const orig = el.dataset.origLabel;
+for(let i=0;i<rules.length;i++){
+if(orig.indexOf(rules[i][0])>-1){ el.textContent = rules[i][1]; return; }
+}
+});
+}
+window.addEventListener('load', function(){ setTimeout(relabel,100); });
+document.addEventListener('click', function(){ setTimeout(relabel,80); });
+try{
+const s=document.getElementById('subject');
+if(s) s.addEventListener('change', function(){ setTimeout(relabel,60); });
+}catch(e){}
+console.log('✅ رقعة 5.15: عناوين تبويب تعديل الحصة متزامنة مع مراحل 2026/2027');
+})();
+</script>
+<script>
+/* ==== رقعة 5.16: عدد الأفواج ومددها حسب المادة والمستوى (الرسمي 2026/2027) ==== */
+(function(){
+if(typeof getMaterialConfig!=='function'){console.warn('⚠️ رقعة 5.16: getMaterialConfig غير موجودة');return;}
+const origGMC=getMaterialConfig;
+const origDD=(typeof defaultDurations==='function')?defaultDurations:null;
+function isL1Now(){
+var L=document.getElementById('level');
+if(L)return /الأول/.test(String(L.value||''));
+var sels=document.querySelectorAll('select'),i,v;
+for(i=0;i<sels.length;i++){
+v=String(sels[i].value||'').trim();
+if(v==='المستوى الأول'||v==='الأول'||v==='1')return true;
+}
+return false;
+}
+window.getMaterialConfig=function(sub){
+const base=origGMC(sub)||{};
+const L1=isL1Now();
+if(/عربية/.test(sub)){
+return L1? Object.assign({},base,{duration:135,maxGroups:2,sessionsPerPeriod:2})
+         : Object.assign({},base,{duration:65,maxGroups:4,sessionsPerPeriod:4});
+}
+if(/فرنسية/.test(sub)){
+return L1? Object.assign({},base,{duration:65,maxGroups:4,sessionsPerPeriod:4})
+         : Object.assign({},base,{duration:135,maxGroups:2,sessionsPerPeriod:2});
+}
+return Object.assign({},base,{duration:65,maxGroups:4,sessionsPerPeriod:4});
+};
+if(origDD){
+window.defaultDurations=function(type){
+const L1=isL1Now();
+if(type==='ar'&&L1)return[['افتتاح الحصة','15 د'],['أنشطة قرائية','50 د'],['أنشطة كتابية','50 د'],['اختتام الحصة','20 د']];
+if(type==='fr'&&L1)return[["Rituel d'ouverture",'10′'],['Vocabulaire','15′'],['Lecture - écriture','30′'],['Clôture','10′']];
+return origDD(type);
+};
+}
+try{
+var sels=document.querySelectorAll('select');
+for(var i=0;i<sels.length;i++){
+sels[i].addEventListener('change',function(){
+setTimeout(function(){
+if(typeof renderDurations==='function')renderDurations();
+if(typeof gen==='function')gen();
+},60);
+});
+}
+}catch(e){}
+console.log('✅ رقعة 5.16: أفواج ومدد كل مادة/مستوى مفعلة (عربية م1: 2×135 / فرنسية م1: 4×65)');
+})();
+</script>
+<script>
+/* ==== رقعة 5.17: مزامنة عدد كتل الأفواج مع التنظيم الرسمي (2 أو 4 حسب المادة والمستوى) ==== */
+(function(){
+function mainLevel(){var el=document.getElementById('level');return el?String(el.value||''):'';}
+function mainSubject(){var el=document.getElementById('subject');return el?String(el.value||''):'';}
+function isL1(){return /الأول/.test(mainLevel());}
+function groupsCount(){
+var s=mainSubject();
+if(/عربية/.test(s))return isL1()?2:4;
+if(/فرنسية/.test(s))return isL1()?4:2;
+return 4;
+}
+function blockOf(g){
+var el=document.getElementById('lvl_g'+g);
+if(!el)return null;
+var p=el.parentElement;
+while(p&&p!==document.body){
+if(p.querySelector&&p.querySelector('#pathway_g'+g)&&p.querySelector('#lesson_g'+g))return p;
+p=p.parentElement;
+}
+return el.parentElement;
+}
+function applyGroups(){
+var n=groupsCount();
+[3,4].forEach(function(g){
+var b=blockOf(g);
+if(!b)return;
+if(n===2){
+var ls=document.getElementById('lesson_g'+g);
+if(ls&&ls.value&&ls.value!=='0')ls.value='0';
+b.style.display='none';
+}else{
+b.style.display='';
+}
+});
+}
+window.applyGroups=applyGroups;
+window.addEventListener('load',function(){setTimeout(applyGroups,120);});
+document.addEventListener('change',function(e){
+var id=(e.target&&e.target.id)||'';
+if(id==='level'||id==='subject'){
+setTimeout(function(){
+applyGroups();
+if(typeof renderDurations==='function')renderDurations();
+if(typeof gen==='function')gen();
+},80);
+}
+});
+console.log('✅ رقعة 5.17: كتل الأفواج متزامنة مع التنظيم الرسمي (2/4 حسب المادة والمستوى)');
+})();
+</script>
+<script>
+/* ==== رقعة 5.18: فرض خمول الأفواج المخفية وتفعيل الظاهرة (مزامنة كاملة مع التوليد) ==== */
+(function(){
+function mainLevel(){var el=document.getElementById('level');return el?String(el.value||''):'';}
+function mainSubject(){var el=document.getElementById('subject');return el?String(el.value||''):'';}
+function isL1(){return /الأول/.test(mainLevel());}
+function groupsCount(){
+var s=mainSubject();
+if(/عربية/.test(s))return isL1()?2:4;
+if(/فرنسية/.test(s))return isL1()?4:2;
+return 4;
+}
+function sel(id){return document.getElementById(id);}
+function blockOf(g){
+var L=sel('lvl_g'+g);
+if(!L)return null;
+var p=L.parentElement;
+while(p&&p!==document.body){
+if(p.querySelector&&p.querySelector('#pathway_g'+g)&&p.querySelector('#lesson_g'+g))return p;
+p=p.parentElement;
+}
+return L.parentElement;
+}
+function enforce(){
+var n=groupsCount();
+[1,2,3,4].forEach(function(g){
+var L=sel('lvl_g'+g),P=sel('pathway_g'+g),S=sel('lesson_g'+g),b=blockOf(g);
+if(g<=2){
+if(L)L.disabled=false; if(P)P.disabled=false; if(S)S.disabled=false;
+if(b)b.style.display='';
+return;
+}
+if(n===2){
+if(S)S.value='0';
+if(P)P.value='';
+if(L)L.value='';
+if(S)S.disabled=true; if(P)P.disabled=true; if(L)L.disabled=true;
+if(b)b.style.display='none';
+}else{
+if(L)L.disabled=false;
+if(P)P.disabled=false;
+if(S)S.disabled=false;
+if(b)b.style.display='';
+if(L&&!L.value){
+L.value=mainLevel();
+try{L.dispatchEvent(new Event('change'));}catch(e){}
+}
+}
+});
+}
+window.enforceGroups=enforce;
+function hook(){setTimeout(enforce,60);}
+window.addEventListener('load',function(){setTimeout(enforce,150);setTimeout(enforce,600);});
+document.addEventListener('change',hook,true);
+document.addEventListener('click',hook,true);
+console.log('✅ رقعة 5.18: حالة الأفواج (معطلة/مفعلة) متزامنة مع التنظيم الرسمي');
+})();
+</script>
+<script>
+/* ==== رقعة 5.19: فرض عدد الأفواج الرسمي بعد أي إعادة بناء للكتل (مراقب دائم) ==== */
+(function(){
+function mainLevel(){var el=document.getElementById('level');return el?String(el.value||''):'';}
+function mainSubject(){var el=document.getElementById('subject');return el?String(el.value||''):'';}
+function isL1(){return /الأول/.test(mainLevel());}
+function groupsCount(){
+var s=mainSubject();
+if(/عربية/.test(s))return isL1()?2:4;
+if(/فرنسية/.test(s))return isL1()?4:2;
+return 4;
+}
+function sel(id){return document.getElementById(id);}
+function blockOf(g){
+var L=sel('lvl_g'+g);
+if(!L)return null;
+var p=L.parentElement;
+while(p&&p!==document.body){
+if(p.querySelector&&p.querySelector('#pathway_g'+g)&&p.querySelector('#lesson_g'+g))return p;
+p=p.parentElement;
+}
+return L.parentElement;
+}
+function setDisplay(el,v){if(el&&el.style.display!==v)el.style.display=v;}
+function setDisabled(el,v){if(el&&el.disabled!==v)el.disabled=v;}
+function enforce(){
+var n=groupsCount();
+[1,2,3,4].forEach(function(g){
+var L=sel('lvl_g'+g),P=sel('pathway_g'+g),S=sel('lesson_g'+g),b=blockOf(g);
+if(g<=2){
+setDisabled(L,false);setDisabled(P,false);setDisabled(S,false);
+setDisplay(b,'');
+return;
+}
+if(n===2){
+if(S)S.value='0';
+if(P)P.value='';
+if(L)L.value='';
+setDisabled(S,true);setDisabled(P,true);setDisabled(L,true);
+setDisplay(b,'none');
+}else{
+setDisabled(L,false);setDisabled(P,false);setDisabled(S,false);
+setDisplay(b,'');
+if(L&&!L.value){
+L.value=mainLevel();
+try{L.dispatchEvent(new Event('change'));}catch(e){}
+}
+}
+});
+}
+window.enforceGroups=enforce;
+var busy=false,timer=null;
+function run(){if(busy)return;busy=true;try{enforce();}finally{busy=false;}}
+function schedule(){clearTimeout(timer);timer=setTimeout(run,120);}
+try{
+new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style','disabled']});
+}catch(e){}
+document.addEventListener('change',function(){setTimeout(run,60);setTimeout(run,350);setTimeout(run,900);},true);
+window.addEventListener('load',function(){setTimeout(run,200);setTimeout(run,700);});
+console.log('✅ رقعة 5.19: المراقب الدائم لعدد الأفواج مفعّل (2/4 حسب المادة والمستوى)');
+})();
+</script>
+<script>
+/* ==== رقعة 5.19: إخفاء خانة "استراحة" إذا جاءت بعد آخر فوج (بدون تغيير أي كود أصلي) ==== */
+(function(){
+function cleanTrailingBreaks(){
+/* 1) الجداول: احذف صفوف استراحة الأخيرة فقط */
+document.querySelectorAll('table').forEach(function(tbl){
+var changed=true;
+while(changed){
+changed=false;
+var rows=tbl.rows;
+if(rows&&rows.length){
+var last=rows[rows.length-1];
+var txt=(last.textContent||'').replace(/\s+/g,' ').trim();
+if(txt.indexOf('استراحة')===0){last.parentNode.removeChild(last);changed=true;}
+}
+}
+});
+/* 2) الحاويات من نوع div/section: نفس التنظيف داخل صناديق المذكرة فقط */
+document.querySelectorAll('div,section').forEach(function(box){
+if((box.textContent||'').indexOf('الفوج')===-1)return;
+var changed=true;
+while(changed){
+changed=false;
+var last=box.lastElementChild;
+if(last&&last!==box.firstElementChild){
+var txt2=(last.textContent||'').replace(/\s+/g,' ').trim();
+if(txt2.indexOf('استراحة')===0){box.removeChild(last);changed=true;}
+}
+}
+});
+}
+window.cleanTrailingBreaks=cleanTrailingBreaks;
+/* 3) نفّذ التنظيف تلقائياً بعد كل توليد */
+if(typeof gen==='function'){
+var origGen=window.gen;
+window.gen=function(){var r=origGen.apply(this,arguments);setTimeout(cleanTrailingBreaks,0);return r;};
+}
+document.addEventListener('click',function(){setTimeout(cleanTrailingBreaks,60);});
+window.addEventListener('beforeprint',function(){cleanTrailingBreaks();});
+console.log('✅ رقعة 5.19: خانة استراحة بعد آخر فوج ستُحذف تلقائياً');
+})();
+</script>
+<script>
+/* ==== رقعة 5.20: حذف صف الاستراحة الأخير بعد آخر فوج (كشف عبر class بدلاً من بداية النص) ==== */
+(function(){
+function cleanBreaksIn(doc){
+if(!doc)return;
+doc.querySelectorAll('tr.break').forEach(function(tr){
+var t=(tr.textContent||'').replace(/\s+/g,' ').trim();
+if(t.indexOf('استراحة')===-1)return;
+var tb=tr.closest?tr.closest('table'):tr.parentNode;
+if(!tb)return;
+var rows=tb.rows;
+if(rows&&rows.length&&rows[rows.length-1]===tr){tr.parentNode.removeChild(tr);}
+});
+}
+function cleanBreaks(){cleanBreaksIn(document);}
+window.cleanBreaksRows=cleanBreaks;
+/* لفّ دالة التوليد */
+if(typeof gen==='function'){
+var prev=window.gen;
+window.gen=function(){var r=prev.apply(this,arguments);setTimeout(cleanBreaks,0);setTimeout(cleanBreaks,60);return r;};
+}
+/* لفّ دالة المعاينة لتنظيف الـ iframe أيضاً */
+if(typeof previewPrint==='function'){
+var pp=window.previewPrint;
+window.previewPrint=function(){
+var r=pp.apply(this,arguments);
+setTimeout(function(){
+var fr=document.getElementById('previewFrame');
+var d=fr&&(fr.contentDocument||fr.contentWindow.document);
+cleanBreaksIn(d);
+cleanBreaks();
+},80);
+return r;
+};
+}
+document.addEventListener('click',function(){setTimeout(cleanBreaks,90);});
+window.addEventListener('beforeprint',function(){cleanBreaks();});
+console.log('✅ رقعة 5.20: حذف استراحة ما بعد آخر فوج مفعّل (في الجدول والمعاينة والطباعة)');
+})();
+</script>
+<script>
+/* ==== رقعة 5.21: مذكرة أسبوعية — تحرير وطباعة 6 حصص، كل حصة في ورقة مستقلة ==== */
+(function(){
+function weekStyles(){
+return '*{box-sizing:border-box}body{font-family:Tahoma,Arial;margin:0;padding:20px;background:#fff}'
++'@page{size:A4 landscape;margin:6mm}'
++'table{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:10px}'
++'th,td{font-size:8.5px;padding:3px;border:1px solid #444}'
++'.title{font-size:16px;text-align:center;border:2px solid #333;padding:10px;font-weight:bold}'
++'.meta{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid #333;margin-top:10px}'
++'.meta div{padding:5px;text-align:center;border-left:1px solid #333;font-size:8px;font-weight:bold}'
++'.f1{background:#e3f2fd}.f2{background:#fff9c4}.f3{background:#e8f5e9}.f4{background:#fce4ec}'
++'.objective{font-size:8px;padding:3px;background:#f7f9fa;border:1px solid #d6dde2;margin-top:3px}'
++'table.stages{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:3px}'
++'table.stages th,table.stages td{border:1px solid #8899aa;font-size:7.5px;padding:2px}'
++'table.stages .st-name{width:27%}table.stages .st-dur{width:11%;text-align:center}'
++'.break td{background:#f5f5f5;text-align:center;font-weight:bold}'
++'.dots div{border-bottom:1px dotted #889;height:12px}'
++'.group{width:8%}.time{width:10%}.content{width:47%}.tools{width:20%}.notes{width:15%}'
++'.week-page{page-break-after:always;break-after:page}'
++'.week-page:last-child{page-break-after:auto;break-after:auto}';
+}
+function nextDateSkipSunday(dateStr){
+var d=new Date(dateStr+'T00:00:00');
+do{ d.setDate(d.getDate()+1); }while(d.getDay()===0);
+return d.toISOString().split('T')[0];
+}
+function addToolbarButton(){
+var toolbars=document.querySelectorAll('.toolbar');
+if(!toolbars.length||document.getElementById('weekBtn'))return;
+var b=document.createElement('button');
+b.id='weekBtn'; b.className='blue'; b.type='button';
+b.innerHTML='📆 أسبوع كامل (6 حصص)';
+b.onclick=weeklyPreview;
+toolbars[0].appendChild(b);
+}
+function weeklyPreview(){
+if(typeof gen!=='function'){alert('دالة التوليد غير موجودة');return;}
+var groups=[1,2,3,4], saved={}, g;
+for(g=0;g<groups.length;g++){ saved[groups[g]]=$('lesson_g'+groups[g]).value; }
+if(!confirm('سيتم توليد وطباعة 6 حصص (أسبوع كامل):\nاليوم 1 = الحصة المحددة حالياً لكل فوج، ثم الحصص الموالية تلقائياً.\nمتابعة؟')) return;
+var startDate=$('date').value||new Date().toISOString().split('T')[0];
+var curDate=startDate;
+var pages=[];
+for(var d=0;d<6;d++){
+if(d>0){
+curDate=nextDateSkipSunday(curDate);
+for(g=0;g<groups.length;g++){
+var sel=$('lesson_g'+groups[g]);
+if(!sel||!sel.options.length)continue;
+var idx=parseInt(saved[groups[g]],10); if(isNaN(idx))idx=0;
+idx=Math.min(idx+d, sel.options.length-1);
+sel.value=String(idx);
+}
+}
+var savedDate=$('date').value;
+$('date').value=curDate;
+gen();
+var firstIdx=parseInt(saved[1],10); if(isNaN(firstIdx))firstIdx=0;
+var banner='<div style="background:#1769aa;color:#fff;padding:6px 10px;border-radius:8px;margin-bottom:6px;font-weight:bold;font-size:12px">📆 اليوم '+(d+1)+' / 6 — الحصة رقم '+(firstIdx+d+1)+' — ورقة '+(d+1)+' من 6</div>';
+pages.push('<div class="week-page">'+banner+$('out').innerHTML+'</div>');
+$('date').value=savedDate;
+}
+for(g=0;g<groups.length;g++){ $('lesson_g'+groups[g]).value=saved[groups[g]]; }
+$('date').value=startDate;
+gen();
+var frame=$('previewFrame');
+var doc=frame.contentDocument||frame.contentWindow.document;
+doc.open();
+doc.write('<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><style>'+weekStyles()+'</style></head><body>'+pages.join('')+'</body></html>');
+doc.close();
+window.__weeklyActive=true;
+$('previewModal').classList.add('show');
+toast('📆 تم توليد مذكرة الأسبوع: 6 حصص — كل حصة في ورقة مستقلة');
+}
+/* اعتراض زر الطباعة داخل نافذة المعاينة لطباعة الأسبوع بدلاً من اليوم الواحد */
+if(typeof window.doPrint==='function'){
+var origDoPrint=window.doPrint;
+window.doPrint=function(){
+if(window.__weeklyActive){
+var f=$('previewFrame');
+if(f&&f.contentWindow){ f.contentWindow.focus(); f.contentWindow.print(); return; }
+}
+return origDoPrint.apply(this,arguments);
+};
+}
+if(typeof window.closePreview==='function'){
+var origClose=window.closePreview;
+window.closePreview=function(){ window.__weeklyActive=false; return origClose.apply(this,arguments); };
+}
+window.addEventListener('load',function(){setTimeout(addToolbarButton,200);});
+console.log('✅ رقعة 5.21: زر «أسبوع كامل (6 حصص)» جاهز — كل حصة في ورقة مستقلة');
+})();
+</script>
+<script>
+/* ==== رقعة 5.22: فرض اتجاه RTL على iframe المعاينة (اليوم والأسبوع) ==== */
+(function(){
+function fixFrameDir(){
+var f=document.getElementById('previewFrame');
+if(!f)return;
+var d=f.contentDocument||f.contentWindow.document;
+if(d&&d.documentElement&&!d.documentElement.getAttribute('dir')){
+d.documentElement.setAttribute('dir','rtl');
+d.documentElement.setAttribute('lang','ar');
+}
+}
+if(typeof previewPrint==='function'){
+var pp=window.previewPrint;
+window.previewPrint=function(){var r=pp.apply(this,arguments);setTimeout(fixFrameDir,60);setTimeout(fixFrameDir,200);return r;};
+}
+console.log('✅ رقعة 5.22: اتجاه iframe المعاينة مضبوط على RTL');
+})();
+</script>
+<script>
+/* ==== رقعة 5.23: توقيت بداية مستقل لكل يوم في المذكرة الأسبوعية ==== */
+(function(){
+function gid(id){return document.getElementById(id);}
+function nextDateSkipSunday(ds){var d=new Date(ds+'T00:00:00');do{d.setDate(d.getDate()+1);}while(d.getDay()===0);return d.toISOString().split('T')[0];}
+function weekdayAr(ds){try{return new Date(ds+'T00:00:00').toLocaleDateString('ar-MA',{weekday:'long'});}catch(e){return '';}}
+function ensureModal(){
+if(gid('weekTimesModal'))return;
+var m=document.createElement('div');m.id='weekTimesModal';
+m.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:3000';
+m.innerHTML='<div style="background:#fff;border-radius:14px;padding:20px;max-width:430px;width:92%;max-height:88vh;overflow:auto">'+
+'<h3 style="margin:0 0 12px">🕐 توقيت بداية كل يوم في الأسبوع</h3>'+
+'<div id="weekTimesGrid" style="display:grid;gap:8px"></div>'+
+'<label style="display:flex;gap:6px;align-items:center;margin-top:12px;font-size:12px"><input type="checkbox" id="weekTimesSave" style="width:auto" checked> حفظ كنمط أسبوعي ثابت</label>'+
+'<div style="display:flex;gap:8px;margin-top:14px"><button id="weekTimesOk" style="flex:1;background:#2a8a4a;color:#fff;border:0;padding:10px;border-radius:8px;font-weight:bold">📆 توليد الأسبوع</button><button id="weekTimesCancel" style="flex:1;background:#777;color:#fff;border:0;padding:10px;border-radius:8px">إلغاء</button></div>'+
+'</div>';
+document.body.appendChild(m);
+}
+function openModal(origHandler){
+ensureModal();
+var saved=JSON.parse(localStorage.getItem('weekStarts_v1')||'null');
+var base=gid('start').value||'08:30';
+var dates=[];var cur=gid('date').value||new Date().toISOString().split('T')[0];
+for(var i=0;i<6;i++){dates.push(cur);cur=nextDateSkipSunday(cur);}
+var grid=gid('weekTimesGrid');grid.innerHTML='';
+for(var j=0;j<6;j++){
+var row=document.createElement('div');row.style.cssText='display:flex;gap:8px;align-items:center';
+row.innerHTML='<span style="flex:1;font-size:12px;font-weight:bold">اليوم '+(j+1)+' — '+weekdayAr(dates[j])+'</span><input type="time" id="wt_'+j+'" value="'+((saved&&saved[j])||base)+'" style="max-width:130px">';
+grid.appendChild(row);
+}
+var m=gid('weekTimesModal');m.style.display='flex';
+gid('weekTimesOk').onclick=function(){
+var times=[];for(var k=0;k<6;k++){times.push(gid('wt_'+k).value||base);}
+if(gid('weekTimesSave').checked){localStorage.setItem('weekStarts_v1',JSON.stringify(times));}
+m.style.display='none';
+var startSaved=gid('start').value;
+window.__weekStarts=times;window.__weekIdx=0;window.__origStart=startSaved;
+try{origHandler();}finally{
+window.__weekStarts=null;window.__weekIdx=0;
+gid('start').value=startSaved;
+}
+};
+gid('weekTimesCancel').onclick=function(){m.style.display='none';};
+}
+function hookButton(){
+var b=gid('weekBtn');
+if(!b||b.__wtHooked)return;
+var orig=b.onclick;
+b.__wtHooked=true;
+b.onclick=function(){openModal(orig);};
+}
+if(typeof gen==='function'){
+var prev=window.gen;
+window.gen=function(){
+if(window.__weekStarts){
+if((window.__weekIdx||0)<window.__weekStarts.length){gid('start').value=window.__weekStarts[window.__weekIdx||0];}
+else{gid('start').value=window.__origStart||gid('start').value;}
+}
+var r=prev.apply(this,arguments);
+if(window.__weekStarts){window.__weekIdx=(window.__weekIdx||0)+1;}
+return r;
+};
+}
+window.addEventListener('load',function(){setTimeout(hookButton,300);setTimeout(hookButton,900);});
+console.log('✅ رقعة 5.23: توقيت بداية مستقل لكل يوم في الأسبوع');
 })();
 </script>
 </body>
