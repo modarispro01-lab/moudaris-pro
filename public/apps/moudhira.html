@@ -375,6 +375,13 @@ const D=(name,def)=>{const k=type+'|'+name;return stageDurations[k]||def;};
 const J=function(){var a=[],i=0;for(;i<arguments.length;i++){var v=arguments[i];if(v&&String(v).trim())a.push(String(v).trim());}return a.join(' — ');};
 const isRev=[6,12,18,24].indexOf(Number(l&&l.lesson))>-1;
 const isL1=/^(1|الأول|الأول ابتدائي|المستوى الأول)$/.test(String(lvl==null?'':lvl).trim());
+if(type==='math' && isL1){
+var gRaw=(l.game||'').trim();
+if(!gRaw || /كراس/.test(gRaw)){
+var L1G=['صيد الأشكال','الكيس السحري','التوأم','البطاقات المتطابقة','العدد الناقص','السلسلة العددية'];
+l=Object.assign({},l,{game:'لعبة: '+L1G[((Number(l.lesson)||1)-1)%L1G.length]+' (أو لعبة من اختيار الأستاذ(ة))'});
+}
+}
 if(type==='math'){
 if(isRev){
 if(isL1)return[
