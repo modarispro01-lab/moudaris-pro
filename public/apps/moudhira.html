@@ -2936,7 +2936,7 @@ return '*{box-sizing:border-box}body{font-family:Tahoma,Arial;margin:0;padding:2
 function nextDateSkipSunday(dateStr){
 var d=new Date(dateStr+'T00:00:00');
 do{ d.setDate(d.getDate()+1); }while(d.getDay()===0);
-return d.toISOString().split('T')[0];
+return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 function addToolbarButton(){
 var toolbars=document.querySelectorAll('.toolbar');
@@ -3028,7 +3028,7 @@ console.log('✅ رقعة 5.22: اتجاه iframe المعاينة مضبوط ع
 /* ==== رقعة 5.23: توقيت بداية مستقل لكل يوم في المذكرة الأسبوعية ==== */
 (function(){
 function gid(id){return document.getElementById(id);}
-function nextDateSkipSunday(ds){var d=new Date(ds+'T00:00:00');do{d.setDate(d.getDate()+1);}while(d.getDay()===0);return d.toISOString().split('T')[0];}
+function nextDateSkipSunday(ds){var d=new Date(ds+'T00:00:00');do{d.setDate(d.getDate()+1);}while(d.getDay()===0);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function weekdayAr(ds){try{return new Date(ds+'T00:00:00').toLocaleDateString('ar-MA',{weekday:'long'});}catch(e){return '';}}
 function ensureModal(){
 if(gid('weekTimesModal'))return;
