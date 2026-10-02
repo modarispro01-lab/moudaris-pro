@@ -2665,6 +2665,8 @@ function mainLevel(){var el=document.getElementById('level');return el?String(el
 function mainSubject(){var el=document.getElementById('subject');return el?String(el.value||''):'';}
 function isL1(){return /الأول/.test(mainLevel());}
 function groupsCount(){
+var cust=false;for(var g=1;g<=4;g++){var el=document.getElementById('subj_g'+g);if(el&&el.value){cust=true;break;}}
+if(cust)return 4;
 var s=mainSubject();
 if(/عربية/.test(s))return isL1()?2:4;
 if(/فرنسية/.test(s))return isL1()?4:2;
@@ -2716,6 +2718,8 @@ function mainLevel(){var el=document.getElementById('level');return el?String(el
 function mainSubject(){var el=document.getElementById('subject');return el?String(el.value||''):'';}
 function isL1(){return /الأول/.test(mainLevel());}
 function groupsCount(){
+var cust=false;for(var g=1;g<=4;g++){var el=document.getElementById('subj_g'+g);if(el&&el.value){cust=true;break;}}
+if(cust)return 4;
 var s=mainSubject();
 if(/عربية/.test(s))return isL1()?2:4;
 if(/فرنسية/.test(s))return isL1()?4:2;
@@ -2774,6 +2778,8 @@ function mainLevel(){var el=document.getElementById('level');return el?String(el
 function mainSubject(){var el=document.getElementById('subject');return el?String(el.value||''):'';}
 function isL1(){return /الأول/.test(mainLevel());}
 function groupsCount(){
+var cust=false;for(var g=1;g<=4;g++){var el=document.getElementById('subj_g'+g);if(el&&el.value){cust=true;break;}}
+if(cust)return 4;
 var s=mainSubject();
 if(/عربية/.test(s))return isL1()?2:4;
 if(/فرنسية/.test(s))return isL1()?4:2;
@@ -3116,6 +3122,120 @@ window.gen=function(){var r=prev.apply(this,arguments);fixTablesDir();return r;}
 window.addEventListener('beforeprint',fixTablesDir);
 window.addEventListener('load',function(){setTimeout(fixTablesDir,150);});
 console.log('✅ رقعة 5.24: جدول الفرنسية LTR (Groupe/Horaire يساراً) والعربية RTL بدون تغيير');
+})();
+</script>
+<script>
+/* ==== رقعة 5.25: مادة مستقلة لكل فوج (تعدد المواد في المذكرة الواحدة) ==== */
+(function(){
+function effSub(g){var s=document.getElementById('subj_g'+g);return (s&&s.value&&s.value!=='none')?s.value:document.getElementById('subject').value;}
+function durFor(s,l){var L1=/الأول/.test(String(l||''));if(/عربية/.test(s))return L1?135:65;if(/فرنسية/.test(s))return L1?65:135;return 65;}
+window.effSubject=effSub; window.durationFor=durFor;
+function withSub(g,fn){var el=document.getElementById('subject');var old=el.value;el.value=effSub(g);try{fn();}finally{el.value=old;}}
+/* لفّ دوال القراءة/التعبئة لتعمل بمادة الفوج */
+var fgl=window.getGroupLesson, fpl=window.fillGroupPathways, fll=window.fillGroupLessons, ffl=window.filterGroupLessons;
+window.getGroupLesson=function(g){var r;withSub(g,function(){r=fgl(g);});return r;};
+window.fillGroupPathways=function(g){withSub(g,function(){fpl(g);});};
+window.fillGroupLessons=function(g){withSub(g,function(){fll(g);});};
+window.filterGroupLessons=function(g){withSub(g,function(){ffl(g);});};
+/* حقن قوائم مادة الفوج */
+function inject(){
+[1,2,3,4].forEach(function(g){
+if(document.getElementById('subj_g'+g))return;
+var card=document.getElementById('groupCard'+g);if(!card)return;
+var p=document.getElementById('pathway_g'+g);if(!p)return;
+var div=document.createElement('div');div.className='field';
+div.innerHTML='<label>📚 مادة الفوج</label><select id="subj_g'+g+'" onchange="changeGroupSubject('+g+')"><option value="">↳ المادة الرئيسية</option><option value="الرياضيات">🔢 الرياضيات</option><option value="اللغة العربية">📖 اللغة العربية</option><option value="اللغة الفرنسية">🇫🇷 اللغة الفرنسية</option><option value="none">🚫 غير معني (استبعاد)</option></select>';
+card.insertBefore(div,p.closest('.field'));
+});
+}
+window.changeGroupSubject=function(g){
+var s=document.getElementById('subj_g'+g),card=document.getElementById('groupCard'+g);
+if(card)card.style.opacity=(s&&s.value==='none')?'.45':'';
+fillGroupPathways(g);gen();
+};
+/* ген جديدة تدعم مادة لكل فوج */
+function gen2(){
+var lvl=document.getElementById('level').value, sub=document.getElementById('subject').value;
+if(window.__weekStarts){if((window.__weekIdx||0)<window.__weekStarts.length){document.getElementById('start').value=window.__weekStarts[window.__weekIdx||0];}else if(window.__origStart){document.getElementById('start').value=window.__origStart;}}
+if(!allData[lvl]||!allData[lvl][sub]){document.getElementById('out').innerHTML='<div style="padding:20px;text-align:center;color:#c0392b;font-weight:bold">⚠️ يرجى اختيار مستوى ومادة صالحين</div>';return;}
+var activeGroups=[1,2,3,4].filter(function(g){var s=document.getElementById('subj_g'+g);if(s&&s.value==='none')return false;var c=document.getElementById('groupCard'+g);if(c&&c.classList.contains('hidden')&&!(s&&s.value))return false;return true;});
+var groupCount=activeGroups.length;
+if(!groupCount){document.getElementById('out').innerHTML='<div style="padding:20px;text-align:center;color:#c0392b;font-weight:bold">⚠️ لا توجد أفواج مفعلة</div>';return;}
+var uniqueSubs=[];activeGroups.forEach(function(g){var s=effSub(g);if(uniqueSubs.indexOf(s)===-1)uniqueSubs.push(s);});
+var isFrench=uniqueSubs.length===1&&/فرنسية/.test(uniqueSubs[0]);
+var trL=function(s){return isFrench?(TR_LEVELS[s]||s):s;},trP=function(s){return isFrench?(TR_PATHS[s]||s):s;},trS=function(s){return isFrench?(TR_SUBJECTS[s]||s):s;};
+var cur=document.getElementById('start').value;
+var gs=[document.getElementById('g1').value,document.getElementById('g2').value,document.getElementById('g3').value,document.getElementById('g4').value];
+var classes=['f1','f2','f3','f4'],rows='',usedPathways=[],levelsUsed=[];
+for(var i=0;i<activeGroups.length;i++){
+var g=activeGroups[i],gsub=effSub(g),gIsFr=/فرنسية/.test(gsub);
+var gType=gIsFr?'fr':(/رياضيات/.test(gsub)?'math':'ar');
+var gDir=gIsFr?'dir="ltr"':'dir="rtl"';
+var l=getGroupLesson(g),pth=getGroupPathway(g),glv=getGroupLevel(g),gDur=durFor(gsub,glv);
+if(levelsUsed.indexOf(trL(glv))===-1)levelsUsed.push(trL(glv));
+if(usedPathways.indexOf(trP(pth))===-1)usedPathways.push(trP(pth));
+var e=addMinutes(cur,gDur),content;
+if(!l){content='<b style="color:#c0392b">⚠️ '+(gIsFr?'Aucune leçon sélectionnée':'لم يتم اختيار حصة لهذا الفوج')+'</b>';}
+else{
+var st=buildStages(gType,l,glv);
+var head=gIsFr?['Étape','Durée','Contenu et déroulement']:['المرحلة','المدة','المحتوى وسير الدرس'];
+content='<table class="stages" '+gDir+'><tr><th class="st-name">'+head[0]+'</th><th class="st-dur">'+head[1]+'</th><th>'+head[2]+'</th></tr>'+st.map(function(s){return '<tr><td class="st-name">'+escapeHtml(s[0])+'</td><td class="st-dur">'+escapeHtml(s[1])+'</td><td>'+escapeHtml(s[2]||'')+'</td></tr>';}).join('')+'</table><div class="objective"><b>'+(gIsFr?'Objectifs':'الأهداف')+':</b> '+escapeHtml(l.objectives)+'</div>';
+}
+rows+='<tr class="'+classes[i]+'" '+gDir+'>'+
+'<td class="group">'+(gIsFr?'Groupe':'الفوج')+'<br>'+escapeHtml(gs[g-1])+'<br><span style="font-size:8px;background:rgba(30,60,114,.12);color:#1e3c72;padding:2px 5px;border-radius:8px;display:inline-block;margin-top:3px">'+escapeHtml(trL(glv))+'</span><br><span style="font-size:8px;background:rgba(123,44,191,.15);color:#7b2cbf;padding:2px 5px;border-radius:8px;display:inline-block;margin-top:3px">'+escapeHtml(trP(pth))+'</span><br><span style="font-size:8px;background:rgba(17,153,142,.15);color:#11998e;padding:2px 5px;border-radius:8px;display:inline-block;margin-top:3px">'+escapeHtml(trS(gsub))+'</span></td>'+
+'<td class="time">'+cur+'<br>—<br>'+e+'<br>'+gDur+' '+(gIsFr?'min':'د')+'</td>'+
+'<td class="content">'+content+'</td>'+
+'<td class="tools">'+(l?'<b>'+(gIsFr?'Matériel':'الوسائل')+':</b><br>'+escapeHtml(l.materials)+'<br><br><b>'+(gIsFr?'Devoirs':'الممارسة/الواجب')+':</b><br>'+escapeHtml(l.independent):'—')+'</td>'+
+'<td class="notes"><div class="dots"><div></div><div></div><div></div><div></div><div></div></div></td></tr>';
+cur=e;
+if(gIsFr){if(i===0&&activeGroups.length>1){var n1=addMinutes(cur,10);rows+='<tr class="break"><td colspan="5">☕ Pause: '+cur+' — '+n1+' (10 min)</td></tr>';cur=n1;}}
+else{if(i===0){var n2=addMinutes(cur,5);rows+='<tr class="break"><td colspan="5">⏱️ انتقال: '+cur+' — '+n2+' (5 دقائق)</td></tr>';cur=n2;}
+if(i===1){var n3=addMinutes(cur,10);rows+='<tr class="break"><td colspan="5">☕ استراحة: '+cur+' — '+n3+' (10 دقائق)</td></tr>';cur=n3;}
+if(i===2){var n4=addMinutes(cur,5);rows+='<tr class="break"><td colspan="5">⏱️ انتقال: '+cur+' — '+n4+' (5 دقائق)</td></tr>';cur=n4;}}
+}
+var notes=document.getElementById('teacherNotes').value.trim();
+var notesBlock=notes?'<div style="margin-top:10px;padding:10px;background:rgba(214,122,26,.1);border:1px solid #d67a1a;border-radius:8px"><b>📝 '+(isFrench?"Notes de l'enseignant":'ملاحظات المعلم')+':</b><br>'+escapeHtml(notes).replace(/\n/g,'<br>')+'</div>':'';
+var matCls=uniqueSubs.length===1?(/فرنسية/.test(uniqueSubs[0])?'fr':/رياضيات/.test(uniqueSubs[0])?'math':'ar'):'ar';
+var dateVal=document.getElementById('date').value;
+var dateFormatted=dateVal?new Date(dateVal).toLocaleDateString(isFrench?'fr-FR':'ar-MA',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'........';
+var pathwaysStr=usedPathways.join(' + ');
+var subjectsStr=uniqueSubs.map(trS).join(' + ');
+var dursStr=[];activeGroups.forEach(function(g){var d=durFor(effSub(g),getGroupLevel(g));if(dursStr.indexOf(d)===-1)dursStr.push(d);});dursStr=dursStr.join(' / ');
+document.getElementById('out').innerHTML=
+'<div class="title"><span class="badge '+matCls+'">'+escapeHtml(levelsUsed.join(' + '))+'</span>'+
+'<span class="badge '+matCls+'">'+escapeHtml(subjectsStr)+'</span>'+
+'<span class="badge path">'+escapeHtml(pathwaysStr)+'</span>'+
+(isFrench?'Fiche Journalière — Soutien intensif':'المذكرة اليومية — الدعم المكثف')+'</div>'+
+'<div class="meta"><div>'+(isFrench?'Date':'التاريخ')+': '+dateFormatted+'</div>'+
+'<div>'+(isFrench?'École':'المؤسسة')+': '+escapeHtml(document.getElementById('school').value||'........')+'</div>'+
+'<div>'+(isFrench?'Niveau':'المستوى')+': '+escapeHtml(levelsUsed.join(' + '))+'</div>'+
+'<div>'+(isFrench?'Matière':'المادة')+': '+escapeHtml(subjectsStr)+'</div>'+
+'<div>'+(isFrench?'Parcours':'المسارات')+': '+escapeHtml(pathwaysStr)+'</div>'+
+'<div>'+(isFrench?'Groupes':'الأفواج')+': '+(isFrench?groupCount:toArabicNum(groupCount))+'</div></div>'+
+'<table><tr><th class="group">'+(isFrench?'Groupe':'الفوج')+'</th><th class="time">'+(isFrench?'Horaire':'التوقيت')+'</th><th class="content">'+(isFrench?'Contenu et déroulement':'مضمون الدرس وسيره')+'</th><th class="tools">'+(isFrench?'Matériel et pratique':'الوسائل والممارسة')+'</th><th class="notes">'+(isFrench?'Observations':'ملاحظات')+'</th></tr>'+rows+'</table>'+notesBlock+
+'<p class="small">'+(isFrench?('💡 Chaque groupe suit son propre niveau, parcours et matière ('+dursStr+' min par groupe). Matières : '+escapeHtml(subjectsStr)):('💡 كل فوج يدرس مستواه ومساره ومادته الخاصة ('+dursStr+' دقيقة لكل فوج). المواد المستخدمة: '+escapeHtml(subjectsStr)))+'</p>';
+setTimeout(function(){if(window.cleanBreaksRows)window.cleanBreaksRows();if(window.cleanTrailingBreaks)window.cleanTrailingBreaks();if(window.fixTablesDir)window.fixTablesDir();},0);
+if(window.__weekStarts){window.__weekIdx=(window.__weekIdx||0)+1;}
+}
+window.gen=gen2;
+/* حفظ واسترجاع مواد الأفواج */
+var sa=window.saveAll;
+window.saveAll=function(){var r=sa.apply(this,arguments);var o=JSON.parse(localStorage.getItem('memoSettings_v11')||'{}');for(var g=1;g<=4;g++){var s=document.getElementById('subj_g'+g);o['subj_g'+g]=s?s.value:'';}localStorage.setItem('memoSettings_v11',JSON.stringify(o));return r;};
+var la=window.loadAll;
+window.loadAll=function(){var r=la.apply(this,arguments);var o=JSON.parse(localStorage.getItem('memoSettings_v11')||'{}');for(var g=1;g<=4;g++){var s=document.getElementById('subj_g'+g);if(s&&o['subj_g'+g]!==undefined){s.value=o['subj_g'+g];var c=document.getElementById('groupCard'+g);if(c)c.style.opacity=(s.value==='none')?'.45':'';fillGroupPathways(g);}}gen();return r;};
+/* عند تغيير المادة الرئيسية: حدّث الأفواج التي تتبعها */
+var cs=window.changeSubject;
+window.changeSubject=function(){var r=cs.apply(this,arguments);for(var g=1;g<=4;g++){var s=document.getElementById('subj_g'+g);if(!s||!s.value){fillGroupPathways(g);}}return r;};
+window.addEventListener('load',function(){
+setTimeout(function(){
+inject();
+var o=JSON.parse(localStorage.getItem('memoSettings_v11')||'{}');
+for(var g=1;g<=4;g++){var s=document.getElementById('subj_g'+g);if(s&&o['subj_g'+g]!==undefined){s.value=o['subj_g'+g];var c=document.getElementById('groupCard'+g);if(c)c.style.opacity=(s.value==='none')?'.45':'';}}
+for(var g2=1;g2<=4;g2++)fillGroupPathways(g2);
+gen();
+},250);
+});
+console.log('✅ رقعة 5.25: مادة مستقلة لكل فوج مفعلة (تعدد المواد في المذكرة الواحدة)');
 })();
 </script>
 </body>
