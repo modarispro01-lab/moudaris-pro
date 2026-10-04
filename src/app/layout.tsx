@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script"; // 👈 أضف هذا الاستيراد في الأعلى
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://modarispro.com'), // سنغيرها لاحقاً
+  metadataBase: new URL('https://modarispro.com'),
   openGraph: {
     type: "website",
     locale: "ar_MA",
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
       "منصة رقمية متكاملة للأستاذ المغربي: موارد تعليمية، أدوات رقمية، وثائق جاهزة، ومستجدات تربوية.",
     images: [
       {
-        url: "/og-image.png", // صورة افتراضية (سنضيفها لاحقاً)
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "MoudarisPro - منصة الأستاذ المغربي",
@@ -73,6 +74,21 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className="min-h-screen flex flex-col antialiased">
+        {/* ===== Google Analytics 4 ===== */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-151Z26Z7NZ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-151Z26Z7NZ');
+          `}
+        </Script>
+        {/* =============================== */}
+
         <Header />
         <main className="flex-grow">{children}</main>
         <Footer />
