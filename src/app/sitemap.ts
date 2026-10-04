@@ -1,9 +1,10 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://moudaris-pro.vercel.app'; // سنغيرها بعد النشر
+/* النطاق الرسمي الوحيد (Canonical) — لا تدرج vercel.app هنا أبداً */
+const baseUrl = 'https://modarispro.com';
 
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // جلب كل الموارد والأخبار من قاعدة البيانات
   const resources = await prisma.resource.findMany({
     select: { slug: true, updatedAt: true },
@@ -19,6 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/resources`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.9 },
     { url: `${baseUrl}/actualites`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.8 },
     { url: `${baseUrl}/tools`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.7 },
+    { url: `${baseUrl}/tools/daily-lesson-plan`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.9 },
   ];
 
   // صفحات الموارد

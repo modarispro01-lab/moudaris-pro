@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://moudaris-pro.vercel.app"), // سنغيرها لاحقاً
+  metadataBase: new URL('https://modarispro.com'), // سنغيرها لاحقاً
   openGraph: {
     type: "website",
     locale: "ar_MA",
