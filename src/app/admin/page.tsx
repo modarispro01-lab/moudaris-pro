@@ -1,6 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import { FileText, Download, Eye, Users } from 'lucide-react';
 
+// 👇 هذا السطر يجبر Next.js على توليد الصفحة ديناميكياً مع كل زيارة، 
+// مما يمنع أخطاء الاتصال بقاعدة البيانات أثناء مرحلة البناء (Build/Prerendering).
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   // جلب الإحصائيات من قاعدة البيانات
   const totalResources = await prisma.resource.count();
