@@ -33,7 +33,7 @@ export default function LoginPage() {
           اترك بريدك الآن — سنراسلك رسالة واحدة فقط فور جاهزية الخدمة.
         </p>
         <form
-          action="https://formsubmit.co/contact@modarispro.com"
+          action="https://formsubmit.co/your.email@gmail.com"
           method="POST"
           className="flex flex-col sm:flex-row gap-3 justify-center"
         >
