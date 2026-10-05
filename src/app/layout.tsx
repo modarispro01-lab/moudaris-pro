@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import Script from "next/script"; // 👈 أضف هذا الاستيراد في الأعلى
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "MoudarisPro | كل أدوات الأستاذ المغربي في مكان واحد",
-    template: "%s | MoudarisPro",
+    default: "Modaris Pro | كل أدوات الأستاذ المغربي في مكان واحد",
+    template: "%s | Modaris Pro",
   },
   description:
-    "منصة رقمية متكاملة للأستاذ المغربي: موارد تعليمية، أدوات رقمية، وثائق جاهزة، ومستجدات تربوية. جذاذات، مذكرات، توازيع، فروض والمزيد.",
+    "منصة Modaris Pro الرقمية للأستاذ المغربي: موارد تعليمية، أدوات رقمية (المذكرة اليومية للدعم المكثف)، وثائق جاهزة، ومستجدات تربوية. جذاذات، مذكرات، توازيع، فروض والمزيد.",
   keywords: [
     "أستاذ مغربي",
     "موارد تعليمية",
@@ -18,25 +18,28 @@ export const metadata: Metadata = {
     "مذكرات دراسية",
     "توزيع سنوي",
     "فروض",
+    "الدعم المكثف",
+    "المذكرة اليومية",
     "التعليم الابتدائي المغرب",
-    "MoudarisPro",
+    "Modaris Pro",
     "منصة تعليمية",
   ],
-  authors: [{ name: "MoudarisPro" }],
-  creator: "MoudarisPro",
-  publisher: "MoudarisPro",
+  authors: [{ name: "Modaris Pro" }],
+  creator: "Modaris Pro",
+  publisher: "Modaris Pro",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://modarispro.com'),
+  metadataBase: new URL("https://modarispro.com"),
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "ar_MA",
-    url: "https://moudaris-pro.vercel.app",
-    siteName: "MoudarisPro",
-    title: "MoudarisPro | كل أدوات الأستاذ المغربي في مكان واحد",
+    url: "https://modarispro.com",
+    siteName: "Modaris Pro",
+    title: "Modaris Pro | كل أدوات الأستاذ المغربي في مكان واحد",
     description:
       "منصة رقمية متكاملة للأستاذ المغربي: موارد تعليمية، أدوات رقمية، وثائق جاهزة، ومستجدات تربوية.",
     images: [
@@ -44,13 +47,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "MoudarisPro - منصة الأستاذ المغربي",
+        alt: "Modaris Pro - منصة الأستاذ المغربي",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MoudarisPro | كل أدوات الأستاذ المغربي في مكان واحد",
+    title: "Modaris Pro | كل أدوات الأستاذ المغربي في مكان واحد",
     description:
       "منصة رقمية متكاملة للأستاذ المغربي: موارد تعليمية، أدوات رقمية، وثائق جاهزة، ومستجدات تربوية.",
     images: ["/og-image.png"],
