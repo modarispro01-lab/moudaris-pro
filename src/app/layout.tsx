@@ -1,3 +1,5 @@
+import CookieBanner from "@/components/CookieBanner";
+import JsonLd from "@/components/JsonLd";
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
@@ -77,6 +79,9 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className="min-h-screen flex flex-col antialiased">
+        {/* ===== البيانات المنظمة JSON-LD (تُقرأ في كل الصفحات) ===== */}
+        <JsonLd />
+
         {/* ===== Google Analytics 4 ===== */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-151Z26Z7NZ"
@@ -95,6 +100,9 @@ export default function RootLayout({
         <Header />
         <main className="flex-grow">{children}</main>
         <Footer />
+
+        {/* ===== لافتة الكوكيز (تطفو فوقكل شيء) ===== */}
+        <CookieBanner />
       </body>
     </html>
   );
