@@ -33,8 +33,7 @@ export default function LoginPage() {
           اترك بريدك الآن — سنراسلك رسالة واحدة فقط فور جاهزية الخدمة.
         </p>
         <form
-          action="https://formsubmit.co/contact@modarispro.com"
-          method="POST"
+        action="https://formsubmit.co/modarispro01@gmail.com"          method="POST"
           className="flex flex-col sm:flex-row gap-3 justify-center"
         >
           <input type="hidden" name="_subject" value="اشتراك جديد: قائمة انتظار حسابات الأساتذة" />
