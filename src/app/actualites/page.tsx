@@ -3,6 +3,10 @@ import { prisma } from '@/lib/prisma';
 import { Calendar, Tag, ArrowLeft } from 'lucide-react';
 import type { Metadata } from "next";
 
+// ===== منع البناء المسبق (لأن الصفحة تحتاج قاعدة بيانات) =====
+export const dynamic = 'force-dynamic';
+// ============================================================
+
 // ===== Meta Tags للـ SEO =====
 export const metadata: Metadata = {
   title: "المستجدات التربوية والأخبار",
