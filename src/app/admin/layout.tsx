@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { LayoutDashboard, FileText, Newspaper, Settings, LogOut, Home } from 'lucide-react';
 
+// ===== حماية شاملة: لا تُبنى أي صفحة أدمن مسبقاً (كلها تحتاج قاعدة بيانات) =====
+export const dynamic = 'force-dynamic';
+// =================================================================================
+
 const menuItems = [
   { name: 'نظرة عامة', href: '/admin', icon: LayoutDashboard },
   { name: 'إدارة الموارد', href: '/admin/resources', icon: FileText },
@@ -12,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-slate-50 flex" dir="rtl">
       {/* القائمة الجانبية */}
-      <aside className="w-64 bg-primary text-white flex flex-col shadow-xl">
+      <aside className="w-64 bg-primary text-white flex-col shadow-xl flex">
         <div className="p-6 border-b border-white/10">
           <h2 className="text-xl font-extrabold flex items-center gap-2">
             <span className="text-accent">Moudaris</span>Pro
