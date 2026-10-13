@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الملف التراكمي — فواصل ومكوّنات | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  .div-page{ height: 269mm; display: flex; flex-direction: column; border: 3px solid var(--t); border-radius: 6px; overflow: hidden; }
+  .div-top{ background: var(--t); color: #fff; padding: 8px 18px; display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; }
+  .div-mid{ flex: 1; display: flex; align-items: center; gap: 26px; padding: 14mm; position: relative; }
+  .div-tab{
+    width: 120px; min-height: 190px; background: var(--t); color: #fff; border-radius: 14px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 0 0 auto;
+  }
+  .div-tab .num{ font-size: 62px; font-weight: 800; line-height: 1; }
+  .div-tab .lbl{ font-size: 14px; margin-top: 8px; opacity: .85; }
+  .div-text{ flex: 1; }
+  .div-kicker{ font-size: 15px; color: var(--t2); font-weight: 800; letter-spacing: 1px; }
+  .div-title{ font-size: 40px; font-weight: 800; color: var(--t); line-height: 1.35; margin: 8px 0 14px; }
+  .div-rule{ width: 90px; height: 5px; background: var(--accent); border-radius: 3px; }
+  .div-note{ margin-top: 18px; font-size: 14px; color: #475569; max-width: 78%; line-height: 1.9; }
+  .div-foot{ border-top: 1.5px solid var(--border); padding: 10px 18px; font-size: 12.5px; color: #475569; display: flex; justify-content: space-between; }
+  .idx-page{ height: 269mm; border: 3px solid var(--t); border-radius: 6px; padding: 13mm; display: flex; flex-direction: column; }
+  .idx-h{ text-align: center; color: var(--t); font-size: 30px; font-weight: 800; margin-bottom: 4px; }
+  .idx-sub{ text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+  .idx-row{ display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px dashed var(--border); font-size: 15px; }
+  .idx-n{ width: 34px; height: 34px; border-radius: 9px; background: var(--t); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex: 0 0 auto; }
+  .idx-t{ flex: 1; font-weight: 700; color: var(--text); }
+  .idx-dots{ color: var(--muted); }
+  .sec-row{ display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .sec-row input[type=checkbox]{ width: 17px; height: 17px; accent-color: var(--primary); }
+  .sec-row input[type=text]{ flex: 1; padding: 7px 9px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">م</div>
+      <div>
+        <div class="mp-title">الملف التراكمي</div>
+        <div class="mp-sub">فواصل ومكوّنات جاهزة للطباعة</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">👤 بيانات الأستاذ</div>
+    <div class="mp-field"><label>الاسم الكامل</label><input type="text" data-profile="fullName"></div>
+    <div class="mp-field"><label>المؤسسة</label><input type="text" data-profile="establishment"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>الأكاديمية</label><input type="text" data-profile="academy"></div>
+      <div class="mp-field"><label>المديرية</label><input type="text" data-profile="direction"></div>
+    </div>
+    <div class="mp-field"><label>المستوى</label><input type="text" data-profile="level" placeholder="مثلاً: الرابع ابتدائي"></div>
+
+    <div class="mp-section-title">📑 الفواصل</div>
+    <div id="sections"></div>
+    <div class="mp-field" style="margin-top:10px">
+      <label>إضافة فاصل خاص</label>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="newSec" placeholder="عنوان الفاصل الجديد">
+        <button class="mp-btn mp-btn-ghost mp-btn-sm" onclick="addSection()">إضافة</button>
+      </div>
+    </div>
+
+    <div class="mp-section-title">⚙️ خيارات</div>
+    <label class="mp-check"><input type="checkbox" id="showCover" checked> إظهار صفحة الغلاف</label>
+    <label class="mp-check"><input type="checkbox" id="showIndex" checked> إظهار الفهرس</label>
+    <label class="mp-check"><input type="checkbox" id="showNote" checked> إظهار ملاحظة الفاصل</label>
+    <div class="mp-field" style="margin-top:8px">
+      <label>القالب اللوني</label>
+      <select id="theme">
+        <option value="theme-blue">أزرق (أساسي)</option>
+        <option value="theme-green">أخضر</option>
+        <option value="theme-gold">ذهبي</option>
+        <option value="theme-purple">بنفسجي</option>
+        <option value="theme-slate">رمادي</option>
+        <option value="theme-mono">أبيض وأسود</option>
+      </select>
+    </div>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ طباعة / حفظ PDF</button>
+    </div>
+    <div class="mp-note">💡 اطبع الفواصل وضع كل فاصل أمام قسمه داخل الملف التراكمي.</div>
+  </aside>
+
+  <main class="mp-stage" id="stage"></main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  var DEFAULT_SECTIONS = [
+    "الوثائق الشخصية والإدارية",
+    "الشهادات والدبلومات",
+    "التقارير والمراسلات الإدارية",
+    "المذكرات والجذاذات",
+    "التوزيعات والوثائق التربوية",
+    "شبكات التقويم والنتائج",
+    "أنشطة الدعم والتثبيت",
+    "صور الأنشطة الصفية",
+    "دلائل ومراجع تربوية"
+  ];
+
+  var state = MP.getState("dossier", null) || {
+    sections: DEFAULT_SECTIONS.map(function (t) { return { title: t, on: true }; }),
+    theme: "theme-blue",
+    showCover: true, showIndex: true, showNote: true
+  };
+  // مواءمة في حال تغيّر عدد الفواصل الافتراضي
+  DEFAULT_SECTIONS.forEach(function (t, i) {
+    if (!state.sections[i]) state.sections[i] = { title: t, on: true };
+  });
+
+  function save() { MP.setState("dossier", state); render(); }
+
+  function renderSections() {
+    var box = document.getElementById("sections");
+    box.innerHTML = "";
+    state.sections.forEach(function (s, i) {
+      var row = document.createElement("div");
+      row.className = "sec-row";
+      row.innerHTML = '<input type="checkbox" ' + (s.on ? "checked" : "") + '>' +
+        '<input type="text" value="' + MP.escapeHtml(s.title) + '">' +
+        '<button class="mp-btn mp-btn-ghost mp-btn-sm" title="حذف">✕</button>';
+      row.querySelector("input[type=checkbox]").addEventListener("change", function () { s.on = this.checked; save(); });
+      row.querySelector("input[type=text]").addEventListener("input", function () { s.title = this.value; saveNoRender(); });
+      row.querySelector("button").addEventListener("click", function () { state.sections.splice(i, 1); save(); renderSections(); });
+      box.appendChild(row);
+    });
+  }
+  function saveNoRender() { MP.setState("dossier", state); }
+
+  window.addSection = function () {
+    var inp = document.getElementById("newSec");
+    var t = inp.value.trim();
+    if (!t) return;
+    state.sections.push({ title: t, on: true });
+    inp.value = "";
+    save(); renderSections();
+  };
+
+  MP.bindProfile(document);
+  MP.onProfileChange = function(){ render(); };
+
+  ["showCover","showIndex","showNote"].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.checked = !!state[id];
+    el.addEventListener("change", function () { state[id] = el.checked; save(); });
+  });
+  var th = document.getElementById("theme");
+  th.value = state.theme;
+  th.addEventListener("change", function () { state.theme = th.value; save(); });
+
+  function render() {
+    var p = MP.getProfile();
+    var stage = document.getElementById("stage");
+    var active = state.sections.filter(function (s) { return s.on && s.title.trim(); });
+    var html = "";
+
+    // الغلاف
+    if (state.showCover) {
+      html += '<div class="a4 ' + state.theme + '">' +
+        '<div class="cover-frame" style="height:269mm;border:3px solid var(--t);border-radius:6px;padding:9mm;display:flex;flex-direction:column;background:linear-gradient(180deg,#fff 0%,var(--t-soft) 100%)">' +
+          '<div style="flex:1;border:1.5px solid var(--t);border-radius:4px;padding:10mm;display:flex;flex-direction:column">' +
+            '<div style="text-align:center;color:var(--t);font-weight:800;font-size:14px">' + MP.escapeHtml(p.establishment || "") + '</div>' +
+            '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center">' +
+              '<div style="background:var(--t);color:#fff;font-weight:800;padding:6px 22px;border-radius:40px">وثيقة</div>' +
+              '<div style="font-size:46px;font-weight:800;color:var(--t)">الملف التراكمي</div>' +
+              '<div style="font-size:19px;color:var(--t2);font-weight:700">' + MP.escapeHtml(p.fullName || "................................") + '</div>' +
+              '<div style="border:1.5px solid var(--t);border-radius:10px;padding:7px 18px;font-weight:700;color:var(--t)">' + MP.escapeHtml(p.level || "جميع المستويات") + '</div>' +
+            '</div>' +
+            '<div style="text-align:center;background:var(--t);color:#fff;border-radius:8px;padding:6px;font-weight:800">السنة الدراسية: ' + MP.escapeHtml(p.schoolYear || MP.YEAR) + '</div>' +
+          '</div>' +
+        '</div></div>';
+    }
+
+    // الفهرس
+    if (state.showIndex && active.length) {
+      html += '<div class="a4 ' + state.theme + '"><div class="idx-page">' +
+        '<div class="idx-h">الفهرس</div>' +
+        '<div class="idx-sub">' + MP.escapeHtml(p.fullName || "") + (p.establishment ? " — " + MP.escapeHtml(p.establishment) : "") + '</div>';
+      active.forEach(function (s, i) {
+        html += '<div class="idx-row"><div class="idx-n">' + (i + 1) + '</div><div class="idx-t">' + MP.escapeHtml(s.title) + '</div><div class="idx-dots">.............</div></div>';
+      });
+      html += '</div></div>';
+    }
+
+    // الفواصل
+    active.forEach(function (s, i) {
+      html += '<div class="a4 ' + state.theme + '"><div class="div-page">' +
+        '<div class="div-top"><span>' + MP.escapeHtml(p.establishment || "Modaris Pro") + '</span><span>الملف التراكمي — ' + MP.escapeHtml(p.schoolYear || MP.YEAR) + '</span></div>' +
+        '<div class="div-mid">' +
+          '<div class="div-tab"><div class="num">' + String(i + 1).padStart(2, "0") + '</div><div class="lbl">فاصل</div></div>' +
+          '<div class="div-text">' +
+            '<div class="div-kicker">القسم</div>' +
+            '<div class="div-title">' + MP.escapeHtml(s.title) + '</div>' +
+            '<div class="div-rule"></div>' +
+            (state.showNote ? '<div class="div-note">يُرتَّب محتوى هذا القسم خلف هذا الفاصل، مع الحرص على تحديثه دورياً خلال الموسم الدراسي.</div>' : "") +
+          '</div>' +
+        '</div>' +
+        '<div class="div-foot"><span>الأستاذ(ة): ' + MP.escapeHtml(p.fullName || "....................") + '</span><span>' + MP.escapeHtml(p.level || "") + '</span></div>' +
+      '</div></div>';
+    });
+
+    if (!html) html = '<div class="mp-note">اختر فاصلاً واحداً على الأقل من اللوحة.</div>';
+    stage.innerHTML = html;
+  }
+
+  renderSections();
+  render();
+})();
+</script>
+</body>
+</html>

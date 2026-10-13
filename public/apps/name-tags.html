@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>بطاقات أسماء التلاميذ (Affichettes) | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  .tags{ display:grid; height:269mm; gap:5mm; }
+  .tag{
+    border:2px dashed var(--t); border-radius:12px; background: linear-gradient(180deg,#fff 0%, var(--t-soft) 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    padding: 6mm; overflow:hidden; position:relative;
+  }
+  .tag .nm{ font-weight:800; color:var(--t); line-height:1.3; word-break:break-word; }
+  .tag .sub{ font-size:13px; color:#475569; margin-top:4mm; font-weight:700; }
+  .tag .dec{ font-size:20px; color:var(--accent); margin-bottom:3mm; }
+  .cut-hint{ text-align:center; font-size:10px; color:#94a3b8; margin-top:4mm; }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">م</div>
+      <div>
+        <div class="mp-title">بطاقات أسماء التلاميذ</div>
+        <div class="mp-sub">Affichettes للطاولات</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">👤 بيانات الأستاذ</div>
+    <div class="mp-field"><label>المؤسسة</label><input type="text" data-profile="establishment"></div>
+    <div class="mp-field"><label>المستوى / القسم</label><input type="text" data-profile="level"></div>
+
+    <div class="mp-section-title">🧑‍🎓 لائحة التلاميذ</div>
+    <div class="mp-field">
+      <textarea id="students" placeholder="اسم واحد في كل سطر&#10;محمد العلوي&#10;سارة بناني"></textarea>
+      <div class="mp-hint">تُولَّد بطاقة لكل اسم، بالترتيب.</div>
+    </div>
+
+    <div class="mp-section-title">⚙️ التخطيط</div>
+    <div class="mp-field">
+      <label>عدد البطاقات في الورقة</label>
+      <select id="perPage">
+        <option value="2">2 بطاقات (كبيرة جداً)</option>
+        <option value="4">4 بطاقات</option>
+        <option value="6">6 بطاقات</option>
+        <option value="9">9 بطاقات</option>
+        <option value="12">12 بطاقة (اقتصادية)</option>
+      </select>
+    </div>
+    <label class="mp-check"><input type="checkbox" id="showLevel" checked> إظهار المستوى داخل البطاقة</label>
+    <label class="mp-check"><input type="checkbox" id="showEst"> إظهار اسم المؤسسة داخل البطاقة</label>
+    <label class="mp-check"><input type="checkbox" id="showDec" checked> زخرفة (نجمة)</label>
+    <div class="mp-field" style="margin-top:8px">
+      <label>القالب اللوني</label>
+      <select id="theme">
+        <option value="theme-blue">أزرق (أساسي)</option>
+        <option value="theme-green">أخضر</option>
+        <option value="theme-gold">ذهبي</option>
+        <option value="theme-purple">بنفسجي</option>
+        <option value="theme-slate">رمادي</option>
+        <option value="theme-mono">أبيض وأسود</option>
+      </select>
+    </div>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ طباعة / حفظ PDF</button>
+    </div>
+    <div class="mp-note">💡 اطبع على ورق مقوّى، ثم اقْصَّ على الخطوط المتقطّعة وثبّت البطاقة على الطاولة.</div>
+  </aside>
+
+  <main class="mp-stage" id="stage"></main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  MP.bindProfile(document);
+  var st = MP.getState("name-tags", {
+    students: "", perPage: "6", showLevel: true, showEst: false, showDec: true, theme: "theme-blue"
+  });
+
+  var cfgIds = ["students","perPage","theme"];
+  cfgIds.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (st[id] !== undefined) el.value = st[id];
+    el.addEventListener("input", function () { st[id] = el.value; save(); });
+    el.addEventListener("change", function () { st[id] = el.value; save(); });
+  });
+  ["showLevel","showEst","showDec"].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.checked = !!st[id];
+    el.addEventListener("change", function () { st[id] = el.checked; save(); });
+  });
+
+  MP.onProfileChange = function(){ render(); };
+  function save() { MP.setState("name-tags", st); render(); }
+  function esc(s){ return MP.escapeHtml(s); }
+
+  var GRIDS = {
+    "2":  { cols: 1, rows: 2, fs: 60 },
+    "4":  { cols: 2, rows: 2, fs: 44 },
+    "6":  { cols: 2, rows: 3, fs: 38 },
+    "9":  { cols: 3, rows: 3, fs: 30 },
+    "12": { cols: 3, rows: 4, fs: 25 }
+  };
+
+  function render() {
+    var p = MP.getProfile();
+    var g = GRIDS[st.perPage] || GRIDS["6"];
+    var per = parseInt(st.perPage, 10);
+    var names = (st.students || "").split(/\r?\n/).map(function (l) {
+      return l.replace(/^\s*\d+[-.)]?\s*/, "").trim();
+    }).filter(Boolean);
+
+    if (!names.length) {
+      document.getElementById("stage").innerHTML =
+        '<div class="a4 ' + st.theme + '"><div class="mp-note">أضف لائحة التلاميذ من اللوحة على اليمين لتوليد البطاقات.</div></div>';
+      return;
+    }
+
+    var html = "";
+    for (var i = 0; i < names.length; i += per) {
+      var chunk = names.slice(i, i + per);
+      var cells = "";
+      chunk.forEach(function (nm) {
+        var sub = "";
+        if (st.showEst && p.establishment) sub += '<div class="sub">' + esc(p.establishment) + '</div>';
+        if (st.showLevel && p.level) sub += '<div class="sub">' + esc(p.level) + '</div>';
+        cells += '<div class="tag">' +
+          (st.showDec ? '<div class="dec">★</div>' : "") +
+          '<div class="nm" style="font-size:' + g.fs + 'px">' + esc(nm) + '</div>' +
+          sub + '</div>';
+      });
+      html += '<div class="a4 ' + st.theme + '">' +
+        '<div class="tags" style="grid-template-columns:repeat(' + g.cols + ',1fr);grid-template-rows:repeat(' + g.rows + ',1fr)">' + cells + '</div>' +
+        '<div class="cut-hint">اقْصَّ على الخطوط المتقطّعة — Modaris Pro</div></div>';
+    }
+
+    document.getElementById("stage").innerHTML = html;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

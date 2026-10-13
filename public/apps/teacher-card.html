@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>البطاقة الشخصية للأستاذ (عربية / فرنسية) | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  .tc-page{ min-height: 269mm; border: 3px solid var(--t); border-radius: 6px; padding: 12mm; }
+  .tc-head{ display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--t); padding-bottom: 10px; margin-bottom: 16px; }
+  .tc-head .kingdom{ font-size: 13px; font-weight: 800; color: var(--t); line-height: 1.9; }
+  .tc-photo{ width: 34mm; height: 42mm; border: 2px dashed var(--t); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--t); font-size: 11px; text-align: center; flex: 0 0 auto; }
+  .tc-title{ text-align: center; background: var(--t); color: #fff; font-size: 24px; font-weight: 800; border-radius: 10px; padding: 9px; margin-bottom: 18px; }
+  .tc-group{ font-size: 15px; font-weight: 800; color: var(--t); border-right: 5px solid var(--accent); padding-right: 10px; margin: 18px 0 8px; }
+  .mp-table td.lbl{ background: var(--t-soft); font-weight: 800; width: 32%; text-align: right; }
+  .mp-table td.val{ text-align: right; height: 30px; }
+  .tc-foot{ display: flex; justify-content: space-between; margin-top: 26px; font-size: 13px; font-weight: 700; color: var(--t); }
+  .tc-foot .sig{ border-top: 2px solid var(--t); padding-top: 6px; min-width: 32%; text-align: center; }
+  .tc-stamp{ margin-top: 16px; text-align: center; font-size: 11px; color: var(--muted); }
+  [dir="ltr"] .tc-title{ letter-spacing: .5px; }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">م</div>
+      <div>
+        <div class="mp-title">البطاقة الشخصية للأستاذ</div>
+        <div class="mp-sub">عربية · فرنسية · الاثنتان</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">🌐 اللغة</div>
+    <div class="mp-field">
+      <select id="lang">
+        <option value="ar">العربية</option>
+        <option value="fr">الفرنسية</option>
+        <option value="both">الاثنتان معاً</option>
+      </select>
+    </div>
+
+    <div class="mp-section-title">🧍 القسم الشخصي</div>
+    <div class="mp-field"><label>الاسم الكامل</label><input type="text" data-profile="fullName"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>تاريخ الميلاد</label><input type="date" data-card="birthDate"></div>
+      <div class="mp-field"><label>مكان الميلاد</label><input type="text" data-card="birthPlace"></div>
+    </div>
+    <div class="mp-row">
+      <div class="mp-field"><label>رقم البطاقة الوطنية</label><input type="text" data-card="cin"></div>
+      <div class="mp-field"><label>الحالة العائلية</label><input type="text" data-card="family"></div>
+    </div>
+    <div class="mp-field"><label>العنوان</label><input type="text" data-card="address"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>الهاتف</label><input type="text" data-card="phone" dir="ltr"></div>
+      <div class="mp-field"><label>البريد الإلكتروني</label><input type="text" data-card="email" dir="ltr"></div>
+    </div>
+
+    <div class="mp-section-title">🏛️ القسم الإداري</div>
+    <div class="mp-row">
+      <div class="mp-field"><label>رقم التأجير (P.P.R)</label><input type="text" data-card="ppn" dir="ltr"></div>
+      <div class="mp-field"><label>الإطار</label><input type="text" data-card="cadre" value="أستاذ التعليم الابتدائي"></div>
+    </div>
+    <div class="mp-row">
+      <div class="mp-field"><label>الدرجة</label><input type="text" data-card="grade"></div>
+      <div class="mp-field"><label>تاريخ التعيين</label><input type="date" data-card="hireDate"></div>
+    </div>
+    <div class="mp-field"><label>آخر ترقية</label><input type="date" data-card="promotion"></div>
+    <div class="mp-field"><label>المؤسسة</label><input type="text" data-profile="establishment"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>الأكاديمية</label><input type="text" data-profile="academy"></div>
+      <div class="mp-field"><label>المديرية الإقليمية</label><input type="text" data-profile="direction"></div>
+    </div>
+
+    <div class="mp-section-title">🎓 القسم المهني</div>
+    <div class="mp-row">
+      <div class="mp-field"><label>المستوى</label><input type="text" data-profile="level"></div>
+      <div class="mp-field"><label>المادة</label><input type="text" data-profile="subject"></div>
+    </div>
+    <div class="mp-field"><label>الشهادات المحصّل عليها</label><textarea data-card="diplomas" placeholder="شهادة واحدة في كل سطر"></textarea></div>
+
+    <div class="mp-section-title">⚙️ خيارات</div>
+    <label class="mp-check"><input type="checkbox" id="showPhoto" checked> إظهار خانة الصورة</label>
+    <label class="mp-check"><input type="checkbox" id="showSign" checked> إظهار خانة التوقيع</label>
+    <div class="mp-field" style="margin-top:8px">
+      <label>القالب اللوني</label>
+      <select id="theme">
+        <option value="theme-blue">أزرق (أساسي)</option>
+        <option value="theme-green">أخضر</option>
+        <option value="theme-gold">ذهبي</option>
+        <option value="theme-slate">رمادي</option>
+        <option value="theme-mono">أبيض وأسود</option>
+      </select>
+    </div>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ طباعة / حفظ PDF</button>
+    </div>
+    <div class="mp-note">💡 بيانات القسم الشخصي هنا لا تظهر في الأدوات الأخرى. أما الاسم والمؤسسة والمستوى فهي مشتركة.</div>
+  </aside>
+
+  <main class="mp-stage" id="stage"></main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  MP.bindProfile(document);
+
+  // الحقول الخاصة بالبطاقة (تُحفظ في حالة منفصلة)
+  var cardFields = ["birthDate","birthPlace","cin","family","address","phone","email","ppn","cadre","grade","hireDate","promotion","diplomas"];
+  var card = MP.getState("teacher-card", { cadre: "أستاذ التعليم الابتدائي" });
+
+  document.querySelectorAll("[data-card]").forEach(function (el) {
+    var k = el.getAttribute("data-card");
+    if (card[k] !== undefined) el.value = card[k];
+    el.addEventListener("input", function () { card[k] = el.value; MP.setState("teacher-card", card); render(); });
+  });
+
+  var opts = MP.getState("teacher-card-opts", { lang: "ar", showPhoto: true, showSign: true, theme: "theme-blue" });
+  ["showPhoto","showSign"].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.checked = !!opts[id];
+    el.addEventListener("change", function () { opts[id] = el.checked; MP.setState("teacher-card-opts", opts); render(); });
+  });
+  var langEl = document.getElementById("lang"), th = document.getElementById("theme");
+  langEl.value = opts.lang; th.value = opts.theme;
+  langEl.addEventListener("change", function () { opts.lang = langEl.value; MP.setState("teacher-card-opts", opts); render(); });
+  th.addEventListener("change", function () { opts.theme = th.value; MP.setState("teacher-card-opts", opts); render(); });
+
+  MP.onProfileChange = function(){ render(); };
+
+  var L = {
+    ar: {
+      kingdom: "المملكة المغربية", ministry: "وزارة التربية الوطنية والتعليم الأولي والرياضة",
+      academy: "الأكاديمية الجهوية للتربية والتكوين", direction: "المديرية الإقليمية",
+      title: "البطاقة الشخصية للأستاذ(ة)", photo: "الصورة",
+      g1: "المعلومات الشخصية", g2: "المعلومات الإدارية", g3: "المعلومات المهنية والشهادات",
+      fullName: "الاسم الكامل", birthDate: "تاريخ الميلاد", birthPlace: "مكان الميلاد",
+      cin: "رقم البطاقة الوطنية", family: "الحالة العائلية", address: "العنوان",
+      phone: "الهاتف", email: "البريد الإلكتروني", ppn: "رقم التأجير (P.P.R)",
+      cadre: "الإطار", grade: "الدرجة", hireDate: "تاريخ التعيين", promotion: "آخر ترقية",
+      establishment: "المؤسسة", level: "المستوى", subject: "المادة", diplomas: "الشهادات المحصّل عليها",
+      sig1: "توقيع المعني بالأمر", sig2: "طابع وتوقيع المدير(ة)"
+    },
+    fr: {
+      kingdom: "ROYAUME DU MAROC", ministry: "Ministère de l'Éducation Nationale, du Préscolaire et des Sports",
+      academy: "Académie Régionale d'Éducation et de Formation", direction: "Direction Provinciale",
+      title: "Fiche personnelle de l'enseignant(e)", photo: "Photo",
+      g1: "Informations personnelles", g2: "Informations administratives", g3: "Informations professionnelles et diplômes",
+      fullName: "Nom et prénom", birthDate: "Date de naissance", birthPlace: "Lieu de naissance",
+      cin: "C.I.N", family: "Situation familiale", address: "Adresse",
+      phone: "Téléphone", email: "E-mail", ppn: "N° P.P.R",
+      cadre: "Cadre", grade: "Échelle", hireDate: "Date de nomination", promotion: "Dernière promotion",
+      establishment: "Établissement", level: "Niveau", subject: "Matière", diplomas: "Diplômes obtenus",
+      sig1: "Signature de l'intéressé(e)", sig2: "Cachet et signature du Directeur"
+    }
+  };
+
+  function esc(s){ return MP.escapeHtml(s); }
+  function row(label, value) {
+    return '<tr><td class="lbl">' + label + '</td><td class="val">' + (value || "&nbsp;") + '</td></tr>';
+  }
+
+  function buildCard(langKey) {
+    var p = MP.getProfile();
+    var t = L[langKey];
+    var dir = langKey === "fr" ? "ltr" : "rtl";
+    var dv = card.birthDate ? MP.formatDate(card.birthDate) : "";
+    var hv = card.hireDate ? MP.formatDate(card.hireDate) : "";
+    var pv = card.promotion ? MP.formatDate(card.promotion) : "";
+    var dipl = card.diplomas ? MP.nl2br(card.diplomas) : "";
+
+    var head =
+      '<div class="tc-head">' +
+        '<div class="kingdom">' + t.kingdom + '<br>' + t.ministry +
+          (p.academy ? '<br>' + t.academy + ' — ' + esc(p.academy) : "") +
+          (p.direction ? '<br>' + t.direction + ' — ' + esc(p.direction) : "") +
+        '</div>' +
+        (opts.showPhoto ? '<div class="tc-photo">' + t.photo + '</div>' : "") +
+      '</div>';
+
+    var g1 = '<div class="tc-group">' + t.g1 + '</div><table class="mp-table">' +
+      row(t.fullName, esc(p.fullName)) + row(t.birthDate, dv) + row(t.birthPlace, esc(card.birthPlace)) +
+      row(t.cin, esc(card.cin)) + row(t.family, esc(card.family)) + row(t.address, esc(card.address)) +
+      row(t.phone, esc(card.phone)) + row(t.email, esc(card.email)) + '</table>';
+
+    var g2 = '<div class="tc-group">' + t.g2 + '</div><table class="mp-table">' +
+      row(t.ppn, esc(card.ppn)) + row(t.cadre, esc(card.cadre)) + row(t.grade, esc(card.grade)) +
+      row(t.hireDate, hv) + row(t.promotion, pv) + row(t.establishment, esc(p.establishment)) + '</table>';
+
+    var g3 = '<div class="tc-group">' + t.g3 + '</div><table class="mp-table">' +
+      row(t.level, esc(p.level)) + row(t.subject, esc(p.subject)) + row(t.diplomas, dipl) + '</table>';
+
+    var foot = opts.showSign
+      ? '<div class="tc-foot"><div class="sig">' + t.sig1 + '</div><div class="sig">' + t.sig2 + '</div></div>'
+      : "";
+
+    return '<div class="a4 ' + opts.theme + '" dir="' + dir + '"><div class="tc-page">' +
+      head + '<div class="tc-title">' + t.title + '</div>' + g1 + g2 + g3 + foot +
+      '<div class="tc-stamp">Modaris Pro — modarispro.com</div>' +
+      '</div></div>';
+  }
+
+  function render() {
+    var html = "";
+    if (opts.lang === "both") html = buildCard("ar") + buildCard("fr");
+    else html = buildCard(opts.lang);
+    document.getElementById("stage").innerHTML = html;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

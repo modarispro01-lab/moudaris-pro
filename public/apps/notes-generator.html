@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مولّد الملاحظات التقديرية | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  .ng-head{ display:flex; justify-content:space-between; align-items:flex-end; border-bottom:3px solid var(--t); padding-bottom:8px; margin-bottom:12px; }
+  .ng-head .h-l{ font-size:12px; color:#475569; line-height:1.8; }
+  .ng-head .h-r .ttl{ font-size:22px; font-weight:800; color:var(--t); text-align:center; }
+  .ng-head .h-r .sub{ font-size:12.5px; color:#475569; text-align:center; margin-top:2px; }
+  .mp-table td.rk{ width:34px; }
+  .mp-table td.avg{ width:70px; font-weight:800; background: var(--t-soft); }
+  .mp-table td.rmk{ text-align:right; font-size:12px; line-height:1.8; }
+  .ng-list{ font-size:13.5px; line-height:2.1; }
+  .ng-list .row{ display:flex; gap:10px; align-items:flex-start; border-bottom:1px dashed #cbd5e1; padding:6px 0; }
+  .ng-list .row .nm{ font-weight:800; width:38%; }
+  .ng-list .row .tx{ flex:1; text-align:right; }
+  .ng-foot{ display:flex; justify-content:space-between; margin-top:22px; font-size:12.5px; color:var(--t); font-weight:700; }
+  .ng-foot .sig{ border-top:2px solid var(--t); padding-top:5px; min-width:30%; text-align:center; }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">م</div>
+      <div>
+        <div class="mp-title">مولّد الملاحظات التقديرية</div>
+        <div class="mp-sub">ملاحظات جاهزة حسب المعدل</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">👤 بيانات الأستاذ</div>
+    <div class="mp-field"><label>الاسم الكامل</label><input type="text" data-profile="fullName"></div>
+    <div class="mp-field"><label>المؤسسة</label><input type="text" data-profile="establishment"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>المستوى</label><input type="text" data-profile="level" placeholder="الرابع ابتدائي"></div>
+      <div class="mp-field"><label>المادة</label><input type="text" data-profile="subject" placeholder="الرياضيات"></div>
+    </div>
+
+    <div class="mp-section-title">🧑‍🎓 التلاميذ والمعدّلات</div>
+    <div class="mp-field">
+      <textarea id="rows" placeholder="اسم واحد في كل سطر، مع المعدّل بعد النقطتين:&#10;محمد العلوي : 15.5&#10;سارة بناني : 18&#10;أمين الإدريسي : 9.5"></textarea>
+      <div class="mp-hint">الصيغة: <b>الاسم : المعدّل</b> (على 20). إذا كتبت الاسم فقط، تُولَّد ملاحظة محايدة.</div>
+    </div>
+
+    <div class="mp-section-title">✍️ نبرة الملاحظة</div>
+    <div class="mp-field">
+      <select id="tone">
+        <option value="enc">تشجيعية (لطيفة ومحفّزة)</option>
+        <option value="bal">متوازنة (موضوعية)</option>
+        <option value="firm">واضحة (تحفيز على العمل)</option>
+      </select>
+    </div>
+    <div class="mp-field"><label>الفترة / الأسدوس</label><input type="text" id="period" placeholder="الأسدوس الأول"></div>
+    <div class="mp-field">
+      <label>الشكل</label>
+      <select id="layout">
+        <option value="table">جدول (اسم · معدل · ملاحظة)</option>
+        <option value="list">لائحة نصية للنسخ في البطاقة</option>
+      </select>
+    </div>
+
+    <div class="mp-section-title">⚙️ خيارات</div>
+    <label class="mp-check"><input type="checkbox" id="showAvg" checked> إظهار عمود المعدّل</label>
+    <label class="mp-check"><input type="checkbox" id="showSig" checked> إظهار خانات التوقيع</label>
+    <div class="mp-field" style="margin-top:8px">
+      <label>القالب اللوني</label>
+      <select id="theme">
+        <option value="theme-blue">أزرق (أساسي)</option>
+        <option value="theme-green">أخضر</option>
+        <option value="theme-slate">رمادي</option>
+        <option value="theme-mono">أبيض وأسود</option>
+      </select>
+    </div>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ طباعة / حفظ PDF</button>
+      <button class="mp-btn mp-btn-ghost mp-btn-block" onclick="regen()">🔁 توليد صيغ أخرى</button>
+    </div>
+    <div class="mp-note">💡 يمكنك تعديل أي ملاحظة مباشرة على الورقة بالنقر عليها قبل الطباعة.</div>
+  </aside>
+
+  <main class="mp-stage" id="stage"></main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  MP.bindProfile(document);
+  var st = MP.getState("notes-gen", {
+    rows: "", tone: "enc", period: "", layout: "table",
+    showAvg: true, showSig: true, theme: "theme-blue", turn: 0
+  });
+
+  var BANDS = [
+    { min: 18, enc: ["نتائج ممتازة ومتميّزة. تحية تقدير لك، واصل هذا التألّق.",
+                     "أداء رائع يستحق الإشادة. حافظ على هذا المستوى العالي."],
+               bal: ["مستوى ممتاز. واصل بنفس الجدّية والانتظام.",
+                     "نتائج ممتازة تعكس مجهوداً كبيراً."],
+               firm: ["نتائج عالية جداً. حافظ على المستوى ولا تتراخَ.",
+                      "مستوى ممتاز؛ المطلوب الآن الاستمرارية."] },
+    { min: 16, enc: ["نتائج جيدة جداً، أحسنت! خطوة واحدة تفصلك عن الامتياز.",
+                     "مجهود محمود، أنت قريب جداً من القمّة."],
+               bal: ["مستوى جيد جداً. مزيداً من الاجتهاد.",
+                     "نتائج جيدة جداً مع إمكانية الأفضل."],
+               firm: ["مستوى جيد جداً. انتبه إلى التفاصيل لتصل إلى الامتياز.",
+                      "جيد جداً، لكن الانتظام في المراجعة يرفع نتيجتك."] },
+    { min: 14, enc: ["نتائج جيدة، أظهرتَ مجهوداً محموداً. واصل!",
+                     "بداية موفّقة، وتستطيع تحقيق الأفضل."],
+               bal: ["مستوى جيد. يمكنك تحقيق الأفضل بمزيد من المثابرة.",
+                     "نتائج جيدة تحتاج إلى تثبيت المكاسب."],
+               firm: ["مستوى جيد، لكن المطلوب بذل مجهود أكبر.",
+                      "نتائج جيدة: راجع دروسك بانتظام لترتقي."] },
+    { min: 12, enc: ["نتائج مقبولة وأنت قادر على الأفضل. ثق في نفسك.",
+                     "خطوة إضافية من الاجتهاد وستتغيّر نتيجتك."],
+               bal: ["مستوى متوسط. يحتاج إلى مراجعة منتظمة.",
+                     "نتائج متوسطة تستوجب عناية أكبر بالدروس."],
+               firm: ["مستوى متوسط: يجب مضاعفة العمل والمراجعة اليومية.",
+                      "نتائج متوسطة لا ترقى إلى قدراتك؛ جدّد العزم."] },
+    { min: 10, enc: ["بإمكانك أن تتألّق أكثر، ابدأ من اليوم خطوة بخطوة.",
+                     "لا تقلق، بالمثابرة سترتفع نتيجتك بإذن الله."],
+               bal: ["نتيجة هشّة. تلزمك مراجعة منتظمة ودعم.",
+                     "مستوى على الحدّ الأدنى، يحتاج إلى تثبيت."],
+               firm: ["نتيجة ضعيفة نسبياً: مراجعة يومية ومتابعة إلزامية.",
+                      "مستوى هشّ يستوجب مواكبة جدّية من الأسرة والمدرسة."] },
+    { min: -1, enc: ["لا تيأس! أنت بحاجة إلى دعم ومرافقة، وسنتجاوز ذلك معاً.",
+                     "ثقتنا فيك كبيرة، لنبدأ العلاج خطوة بخطوة."],
+               bal: ["يحتاج إلى دعم مكثّف ومراجعة الأساسيات.",
+                     "نتيجة متعثّرة تستلزم مرافقة فردية."],
+               firm: ["تعثّر واضح: مرافقة فردية ومراجعة يومية ضروريان.",
+                      "لا بدّ من عمل منظّم فوري مع المواكبة."] }
+  ];
+  var NEUTRAL = ["تلميذ(ة) يتابع دروسه بانتظام.",
+                 "تلميذ(ة) في حاجة إلى مزيد من المشاركة داخل القسم."];
+
+  var cfgIds = ["rows","tone","period","layout","theme"];
+  cfgIds.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (st[id] !== undefined) el.value = st[id];
+    el.addEventListener("input", function () { st[id] = el.value; save(); });
+    el.addEventListener("change", function () { st[id] = el.value; save(); });
+  });
+  ["showAvg","showSig"].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.checked = !!st[id];
+    el.addEventListener("change", function () { st[id] = el.checked; save(); });
+  });
+
+  MP.onProfileChange = function(){ render(); };
+  function save() { MP.setState("notes-gen", st); render(); }
+  window.regen = function () { st.turn = (st.turn || 0) + 1; MP.setState("notes-gen", st); MP.toast("تم توليد صيغ أخرى"); render(); };
+
+  function esc(s){ return MP.escapeHtml(s); }
+  function parseRows() {
+    return (st.rows || "").split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean).map(function (line) {
+      var m = line.match(/^(.*?)\s*[:|]\s*(-?[0-9]+(?:[.,][0-9]+)?)\s*$/);
+      if (m) return { name: m[1].trim().replace(/^\d+[-.)]?\s*/, ""), avg: parseFloat(m[2].replace(",", ".")) };
+      var m2 = line.match(/^(.*?)\s+(-?[0-9]+(?:[.,][0-9]+)?)$/);
+      if (m2) return { name: m2[1].trim().replace(/^\d+[-.)]?\s*/, ""), avg: parseFloat(m2[2].replace(",", ".")) };
+      return { name: line.replace(/^\d+[-.)]?\s*/, ""), avg: null };
+    });
+  }
+  function remarkFor(avg, tone, seed) {
+    if (avg === null || isNaN(avg)) return NEUTRAL[seed % NEUTRAL.length];
+    for (var i = 0; i < BANDS.length; i++) {
+      if (avg >= BANDS[i].min || BANDS[i].min === -1) {
+        var arr = BANDS[i][tone] || BANDS[i].bal;
+        return arr[seed % arr.length];
+      }
+    }
+    return NEUTRAL[0];
+  }
+  function fmt(n){ return (Math.round(n * 100) / 100).toString(); }
+
+  function render() {
+    var p = MP.getProfile();
+    var list = parseRows();
+    var seedBase = (st.turn || 0);
+
+    var head = '<div class="ng-head">' +
+      '<div class="h-l">' + esc(p.establishment || "") +
+        (p.academy ? '<br>الأكاديمية: ' + esc(p.academy) : "") +
+        (p.direction ? '<br>المديرية: ' + esc(p.direction) : "") +
+        '<br>الأستاذ(ة): ' + esc(p.fullName || "................") + '</div>' +
+      '<div class="h-r"><div class="ttl">الملاحظات التقديرية</div>' +
+        '<div class="sub">' + esc(st.period || "") + (st.period && p.level ? " · " : "") + esc(p.level || "") + (p.subject ? " · " + esc(p.subject) : "") + '</div></div>' +
+      '</div>';
+
+    if (!list.length) {
+      document.getElementById("stage").innerHTML = '<div class="a4 ' + st.theme + '">' + head +
+        '<div class="mp-note">أضف لائحة التلاميذ والمعدّلات من اللوحة على اليمين.</div></div>';
+      return;
+    }
+
+    var body;
+    if (st.layout === "list") {
+      body = '<div class="ng-list">';
+      list.forEach(function (s, i) {
+        body += '<div class="row"><div class="nm">' + esc(s.name) + (s.avg !== null ? ' (' + fmt(s.avg) + ')' : '') + '</div>' +
+          '<div class="tx" contenteditable="true">' + esc(remarkFor(s.avg, st.tone, seedBase + i)) + '</div></div>';
+      });
+      body += '</div>';
+    } else {
+      var th = '<tr><th class="rk">ر</th><th style="text-align:right">الاسم والنسب</th>' +
+        (st.showAvg ? '<th class="avg">المعدّل</th>' : '') + '<th>الملاحظة</th></tr>';
+      var tb = "";
+      list.forEach(function (s, i) {
+        tb += '<tr><td>' + (i + 1) + '</td><td class="name">' + esc(s.name) + '</td>' +
+          (st.showAvg ? '<td class="avg">' + (s.avg !== null ? fmt(s.avg) : "—") + '</td>' : '') +
+          '<td class="rmk" contenteditable="true">' + esc(remarkFor(s.avg, st.tone, seedBase + i)) + '</td></tr>';
+      });
+      body = '<table class="mp-table"><thead>' + th + '</thead><tbody>' + tb + '</tbody></table>';
+    }
+
+    var foot = st.showSig
+      ? '<div class="ng-foot"><div class="sig">توقيع الأستاذ(ة)</div><div class="sig">طابع وتوقيع المدير(ة)</div></div>'
+      : "";
+
+    document.getElementById("stage").innerHTML = '<div class="a4 ' + st.theme + '">' + head + body + foot +
+      '<div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:16px">Modaris Pro — modarispro.com</div></div>';
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

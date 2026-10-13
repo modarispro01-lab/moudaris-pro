@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مولّد شواهد التقدير والتشجيع | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  .cert{ height: 269mm; border: 6px double var(--t); border-radius: 8px; padding: 12mm; position: relative; display: flex; flex-direction: column; background: linear-gradient(180deg,#fff 0%, var(--t-soft) 100%); }
+  .cert-corner{ position: absolute; width: 26mm; height: 26mm; border-color: var(--t); border-style: solid; opacity: .55; }
+  .c-tl{ top: 5mm; right: 5mm; border-width: 3px 3px 0 0; border-top-right-radius: 8px; }
+  .c-tr{ top: 5mm; left: 5mm; border-width: 3px 0 0 3px; border-top-left-radius: 8px; }
+  .c-bl{ bottom: 5mm; right: 5mm; border-width: 0 3px 3px 0; border-bottom-right-radius: 8px; }
+  .c-br{ bottom: 5mm; left: 5mm; border-width: 0 0 3px 3px; border-bottom-left-radius: 8px; }
+  .cert-org{ text-align:center; font-size: 12.5px; color: var(--t); font-weight: 700; line-height: 1.9; }
+  .cert-badge{ text-align:center; font-size: 46px; color: var(--accent); line-height: 1; margin: 6mm 0 2mm; }
+  .cert-title{ text-align: center; font-size: 44px; font-weight: 800; color: var(--t); letter-spacing: .5px; }
+  .cert-rule{ width: 46%; height: 4px; background: var(--accent); border-radius: 3px; margin: 5mm auto; }
+  .cert-lead{ text-align: center; font-size: 16px; color: #475569; }
+  .cert-name{ text-align: center; font-size: 40px; font-weight: 800; color: var(--t); margin: 6mm 0; border-bottom: 3px dotted var(--t); padding-bottom: 4mm; }
+  .cert-body{ text-align: center; font-size: 16px; line-height: 2.1; color: #334155; max-width: 88%; margin: 0 auto; }
+  .cert-extra{ text-align: center; font-size: 15px; font-weight: 800; color: var(--t); margin-top: 5mm; }
+  .cert-foot{ margin-top: auto; display: flex; justify-content: space-around; font-size: 13.5px; font-weight: 700; color: var(--t); padding-top: 8mm; }
+  .cert-foot .sig{ text-align: center; min-width: 34%; border-top: 2px solid var(--t); padding-top: 6px; }
+  .cert-seal{ position: absolute; bottom: 24mm; left: 16mm; width: 30mm; height: 30mm; border: 3px solid var(--accent); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--accent); font-weight: 800; font-size: 10px; text-align: center; transform: rotate(-12deg); }
+  .cert-seal .st{ font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">م</div>
+      <div>
+        <div class="mp-title">شواهد التقدير والتشجيع</div>
+        <div class="mp-sub">شهادة لكل تلميذ في ورقة</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">👤 بيانات الأستاذ</div>
+    <div class="mp-field"><label>الاسم الكامل</label><input type="text" data-profile="fullName"></div>
+    <div class="mp-field"><label>المؤسسة</label><input type="text" data-profile="establishment"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>الأكاديمية</label><input type="text" data-profile="academy"></div>
+      <div class="mp-field"><label>المديرية</label><input type="text" data-profile="direction"></div>
+    </div>
+
+    <div class="mp-section-title">🏅 نوع الشهادة</div>
+    <div class="mp-field">
+      <select id="type">
+        <option value="excellence">شهادة تفوّق دراسي</option>
+        <option value="appreciation">شهادة تقدير</option>
+        <option value="participation">شهادة مشاركة</option>
+        <option value="attendance">شهادة مواظبة وانتظام</option>
+        <option value="encouragement">شهادة تشجيعية</option>
+      </select>
+    </div>
+    <div class="mp-field">
+      <label>التلاميذ (اسم في كل سطر → شهادة لكل واحد)</label>
+      <textarea id="students" placeholder="محمد العلوي&#10;سارة بناني"></textarea>
+    </div>
+
+    <div class="mp-section-title">📝 نص الشهادة</div>
+    <div class="mp-field"><label>الفترة / المناسبة</label><input type="text" id="period" placeholder="الأسدوس الأول 2026/2027"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>المرتبة (اختياري)</label><input type="text" id="rank" placeholder="الأولى"></div>
+      <div class="mp-field"><label>المعدّل (اختياري)</label><input type="text" id="avg" placeholder="17.5"></div>
+    </div>
+    <div class="mp-field">
+      <label>نص التقدير (يُملأ تلقائياً حسب النوع)</label>
+      <textarea id="reason"></textarea>
+      <div class="mp-hint">عدّله كما تشاء.</div>
+    </div>
+
+    <div class="mp-section-title">✒️ التوقيع</div>
+    <div class="mp-field">
+      <select id="signer">
+        <option value="both">المدير(ة) + الأستاذ(ة)</option>
+        <option value="dir">المدير(ة) فقط</option>
+        <option value="teacher">الأستاذ(ة) فقط</option>
+      </select>
+    </div>
+    <div class="mp-field"><label>المستوى</label><input type="text" data-profile="level"></div>
+
+    <div class="mp-section-title">⚙️ خيارات</div>
+    <label class="mp-check"><input type="checkbox" id="showSeal" checked> إظهار الخاتم الذهبي</label>
+    <label class="mp-check"><input type="checkbox" id="showOrg" checked> إظهار الأكاديمية والمؤسسة</label>
+    <div class="mp-field" style="margin-top:8px">
+      <label>القالب اللوني</label>
+      <select id="theme">
+        <option value="theme-blue">أزرق (أساسي)</option>
+        <option value="theme-gold">ذهبي (فخم)</option>
+        <option value="theme-green">أخضر</option>
+        <option value="theme-purple">بنفسجي</option>
+        <option value="theme-mono">أبيض وأسود</option>
+      </select>
+    </div>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ طباعة / حفظ PDF</button>
+    </div>
+    <div class="mp-note">💡 كل تلميذ في ورقة A4 مستقلة، مناسبة للطبع على ورق مقوّى.</div>
+  </aside>
+
+  <main class="mp-stage" id="stage"></main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  MP.bindProfile(document);
+
+  var TYPES = {
+    excellence:    { title: "شهادة تفوّق دراسي", lead: "تُمنح هذه الشهادة إلى التلميذ(ة):",
+                     reason: "وذلك تقديراً لتفوّقه الدراسي واجتهاده المتواصل خلال هذه الفترة. نسأل الله له دوام التوفيق والنجاح." },
+    appreciation:  { title: "شهادة تقدير", lead: "تُمنح هذه الشهادة إلى التلميذ(ة):",
+                     reason: "وذلك تقديراً لمجهوداته القيّمة وسلوكه المتميّز داخل القسم واحترامه لزملائه وأساتذته." },
+    participation: { title: "شهادة مشاركة", lead: "تُمنح هذه الشهادة إلى التلميذ(ة):",
+                     reason: "وذلك تقديراً لمشاركته الفعّالة وإسهامه البنّاء في الأنشطة الصفّية والتربوية." },
+    attendance:    { title: "شهادة مواظبة وانتظام", lead: "تُمنح هذه الشهادة إلى التلميذ(ة):",
+                     reason: "وذلك تقديراً لمواظبته وانتظامه وحضوره الدائم، والتزامه بمواعيد الدراسة." },
+    encouragement: { title: "شهادة تشجيعية", lead: "تُمنح هذه الشهادة إلى التلميذ(ة):",
+                     reason: "تشجيعاً له على مواصلة الاجتهاد والمثابرة، وثقةً في قدرته على تحقيق الأفضل." }
+  };
+
+  var st = MP.getState("certificates", {
+    type: "excellence", students: "", period: "", rank: "", avg: "", reason: "",
+    signer: "both", showSeal: true, showOrg: true, theme: "theme-blue"
+  });
+
+  var cfgIds = ["type","students","period","rank","avg","signer","theme"];
+  cfgIds.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (st[id] !== undefined && st[id] !== null) el.value = st[id];
+    el.addEventListener("input", function () { st[id] = el.value; save(); });
+    el.addEventListener("change", function () { st[id] = el.value; save(); });
+  });
+  ["showSeal","showOrg"].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.checked = !!st[id];
+    el.addEventListener("change", function () { st[id] = el.checked; save(); });
+  });
+  // نصّ التقدير: يتغيّر تلقائياً عند تغيير النوع إن لم يُعدّله المستخدم
+  var reasonEl = document.getElementById("reason");
+  var reasonTouched = !!st.reason;
+  reasonEl.value = st.reason || TYPES[st.type].reason;
+  reasonEl.addEventListener("input", function () { st.reason = reasonEl.value; reasonTouched = true; MP.setState("certificates", st); render(); });
+  document.getElementById("type").addEventListener("change", function () {
+    var t = document.getElementById("type").value;
+    if (!reasonTouched) { st.reason = TYPES[t].reason; reasonEl.value = st.reason; }
+    MP.setState("certificates", st); render();
+  });
+
+  MP.onProfileChange = function(){ render(); };
+  function save() { MP.setState("certificates", st); render(); }
+  function esc(s){ return MP.escapeHtml(s); }
+
+  function render() {
+    var p = MP.getProfile();
+    var T = TYPES[st.type] || TYPES.excellence;
+    var names = (st.students || "").split(/\r?\n/).map(function (l) {
+      return l.replace(/^\s*\d+[-.)]?\s*/, "").trim();
+    }).filter(Boolean);
+    if (!names.length) names = [p.fullName ? "................" : "................"];
+    var reason = st.reason || T.reason;
+
+    var org = "";
+    if (st.showOrg) {
+      org = '<div class="cert-org">' +
+        'الأكاديمية الجهوية للتربية والتكوين' + (p.academy ? " — " + esc(p.academy) : "") +
+        (p.direction ? '<br>المديرية الإقليمية: ' + esc(p.direction) : "") +
+        (p.establishment ? '<br>المؤسسة: ' + esc(p.establishment) : "") +
+        '</div>';
+    }
+
+    var extra = "";
+    if (st.avg || st.rank) {
+      extra = '<div class="cert-extra">' +
+        (st.avg ? 'بمعدّل: ' + esc(st.avg) : "") +
+        (st.avg && st.rank ? " · " : "") +
+        (st.rank ? 'المرتبة: ' + esc(st.rank) : "") + '</div>';
+    }
+
+    var sigs = [];
+    if (st.signer === "both") sigs = ["الأستاذ(ة)", "المدير(ة)"];
+    else if (st.signer === "dir") sigs = ["المدير(ة)"];
+    else sigs = ["الأستاذ(ة)"];
+    var foot = '<div class="cert-foot">' + sigs.map(function (s) { return '<div class="sig">' + s + '</div>'; }).join("") + '</div>';
+
+    var seal = st.showSeal ? '<div class="cert-seal"><div class="st">★</div>تقدير وتشجيع</div>' : "";
+
+    var html = "";
+    names.forEach(function (nm) {
+      html += '<div class="a4 ' + st.theme + '"><div class="cert">' +
+        '<div class="cert-corner c-tl"></div><div class="cert-corner c-tr"></div>' +
+        '<div class="cert-corner c-bl"></div><div class="cert-corner c-br"></div>' +
+        org +
+        '<div class="cert-badge">★</div>' +
+        '<div class="cert-title">' + esc(T.title) + '</div>' +
+        '<div class="cert-rule"></div>' +
+        '<div class="cert-lead">' + esc(T.lead) + '</div>' +
+        '<div class="cert-name">' + esc(nm) + '</div>' +
+        '<div class="cert-body">' + esc(reason) + '</div>' +
+        extra +
+        (st.period ? '<div class="cert-extra" style="font-weight:400;color:#475569">' + esc(st.period) + '</div>' : "") +
+        seal + foot +
+      '</div></div>';
+    });
+
+    document.getElementById("stage").innerHTML = html;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

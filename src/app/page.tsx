@@ -22,10 +22,9 @@ const quickActions = [
   { icon: Wrench, label: 'الأدوات' },
 ];
 
-// هذا المكون الآن غير متزامن (async) لأنه يجلب بيانات من الخادم
-export default async function Home() {
-  // جلب أحدث 6 موارد من قاعدة البيانات مع معلومات المستوى والمادة
-  const latestResources = await prisma.resource.findMany({
+// جلب أحدث 6 موارد من قاعدة البيانات مع معلومات المستوى والمادة
+async function fetchLatestResources() {
+  return prisma.resource.findMany({
     take: 6,
     include: {
       level: true,
@@ -33,6 +32,19 @@ export default async function Home() {
     },
     orderBy: { createdAt: 'desc' },
   });
+}
+
+type LatestResource = Awaited<ReturnType<typeof fetchLatestResources>>[number];
+
+// هذا المكون الآن غير متزامن (async) لأنه يجلب بيانات من الخادم
+export default async function Home() {
+  // محمي بـ try/catch: تعذّر الاتصال بقاعدة البيانات لا يجب أن يُفشل البناء أو الصفحة
+  let latestResources: LatestResource[] = [];
+  try {
+    latestResources = await fetchLatestResources();
+  } catch (error) {
+    console.warn('⚠️ تعذّر جلب أحدث الموارد، سيتم عرض قائمة فارغة:', error);
+  }
 
   return (
     <>

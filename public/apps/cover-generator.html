@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مولّد واجهات وأغلفة الملفات | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  .cover-frame{
+    height: 269mm; border: 3px solid var(--t); border-radius: 6px;
+    padding: 9mm; display: flex; flex-direction: column;
+    background: linear-gradient(180deg, #fff 0%, var(--t-soft) 100%);
+  }
+  .cover-inner{ flex:1; border: 1.5px solid var(--t); border-radius: 4px; padding: 10mm; display: flex; flex-direction: column; }
+  .cover-frame.plain{ background: #fff; }
+  .cover-frame.noframe{ border: 0; padding: 0; background: #fff; }
+  .cover-frame.noframe .cover-inner{ border: 0; padding: 6mm; }
+
+  .cover-top{ text-align: center; font-size: 12.5px; color: var(--t); font-weight: 700; line-height: 1.9; }
+  .cover-top .acad{ font-size: 14px; font-weight: 800; }
+
+  .cover-mid{ flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 14px; }
+  .cover-badge{
+    display: inline-block; background: var(--t); color: #fff; font-weight: 800;
+    padding: 6px 22px; border-radius: 40px; font-size: 15px; letter-spacing: .5px;
+  }
+  .cover-h1{ font-size: 46px; font-weight: 800; color: var(--t); margin: 6px 0; line-height: 1.35; }
+  .cover-sub{ font-size: 20px; color: var(--t2); font-weight: 700; }
+  .cover-meta{ display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+  .cover-meta span{
+    border: 1.5px solid var(--t); border-radius: 10px; padding: 7px 18px;
+    font-size: 15px; font-weight: 700; color: var(--t); background: #fff;
+  }
+  .cover-line{ width: 60%; height: 3px; background: var(--t); border-radius: 3px; opacity: .5; }
+
+  .cover-bottom{
+    display: flex; justify-content: space-between; align-items: flex-end;
+    font-size: 14px; font-weight: 700; color: var(--t); padding-top: 6mm;
+  }
+  .cover-bottom .box{ border-top: 2px solid var(--t); padding-top: 6px; min-width: 40%; }
+  .cover-year{ text-align: center; font-size: 15px; font-weight: 800; color: #fff; background: var(--t); border-radius: 8px; padding: 6px 0; margin-top: 6mm; }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <!-- ===== لوحة التحكم ===== -->
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">م</div>
+      <div>
+        <div class="mp-title">واجهات وأغلفة الملفات</div>
+        <div class="mp-sub">صمّم واجهة ملفّك واطبعها</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">👤 بيانات الأستاذ (تُحفظ وتظهر في كل الأدوات)</div>
+    <div class="mp-field"><label>الاسم الكامل</label><input type="text" data-profile="fullName" placeholder="الاسم والنسب"></div>
+    <div class="mp-field"><label>المؤسسة</label><input type="text" data-profile="establishment" placeholder="اسم المؤسسة"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>الأكاديمية</label><input type="text" data-profile="academy" placeholder="الجهة"></div>
+      <div class="mp-field"><label>المديرية الإقليمية</label><input type="text" data-profile="direction" placeholder="المديرية"></div>
+    </div>
+
+    <div class="mp-section-title">🖼️ إعداد الواجهة</div>
+    <div class="mp-field">
+      <label>نوع الوثيقة</label>
+      <select id="docType">
+        <option>المذكرة اليومية</option>
+        <option>الملف التربوي</option>
+        <option>التوزيع السنوي</option>
+        <option>الجذاذات</option>
+        <option>الفروض</option>
+        <option>الملف التراكمي</option>
+        <option>مذكرة الدعم المكثف</option>
+        <option>دفتر النصوص</option>
+        <option>سجل التنقيط</option>
+        <option>وثائق إدارية</option>
+      </select>
+    </div>
+    <div class="mp-field"><label>العنوان الرئيسي</label><input type="text" id="mainTitle" placeholder="اتركه فارغاً لاستعمال نوع الوثيقة"></div>
+    <div class="mp-field"><label>العنوان الفرعي (اختياري)</label><input type="text" id="subTitle" placeholder="مثلاً: ملف الفرض الأول"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>المستوى</label>
+        <select id="level">
+          <option value="">— بدون —</option>
+          <option>الأول ابتدائي</option><option>الثاني ابتدائي</option>
+          <option>الثالث ابتدائي</option><option>الرابع ابتدائي</option>
+          <option>الخامس ابتدائي</option><option>السادس ابتدائي</option>
+          <option>جميع المستويات</option>
+        </select>
+      </div>
+      <div class="mp-field"><label>المادة</label>
+        <select id="subject">
+          <option value="">— بدون —</option>
+          <option>اللغة العربية</option><option>الرياضيات</option>
+          <option>اللغة الفرنسية</option><option>التربية الإسلامية</option>
+          <option>النشاط العلمي</option><option>الاجتماعيات</option>
+          <option>جميع المواد</option>
+        </select>
+      </div>
+    </div>
+    <div class="mp-field">
+      <label>القالب اللوني</label>
+      <select id="theme">
+        <option value="theme-blue">أزرق (أساسي)</option>
+        <option value="theme-green">أخضر</option>
+        <option value="theme-gold">ذهبي</option>
+        <option value="theme-purple">بنفسجي</option>
+        <option value="theme-slate">رمادي</option>
+        <option value="theme-mono">أبيض وأسود</option>
+      </select>
+    </div>
+    <label class="mp-check"><input type="checkbox" id="showMeta" checked> إظهار المستوى والمادة</label>
+    <label class="mp-check"><input type="checkbox" id="showFrame" checked> إظهار الإطار المزدوج</label>
+    <label class="mp-check"><input type="checkbox" id="showYear" checked> إظهار السنة الدراسية</label>
+    <label class="mp-check"><input type="checkbox" id="showAcademy" checked> إظهار الأكاديمية والمديرية</label>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ طباعة / حفظ PDF</button>
+    </div>
+    <div class="mp-note">💡 الواجهة تُطبع بلا علامة مائية. اختر «حفظ كـ PDF» في نافذة الطباعة.</div>
+  </aside>
+
+  <!-- ===== المعاينة ===== -->
+  <main class="mp-stage">
+    <div class="a4 theme-blue" id="page"></div>
+  </main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  var S = MP.getState("cover", {});
+  var ids = ["docType","mainTitle","subTitle","level","subject","theme","showMeta","showFrame","showYear","showAcademy"];
+
+  MP.bindProfile(document);
+  MP.onProfileChange = function(){ render(); };
+
+  // استرجاع الإعدادات المحفوظة
+  ids.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (S[id] !== undefined && S[id] !== null) {
+      if (el.type === "checkbox") el.checked = !!S[id]; else el.value = S[id];
+    }
+    el.addEventListener("input", save);
+    el.addEventListener("change", save);
+  });
+
+  function save() {
+    var st = {};
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      st[id] = el.type === "checkbox" ? el.checked : el.value;
+    });
+    MP.setState("cover", st);
+    render();
+  }
+
+  function val(id){ return document.getElementById(id).value; }
+  function chk(id){ return document.getElementById(id).checked; }
+  function esc(s){ return MP.escapeHtml(s); }
+
+  function render() {
+    var p = MP.getProfile();
+    var page = document.getElementById("page");
+    var theme = val("theme");
+    var type = val("docType");
+    var main = val("mainTitle").trim() || type;
+    var sub = val("subTitle").trim();
+
+    page.className = "a4 " + theme;
+
+    var top = "";
+    if (chk("showAcademy")) {
+      top += '<div class="acad">الأكاديمية الجهوية للتربية والتكوين' + (p.academy ? " — " + esc(p.academy) : "") + '</div>';
+      if (p.direction) top += '<div>المديرية الإقليمية: ' + esc(p.direction) + '</div>';
+      if (p.establishment) top += '<div>المؤسسة: ' + esc(p.establishment) + '</div>';
+    } else if (p.establishment) {
+      top += '<div class="acad">' + esc(p.establishment) + '</div>';
+    }
+
+    var meta = "";
+    if (chk("showMeta")) {
+      if (val("level")) meta += '<span>المستوى: ' + esc(val("level")) + '</span>';
+      if (val("subject")) meta += '<span>المادة: ' + esc(val("subject")) + '</span>';
+    }
+
+    var year = chk("showYear") ? '<div class="cover-year">السنة الدراسية: ' + esc(p.schoolYear || MP.YEAR) + '</div>' : "";
+
+    page.innerHTML =
+      '<div class="cover-frame' + (chk("showFrame") ? "" : " noframe") + '">' +
+        '<div class="cover-inner">' +
+          '<div class="cover-top">' + top + '</div>' +
+          '<div class="cover-mid">' +
+            '<div class="cover-badge">ملف</div>' +
+            '<div class="cover-line"></div>' +
+            '<div class="cover-h1">' + esc(main) + '</div>' +
+            (sub ? '<div class="cover-sub">' + esc(sub) + '</div>' : "") +
+            '<div class="cover-line"></div>' +
+            (meta ? '<div class="cover-meta">' + meta + '</div>' : "") +
+          '</div>' +
+          '<div class="cover-bottom">' +
+            '<div class="box">الأستاذ(ة): ' + esc(p.fullName || "............................") + '</div>' +
+            '<div class="box" style="text-align:left">التوقيع</div>' +
+          '</div>' +
+          year +
+        '</div>' +
+      '</div>';
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { FileText, Calendar, Users, Printer, Sparkles, ArrowRight } from 'lucide-react';
+import { FileText, Calendar, Sparkles, ArrowRight, Layers, FolderTree, IdCard, Table2, NotebookPen, Award, Tags, ScrollText } from 'lucide-react';
 import type { Metadata } from "next";
 
 // ===== Meta Tags للـ SEO =====
 export const metadata: Metadata = {
   title: "أدوات الأستاذ الرقمية",
   description:
-    "أدوات ذكية ومجانية للأستاذ المغربي: مولد المذكرة اليومية، مولد استعمال الزمن، مولد شواهد التقدير، والمزيد.",
+    "أدوات ذكية ومجانية للأستاذ المغربي: مولد المذكرة اليومية، مولّد استعمال الزمن، واجهات وأغلفة الملفات، الملف التراكمي، البطاقة الشخصية للأستاذ، وشبكات التنقيط.",
   keywords: [
     "أدوات الأستاذ",
     "مولد المذكرة اليومية",
@@ -36,12 +36,68 @@ const tools = [
     status: 'متاح الآن',
   },
   {
-    id: 'certificates',
-    title: 'مولد شواهد التقدير',
-    description: 'صمم شواهد تفوق وتقدير للتلاميذ بشكل أنيق.',
-    icon: Users,
+    id: 'cover-generator',
+    title: 'واجهات وأغلفة الملفات',
+    description: 'صمّم واجهة ملفّك التربوي بألوان متعددة، جاهزة للطباعة A4.',
+    icon: Layers,
     color: 'bg-accent',
-    status: 'قريباً',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'cumulative-dossier',
+    title: 'الملف التراكمي',
+    description: 'غلاف وفهرس وفواصل مرقّمة لكل أقسام ملفّك التراكمي.',
+    icon: FolderTree,
+    color: 'bg-primary',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'teacher-card',
+    title: 'البطاقة الشخصية للأستاذ',
+    description: 'بطاقة رسمية بالعربية والفرنسية: شخصية وإدارية ومهنية.',
+    icon: IdCard,
+    color: 'bg-secondary',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'grading-grid',
+    title: 'شبكات التنقيط والتفريغ',
+    description: 'نقط قسمك مع حساب تلقائي للمجموع والمعدل والرتبة.',
+    icon: Table2,
+    color: 'bg-accent',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'notes-generator',
+    title: 'مولّد الملاحظات التقديرية',
+    description: 'ملاحظات جاهزة لكل تلميذ حسب معدّله، بثلاث نبرات وقابلة للتعديل.',
+    icon: NotebookPen,
+    color: 'bg-secondary',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'certificates',
+    title: 'شواهد التقدير والتشجيع',
+    description: 'شهادة أنيقة لكل تلميذ: تفوّق، تقدير، مشاركة، مواظبة.',
+    icon: Award,
+    color: 'bg-accent',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'name-tags',
+    title: 'بطاقات أسماء التلاميذ',
+    description: 'بطاقات طاولات القسم (Affichettes) جاهزة للقصّ والطباعة.',
+    icon: Tags,
+    color: 'bg-primary',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'classroom-rules',
+    title: 'ميثاق وقوانين القسم',
+    description: 'ملصق ملوّن بقواعد القسم قابلة للتعديل، جاهز للتعليق.',
+    icon: ScrollText,
+    color: 'bg-secondary',
+    status: 'متاح الآن',
   },
   {
     id: 'ai-generator',

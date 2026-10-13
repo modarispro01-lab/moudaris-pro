@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>شبكات التنقيط والتفريغ | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  .grid-head{ display:flex; justify-content:space-between; align-items:flex-end; border-bottom:3px solid var(--t); padding-bottom:8px; margin-bottom:12px; }
+  .grid-head .h-l{ font-size:12px; color:#475569; line-height:1.8; }
+  .grid-head .h-r{ text-align:center; }
+  .grid-head .h-r .ttl{ font-size:22px; font-weight:800; color:var(--t); }
+  .grid-head .h-r .sub{ font-size:12.5px; color:#475569; margin-top:2px; }
+  .grid-meta{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+  .grid-meta span{ border:1.5px solid var(--t); border-radius:9px; padding:5px 14px; font-size:12.5px; font-weight:700; color:var(--t); }
+  .mp-table td{ height:27px; }
+  .mp-table td.cell input{ width:100%; border:0; background:transparent; text-align:center; font-family:inherit; font-size:11.5px; padding:2px; }
+  .mp-table td.cell input:focus{ outline:2px solid var(--accent); border-radius:3px; }
+  .mp-table td.avg{ background: var(--t-soft); font-weight:800; }
+  .mp-table td.total{ background: #f8fafc; font-weight:800; }
+  .grid-foot{ display:flex; justify-content:space-between; margin-top:20px; font-size:12.5px; color:var(--t); font-weight:700; }
+  .grid-foot .sig{ border-top:2px solid var(--t); padding-top:5px; min-width:30%; text-align:center; }
+  .grid-note{ margin-top:14px; font-size:11px; color:var(--muted); text-align:center; }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">م</div>
+      <div>
+        <div class="mp-title">شبكات التنقيط والتفريغ</div>
+        <div class="mp-sub">نقاط، مجموع، معدل، ورتبة</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">👤 بيانات الأستاذ</div>
+    <div class="mp-field"><label>الاسم الكامل</label><input type="text" data-profile="fullName"></div>
+    <div class="mp-field"><label>المؤسسة</label><input type="text" data-profile="establishment"></div>
+
+    <div class="mp-section-title">📋 معطيات الشبكة</div>
+    <div class="mp-field"><label>عنوان الشبكة</label><input type="text" id="kind" value="شبكة التفريغ والتنقيط"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label>المستوى</label><input type="text" id="level" placeholder="الرابع ابتدائي"></div>
+      <div class="mp-field"><label>المادة</label><input type="text" id="subject" placeholder="الرياضيات"></div>
+    </div>
+    <div class="mp-row">
+      <div class="mp-field"><label>الفترة</label><input type="text" id="period" placeholder="الأسدوس الأول"></div>
+      <div class="mp-field"><label>السلّم</label>
+        <select id="scale"><option value="20">على 20</option><option value="10">على 10</option></select>
+      </div>
+    </div>
+
+    <div class="mp-section-title">🧑‍🎓 لائحة التلاميذ</div>
+    <div class="mp-field">
+      <textarea id="students" placeholder="اسم واحد في كل سطر&#10;مثال:&#10;محمد العلوي&#10;سارة بناني"></textarea>
+      <div class="mp-hint">الصق لائحة القسم (سطر لكل تلميذ).</div>
+    </div>
+
+    <div class="mp-section-title">📊 أعمدة النقط</div>
+    <div class="mp-row">
+      <div class="mp-field"><label>عدد الأعمدة</label>
+        <select id="colCount"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
+      </div>
+      <div class="mp-field"><label>رأس العمود</label><input type="text" id="colPrefix" value="الفرض"></div>
+    </div>
+
+    <div class="mp-section-title">⚙️ خيارات</div>
+    <label class="mp-check"><input type="checkbox" id="showRank" checked> إظهار الرتبة</label>
+    <label class="mp-check"><input type="checkbox" id="showNote" checked> إظهار خانة الملاحظة</label>
+    <label class="mp-check"><input type="checkbox" id="showSig" checked> إظهار خانات التوقيع</label>
+    <div class="mp-field" style="margin-top:8px">
+      <label>القالب اللوني</label>
+      <select id="theme">
+        <option value="theme-blue">أزرق (أساسي)</option>
+        <option value="theme-green">أخضر</option>
+        <option value="theme-slate">رمادي</option>
+        <option value="theme-mono">أبيض وأسود (اقتصاد الحبر)</option>
+      </select>
+    </div>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ طباعة / حفظ PDF</button>
+      <button class="mp-btn mp-btn-ghost mp-btn-block" onclick="clearNotes()">🧹 مسح النقط</button>
+    </div>
+    <div class="mp-note">💡 يمكنك ترك الخانات فارغة وطبعها لتُملأ بالقلم، أو كتابة النقط على الشاشة فيُحسب المجموع والمعدل تلقائياً.</div>
+  </aside>
+
+  <main class="mp-stage" id="stage"></main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  MP.bindProfile(document);
+
+  var cfgIds = ["kind","level","subject","period","scale","colCount","colPrefix","theme"];
+  var chkIds = ["showRank","showNote","showSig"];
+  var st = MP.getState("grading", {
+    cfg: { kind: "شبكة التفريغ والتنقيط", colPrefix: "الفرض", scale: "20", colCount: "3", theme: "theme-blue" },
+    chk: { showRank: true, showNote: true, showSig: true },
+    students: "", notes: {}
+  });
+
+  cfgIds.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (st.cfg[id] !== undefined) el.value = st.cfg[id];
+    el.addEventListener("input", function () { st.cfg[id] = el.value; save(); });
+    el.addEventListener("change", function () { st.cfg[id] = el.value; save(); });
+  });
+  chkIds.forEach(function (id) {
+    var el = document.getElementById(id);
+    el.checked = !!(st.chk && st.chk[id]);
+    el.addEventListener("change", function () { st.chk[id] = el.checked; save(); });
+  });
+  var sEl = document.getElementById("students");
+  sEl.value = st.students || "";
+  sEl.addEventListener("input", function () { st.students = sEl.value; save(); });
+
+  MP.onProfileChange = function(){ render(); };
+
+  function save() { MP.setState("grading", st); render(); }
+  window.clearNotes = function () { st.notes = {}; MP.setState("grading", st); MP.toast("تم مسح النقط"); render(); };
+
+  function names() {
+    return (st.students || "").split(/\r?\n/).map(function (l) {
+      return l.replace(/^\s*\d+[\.\-)]?\s*/, "").trim();
+    }).filter(function (l) { return l.length > 0; });
+  }
+  function esc(s){ return MP.escapeHtml(s); }
+  function fmt(n){ return (Math.round(n * 100) / 100).toString(); }
+  function mention(avg20) {
+    if (avg20 >= 18) return "ممتاز";
+    if (avg20 >= 16) return "جيد جداً";
+    if (avg20 >= 14) return "جيد";
+    if (avg20 >= 12) return "حسن";
+    if (avg20 >= 10) return "مقبول";
+    return "يحتاج دعماً";
+  }
+
+  function render() {
+    var p = MP.getProfile();
+    var list = names();
+    var cols = parseInt(st.cfg.colCount, 10) || 3;
+    var scale = parseInt(st.cfg.scale, 10) || 20;
+    var note = st.notes || {};
+
+    // حساب المعدلات
+    var avgs = [], totals = [];
+    for (var i = 0; i < list.length; i++) {
+      var sum = 0, cnt = 0;
+      for (var c = 0; c < cols; c++) {
+        var v = note[i + "_" + c];
+        if (v !== undefined && v !== "" && !isNaN(parseFloat(v))) { sum += parseFloat(v); cnt++; }
+      }
+      totals.push(sum);
+      avgs.push(cnt ? (sum / cnt) : 0);
+    }
+    // الرتب
+    var ranked = list.map(function (_, i) { return i; }).sort(function (a, b) { return avgs[b] - avgs[a]; });
+    var rank = {};
+    ranked.forEach(function (idx, pos) { rank[idx] = pos + 1; });
+
+    var head = '<div class="grid-head">' +
+      '<div class="h-l">' + esc(p.establishment || "") + (p.academy ? '<br>الأكاديمية: ' + esc(p.academy) : "") + (p.direction ? '<br>المديرية: ' + esc(p.direction) : "") +
+      '<br>الأستاذ(ة): ' + esc(p.fullName || "................") + '</div>' +
+      '<div class="h-r"><div class="ttl">' + esc(st.cfg.kind || "شبكة التنقيط") + '</div>' +
+      '<div class="sub">' + esc(st.cfg.period || "") + '</div></div>' +
+      '</div>';
+
+    var meta = '<div class="grid-meta">' +
+      (st.cfg.level ? '<span>المستوى: ' + esc(st.cfg.level) + '</span>' : "") +
+      (st.cfg.subject ? '<span>المادة: ' + esc(st.cfg.subject) + '</span>' : "") +
+      '<span>السلّم: ' + scale + '</span><span>عدد التلاميذ: ' + list.length + '</span></div>';
+
+    if (!list.length) {
+      document.getElementById("stage").innerHTML = '<div class="a4 ' + st.cfg.theme + '">' + head + meta +
+        '<div class="mp-note">أضف لائحة التلاميذ من اللوحة على اليمين.</div></div>';
+      return;
+    }
+
+    var th = '<tr><th style="width:36px">ر</th><th style="text-align:right">الاسم والنسب</th>';
+    for (var c = 0; c < cols; c++) th += '<th>' + esc(st.cfg.colPrefix || "الفرض") + ' ' + (c + 1) + '</th>';
+    th += '<th>المجموع</th><th>المعدل</th>';
+    if (st.chk.showNote) th += '<th>الملاحظة</th>';
+    if (st.chk.showRank) th += '<th>الرتبة</th>';
+    th += '</tr>';
+
+    var body = "";
+    list.forEach(function (nm, i) {
+      body += '<tr><td>' + (i + 1) + '</td><td class="name">' + esc(nm) + '</td>';
+      for (var c = 0; c < cols; c++) {
+        var v = note[i + "_" + c] !== undefined ? note[i + "_" + c] : "";
+        body += '<td class="cell"><input inputmode="decimal" data-i="' + i + '" data-c="' + c + '" value="' + esc(v) + '"></td>';
+      }
+      body += '<td class="total">' + (totals[i] ? fmt(totals[i]) : "") + '</td>';
+      body += '<td class="avg">' + (totals[i] ? fmt(avgs[i]) : "") + '</td>';
+      if (st.chk.showNote) body += '<td>' + (totals[i] ? mention(avgs[i] * (20 / scale)) : "") + '</td>';
+      if (st.chk.showRank) body += '<td>' + (totals[i] ? rank[i] : "") + '</td>';
+      body += '</tr>';
+    });
+
+    var foot = st.chk.showSig
+      ? '<div class="grid-foot"><div class="sig">توقيع الأستاذ(ة)</div><div class="sig">طابع وتوقيع المدير(ة)</div></div>'
+      : "";
+
+    document.getElementById("stage").innerHTML = '<div class="a4 ' + st.cfg.theme + '">' + head + meta +
+      '<table class="mp-table"><thead>' + th + '</thead><tbody>' + body + '</tbody></table>' +
+      foot + '<div class="grid-note">Modaris Pro — modarispro.com</div></div>';
+
+    // ربط خانات النقط
+    document.querySelectorAll("#stage input[data-i]").forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        var k = inp.getAttribute("data-i") + "_" + inp.getAttribute("data-c");
+        st.notes[k] = inp.value;
+        MP.setState("grading", st);
+        // تحديث الحسابات دون إعادة بناء (حفاظاً على التركيز)
+        recalc();
+      });
+    });
+  }
+
+  function recalc() {
+    var list = names();
+    var cols = parseInt(st.cfg.colCount, 10) || 3;
+    var scale = parseInt(st.cfg.scale, 10) || 20;
+    var note = st.notes || {};
+    var avgs = [], totals = [];
+    for (var i = 0; i < list.length; i++) {
+      var sum = 0, cnt = 0;
+      for (var c = 0; c < cols; c++) {
+        var v = note[i + "_" + c];
+        if (v !== undefined && v !== "" && !isNaN(parseFloat(v))) { sum += parseFloat(v); cnt++; }
+      }
+      totals.push(sum); avgs.push(cnt ? (sum / cnt) : 0);
+    }
+    var ranked = list.map(function (_, i) { return i; }).sort(function (a, b) { return avgs[b] - avgs[a]; });
+    var rank = {}; ranked.forEach(function (idx, pos) { rank[idx] = pos + 1; });
+
+    var rows = document.querySelectorAll("#stage tbody tr");
+    rows.forEach(function (tr, i) {
+      var tds = tr.querySelectorAll("td");
+      // آخر الأعمدة: المجموع، المعدل، [الملاحظة]، [الرتبة]
+      var base = 2 + cols;
+      tds[base].textContent = totals[i] ? fmt(totals[i]) : "";
+      tds[base + 1].textContent = totals[i] ? fmt(avgs[i]) : "";
+      var idx = base + 2;
+      if (st.chk.showNote) { tds[idx].textContent = totals[i] ? mention(avgs[i] * (20 / scale)) : ""; idx++; }
+      if (st.chk.showRank) { tds[idx].textContent = totals[i] ? rank[i] : ""; }
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

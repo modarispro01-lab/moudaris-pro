@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ميثاق وقوانين القسم | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  .cr-page{ height:269mm; border:5px solid var(--t); border-radius:10px; padding:10mm; display:flex; flex-direction:column; background:linear-gradient(180deg,#fff 0%,var(--t-soft) 100%); }
+  .a4.landscape .cr-page{ height:186mm; }
+  .cr-banner{ background:var(--t); color:#fff; border-radius:10px; padding:8mm; text-align:center; }
+  .cr-banner .t{ font-size:38px; font-weight:800; }
+  .cr-banner .s{ font-size:14px; opacity:.9; margin-top:4px; }
+  .a4.landscape .cr-banner .t{ font-size:32px; }
+  .cr-grid{ flex:1; display:grid; gap:5mm; margin-top:7mm; align-content:start; }
+  .cr-item{ display:flex; align-items:flex-start; gap:12px; background:#fff; border:1.5px solid var(--t); border-right:7px solid var(--t); border-radius:10px; padding:10px 14px; }
+  .cr-num{ flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--t); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; }
+  .cr-item .tx{ font-size:16px; font-weight:700; color:#1f2937; line-height:1.8; padding-top:3px; }
+  .a4.landscape .cr-item .tx{ font-size:15px; }
+  .cr-foot{ margin-top:6mm; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:700; color:var(--t); border-top:2px solid var(--t); padding-top:8px; }
+  .rule-row{ display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+  .rule-row input[type=text]{ flex:1; padding:7px 9px; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:13px; }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">م</div>
+      <div>
+        <div class="mp-title">ميثاق وقوانين القسم</div>
+        <div class="mp-sub">ملصق جاهز للطباعة</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">👤 بيانات الأستاذ</div>
+    <div class="mp-field"><label>الأستاذ(ة)</label><input type="text" data-profile="fullName"></div>
+    <div class="mp-field"><label>المؤسسة</label><input type="text" data-profile="establishment"></div>
+    <div class="mp-field"><label>المستوى / القسم</label><input type="text" data-profile="level"></div>
+    <div class="mp-field"><label>السنة الدراسية</label><input type="text" data-profile="schoolYear"></div>
+
+    <div class="mp-section-title">📌 العنوان</div>
+    <div class="mp-field"><label>العنوان الرئيسي</label><input type="text" id="title" value="ميثاق القسم"></div>
+    <div class="mp-field"><label>العنوان الفرعي</label><input type="text" id="subtitle" value="أتعامل مع زملائي وأستاذي باحترام — قواعدنا التي نلتزم بها جميعاً"></div>
+
+    <div class="mp-section-title">📋 القواعد</div>
+    <div id="rules"></div>
+    <div class="mp-field" style="margin-top:8px">
+      <label>إضافة قاعدة</label>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="newRule" placeholder="نصّ القاعدة الجديدة">
+        <button class="mp-btn mp-btn-ghost mp-btn-sm" onclick="addRule()">إضافة</button>
+      </div>
+    </div>
+
+    <div class="mp-section-title">⚙️ خيارات</div>
+    <div class="mp-field">
+      <label>الاتجاه</label>
+      <select id="orient">
+        <option value="portrait">عمودي (A4 — ملصق باب القسم)</option>
+        <option value="landscape">أفقي (A4 — لوحة حائط)</option>
+      </select>
+    </div>
+    <div class="mp-field">
+      <label>عمودان أم عمود واحد</label>
+      <select id="cols">
+        <option value="1">عمود واحد</option>
+        <option value="2">عمودان</option>
+      </select>
+    </div>
+    <div class="mp-field">
+      <label>نمط الترقيم</label>
+      <select id="numStyle">
+        <option value="num">أرقام (1، 2، 3...)</option>
+        <option value="check">علامات (✓)</option>
+      </select>
+    </div>
+    <label class="mp-check"><input type="checkbox" id="showYear" checked> إظهار السنة الدراسية</label>
+    <div class="mp-field" style="margin-top:8px">
+      <label>القالب اللوني</label>
+      <select id="theme">
+        <option value="theme-blue">أزرق (أساسي)</option>
+        <option value="theme-green">أخضر</option>
+        <option value="theme-gold">ذهبي</option>
+        <option value="theme-purple">بنفسجي</option>
+        <option value="theme-slate">رمادي</option>
+        <option value="theme-mono">أبيض وأسود</option>
+      </select>
+    </div>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ طباعة / حفظ PDF</button>
+    </div>
+    <div class="mp-note">💡 افتح كل قاعدة للنقاش مع تلاميذك، ثم علّق الميثاق داخل القسم.</div>
+  </aside>
+
+  <main class="mp-stage" id="stage"></main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  MP.bindProfile(document);
+
+  var DEFAULT_RULES = [
+    "أدخل القسم بهدوء، وأحضر جميع أدواتي قبل بداية الحصة.",
+    "أرفع يدي قبل الكلام، وأحترم دور زملائي في المشاركة.",
+    "أُنصت إلى الأستاذ(ة) وأتّبع التوجيهات بانتظام.",
+    "أحافظ على نظافة قسمي وأعتني بأثاث المؤسسة وتجهيزاتها.",
+    "أحترم زملائي في القول والفعل، ولا أسخر من أحد.",
+    "أنجز واجباتي في الوقت المحدد، وأشارك في الأنشطة الصفية.",
+    "أطلب المساعدة عند الحاجة بلباقة، وأتعاون مع زملائي.",
+    "أعتزّ بمدرستي، وأفتخر بانتمائي إليها."
+  ];
+
+  var st = MP.getState("classroom-rules", null) || {
+    rules: DEFAULT_RULES.slice(),
+    title: "ميثاق القسم",
+    subtitle: "أتعامل مع زملائي وأستاذي باحترام — قواعدنا التي نلتزم بها جميعاً",
+    orient: "portrait", cols: "2", numStyle: "num", showYear: true, theme: "theme-blue"
+  };
+  if (!st.rules || !st.rules.length) st.rules = DEFAULT_RULES.slice();
+
+  function save() { MP.setState("classroom-rules", st); render(); }
+
+  function renderRules() {
+    var box = document.getElementById("rules");
+    box.innerHTML = "";
+    st.rules.forEach(function (r, i) {
+      var row = document.createElement("div");
+      row.className = "rule-row";
+      row.innerHTML = '<input type="text" value="' + MP.escapeHtml(r) + '">' +
+        '<button class="mp-btn mp-btn-ghost mp-btn-sm" title="حذف">✕</button>';
+      row.querySelector("input").addEventListener("input", function () { st.rules[i] = this.value; MP.setState("classroom-rules", st); render(); });
+      row.querySelector("button").addEventListener("click", function () { st.rules.splice(i, 1); save(); renderRules(); });
+      box.appendChild(row);
+    });
+  }
+  window.addRule = function () {
+    var inp = document.getElementById("newRule");
+    var t = inp.value.trim();
+    if (!t) return;
+    st.rules.push(t); inp.value = ""; save(); renderRules();
+  };
+
+  var cfgIds = ["title","subtitle","orient","cols","numStyle","theme"];
+  cfgIds.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (st[id] !== undefined) el.value = st[id];
+    el.addEventListener("input", function () { st[id] = el.value; save(); });
+    el.addEventListener("change", function () { st[id] = el.value; save(); });
+  });
+  var yEl = document.getElementById("showYear");
+  yEl.checked = !!st.showYear;
+  yEl.addEventListener("change", function () { st.showYear = yEl.checked; save(); });
+
+  MP.onProfileChange = function(){ render(); };
+  function esc(s){ return MP.escapeHtml(s); }
+
+  function render() {
+    var p = MP.getProfile();
+    var cls = "a4 " + st.theme + (st.orient === "landscape" ? " landscape" : "");
+    var cols = st.cols === "2" ? 2 : 1;
+
+    var rules = st.rules.filter(function (r) { return r.trim(); });
+    var items = rules.map(function (r, i) {
+      var num = st.numStyle === "check" ? "✓" : (i + 1);
+      return '<div class="cr-item"><div class="cr-num">' + num + '</div><div class="tx">' + esc(r) + '</div></div>';
+    }).join("");
+
+    document.getElementById("stage").innerHTML = '<div class="' + cls + '"><div class="cr-page">' +
+      '<div class="cr-banner"><div class="t">' + esc(st.title || "ميثاق القسم") + '</div>' +
+      (st.subtitle ? '<div class="s">' + esc(st.subtitle) + '</div>' : "") + '</div>' +
+      '<div class="cr-grid" style="grid-template-columns:repeat(' + cols + ',1fr)">' + items + '</div>' +
+      '<div class="cr-foot">' +
+        '<span>' + esc(p.establishment || "") + (p.level ? " — " + esc(p.level) : "") + '</span>' +
+        '<span>' + (p.fullName ? esc(p.fullName) : "") + (st.showYear ? " · " + esc(p.schoolYear || MP.YEAR) : "") + '</span>' +
+      '</div>' +
+    '</div></div>';
+  }
+
+  renderRules();
+  render();
+})();
+</script>
+</body>
+</html>

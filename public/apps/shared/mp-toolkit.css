@@ -1,0 +1,130 @@
+/* ============================================================
+   Modaris Pro — Toolkit مشترك لكل أدوات الأستاذ
+   تصميم موحّد + طباعة A4 بلا علامة مائية
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+
+:root {
+  --primary: #123B5D;
+  --primary-600: #17527d;
+  --secondary: #0F766E;
+  --accent: #F59E0B;
+  --bg: #F8FAFC;
+  --surface: #ffffff;
+  --text: #172033;
+  --muted: #64748B;
+  --border: #E2E8F0;
+  --danger: #c0392b;
+  --radius: 14px;
+  --shadow: 0 2px 10px rgba(15, 35, 60, .07);
+  --font: "Tajawal", system-ui, "Segoe UI", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  direction: rtl;
+  line-height: 1.7;
+}
+
+/* ============ التخطيط ============ */
+.mp-app { display: grid; grid-template-columns: 380px 1fr; gap: 0; min-height: 100vh; }
+@media (max-width: 1024px) { .mp-app { grid-template-columns: 1fr; } }
+
+.mp-panel {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 18px;
+  overflow-y: auto;
+  max-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+@media (max-width: 1024px) { .mp-panel { position: static; max-height: none; border-left: 0; border-bottom: 1px solid var(--border); } }
+
+.mp-stage { padding: 24px; overflow-x: auto; }
+
+.mp-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.mp-logo { width: 38px; height: 38px; border-radius: 10px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; }
+.mp-title { font-weight: 800; font-size: 17px; color: var(--primary); }
+.mp-sub { font-size: 12px; color: var(--muted); margin-top: -6px; }
+
+/* ============ الحقول ============ */
+.mp-section-title { font-size: 13px; font-weight: 800; color: var(--primary); margin: 18px 0 8px; padding-bottom: 6px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 6px; }
+.mp-field { margin-bottom: 11px; }
+.mp-field label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+.mp-field input, .mp-field select, .mp-field textarea {
+  width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: 9px;
+  font-family: inherit; font-size: 14px; background: #fff; color: var(--text); transition: .15s;
+}
+.mp-field input:focus, .mp-field select:focus, .mp-field textarea:focus {
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(18, 59, 93, .12);
+}
+.mp-field textarea { resize: vertical; min-height: 90px; }
+.mp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mp-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.mp-check { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 6px 0; cursor: pointer; }
+.mp-check input { width: 17px; height: 17px; accent-color: var(--primary); }
+
+/* ============ الأزرار ============ */
+.mp-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.mp-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 10px 18px; border-radius: 10px; border: 0; cursor: pointer;
+  font-family: inherit; font-weight: 700; font-size: 14px; transition: .15s;
+}
+.mp-btn-primary { background: var(--primary); color: #fff; }
+.mp-btn-primary:hover { background: var(--primary-600); }
+.mp-btn-accent { background: var(--accent); color: #fff; }
+.mp-btn-accent:hover { filter: brightness(.94); }
+.mp-btn-ghost { background: #fff; color: var(--primary); border: 1.5px solid var(--primary); }
+.mp-btn-ghost:hover { background: rgba(18,59,93,.06); }
+.mp-btn-block { width: 100%; }
+.mp-btn-sm { padding: 7px 12px; font-size: 12.5px; }
+
+/* ============ وثيقة A4 ============ */
+.a4 {
+  width: 210mm; min-height: 297mm; background: #fff; margin: 0 auto 18px;
+  padding: 14mm; box-shadow: 0 4px 22px rgba(15,35,60,.13); position: relative;
+  color: #111; overflow: hidden;
+}
+.a4.landscape { width: 297mm; min-height: 210mm; }
+
+/* ============ ألوان القوالب ============ */
+.theme-blue    { --t: #123B5D; --t2: #17527d; --t-soft: #e8eff5; }
+.theme-green   { --t: #0F766E; --t2: #12988e; --t-soft: #e3f4f2; }
+.theme-gold    { --t: #B45309; --t2: #d97706; --t-soft: #fdf1e2; }
+.theme-purple  { --t: #6D28D9; --t2: #7c3aed; --t-soft: #f0e9fd; }
+.theme-slate   { --t: #334155; --t2: #475569; --t-soft: #eef2f6; }
+.theme-mono    { --t: #111111; --t2: #333333; --t-soft: #f2f2f2; }
+
+/* ============ جدول الطباعة ============ */
+.mp-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.mp-table th, .mp-table td { border: 1px solid #b8c2cc; padding: 6px 7px; text-align: center; }
+.mp-table th { background: var(--t-soft, #eef2f6); font-weight: 800; }
+.mp-table td.name { text-align: right; font-weight: 700; }
+.mp-table tbody tr:nth-child(even) td { background: #fafbfc; }
+
+/* ============ طباعة ============ */
+@media print {
+  @page { size: A4; margin: 0; }
+  body { background: #fff; }
+  .mp-panel, .no-print { display: none !important; }
+  .mp-app { display: block; }
+  .mp-stage { padding: 0; overflow: visible; }
+  .a4 { box-shadow: none; margin: 0; width: 210mm; min-height: 297mm; page-break-after: always; break-after: page; }
+  .a4.landscape { width: 297mm; min-height: 210mm; }
+  .a4:last-child { page-break-after: auto; break-after: auto; }
+}
+
+/* ============ عناصر مساعدة ============ */
+.mp-toast { position: fixed; bottom: 20px; right: 20px; background: var(--secondary); color: #fff; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.2); opacity: 0; transform: translateY(60px); transition: .35s; z-index: 999; }
+.mp-toast.show { opacity: 1; transform: translateY(0); }
+.mp-note { background: var(--t-soft, #eef2f6); border: 1px solid #cbd5e1; border-radius: 10px; padding: 11px 13px; font-size: 12.5px; color: #334155; margin-top: 12px; }
+.mp-print-only { display: none; }
+@media print { .mp-print-only { display: block; } }
