@@ -125,6 +125,32 @@ export default function ToolsPage() {
         </div>
       </section>
 
+      {/* ===== شريط التخصيص ===== */}
+      <div className="mx-auto max-w-7xl px-4 -mt-6">
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
+            <div className="font-extrabold text-text">
+              🎨 خصّص وثائقك كما تشاء
+            </div>
+            <div className="text-sm text-muted">
+              <span className="font-bold text-text">19 لوحة ألوان</span> — منها هادئة وأنثوية وداكنة
+            </div>
+            <div className="text-sm text-muted">
+              <span className="font-bold text-text">8 أنماط ورق</span> — مسطّرة، مربّعات، إطار، زخرفة…
+            </div>
+            <div className="text-sm text-muted">
+              <span className="font-bold text-text">13 خطاً عربياً</span> — نسخي، كوفي، عصري، مرح
+            </div>
+            <div className="text-sm text-muted">
+              <span className="font-bold text-text">🇫🇷 بالعربية أو الفرنسية</span> — واجهة ووثيقة
+            </div>
+          </div>
+          <p className="mt-3 text-center text-xs text-muted">
+            تظهر لوحة «التصميم واللغة» أعلى لوحة التحكم في كل أداة، وتُحفظ اختياراتك تلقائياً لتعمل في كل الأدوات.
+          </p>
+        </div>
+      </div>
+
       {/* ===== شبكة الأدوات ===== */}
       <div className="mx-auto max-w-7xl px-4 py-10">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

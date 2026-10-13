@@ -1,6 +1,7 @@
 /* ============================================================
-   Modaris Pro — Toolkit مشترك لكل أدوات الأستاذ
-   تصميم موحّد + طباعة A4 بلا علامة مائية
+   Modaris Pro — Toolkit مشترك (v2)
+   توحيد التصميم + لوحات ألوان + أنماط ورق + خطوط عربية + طباعة A4
+   - كل الأدوات ترث التصميم من <html data-palette/data-paper/data-font/data-lang>
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
 
@@ -18,6 +19,17 @@
   --radius: 14px;
   --shadow: 0 2px 10px rgba(15, 35, 60, .07);
   --font: "Tajawal", system-ui, "Segoe UI", Arial, sans-serif;
+  --font-doc: var(--font);
+
+  /* ===== متغيرات الوثيقة (يُبدّلها نظام التصميم) ===== */
+  --t: #123B5D;
+  --t2: #17527d;
+  --t-soft: #e8eff5;
+  --doc-bg: #ffffff;
+  --doc-ink: #111111;
+  --doc-line: #b8c2cc;
+  --doc-even: #fafbfc;
+  --paper-line: rgba(15, 35, 60, .13);
 }
 
 * { box-sizing: border-box; }
@@ -87,28 +99,138 @@ body {
 .mp-btn-block { width: 100%; }
 .mp-btn-sm { padding: 7px 12px; font-size: 12.5px; }
 
-/* ============ وثيقة A4 ============ */
+/* ============================================================
+   وثيقة A4
+   ============================================================ */
 .a4 {
-  width: 210mm; min-height: 297mm; background: #fff; margin: 0 auto 18px;
-  padding: 14mm; box-shadow: 0 4px 22px rgba(15,35,60,.13); position: relative;
-  color: #111; overflow: hidden;
+  width: 210mm; min-height: 297mm;
+  background-color: var(--doc-bg);
+  color: var(--doc-ink);
+  margin: 0 auto 18px;
+  padding: 14mm;
+  box-shadow: 0 4px 22px rgba(15,35,60,.13);
+  position: relative; overflow: hidden;
+  font-family: var(--font-doc);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 .a4.landscape { width: 297mm; min-height: 210mm; }
 
-/* ============ ألوان القوالب ============ */
-.theme-blue    { --t: #123B5D; --t2: #17527d; --t-soft: #e8eff5; }
-.theme-green   { --t: #0F766E; --t2: #12988e; --t-soft: #e3f4f2; }
-.theme-gold    { --t: #B45309; --t2: #d97706; --t-soft: #fdf1e2; }
-.theme-purple  { --t: #6D28D9; --t2: #7c3aed; --t-soft: #f0e9fd; }
-.theme-slate   { --t: #334155; --t2: #475569; --t-soft: #eef2f6; }
-.theme-mono    { --t: #111111; --t2: #333333; --t-soft: #f2f2f2; }
+/* ============ لوحات الألوان ============
+   تُطبَّق على <html data-palette="..."> فترثها كل الوثائق          */
+html[data-palette="blue"]       { --t:#123B5D; --t2:#17527d; --t-soft:#e8eff5; }
+html[data-palette="teal"]       { --t:#0F766E; --t2:#12988e; --t-soft:#e3f4f2; }
+html[data-palette="green"]      { --t:#15803D; --t2:#22A052; --t-soft:#e7f6ec; }
+html[data-palette="burgundy"]   { --t:#9F1239; --t2:#BE1E4A; --t-soft:#fbe9ee; --accent:#D97706; }
+html[data-palette="purple"]     { --t:#6D28D9; --t2:#7C3AED; --t-soft:#f0e9fd; }
+html[data-palette="gold"]       { --t:#B45309; --t2:#D97706; --t-soft:#fdf1e2; --accent:#0F766E; }
+html[data-palette="slate"]      { --t:#334155; --t2:#475569; --t-soft:#eef2f6; }
+/* ===== هادئة / أنثوية ===== */
+html[data-palette="rose"]       { --t:#BE185D; --t2:#DB2777; --t-soft:#fdeef5; --accent:#F472B6; }
+html[data-palette="lavender"]   { --t:#7C4DBE; --t2:#9A6AD4; --t-soft:#f4eefc; --accent:#C4B5FD; }
+html[data-palette="mint"]       { --t:#0D9488; --t2:#14B8A6; --t-soft:#e6f7f5; --accent:#5EEAD4; }
+html[data-palette="sky"]        { --t:#0284C7; --t2:#0EA5E9; --t-soft:#e6f3fc; --accent:#7DD3FC; }
+html[data-palette="peach"]      { --t:#C2410C; --t2:#EA580C; --t-soft:#fdefe6; --accent:#FDBA74; }
+html[data-palette="sage"]       { --t:#4D7C5A; --t2:#639A72; --t-soft:#eaf3ec; --accent:#A3B18A; }
+html[data-palette="plum"]       { --t:#86198F; --t2:#A21CAF; --t-soft:#fbeefc; --accent:#E879F9; }
+/* ===== داكنة ===== */
+html[data-palette="dark-navy"]     { --t:#0B1220; --t2:#1E293B; --t-soft:#e8edf5; --accent:#C08A1E; }
+html[data-palette="dark-graphite"] { --t:#1F2937; --t2:#374151; --t-soft:#eef1f5; --accent:#C08A1E; }
+html[data-palette="dark-emerald"]  { --t:#064E3B; --t2:#0A6B52; --t-soft:#e6f5f0; --accent:#B98A1F; }
+html[data-palette="dark-wine"]     { --t:#4C0519; --t2:#6B0F26; --t-soft:#f7e9ee; --accent:#B98A1F; }
+html[data-palette="mono"]          { --t:#111111; --t2:#333333; --t-soft:#f2f2f2; --accent:#111111; }
+
+/* ============ أنماط الورق ============
+   تُطبَّق على <html data-paper="..."> فترثها كل الوثائق              */
+html[data-paper="lined"] .a4 {
+  background-image: repeating-linear-gradient(180deg,
+    transparent 0, transparent 7.5mm,
+    var(--paper-line) 7.5mm, var(--paper-line) 7.72mm);
+}
+html[data-paper="grid"] .a4 {
+  background-image:
+    repeating-linear-gradient(180deg, transparent 0, transparent 4.78mm, var(--paper-line) 4.78mm, var(--paper-line) 5mm),
+    repeating-linear-gradient(90deg, transparent 0, transparent 4.78mm, var(--paper-line) 4.78mm, var(--paper-line) 5mm);
+}
+html[data-paper="dots"] .a4 {
+  background-image: radial-gradient(var(--paper-line) 0.6mm, transparent 0.72mm);
+  background-size: 5mm 5mm;
+}
+html[data-paper="gradient"] .a4 {
+  background-image: linear-gradient(180deg, var(--t-soft) 0%, transparent 40%);
+}
+html[data-paper="kraft"] .a4 { background-color: #f4e9d4; }
+html[data-paper="frame"] .a4::after {
+  content: ""; position: absolute; inset: 5mm; border: 2px double var(--t);
+  border-radius: 3px; pointer-events: none;
+}
+html[data-paper="ornament"] .a4::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 0 0,     var(--t-soft) 0 20mm, transparent 20.5mm),
+    radial-gradient(circle at 100% 0,   var(--t-soft) 0 20mm, transparent 20.5mm),
+    radial-gradient(circle at 0 100%,   var(--t-soft) 0 20mm, transparent 20.5mm),
+    radial-gradient(circle at 100% 100%,var(--t-soft) 0 20mm, transparent 20.5mm);
+}
 
 /* ============ جدول الطباعة ============ */
 .mp-table { width: 100%; border-collapse: collapse; font-size: 11px; }
-.mp-table th, .mp-table td { border: 1px solid #b8c2cc; padding: 6px 7px; text-align: center; }
-.mp-table th { background: var(--t-soft, #eef2f6); font-weight: 800; }
+.mp-table th, .mp-table td { border: 1px solid var(--doc-line); padding: 6px 7px; text-align: center; }
+.mp-table th { background: var(--t-soft); font-weight: 800; }
 .mp-table td.name { text-align: right; font-weight: 700; }
-.mp-table tbody tr:nth-child(even) td { background: #fafbfc; }
+.mp-table tbody tr:nth-child(even) td { background: var(--doc-even); }
+
+/* ============================================================
+   لوحة التصميم (تُحقن في كل أداة)
+   ============================================================ */
+.mp-design {
+  margin: 0 0 14px; border: 1px solid var(--border); border-radius: 12px;
+  background: linear-gradient(180deg, #f8fafc, #ffffff); overflow: hidden;
+}
+.mp-design > summary {
+  cursor: pointer; list-style: none; padding: 11px 13px; font-weight: 800;
+  font-size: 13.5px; color: var(--primary); display: flex; align-items: center; gap: 7px;
+}
+.mp-design > summary::-webkit-details-marker { display: none; }
+.mp-design[open] > summary { border-bottom: 1px solid var(--border); }
+.mp-design-body { padding: 12px 13px 14px; }
+.mp-dgroup { font-size: 11px; font-weight: 800; color: var(--muted); margin: 12px 0 6px; letter-spacing: .3px; }
+.mp-dgroup:first-child { margin-top: 0; }
+
+.mp-swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.mp-sw {
+  border: 2px solid #e2e8f0; border-radius: 9px; cursor: pointer; padding: 0;
+  height: 32px; position: relative; overflow: hidden; background: #fff; transition: .15s;
+}
+.mp-sw:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(15,35,60,.15); }
+.mp-sw i { position: absolute; left: 0; right: 0; top: 0; height: 17px; display: block; }
+.mp-sw b { position: absolute; left: 0; right: 0; bottom: 0; height: 15px; display: block; }
+.mp-sw.active { border-color: #0f172a; box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(15,23,42,.3); }
+
+.mp-papers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.mp-chip {
+  border: 1.5px solid var(--border); border-radius: 9px; padding: 8px 6px; font-size: 11.5px;
+  font-weight: 700; text-align: center; cursor: pointer; background: #fff; color: #334155; transition: .15s;
+}
+.mp-chip:hover { border-color: var(--primary); }
+.mp-chip.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+
+.mp-langbtns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.mp-langbtn {
+  border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 4px; font-size: 12px;
+  font-weight: 800; cursor: pointer; background: #fff; color: #334155; transition: .15s;
+}
+.mp-langbtn.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+
+.mp-design select {
+  width: 100%; padding: 9px 11px; border: 1px solid var(--border);
+  border-radius: 9px; font-family: inherit; font-size: 13.5px; background: #fff; color: var(--text);
+}
+.mp-dreset {
+  margin-top: 12px; width: 100%; padding: 8px; border: 1.5px solid var(--border); border-radius: 9px;
+  background: #fff; color: var(--muted); font-family: inherit; font-weight: 700; font-size: 12px; cursor: pointer;
+}
+.mp-dreset:hover { color: var(--danger); border-color: var(--danger); }
 
 /* ============ طباعة ============ */
 @media print {
