@@ -18,6 +18,18 @@ export default function CookieBanner() {
 
   const accept = () => {
     localStorage.setItem(STORAGE_KEY, "1");
+    // تحديث وضع الموافقة (Google Consent Mode v2) بعد موافقة الزائر
+    try {
+      const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+      w.gtag?.("consent", "update", {
+        ad_storage: "granted",
+        ad_user_data: "granted",
+        ad_personalization: "granted",
+        analytics_storage: "granted",
+      });
+    } catch {
+      /* تجاهل */
+    }
     setVisible(false);
   };
 
@@ -32,8 +44,8 @@ export default function CookieBanner() {
     >
       <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center gap-3 md:gap-6">
         <p className="text-sm leading-relaxed flex-1 text-white/90">
-          🍪 نستخدم ملفات تعريف الارتباط وتحليلات Google Analytics لتحسين تجربتك.
-          بمتابعتك التصفح فأنت توافق على{" "}
+          🍪 نستخدم ملفات تعريف الارتباط وتقنيات مشابهة لأغراض التحليل (Google Analytics)
+          وعرض الإعلانات (Google AdSense) وتحسين تجربتك. بمتابعتك التصفح فأنت توافق على{" "}
           <Link
             href="/privacy-policy"
             className="underline font-bold text-accent hover:text-white"
