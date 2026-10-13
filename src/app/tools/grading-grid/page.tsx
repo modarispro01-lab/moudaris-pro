@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ShareButtons from "@/components/ShareButtons";
+import ToolFrame from "@/components/ToolFrame";
 
 export const metadata: Metadata = {
   title: "شبكات التنقيط والتفريغ — مع حساب المعدل والرتبة",
@@ -24,16 +24,5 @@ export const metadata: Metadata = {
 };
 
 export default function GradingGridPage() {
-  return (
-    <>
-      <div className="bg-white border-b border-border shadow-sm">
-        <ShareButtons />
-      </div>
-      <iframe
-        src="/apps/grading-grid.html"
-        title="شبكات التنقيط والتفريغ"
-        style={{ width: "100%", height: "100vh", border: "none", display: "block" }}
-      />
-    </>
-  );
+  return <ToolFrame src="/apps/grading-grid.html" title="شبكات التنقيط والتفريغ" />;
 }

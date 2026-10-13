@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ShareButtons from "@/components/ShareButtons";
+import ToolFrame from "@/components/ToolFrame";
 
 export const metadata: Metadata = {
   title: "المذكرة اليومية للدعم المكثف 2026/2027 | Modaris Pro",
@@ -18,19 +18,10 @@ export const metadata: Metadata = {
 
 export default function DailyLessonPlanPage() {
   return (
-    <>
-      {/* ===== شريط المشاركة: يظهر فوراً فوق الأداة ===== */}
-      <div className="bg-white border-b border-border shadow-sm">
-        <ShareButtons />
-      </div>
-
-      {/* ===== الأداة (بدون أي تغيير عن نسختك) ===== */}
-      <iframe
-        src="/apps/moudhira.html?v=7.3"
-        title="المذكرة اليومية الاحترافية"
-        style={{ width: "100%", height: "100vh", border: "none", display: "block" }}
-        allow="clipboard-write"
-      />
-    </>
+    <ToolFrame
+      src="/apps/moudhira.html?v=7.3"
+      title="المذكرة اليومية الاحترافية"
+      allow="clipboard-write"
+    />
   );
 }

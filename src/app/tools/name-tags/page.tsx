@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ShareButtons from "@/components/ShareButtons";
+import ToolFrame from "@/components/ToolFrame";
 
 export const metadata: Metadata = {
   title: "بطاقات أسماء التلاميذ (Affichettes) للطباعة",
@@ -24,16 +24,5 @@ export const metadata: Metadata = {
 };
 
 export default function NameTagsPage() {
-  return (
-    <>
-      <div className="bg-white border-b border-border shadow-sm">
-        <ShareButtons />
-      </div>
-      <iframe
-        src="/apps/name-tags.html"
-        title="بطاقات أسماء التلاميذ"
-        style={{ width: "100%", height: "100vh", border: "none", display: "block" }}
-      />
-    </>
-  );
+  return <ToolFrame src="/apps/name-tags.html" title="بطاقات أسماء التلاميذ" />;
 }

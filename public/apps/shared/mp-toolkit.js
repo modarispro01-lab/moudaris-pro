@@ -764,7 +764,8 @@
     if (!panel || panel.querySelector(".mp-design")) return;
     var el = document.createElement("details");
     el.className = "mp-design";
-    el.setAttribute("open", "");
+    /* على الهاتف تُطوى لوحة التصميم افتراضياً حتى تظهر حقول الأداة مباشرة */
+    if (global.innerWidth > 1024) el.setAttribute("open", "");
     el.setAttribute("data-mp-notranslate", "");
     el.innerHTML = designBarHtml();
     var head = panel.querySelector(".mp-head");
@@ -789,12 +790,90 @@
   }
 
   /* ============================================================
+     ملاءمة معاينة A4 لعرض الشاشة (هاتف/لوحي)
+     يحسب --mp-zoom ليصغّر الوثيقة حتى تدخل في العرض دون تمرير أفقي.
+     ============================================================ */
+  var _fitTimer = null;
+
+  function fitZoom() {
+    var root = document.documentElement;
+    var stage = document.querySelector(".mp-stage") || document.getElementById("stage");
+    var docs = document.querySelectorAll(".a4");
+    if (!stage || !docs.length) return;
+
+    var cs = getComputedStyle(stage);
+    var avail = stage.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+    if (!avail || avail < 120) return;
+
+    /* قياس العرض الطبيعي للوثيقة عند تكبير 1 (لا يُرسم للمستخدم) */
+    root.style.setProperty("--mp-zoom", "1");
+    var natural = 0;
+    Array.prototype.forEach.call(docs, function (d) {
+      var w = d.getBoundingClientRect().width;
+      if (w > natural) natural = w;
+    });
+    if (!natural) { root.style.removeProperty("--mp-zoom"); return; }
+
+    var z = avail / natural;
+    if (z > 1) z = 1;
+    z = Math.round(z * 1000) / 1000;
+    root.style.setProperty("--mp-zoom", String(z));
+  }
+
+  function scheduleFit() {
+    if (_fitTimer) clearTimeout(_fitTimer);
+    _fitTimer = setTimeout(fitZoom, 60);
+  }
+
+  /* ============================================================
+     شريط الإجراءات السفلي — الهاتف فقط
+     ============================================================ */
+  function mobileBarHtml() {
+    return '<button type="button" class="mp-mb-top" title="' + escapeHtml(L("أعلى", "Haut")) + '">\u2B06\uFE0F</button>' +
+      '<button type="button" class="mp-mb-design">\uD83C\uDFA8 ' + escapeHtml(L("التصميم", "Design")) + "</button>" +
+      '<button type="button" class="mp-mb-print mp-mb-main">\uD83D\uDDA8\uFE0F ' + escapeHtml(L("طباعة / PDF", "Imprimer / PDF")) + "</button>";
+  }
+
+  function renderMobileBar() {
+    var bar = document.querySelector(".mp-mobilebar");
+    if (bar) bar.innerHTML = mobileBarHtml();
+  }
+
+  function injectMobileBar() {
+    if (document.querySelector(".mp-mobilebar")) return;
+    var bar = document.createElement("div");
+    bar.className = "mp-mobilebar no-print";
+    bar.setAttribute("data-mp-notranslate", "");
+    bar.innerHTML = mobileBarHtml();
+    bar.addEventListener("click", function (e) {
+      var t = e.target && e.target.closest ? e.target.closest("button") : null;
+      if (!t) return;
+      if (t.classList.contains("mp-mb-print")) {
+        print();
+      } else if (t.classList.contains("mp-mb-top")) {
+        if (global.scrollTo) global.scrollTo({ top: 0, behavior: "smooth" });
+        else global.scrollTo(0, 0);
+      } else if (t.classList.contains("mp-mb-design")) {
+        var d = document.querySelector(".mp-design");
+        if (d) {
+          d.setAttribute("open", "");
+          try { d.scrollIntoView({ behavior: "smooth", block: "start" }); }
+          catch (err) { d.scrollIntoView(); }
+        }
+      }
+    });
+    document.body.appendChild(bar);
+  }
+
+  /* ============================================================
      الإقلاع والمراقبة
      ============================================================ */
   function refresh() {
     applyDesign();
     renderDesignBar();
+    renderMobileBar();
     translateDom(document.body);
+    scheduleFit();
   }
 
   var _busy = false;
@@ -803,6 +882,7 @@
     _busy = true;
     try { applyDesign(); translateDom(document.body); }
     finally { _busy = false; }
+    scheduleFit();
   }
 
   function observe() {
@@ -819,9 +899,18 @@
     if (saved.font && FONT_MAP[saved.font]) design.font = saved.font;
     if (saved.lang) design.lang = saved.lang;
     injectDesignBar();
+    injectMobileBar();
     applyDesign();
     translateDom(document.body);
+    fitZoom();
     observe();
+    if (global.addEventListener) {
+      global.addEventListener("resize", scheduleFit);
+      global.addEventListener("orientationchange", scheduleFit);
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { scheduleFit(); });
+    }
   }
 
   global.MP = {
@@ -845,6 +934,7 @@
     setDesign: setDesign,
     applyDesign: applyDesign,
     refresh: refresh,
+    fit: fitZoom,
     translateDom: translateDom,
     tr: tr,
     PALETTES: PALETTES,

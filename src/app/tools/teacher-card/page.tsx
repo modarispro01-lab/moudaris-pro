@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ShareButtons from "@/components/ShareButtons";
+import ToolFrame from "@/components/ToolFrame";
 
 export const metadata: Metadata = {
   title: "البطاقة الشخصية للأستاذ — عربية وفرنسية للطباعة",
@@ -23,16 +23,5 @@ export const metadata: Metadata = {
 };
 
 export default function TeacherCardPage() {
-  return (
-    <>
-      <div className="bg-white border-b border-border shadow-sm">
-        <ShareButtons />
-      </div>
-      <iframe
-        src="/apps/teacher-card.html"
-        title="البطاقة الشخصية للأستاذ"
-        style={{ width: "100%", height: "100vh", border: "none", display: "block" }}
-      />
-    </>
-  );
+  return <ToolFrame src="/apps/teacher-card.html" title="البطاقة الشخصية للأستاذ" />;
 }

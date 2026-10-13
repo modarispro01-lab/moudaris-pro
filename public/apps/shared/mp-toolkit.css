@@ -116,6 +116,18 @@ body {
 }
 .a4.landscape { width: 297mm; min-height: 210mm; }
 
+/* ============================================================
+   ملاءمة الوثيقة لعرض الشاشة (هاتف/لوحي)
+   --mp-zoom يحسبه mp-toolkit.js لتصغير معاينة A4 لتناسب العرض.
+   لا يؤثر على الطباعة (يُطبَّق على الشاشة فقط).
+   ============================================================ */
+@media screen {
+  .a4 { zoom: var(--mp-zoom, 1); }
+}
+@media print {
+  .a4 { zoom: 1 !important; }
+}
+
 /* ============ لوحات الألوان ============
    تُطبَّق على <html data-palette="..."> فترثها كل الوثائق          */
 html[data-palette="blue"]       { --t:#123B5D; --t2:#17527d; --t-soft:#e8eff5; }
@@ -232,11 +244,83 @@ html[data-paper="ornament"] .a4::before {
 }
 .mp-dreset:hover { color: var(--danger); border-color: var(--danger); }
 
+/* ============================================================
+   الهاتف واللوحي — أزرار لمسية وشريط إجراءات سفلي
+   ============================================================ */
+.mp-mobilebar { display: none; }
+
+@media screen and (max-width: 1024px) {
+  .mp-stage {
+    padding: 14px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mp-panel { padding: 15px; }
+
+  .mp-mobilebar {
+    display: flex;
+    gap: 8px;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 900;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, .97);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -6px 20px rgba(15, 35, 60, .12);
+    backdrop-filter: blur(8px);
+  }
+  .mp-mobilebar button {
+    flex: 1;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 12px 8px; border-radius: 11px;
+    border: 1.5px solid var(--border); background: #fff; color: var(--primary);
+    font-family: inherit; font-weight: 800; font-size: 13.5px; cursor: pointer;
+    white-space: nowrap;
+  }
+  .mp-mobilebar button.mp-mb-top { flex: 0 0 52px; font-size: 17px; }
+  .mp-mobilebar button.mp-mb-main {
+    flex: 1.7; background: var(--primary); color: #fff; border-color: var(--primary);
+  }
+  html { padding-bottom: 0; }
+  body { padding-bottom: 74px; }
+}
+
+@media screen and (max-width: 640px) {
+  .mp-panel { padding: 13px; }
+  .mp-stage { padding: 10px; }
+  .mp-title { font-size: 15.5px; }
+  .mp-sub { font-size: 11px; }
+  .mp-section-title { margin: 15px 0 7px; }
+
+  /* 16px يمنع تكبير الصفحة التلقائي في iOS عند لمس الحقول */
+  .mp-field input, .mp-field select, .mp-field textarea { font-size: 16px; }
+  .mp-field input, .mp-field select { padding: 11px 12px; }
+  .mp-field label { font-size: 12.5px; }
+  .mp-field textarea { min-height: 80px; }
+
+  .mp-btn { padding: 12px 16px; }
+  .mp-toolbar { gap: 7px; }
+  .mp-toolbar .mp-btn { flex: 1 1 auto; }
+
+  /* مساحات لمس أكبر */
+  .mp-check { padding: 9px 0; font-size: 14px; }
+  .mp-check input { width: 20px; height: 20px; }
+  .mp-sw { height: 38px; }
+  .mp-swatches { gap: 5px; }
+  .mp-chip { padding: 11px 6px; font-size: 12.5px; }
+  .mp-langbtn { padding: 12px 4px; }
+  .mp-design > summary { padding: 13px; }
+  .mp-design-body { padding: 12px 12px 14px; }
+}
+
+@media screen and (max-width: 420px) {
+  .mp-row { grid-template-columns: 1fr; }
+}
+
 /* ============ طباعة ============ */
 @media print {
   @page { size: A4; margin: 0; }
-  body { background: #fff; }
-  .mp-panel, .no-print { display: none !important; }
+  body { background: #fff; padding-bottom: 0 !important; }
+  .mp-panel, .no-print, .mp-mobilebar { display: none !important; }
   .mp-app { display: block; }
   .mp-stage { padding: 0; overflow: visible; }
   .a4 { box-shadow: none; margin: 0; width: 210mm; min-height: 297mm; page-break-after: always; break-after: page; }
