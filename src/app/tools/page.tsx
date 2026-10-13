@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FileText, Calendar, Sparkles, ArrowRight, Layers, FolderTree, IdCard, Table2, NotebookPen, Award, Tags, ScrollText } from 'lucide-react';
+import { FileText, Calendar, Sparkles, ArrowRight, Layers, FolderTree, IdCard, Table2, NotebookPen, Award, Tags, ScrollText, Network } from 'lucide-react';
 import type { Metadata } from "next";
 
 // ===== Meta Tags للـ SEO =====
@@ -25,6 +25,14 @@ const tools = [
     description: 'أنشئ مذكرة درس احترافية وجاهزة للطباعة في دقائق معدودة.',
     icon: FileText,
     color: 'bg-primary',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'mind-map',
+    title: 'الخريطة الذهنية للحصة',
+    description: 'المذكرة اليومية في شكل خريطة ذهنية: عربية · فرنسية · رياضيات، وفق مراحل التعليم الصريح.',
+    icon: Network,
+    color: 'bg-secondary',
     status: 'متاح الآن',
   },
   {

@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المذكرة اليومية — خريطة ذهنية | Modaris Pro</title>
+<link rel="stylesheet" href="shared/mp-toolkit.css">
+<style>
+  /* ============================================================
+     أداة «الخريطة الذهنية للحصة» — تنسيقات خاصة
+     تعتمد على متغيرات التصميم المشتركة (--t / --accent / --font-doc)
+     ============================================================ */
+
+  /* ألوان الفروع — مشتقة من لوحة الألوان المختارة */
+  .bc0{ --bc: var(--t); }
+  .bc1{ --bc: color-mix(in oklab, var(--t) 72%, #2563eb); }
+  .bc2{ --bc: color-mix(in oklab, var(--t) 52%, #7c3aed); }
+  .bc3{ --bc: color-mix(in oklab, var(--t) 58%, #0d9488); }
+  .bc4{ --bc: color-mix(in oklab, var(--t) 52%, #c2410c); }
+  .bc5{ --bc: color-mix(in oklab, var(--t) 58%, #be185d); }
+
+  /* ---- لوحة المادة (ثلاث نسخ) ---- */
+  .subj-btns{ display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
+  .subj-btn{
+    border: 1.6px solid var(--border); border-radius: 11px; background: #fff; cursor: pointer;
+    padding: 10px 6px; font-family: inherit; font-weight: 800; font-size: 12px; color: #334155;
+    display: flex; flex-direction: column; align-items: center; gap: 4px; transition: .15s;
+  }
+  .subj-btn span.ic{ font-size: 19px; line-height: 1; }
+  .subj-btn:hover{ border-color: var(--primary); transform: translateY(-1px); }
+  .subj-btn.active{ border-color: var(--primary); background: var(--primary); color: #fff; }
+
+  /* ---- وثيقة الخريطة ---- */
+  .mm-a4{ padding: 11mm; }
+  .mm-frame{ display: flex; flex-direction: column; min-height: 275mm; }
+  .a4.landscape .mm-frame{ min-height: 188mm; }
+
+  .mm-head{ display: flex; justify-content: space-between; gap: 12px; border-bottom: 2.5px solid var(--t); padding-bottom: 6px; }
+  .mm-head .k{ font-size: 10px; font-weight: 800; color: var(--t); line-height: 1.8; }
+  .mm-head .e{ font-size: 10px; font-weight: 700; color: var(--t); line-height: 1.8; text-align: left; }
+
+  .mm-titlebar{ text-align: center; margin: 9px 0 4px; }
+  .mm-title{
+    display: inline-block; background: var(--t); color: #fff; font-size: 14.5pt; font-weight: 800;
+    padding: 5px 24px; border-radius: 999px; letter-spacing: .2px;
+  }
+  .mm-meta{ display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 7px; margin-top: 9px; }
+  .mm-meta span{
+    font-size: 9px; font-weight: 700; color: var(--t);
+    background: var(--t-soft); border: 1px solid rgba(0,0,0,.07); border-radius: 999px; padding: 2px 10px;
+  }
+
+  /* ---- فضاء الخريطة ---- */
+  .mind{ position: relative; height: 184mm; margin: 4px 0; }
+  .a4.landscape .mind{ height: 100mm; }
+  .mind-links{ position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .mind-links path{ fill: none; stroke: var(--bc, var(--t)); stroke-width: 1.8; stroke-linecap: round; }
+
+  .mnode{ position: absolute; transform: translate(-50%,-50%); box-sizing: border-box; }
+  .mnode [contenteditable]{ outline: none; border-radius: 4px; }
+  .mnode [contenteditable]:focus{ background: rgba(127,127,127,.14); }
+
+  /* العقدة المركزية */
+  .mnode.center{
+    width: 50mm; text-align: center; background: var(--t); color: #fff;
+    border-radius: 18px; padding: 10px 9px; z-index: 4; box-shadow: 0 5px 14px rgba(0,0,0,.18);
+  }
+  .mnode.center .mnode-topic{ font-size: 12.5pt; font-weight: 800; line-height: 1.35; }
+  .mnode.center .mnode-comp{
+    font-size: 8.4pt; font-weight: 600; opacity: .95; margin-top: 6px;
+    border-top: 1px solid rgba(255,255,255,.45); padding-top: 5px;
+  }
+  .mnode.center .mnode-comp:empty{ display: none; }
+
+  /* الفروع */
+  .mnode.branch{
+    width: 57mm; background: #fff; border: 1.7px solid var(--bc, var(--t));
+    border-radius: 13px; overflow: hidden; z-index: 3; box-shadow: 0 2px 8px rgba(0,0,0,.09);
+  }
+  .mnode-head{ display: flex; align-items: center; gap: 6px; background: var(--bc, var(--t)); color: #fff; padding: 4px 7px; }
+  .mnode-step{
+    width: 17px; height: 17px; border-radius: 50%; background: rgba(255,255,255,.28);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; flex: 0 0 auto;
+  }
+  .mnode-name{ font-weight: 800; font-size: 9.3pt; flex: 1; line-height: 1.3; }
+  .mnode-dur{
+    font-size: 8pt; font-weight: 700; background: rgba(255,255,255,.24);
+    border-radius: 7px; padding: 1px 7px; white-space: nowrap; flex: 0 0 auto;
+  }
+  .mnode-dur:empty{ display: none; }
+  .mnode-role{
+    font-size: 7.3pt; font-weight: 800; color: var(--bc, var(--t));
+    background: color-mix(in oklab, var(--bc, var(--t)) 11%, #fff);
+    padding: 2px 8px; border-bottom: 1px dashed color-mix(in oklab, var(--bc, var(--t)) 38%, #fff);
+  }
+  .mnode-items{ margin: 0; padding: 5px 9px 7px; list-style: none; }
+  .mnode-items li{ font-size: 8pt; line-height: 1.55; position: relative; padding-inline-start: 11px; }
+  .mnode-items li::before{
+    content: "◆"; position: absolute; inset-inline-start: 0; top: 1px;
+    color: var(--bc, var(--t)); font-size: 5.5pt;
+  }
+
+  /* ---- الأسطورة / الهدف / الوسائل / التذييل ---- */
+  .mm-legend{ display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 5px; }
+  .mm-legend i{
+    font-style: normal; font-size: 7.8pt; font-weight: 700; border: 1px solid rgba(0,0,0,.12);
+    border-radius: 999px; padding: 2px 9px; background: #fff; color: #334155;
+  }
+  .mm-legend i b{ color: var(--t); }
+  .mm-objective{
+    display: flex; align-items: flex-start; gap: 7px; margin-top: 8px;
+    border: 1.6px dashed var(--t); border-radius: 11px; padding: 7px 11px;
+    font-size: 9.2px; font-weight: 700; color: var(--t); background: var(--t-soft);
+  }
+  .mm-objective .k{ flex: 0 0 auto; }
+  .mm-mat{
+    margin-top: 7px; font-size: 8.6px; font-weight: 700; color: #334155;
+    border-inline-start: 4px solid var(--accent); background: #fbfbfd; border-radius: 8px; padding: 5px 9px;
+  }
+  .mm-mat b{ color: var(--t); }
+  .mm-foot{ margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; padding-top: 10px; }
+  .mm-sign{ font-size: 8.5px; font-weight: 700; color: var(--t); text-align: center; flex: 0 0 34%; border-top: 1.6px solid var(--t); padding-top: 4px; }
+  .mm-brand{ font-size: 8px; color: var(--muted); text-align: center; }
+
+  /* لا تكسر الصفحة على عناصر الخريطة عند الطباعة */
+  @media print{
+    .mind, .mnode, .mm-frame{ page-break-inside: avoid; }
+    .mnode [contenteditable]:focus{ background: transparent; }
+  }
+</style>
+</head>
+<body>
+<div class="mp-app">
+
+  <aside class="mp-panel no-print">
+    <div class="mp-head">
+      <div class="mp-logo">خ</div>
+      <div>
+        <div class="mp-title" data-t="panelTitle">المذكرة اليومية — خريطة ذهنية</div>
+        <div class="mp-sub" data-t="panelSub">ثلاث نسخ: عربية · فرنسية · رياضيات</div>
+      </div>
+    </div>
+
+    <div class="mp-section-title">🧭 <span data-t="sSubject">المادة</span></div>
+    <div class="subj-btns" id="subjBtns"></div>
+
+    <div class="mp-section-title">🎓 <span data-t="sLesson">الحصة</span></div>
+    <div class="mp-field"><label data-t="lLevel">المستوى</label><select id="level"></select></div>
+    <div class="mp-row">
+      <div class="mp-field"><label data-t="lPeriod">الفترة</label><select id="periode"></select></div>
+      <div class="mp-field"><label data-t="lWeek">الأسبوع</label><select id="semaine"></select></div>
+    </div>
+    <div class="mp-row">
+      <div class="mp-field"><label data-t="lSession">الحصة</label><select id="seance"></select></div>
+      <div class="mp-field"><label data-t="lDate">التاريخ</label><input type="date" id="date"></div>
+    </div>
+
+    <div class="mp-section-title">📌 <span data-t="sTopic">الموضوع والكفاية</span></div>
+    <div class="mp-field"><label data-t="lTopic">عنوان الحصة / الموضوع</label><input type="text" id="topic"></div>
+    <div class="mp-field"><label data-t="lComp">الكفاية المستهدفة</label><input type="text" id="comp"></div>
+    <div class="mp-field"><label data-t="lObj">الهدف عند نهاية الحصة (80%)</label><textarea id="objective" rows="2"></textarea></div>
+    <div class="mp-field"><label data-t="lMat">الوسائل والدعامات</label><textarea id="materials" rows="2"></textarea></div>
+
+    <div class="mp-section-title">⚙️ <span data-t="sOptions">خيارات</span></div>
+    <div class="mp-field"><label data-t="lOrient">الاتجاه</label>
+      <select id="orientation">
+        <option value="portrait" data-t="optPortrait">عمودي (A4)</option>
+        <option value="landscape" data-t="optLandscape">أفقي (A4)</option>
+      </select>
+    </div>
+    <label class="mp-check"><input type="checkbox" id="showHeader"> <span data-t="cHeader">إظهار الترويسة الرسمية</span></label>
+    <label class="mp-check"><input type="checkbox" id="showDur"> <span data-t="cDur">إظهار المدد الزمنية</span></label>
+    <label class="mp-check"><input type="checkbox" id="showRole"> <span data-t="cRole">إظهار خطوة التعليم الصريح</span></label>
+    <label class="mp-check"><input type="checkbox" id="showLegend"> <span data-t="cLegend">إظهار أسطورة التعليم الصريح</span></label>
+    <label class="mp-check"><input type="checkbox" id="showObj"> <span data-t="cObj">إظهار هدف 80%</span></label>
+    <label class="mp-check"><input type="checkbox" id="showSign"> <span data-t="cSign">إظهار خانات التوقيع</span></label>
+
+    <div class="mp-section-title">👤 <span data-t="sProfile">بيانات الأستاذ (تُحفظ وتظهر في كل الأدوات)</span></div>
+    <div class="mp-field"><label data-t="pName">الاسم الكامل</label><input type="text" data-profile="fullName"></div>
+    <div class="mp-field"><label data-t="pEstab">المؤسسة</label><input type="text" data-profile="establishment"></div>
+    <div class="mp-row">
+      <div class="mp-field"><label data-t="pAcad">الأكاديمية</label><input type="text" data-profile="academy"></div>
+      <div class="mp-field"><label data-t="pDir">المديرية الإقليمية</label><input type="text" data-profile="direction"></div>
+    </div>
+
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-primary mp-btn-block" onclick="MP.print()">🖨️ <span data-t="btnPrint">طباعة / حفظ PDF</span></button>
+    </div>
+    <div class="mp-toolbar">
+      <button class="mp-btn mp-btn-ghost mp-btn-sm" id="btnBlank">🧹 <span data-t="btnBlank">طبعة فارغة</span></button>
+      <button class="mp-btn mp-btn-ghost mp-btn-sm" id="btnReset">♻️ <span data-t="btnReset">استعادة المراحل</span></button>
+      <button class="mp-btn mp-btn-ghost mp-btn-sm" id="btnDemo">✨ <span data-t="btnDemo">مثال</span></button>
+    </div>
+    <div class="mp-note" data-t="note">💡 انقر على أي عبارة داخل الخريطة لتعديلها مباشرة قبل الطباعة. تُضبط المراحل والمدد تلقائياً حسب المادة والمستوى.</div>
+  </aside>
+
+  <main class="mp-stage" id="stage" data-mp-notranslate></main>
+</div>
+
+<div class="mp-toast"></div>
+
+<script src="shared/mp-toolkit.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  MP.bindProfile(document);
+
+  var KEY = "mind-map";
+  var DEF = {
+    subject: "arabic",
+    level: "الرابع ابتدائي",
+    periode: "1", semaine: "1", seance: "1", date: "",
+    topic: "", comp: "", objective: "", materials: "",
+    orientation: "portrait",
+    showHeader: true, showDur: true, showRole: true, showLegend: true, showObj: true, showSign: true
+  };
+  var state = Object.assign({}, DEF, MP.getState(KEY, {}));
+  var store = MP.getState(KEY + "-phases", {});
+
+  var LEVELS = [
+    { v: "الأول ابتدائي", fr: "1re année primaire" },
+    { v: "الثاني ابتدائي", fr: "2e année primaire" },
+    { v: "الثالث ابتدائي", fr: "3e année primaire" },
+    { v: "الرابع ابتدائي", fr: "4e année primaire" },
+    { v: "الخامس ابتدائي", fr: "5e année primaire" },
+    { v: "السادس ابتدائي", fr: "6e année primaire" }
+  ];
+
+  var SUBJECTS = {
+    arabic: { ar: "اللغة العربية", fr: "Langue arabe", ic: "📖" },
+    french: { ar: "اللغة الفرنسية", fr: "Langue française", ic: "🔤" },
+    math:   { ar: "الرياضيات", fr: "Mathématiques", ic: "🔢" }
+  };
+
+  /* أدوار خطوات التعليم الصريح */
+  var ROLES = {
+    open:     { ar: "الافتتاح والتهيئة", fr: "Ouverture" },
+    model:    { ar: "أنا — النمذجة", fr: "Je — modélisation" },
+    guide:    { ar: "نحن — الممارسة الموجّهة", fr: "Nous — pratique guidée" },
+    practice: { ar: "أنتم — الممارسة المستقلة", fr: "Vous — pratique autonome" },
+    close:    { ar: "الاختتام والتقويم", fr: "Clôture et évaluation" }
+  };
+
+  /* ============================================================
+     بنية المراحل الافتراضية لكل مادة/مستوى (مبنية على الدروس الرسمية)
+     ============================================================ */
+  function P(role, nameAr, nameFr, durAr, durFr, itemsAr, itemsFr) {
+    return { role: role, name: { ar: nameAr, fr: nameFr }, dur: { ar: durAr, fr: durFr },
+      items: { ar: itemsAr, fr: itemsFr } };
+  }
+
+  var DEFAULTS = {
+    "arabic|l1": [
+      P("open", "افتتاح الحصة", "Ouverture", "5 د", "5 min",
+        ["النشاط الاعتيادي: كلمات بصرية", "تحية وتهيئة الانتباه"],
+        ["Rituel : mots visuels", "Salutation et mise en route"]),
+      P("model", "المعجم", "Vocabulaire", "10 د", "10 min",
+        ["تقديم كلمات جديدة", "الاعتماد على الصور والبطاقات"],
+        ["Présentation du lexique", "Appui sur images et étiquettes"]),
+      P("guide", "استماع وتحدث", "Écoute et oral", "30 د", "30 min",
+        ["حكاية الأسبوع: التوقع", "التسميع الأول", "التحقق"],
+        ["Conte de la semaine : anticipation", "Première restitution", "Vérification"]),
+      P("practice", "قراءة وكتابة", "Lecture et écriture", "55 د", "55 min",
+        ["الحرف معزولًا", "حركات قصيرة ثم مدود", "التنوين", "الدمج والإملاء"],
+        ["La lettre isolée", "Voyelles courtes puis longues", "Le tanwin", "Assemblage et dictée"]),
+      P("close", "اختتام الحصة", "Clôture", "5 د", "5 min",
+        ["ماذا تعلمتم؟", "الواجب المنزلي"],
+        ["Qu'avez-vous appris ?", "Devoirs à la maison"])
+    ],
+    "arabic|l2": [
+      P("open", "افتتاح الحصة", "Ouverture", "10 د", "10 min",
+        ["تسجيل الحضور", "تهيئة وتذكير بالمكتسبات"],
+        ["Appel et présence", "Mise en route et rappel"]),
+      P("model", "أنشطة اعتيادية", "Activités habituelles", "10 د", "10 min",
+        ["« بيت الأسبوع »: إنشاد وفهم وحفظ"],
+        ["« Vers de la semaine » : dire, comprendre, mémoriser"]),
+      P("guide", "القراءة", "Lecture", "60 د", "60 min",
+        ["التوقع بأربع خطوات", "التحقق بالنمذجة", "القراءة الجهرية + تقويم الأقران", "شبكة الكلمة", "القراءة التحليلية"],
+        ["Anticipation en 4 étapes", "Vérification par modelage", "Lecture à voix haute + évaluation par les pairs", "Réseau de mots", "Lecture analytique"]),
+      P("close", "اختتام الحصة", "Clôture", "10 د", "10 min",
+        ["ماذا تعلمتم؟", "الواجب: قراءة سليمة + المعجم"],
+        ["Qu'avez-vous appris ?", "Devoir : lecture correcte + lexique"])
+    ],
+    "french|l1": [
+      P("open", "الطقوس", "Rituels", "5 د", "5 min",
+        ["التحية والتاريخ", "استدعاء المكتسبات"],
+        ["Salutation et date", "Rappel des acquis"]),
+      P("model", "المعجم", "Vocabulaire", "20 د", "20 min",
+        ["تقديم المعجم الجديد", "الترديد الجماعي"],
+        ["Présentation du lexique", "Répétition chorale"]),
+      P("guide", "الاستماع النشط", "Écoute active", "40 د", "40 min",
+        ["الاستماع إلى الحوار", "أسئلة مباشرة", "العمل الثنائي"],
+        ["Écoute du dialogue", "Questions directes", "Travail en binôme"])
+    ],
+    "french|l2": [
+      P("open", "الطقوس", "Rituels", "5 د", "5 min",
+        ["التحية والتاريخ", "التذكير"],
+        ["Salutation et date", "Rappel"]),
+      P("model", "المعجم", "Vocabulaire", "25 د", "25 min",
+        ["المعجم الجديد", "النمذجة: « انظروا كيف أقرأ »"],
+        ["Lexique nouveau", "Modelage : « Je lis… écoutez »"]),
+      P("guide", "أدوات اللغة", "Outils de langue", "25 د", "25 min",
+        ["الملاحظة والاكتشاف", "المناولة البنيوية"],
+        ["Observation et découverte", "Manipulation structurale"]),
+      P("guide", "القراءة", "Lecture", "45 د", "45 min",
+        ["القراءة الصامتة", "المرور إلى السبورة", "أسئلة الفهم"],
+        ["Lecture silencieuse", "Passage au tableau", "Questions de compréhension"]),
+      P("practice", "الكتابة", "Écriture", "15 د", "15 min",
+        ["جمل ناقصة", "جمل بكلمات مختلطة"],
+        ["Phrases à trous", "Phrases avec mots en désordre"])
+    ],
+    "math|l2": [
+      P("open", "افتتاح الحصة", "Ouverture", "3 د", "3 min",
+        ["تسجيل الحضور", "مراجعة سريعة وتقديم الهدف"],
+        ["Appel", "Rappel rapide et annonce de l'objectif"]),
+      P("model", "أنشطة تمهيدية", "Activités préparatoires", "15 د", "15 min",
+        ["قاعدة الانتقال: « سأشرح لكم كيف… »", "النمذجة خطوة بخطوة"],
+        ["« Je vais vous montrer comment… »", "Modelage pas à pas"]),
+      P("guide", "النشاط الرئيسي", "Activité principale", "20 د", "20 min",
+        ["الممارسة على الألواح: « ارفعوا الألواح »", "« من يشرح لنا كيف…؟ »", "رصد نسبة التمكن"],
+        ["Pratique sur ardoises : « Levez les ardoises »", "« Qui explique comment… ? »", "Repérage du taux de réussite"]),
+      P("practice", "ممارسة مستقلة", "Pratique autonome", "15 د", "15 min",
+        ["« أنجز بمفردي »", "إنجاز صفحة الكراسة", "التصحيح الجماعي"],
+        ["« Je fais tout seul »", "Exercices du cahier", "Correction collective"]),
+      P("close", "اختتام الحصة", "Clôture", "3 د", "3 min",
+        ["ما الذي تعلمناه؟", "الخطوات المتبعة", "الواجب المنزلي"],
+        ["Qu'avons-nous appris ?", "Les étapes suivies", "Devoir à la maison"])
+    ]
+  };
+
+  /* ============================================================
+     نصوص الواجهة (عربي/فرنسي) — مستقلة عن الحالة
+     ============================================================ */
+  var UI = {
+    ar: {
+      docTitle: "المذكرة اليومية — خريطة ذهنية",
+      atEnd: "عند نهاية الحصة: يكون على الأقل 80% من المتعلمين قادرين على",
+      phTopic: "موضوع الحصة", phObj: "……………………",
+      teacher: "الأستاذ(ة)", estab: "المؤسسة", subject: "المادة", level: "المستوى",
+      period: "الفترة", week: "الأسبوع", session: "الحصة", date: "التاريخ", year: "السنة الدراسية",
+      kingdom: "المملكة المغربية",
+      ministry: "وزارة التربية الوطنية والتعليم الأولي والرياضة",
+      academy: "الأكاديمية الجهوية للتربية والتكوين",
+      direction: "المديرية الإقليمية",
+      mat: "الوسائل", sign1: "توقيع الأستاذ(ة)", sign2: "طابع وتوقيع المدير(ة)"
+    },
+    fr: {
+      docTitle: "Fiche journalière — carte mentale",
+      atEnd: "En fin de séance, au moins 80 % des élèves seront capables de",
+      phTopic: "Thème de la séance", phObj: "……………………",
+      teacher: "L'enseignant(e)", estab: "Établissement", subject: "Matière", level: "Niveau",
+      period: "Période", week: "Semaine", session: "Séance", date: "Date", year: "Année scolaire",
+      kingdom: "ROYAUME DU MAROC",
+      ministry: "Ministère de l'Éducation nationale, du Préscolaire et des Sports",
+      academy: "Académie régionale d'éducation et de formation",
+      direction: "Direction provinciale",
+      mat: "Matériel", sign1: "Signature de l'enseignant(e)", sign2: "Cachet et signature du Directeur"
+    }
+  };
+
+  var PANEL = {
+    ar: {
+      panelTitle: "المذكرة اليومية — خريطة ذهنية", panelSub: "ثلاث نسخ: عربية · فرنسية · رياضيات",
+      sSubject: "المادة", sLesson: "الحصة", lLevel: "المستوى", lPeriod: "الفترة", lWeek: "الأسبوع",
+      lSession: "الحصة", lDate: "التاريخ", sTopic: "الموضوع والكفاية", lTopic: "عنوان الحصة / الموضوع",
+      lComp: "الكفاية المستهدفة", lObj: "الهدف عند نهاية الحصة (80%)", lMat: "الوسائل والدعامات",
+      sOptions: "خيارات", lOrient: "الاتجاه", optPortrait: "عمودي (A4)", optLandscape: "أفقي (A4)",
+      cHeader: "إظهار الترويسة الرسمية", cDur: "إظهار المدد الزمنية", cRole: "إظهار خطوة التعليم الصريح",
+      cLegend: "إظهار أسطورة التعليم الصريح", cObj: "إظهار هدف 80%", cSign: "إظهار خانات التوقيع",
+      sProfile: "بيانات الأستاذ (تُحفظ وتظهر في كل الأدوات)", pName: "الاسم الكامل",
+      pEstab: "المؤسسة", pAcad: "الأكاديمية", pDir: "المديرية الإقليمية",
+      btnPrint: "طباعة / حفظ PDF", btnBlank: "طبعة فارغة", btnReset: "استعادة المراحل", btnDemo: "مثال",
+      note: "💡 انقر على أي عبارة داخل الخريطة لتعديلها مباشرة قبل الطباعة. تُضبط المراحل والمدد تلقائياً حسب المادة والمستوى."
+    },
+    fr: {
+      panelTitle: "Fiche journalière — carte mentale", panelSub: "Trois versions : arabe · français · maths",
+      sSubject: "Matière", sLesson: "Séance", lLevel: "Niveau", lPeriod: "Période", lWeek: "Semaine",
+      lSession: "Séance", lDate: "Date", sTopic: "Thème et compétence", lTopic: "Titre de la séance / thème",
+      lComp: "Compétence visée", lObj: "Objectif en fin de séance (80 %)", lMat: "Matériel et supports",
+      sOptions: "Options", lOrient: "Orientation", optPortrait: "Portrait (A4)", optLandscape: "Paysage (A4)",
+      cHeader: "Afficher l'en-tête officiel", cDur: "Afficher les durées", cRole: "Afficher l'étape (explicite)",
+      cLegend: "Afficher la légende", cObj: "Afficher l'objectif 80 %", cSign: "Afficher les signatures",
+      sProfile: "Données de l'enseignant (enregistrées et partagées)", pName: "Nom et prénom",
+      pEstab: "Établissement", pAcad: "Académie", pDir: "Direction provinciale",
+      btnPrint: "Imprimer / PDF", btnBlank: "Version vierge", btnReset: "Réinitialiser les étapes", btnDemo: "Exemple",
+      note: "💡 Cliquez sur n'importe quel texte de la carte pour le modifier avant l'impression. Les étapes et durées s'adaptent à la matière et au niveau."
+    }
+  };
+
+  /* ============================================================
+     أدوات مساعدة
+     ============================================================ */
+  function esc(v) { return MP.escapeHtml(v); }
+  function panelLang() { return MP.lang === "fr" ? "fr" : "ar"; }
+  function isL1() { return String(state.level).indexOf("الأول") === 0; }
+  function defKey() {
+    if (state.subject === "math") return "math|l2";
+    return state.subject + "|" + (isL1() ? "l1" : "l2");
+  }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function getPhases() {
+    var k = defKey();
+    if (!store[k] || !store[k].length) store[k] = clone(DEFAULTS[k]);
+    return store[k];
+  }
+  function saveStore() { MP.setState(KEY + "-phases", store); }
+  function saveState() { MP.setState(KEY, state); }
+  function tt(field, L) {
+    if (field == null) return "";
+    if (typeof field === "string") return field;
+    return (field[L] != null && field[L] !== "") ? field[L] : (field.ar || field.fr || "");
+  }
+
+  var _t = null;
+  function debounce(fn, ms) { clearTimeout(_t); _t = setTimeout(fn, ms || 60); }
+
+  /* ============================================================
+     لوحة التحكم: الملء والترجمة والأحداث
+     ============================================================ */
+  function renderPanelLang() {
+    var L = panelLang(), d = PANEL[L];
+    document.querySelectorAll("[data-t]").forEach(function (el) {
+      var k = el.getAttribute("data-t");
+      if (d[k] != null) el.textContent = d[k];
+    });
+    renderSubjectButtons(L);
+    renderLevelOptions(L);
+  }
+
+  function renderSubjectButtons(L) {
+    L = L || panelLang();
+    var box = document.getElementById("subjBtns");
+    box.innerHTML = Object.keys(SUBJECTS).map(function (id) {
+      var s = SUBJECTS[id];
+      return '<button type="button" class="subj-btn' + (state.subject === id ? " active" : "") +
+        '" data-subj="' + id + '"><span class="ic">' + s.ic + '</span>' + esc(s[L]) + "</button>";
+    }).join("");
+  }
+
+  function renderLevelOptions(L) {
+    L = L || panelLang();
+    var sel = document.getElementById("level");
+    sel.innerHTML = LEVELS.map(function (lv) {
+      return '<option value="' + esc(lv.v) + '">' + esc(L === "fr" ? lv.fr : lv.v) + "</option>";
+    }).join("");
+    sel.value = state.level;
+  }
+
+  function fillNumberSelect(id, n, val) {
+    var sel = document.getElementById(id);
+    sel.innerHTML = "";
+    for (var i = (id === "periode" ? 0 : 1); i <= n; i++) {
+      var o = document.createElement("option");
+      o.value = String(i); o.textContent = String(i);
+      sel.appendChild(o);
+    }
+    sel.value = String(val);
+  }
+
+  function populatePanel() {
+    fillNumberSelect("periode", 5, state.periode);
+    fillNumberSelect("semaine", 6, state.semaine);
+    fillNumberSelect("seance", 6, state.seance);
+    document.getElementById("date").value = state.date || "";
+    document.getElementById("topic").value = state.topic || "";
+    document.getElementById("comp").value = state.comp || "";
+    document.getElementById("objective").value = state.objective || "";
+    document.getElementById("materials").value = state.materials || "";
+    document.getElementById("orientation").value = state.orientation;
+    ["showHeader", "showDur", "showRole", "showLegend", "showObj", "showSign"].forEach(function (id) {
+      document.getElementById(id).checked = !!state[id];
+    });
+  }
+
+  function bindPanel() {
+    document.getElementById("subjBtns").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-subj]"); if (!b) return;
+      state.subject = b.getAttribute("data-subj"); saveState(); renderPanelLang(); render();
+    });
+
+    [["level", "level"], ["periode", "periode"], ["semaine", "semaine"], ["seance", "seance"]].forEach(function (p) {
+      document.getElementById(p[0]).addEventListener("change", function () {
+        state[p[1]] = this.value; saveState(); render();
+      });
+    });
+    document.getElementById("date").addEventListener("change", function () { state.date = this.value; saveState(); render(); });
+    document.getElementById("orientation").addEventListener("change", function () { state.orientation = this.value; saveState(); render(); });
+
+    ["showHeader", "showDur", "showRole", "showLegend", "showObj", "showSign"].forEach(function (id) {
+      document.getElementById(id).addEventListener("change", function () { state[id] = this.checked; saveState(); render(); });
+    });
+
+    /* الحقول النصية: تحديث مباشر للوثيقة دون إعادة رسم */
+    bindLiveText("topic", "topic");
+    bindLiveText("comp", "comp");
+    bindLiveText("objective", "objective");
+    bindLiveText("materials", "materials");
+
+    document.getElementById("btnBlank").addEventListener("click", fillBlank);
+    document.getElementById("btnReset").addEventListener("click", resetPhases);
+    document.getElementById("btnDemo").addEventListener("click", fillDemo);
+  }
+
+  function bindLiveText(inputId, field) {
+    var el = document.getElementById(inputId);
+    el.addEventListener("input", function () {
+      state[field] = el.value; saveState();
+      mirror(field, el.value);
+    });
+  }
+
+  /* يعكس قيمة حقل على عناصره في الوثيقة دون إعادة رسم */
+  function mirror(field, text) {
+    document.querySelectorAll('#stage [data-edit="' + field + '"]').forEach(function (el) {
+      if (document.activeElement === el) return;
+      if (field === "objective" || field === "materials") el.textContent = text || "";
+      else el.textContent = text || "";
+    });
+  }
+
+  function fillBlank() {
+    var k = defKey();
+    store[k] = clone(DEFAULTS[k]).map(function (ph) {
+      ph.items = { ar: ["", "", ""].slice(0, Math.max(2, (ph.items.ar || []).length)), fr: ["", "", ""] };
+      return ph;
+    });
+    state.topic = ""; state.comp = ""; state.objective = ""; state.materials = "";
+    saveStore(); saveState(); populatePanel(); render();
+    MP.toast(panelLang() === "fr" ? "Version vierge prête" : "تم إنشاء طبعة فارغة");
+  }
+
+  function resetPhases() {
+    delete store[defKey()];
+    saveStore(); render();
+    MP.toast(panelLang() === "fr" ? "Étapes réinitialisées" : "تمت استعادة المراحل الأصلية");
+  }
+
+  function fillDemo() {
+    state.topic = "نص: « تقاليدنا الجميلة » — القراءة";
+    state.comp = "يقرأ نصًا قراءة سليمة معبرة ويفهم مضامينه.";
+    state.objective = "يقرأ النص قراءة سليمة، ويستخرج الفكرة العامة، ويشرح الكلمات الجديدة بالمرادف أو المقابل.";
+    state.materials = "الكتاب المدرسي — السبورة — اللوحات — بطاقات الكلمات — معجم القسم";
+    saveState(); populatePanel(); render();
+  }
+
+  /* ============================================================
+     بناء الوثيقة
+     ============================================================ */
+  function metaHtml(L, t, p, subjName) {
+    var rows = [];
+    if (p.fullName) rows.push(t.teacher + ": " + esc(p.fullName));
+    if (p.establishment) rows.push(t.estab + ": " + esc(p.establishment));
+    rows.push(t.subject + ": " + esc(subjName));
+    rows.push(t.level + ": " + esc(state.level));
+    rows.push(t.period + ": " + state.periode + " · " + t.week + ": " + state.semaine + " · " + t.session + ": " + state.seance);
+    var d = state.date ? MP.formatDate(state.date) : MP.today();
+    rows.push(t.date + ": " + d);
+    rows.push(t.year + ": " + (p.schoolYear || MP.YEAR));
+    return rows.map(function (r) { return "<span>" + r + "</span>"; }).join("");
+  }
+
+  function headHtml(L, t, p) {
+    var right = t.kingdom + "<br>" + t.ministry;
+    var left = t.academy + (p.academy ? " — " + esc(p.academy) : "") +
+      (p.direction ? "<br>" + t.direction + " — " + esc(p.direction) : "") +
+      (p.establishment ? "<br>" + t.estab + " — " + esc(p.establishment) : "");
+    return '<div class="mm-head"><div class="k">' + right + '</div><div class="e">' + left + "</div></div>";
+  }
+
+  function nodeHtml(ph, i, L) {
+    var role = (state.showRole && ph.role && ROLES[ph.role])
+      ? '<div class="mnode-role">' + esc(ROLES[ph.role][L]) + "</div>" : "";
+    var list = (ph.items[L] || ph.items.ar || []);
+    var items = list.map(function (it, ix) {
+      return '<li data-edit="items" data-i="' + i + '" data-ix="' + ix + '">' + esc(it || "") + "</li>";
+    }).join("");
+    return '<div class="mnode branch bc' + (i % 6) + '" data-i="' + i + '">' +
+      '<div class="mnode-head">' +
+        '<span class="mnode-step">' + (i + 1) + "</span>" +
+        '<span class="mnode-name" data-edit="name" data-i="' + i + '">' + esc(tt(ph.name, L)) + "</span>" +
+        (state.showDur ? '<span class="mnode-dur" data-edit="dur" data-i="' + i + '">' + esc(tt(ph.dur, L)) + "</span>" : "") +
+      "</div>" + role + '<ul class="mnode-items">' + items + "</ul></div>";
+  }
+
+  function legendHtml(L) {
+    var used = {};
+    getPhases().forEach(function (ph) { if (ph.role) used[ph.role] = true; });
+    var order = ["open", "model", "guide", "practice", "close"].filter(function (r) { return used[r]; });
+    return '<div class="mm-legend">' + order.map(function (r, i) {
+      return "<i><b>" + (i + 1) + "</b> " + esc(ROLES[r][L]) + "</i>";
+    }).join("") + "</div>";
+  }
+
+  function buildDoc(L) {
+    var p = MP.getProfile();
+    var t = UI[L];
+    var phases = getPhases();
+    var dir = L === "fr" ? "ltr" : "rtl";
+    var subjName = SUBJECTS[state.subject][L];
+
+    var header = state.showHeader ? headHtml(L, t, p) : "";
+
+    var titlebar = '<div class="mm-titlebar"><div class="mm-title">' + esc(t.docTitle) + "</div>" +
+      '<div class="mm-meta">' + metaHtml(L, t, p, subjName) + "</div></div>";
+
+    var mind = '<div class="mind">' +
+      '<svg class="mind-links" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>' +
+      '<div class="mnode center" data-center="1">' +
+        '<div class="mnode-topic" data-edit="topic">' + esc(state.topic || t.phTopic) + "</div>" +
+        '<div class="mnode-comp" data-edit="comp">' + esc(state.comp || "") + "</div>" +
+      "</div>" +
+      phases.map(function (ph, i) { return nodeHtml(ph, i, L); }).join("") +
+    "</div>";
+
+    var legend = state.showLegend ? legendHtml(L) : "";
+
+    var objective = state.showObj
+      ? '<div class="mm-objective"><span class="k">🎯 <b>' + esc(t.atEnd) + " :</b></span>" +
+        '<span data-edit="objective">' + esc(state.objective || t.phObj) + "</span></div>"
+      : "";
+
+    var mat = '<div class="mm-mat"><b>' + esc(t.mat) + " :</b> " +
+      '<span data-edit="materials">' + esc(state.materials || t.phObj) + "</span></div>";
+
+    var foot = state.showSign
+      ? '<div class="mm-foot"><div class="mm-sign">' + esc(t.sign1) + "</div>" +
+        '<div class="mm-brand">Modaris Pro — modarispro.com</div>' +
+        '<div class="mm-sign">' + esc(t.sign2) + "</div></div>"
+      : '<div class="mm-foot"><div class="mm-brand">Modaris Pro — modarispro.com</div></div>';
+
+    return '<div class="a4 mm-a4' + (state.orientation === "landscape" ? " landscape" : "") +
+      '" dir="' + dir + '" data-lang="' + L + '">' +
+      '<div class="mm-frame">' + header + titlebar + mind + legend + objective + mat + foot + "</div></div>";
+  }
+
+  function render() {
+    var langs = MP.lang === "both" ? ["ar", "fr"] : [panelLang()];
+    document.getElementById("stage").innerHTML = langs.map(buildDoc).join("");
+    bindEditors();
+    requestAnimationFrame(layoutAll);
+  }
+
+  /* ============================================================
+     التحرير المباشر داخل الوثيقة
+     ============================================================ */
+  function bindEditors() {
+    document.querySelectorAll("#stage [data-edit]").forEach(function (el) {
+      el.setAttribute("contenteditable", "true");
+      el.setAttribute("spellcheck", "false");
+    });
+  }
+
+  function onInlineEdit(e) {
+    var el = e.target.closest ? e.target.closest("[data-edit]") : null;
+    if (!el) return;
+    var a4 = el.closest(".a4"); if (!a4) return;
+    var L = a4.getAttribute("data-lang");
+    var field = el.getAttribute("data-edit");
+    var txt = (el.innerText || "").replace(/\s+$/, "");
+
+    if (field === "topic" || field === "comp" || field === "objective" || field === "materials") {
+      state[field] = txt; saveState();
+      var pin = document.getElementById(field);
+      if (pin && document.activeElement !== pin) pin.value = txt;
+      return;
+    }
+    var i = parseInt(el.getAttribute("data-i"), 10);
+    var ph = getPhases()[i]; if (!ph) return;
+    if (field === "name") { ph.name[L] = txt; }
+    else if (field === "dur") { ph.dur[L] = txt; }
+    else if (field === "items") {
+      var ix = parseInt(el.getAttribute("data-ix"), 10);
+      if (!ph.items[L]) ph.items[L] = (ph.items.ar || []).slice();
+      ph.items[L][ix] = txt;
+    }
+    saveStore();
+  }
+
+  /* ============================================================
+     تخطيط الخريطة الذهنية (شمسي) + رسم الروابط
+     ============================================================ */
+  function boundary(cx0, cy0, hw0, hh0, tx, ty) {
+    var dx = tx - cx0, dy = ty - cy0;
+    if (!dx && !dy) return { x: cx0, y: cy0 };
+    var s = 1 / Math.max(Math.abs(dx) / (hw0 || 1e-6), Math.abs(dy) / (hh0 || 1e-6));
+    return { x: cx0 + dx * s, y: cy0 + dy * s };
+  }
+
+  function relax(pts, hw, hh, cw, ch, cx, cy) {
+    var gx = 0.018, gy = 0.02, iter, i, j, moved;
+    for (iter = 0; iter < 140; iter++) {
+      moved = false;
+      for (i = 0; i < pts.length; i++) {
+        var dx = pts[i].x - cx, dy = pts[i].y - cy;
+        var ox = (hw[i] + cw / 2 + gx) - Math.abs(dx);
+        var oy = (hh[i] + ch / 2 + gy) - Math.abs(dy);
+        if (ox > 0 && oy > 0) {
+          var d = Math.hypot(dx, dy) || 1e-6;
+          var push = Math.min(ox, oy) * 0.5;
+          pts[i].x += dx / d * push; pts[i].y += dy / d * push; moved = true;
+        }
+      }
+      for (i = 0; i < pts.length; i++) {
+        for (j = i + 1; j < pts.length; j++) {
+          var ex = pts[j].x - pts[i].x, ey = pts[j].y - pts[i].y;
+          var px = (hw[i] + hw[j] + gx) - Math.abs(ex);
+          var py = (hh[i] + hh[j] + gy) - Math.abs(ey);
+          if (px > 0 && py > 0) {
+            if (px < py) { var sx = (ex >= 0 ? 1 : -1) * px * 0.5; pts[j].x += sx; pts[i].x -= sx; }
+            else { var sy = (ey >= 0 ? 1 : -1) * py * 0.5; pts[j].y += sy; pts[i].y -= sy; }
+            moved = true;
+          }
+        }
+      }
+      for (i = 0; i < pts.length; i++) {
+        pts[i].x = Math.max(hw[i] + 0.006, Math.min(1 - hw[i] - 0.006, pts[i].x));
+        pts[i].y = Math.max(hh[i] + 0.006, Math.min(1 - hh[i] - 0.006, pts[i].y));
+      }
+      if (!moved) break;
+    }
+  }
+
+  function layoutMind(mind) {
+    var center = mind.querySelector(".mnode.center");
+    var nodes = Array.prototype.slice.call(mind.querySelectorAll(".mnode.branch"));
+    var links = mind.querySelector(".mind-links");
+    if (!center || !nodes.length || !links) return;
+
+    var W = mind.offsetWidth, H = mind.offsetHeight;
+    if (!W || !H) return;
+
+    var cw = center.offsetWidth / W, ch = center.offsetHeight / H;
+    var n = nodes.length, pts = [], hw = [], hh = [], i;
+    for (i = 0; i < n; i++) {
+      nodes[i].style.left = ""; nodes[i].style.top = "";
+      var a = -Math.PI / 2 + i * (2 * Math.PI / n);
+      pts.push({ x: 0.5 + 0.31 * Math.cos(a), y: 0.5 + 0.30 * Math.sin(a) });
+      hw.push((nodes[i].offsetWidth / W) / 2);
+      hh.push((nodes[i].offsetHeight / H) / 2);
+    }
+
+    relax(pts, hw, hh, cw, ch, 0.5, 0.5);
+
+    center.style.left = "50%"; center.style.top = "50%";
+
+    var out = "";
+    for (i = 0; i < n; i++) {
+      nodes[i].style.left = (pts[i].x * 100).toFixed(3) + "%";
+      nodes[i].style.top = (pts[i].y * 100).toFixed(3) + "%";
+
+      var p1 = boundary(0.5, 0.5, cw / 2, ch / 2, pts[i].x, pts[i].y);
+      var p2 = boundary(pts[i].x, pts[i].y, hw[i], hh[i], 0.5, 0.5);
+      var mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+      var dx = p2.x - p1.x, dy = p2.y - p1.y, len = Math.hypot(dx, dy) || 1e-6;
+      var sign = (i % 2 === 0 ? 1 : -1), bow = 0.11 * len;
+      var qx = mx + (-dy / len) * bow * sign, qy = my + (dx / len) * bow * sign;
+      out += '<path class="bc' + (i % 6) + '" d="M' +
+        (p1.x * 100).toFixed(2) + "," + (p1.y * 100).toFixed(2) + " Q" +
+        (qx * 100).toFixed(2) + "," + (qy * 100).toFixed(2) + " " +
+        (p2.x * 100).toFixed(2) + "," + (p2.y * 100).toFixed(2) + '"/>';
+    }
+    links.innerHTML = out;
+  }
+
+  function layoutAll() {
+    document.querySelectorAll("#stage .mind").forEach(layoutMind);
+    MP.fit();
+  }
+
+  /* ============================================================
+     الإقلاع
+     ============================================================ */
+  var stage = document.getElementById("stage");
+  stage.addEventListener("input", onInlineEdit);
+  stage.addEventListener("focusout", function (e) {
+    if (e.target.closest && e.target.closest("[data-edit]")) debounce(layoutAll, 40);
+  });
+
+  MP.onProfileChange = function () { debounce(render, 80); };
+  MP.onDesignChange = function () { renderPanelLang(); render(); };
+
+  window.addEventListener("resize", function () { debounce(layoutAll, 120); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { debounce(layoutAll, 60); });
+
+  fillNumberSelect("periode", 5, state.periode);
+  renderPanelLang();
+  populatePanel();
+  bindPanel();
+  render();
+})();
+</script>
+</body>
+</html>
