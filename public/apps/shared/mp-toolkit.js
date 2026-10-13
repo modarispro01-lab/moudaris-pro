@@ -23,8 +23,13 @@
     schoolYear: YEAR
   };
 
+  /* JSON.parse(null) تُرجع null وليس خطأً — لذا نتحقق من نوع الناتج */
   function safeParse(s) {
-    try { return JSON.parse(s); } catch (e) { return {}; }
+    if (s === null || s === undefined || s === "") return {};
+    try {
+      var v = JSON.parse(s);
+      return (v && typeof v === "object") ? v : {};
+    } catch (e) { return {}; }
   }
 
   function getProfile() {
