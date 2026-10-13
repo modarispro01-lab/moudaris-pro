@@ -236,6 +236,7 @@
   /* أدوار خطوات التعليم الصريح */
   var ROLES = {
     open:     { ar: "الافتتاح والتهيئة", fr: "Ouverture" },
+    ritual:   { ar: "نشاط اعتيادي", fr: "Rituel" },
     model:    { ar: "أنا — النمذجة", fr: "Je — modélisation" },
     guide:    { ar: "نحن — الممارسة الموجّهة", fr: "Nous — pratique guidée" },
     practice: { ar: "أنتم — الممارسة المستقلة", fr: "Vous — pratique autonome" },
@@ -586,7 +587,7 @@
   function legendHtml(L) {
     var used = {};
     getPhases().forEach(function (ph) { if (ph.role) used[ph.role] = true; });
-    var order = ["open", "model", "guide", "practice", "close"].filter(function (r) { return used[r]; });
+    var order = ["open", "ritual", "model", "guide", "practice", "close"].filter(function (r) { return used[r]; });
     return '<div class="mm-legend">' + order.map(function (r, i) {
       return "<i><b>" + (i + 1) + "</b> " + esc(ROLES[r][L]) + "</i>";
     }).join("") + "</div>";
@@ -783,11 +784,44 @@
   window.addEventListener("resize", function () { debounce(layoutAll, 120); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { debounce(layoutAll, 60); });
 
-  fillNumberSelect("periode", 5, state.periode);
-  renderPanelLang();
-  populatePanel();
-  bindPanel();
-  render();
+  /* ============================================================
+     معاملات الرابط (لتوليد المذكرات تلقائيًا عبر المتصفح دون واجهة)
+     مثال: mind-map.html?subject=arabic&level=الرابع ابتدائي&semaine=1&topic=...&print=1
+     content=رابط ملف JSON يحتوي {phases:[...], meta:{...}} لتغيير المراحل
+     ============================================================ */
+  var Q = null;
+  try { Q = new URLSearchParams(location.search); } catch (e) { Q = null; }
+
+  function applyParams(done) {
+    if (!Q) return done();
+    var g = function (k) { return Q.has(k) ? Q.get(k) : null; };
+    if (g("subject") && SUBJECTS[g("subject")]) state.subject = g("subject");
+    ["level", "periode", "semaine", "seance", "date", "topic", "comp", "objective", "materials"]
+      .forEach(function (k) { if (g(k) != null) state[k] = g(k); });
+    if (g("orient")) state.orientation = g("orient");
+    if (g("font")) { try { MP.setDesign({ font: g("font") }); } catch (e) {} }
+    [["header", "showHeader"], ["dur", "showDur"], ["role", "showRole"],
+     ["legend", "showLegend"], ["obj", "showObj"], ["sign", "showSign"]]
+      .forEach(function (p) {
+        if (g(p[0]) != null) state[p[1]] = !(g(p[0]) === "0" || g(p[0]) === "false");
+      });
+    if (g("content")) {
+      fetch(g("content")).then(function (r) { return r.json(); }).then(function (data) {
+        if (data && data.phases) { store[defKey()] = data.phases; saveStore(); }
+        if (data && data.meta) { Object.keys(data.meta).forEach(function (k) { state[k] = data.meta[k]; }); }
+        done();
+      }).catch(function () { done(); });
+    } else { done(); }
+  }
+
+  applyParams(function () {
+    fillNumberSelect("periode", 5, state.periode);
+    renderPanelLang();
+    populatePanel();
+    bindPanel();
+    render();
+    if (Q && Q.get("print") === "1") setTimeout(function () { window.print(); }, 900);
+  });
 })();
 </script>
 </body>
