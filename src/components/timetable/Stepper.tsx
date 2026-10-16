@@ -14,8 +14,8 @@ export interface StepDef {
 
 export const STEPS: StepDef[] = [
   { id: 1, title: "المعلومات" },
-  { id: 2, title: "الأيام والتوقيت" },
-  { id: 3, title: "توزيع المواد" },
+  { id: 2, title: "أيام العمل" },
+  { id: 3, title: "برمجة الأيام" },
   { id: 4, title: "التصميم والتصدير" },
 ];
 

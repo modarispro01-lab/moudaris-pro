@@ -46,7 +46,7 @@ const tools = [
   {
     id: 'timetable-generator',
     title: 'مولّد استعمال الزمن — التعليم الصريح',
-    description: 'توقيت حرّ للحصص، توزيع المواد، قوالب متعدّدة، وطباعة A4 أفقي أو عمودي.',
+    description: 'ابرمج كل يوم على حدة: توقيت حرّ لكل حصة ومواد مستقلة، مع طباعة A4.',
     icon: CalendarClock,
     color: 'bg-primary',
     status: 'متاح الآن',

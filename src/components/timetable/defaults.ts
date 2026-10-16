@@ -173,15 +173,27 @@ export function uid(prefix = "p"): string {
   );
 }
 
-/** فترات افتراضية يسهل تعديلها بالكامل (قابلة للحذف) */
+/**
+ * فترات افتراضية يسهل تعديلها بالكامل (قابلة للحذف).
+ * تُستعمل كنقطة انطلاق لأي يوم يُبرمجه الأستاذ — ويمكن حذفها كليًا.
+ */
 export function defaultPeriods(): Period[] {
   return [
-    { id: uid(), start: "08:00", end: "09:00", label: "", isBreak: false },
-    { id: uid(), start: "09:00", end: "10:00", label: "", isBreak: false },
-    { id: uid(), start: "10:00", end: "10:15", label: "استراحة", isBreak: true },
-    { id: uid(), start: "10:15", end: "11:15", label: "", isBreak: false },
-    { id: uid(), start: "11:15", end: "12:15", label: "", isBreak: false },
+    { id: uid(), start: "08:00", end: "09:00", label: "", isBreak: false, subjectId: null },
+    { id: uid(), start: "09:00", end: "10:00", label: "", isBreak: false, subjectId: null },
+    { id: uid(), start: "10:00", end: "10:15", label: "استراحة", isBreak: true, subjectId: null },
+    { id: uid(), start: "10:15", end: "11:15", label: "", isBreak: false, subjectId: null },
+    { id: uid(), start: "11:15", end: "12:15", label: "", isBreak: false, subjectId: null },
   ];
+}
+
+/** نفس التوقيت لكن بمواد فارغة — لنسخ توقيت يوم إلى يوم آخر */
+export function emptyPeriods(template: Period[]): Period[] {
+  return template.map((p) => ({
+    ...p,
+    id: uid(),
+    subjectId: null,
+  }));
 }
 
 export const LEVEL_SUGGESTIONS = [
@@ -218,12 +230,16 @@ export const DEFAULT_DESIGN: Design = {
   showSubjectNames: true,
 };
 
+/** جدول فارغ لكل الأيام — الأستاذ يبرمج كل يوم بنفسه */
+export function emptyPlans(): Record<string, Period[]> {
+  return { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [] };
+}
+
 export function makeInitialState(): TimetableState {
   return {
     info: { ...DEFAULT_INFO },
     days: ["mon", "tue", "wed", "thu", "fri"],
-    periods: defaultPeriods(),
-    grid: {},
+    plans: emptyPlans(),
     subjects: DEFAULT_SUBJECTS.map((s) => ({ ...s })),
     design: { ...DEFAULT_DESIGN },
     orientation: "landscape",

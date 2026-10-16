@@ -1,26 +1,24 @@
 "use client";
 
 /* ============================================================
-   المعاينة النهائية — وثيقة A4 قابلة للطباعة
-   تُصمَّم بوحدات mm/pt لضمان مطابقة تامة عند الطباعة.
+   الوثيقة المطبوعة — A4 أفقي أو عمودي، نصوص متجهية بالعربية
    ============================================================ */
 import React from "react";
 import { DAYS } from "./defaults";
 import { resolveTheme } from "./theme";
-import type { Period, TimetableState } from "./types";
 import {
-  durationMin,
-  formatDuration,
-  hexToRgba,
-  readableTextOn,
-} from "./utils";
+  buildRows,
+  cellAt,
+  dayPeriods,
+  durationOf,
+  rowSpansAllDays,
+  weekTotals,
+} from "./schedule";
+import { formatDuration, hexToRgba, readableTextOn } from "./utils";
+import type { Period, TimetableState } from "./types";
 
 interface Props {
   state: TimetableState;
-}
-
-function periodFacts(p: Period) {
-  return durationMin(p.start, p.end);
 }
 
 export default function TimetablePreview({ state }: Props) {
@@ -31,15 +29,12 @@ export default function TimetablePreview({ state }: Props) {
     state.subjects.find((s) => s.id === id);
 
   const dayList = DAYS.filter((d) => state.days.includes(d.id));
-  const periods = state.periods.filter(
-    (p) => state.design.showBreaks || !p.isBreak
-  );
-
+  const rows = buildRows(state);
   const cellFill = state.design.cellFill || theme.template.cellFill;
 
   const docStyle: React.CSSProperties = {
     width: docWidth,
-    minHeight: isLandscape ? "190mm" : "277mm",
+    minHeight: isLandscape ? "185mm" : "272mm",
     background: theme.pageBg,
     color: theme.cellText,
     fontFamily: theme.fontFamily,
@@ -60,56 +55,35 @@ export default function TimetablePreview({ state }: Props) {
   const metaItems: Array<[string, string]> = [];
   if (state.info.teacher) metaItems.push(["الأستاذ(ة)", state.info.teacher]);
 
-  // المستويات الدراسية وأفواجها (اختيارية بالكامل)
-  const levels = (state.info.levels || []).filter(
-    (l) => (l.name || "").trim() || (l.groups || []).some((g) => g.trim())
-  );
-  for (const l of levels) {
-    const gNames = (l.groups || []).map((g) => g.trim()).filter(Boolean);
-    const lName = (l.name || "").trim();
-    if (lName) metaItems.push(["المستوى", lName]);
-    if (gNames.length)
-      metaItems.push([
-        lName ? "الأفواج" : "المستوى والأفواج",
-        gNames.join("، "),
-      ]);
-  }
+  // المستويات والأفواج في سطر واحد مضغوط: "المستوى الرابع (فوج أ، فوج ب) · ..."
+const levelParts = (state.info.levels || [])
+    .map((l) => {
+      const g = (l.groups || []).map((x) => x.trim()).filter(Boolean);
+      const n = (l.name || "").trim();
+      if (n && g.length) return `${n} (${g.join("، ")})`;
+      return n || g.join("، ");
+    })
+    .filter(Boolean);
+  if (levelParts.length) metaItems.push(["المستويات والأفواج", levelParts.join("  ·  ")]);
 
   if (state.info.year) metaItems.push(["الموسم الدراسي", state.info.year]);
   if (state.info.employeeId) metaItems.push(["رقم التأجير", state.info.employeeId]);
 
-  /* ---------- حساب الملخص ---------- */
-  let totalMin = 0;
-  let totalLessons = 0;
-  const perDay: Record<string, number> = {};
-  const perSubject: Record<string, number> = {};
-  for (const d of dayList) {
-    let n = 0;
-    for (const p of state.periods) {
-      if (p.isBreak) continue;
-      const e = state.grid[d.id]?.[p.id];
-      if (!e?.subjectId) continue;
-      const s = e.override?.start || p.start;
-      const en = e.override?.end || p.end;
-      const dur = durationMin(s, en) || 0;
-      totalMin += dur;
-      totalLessons += 1;
-      n += 1;
-      perSubject[e.subjectId] = (perSubject[e.subjectId] || 0) + dur;
-    }
-    perDay[d.id] = n;
-  }
+  /* ---------- الإحصاءات ---------- */
+  const { totalMin, totalLessons, perSubject, perDay } = weekTotals(state);
 
   const thBase: React.CSSProperties = {
     background: theme.headerBg,
     color: theme.headerText,
     border: `0.6pt solid ${hexToRgba(theme.headerText, 0.35)}`,
-    padding: "2mm 1.5mm",
-    fontSize: "10.5pt",
+    padding: "1.5mm 1.2mm",
+    fontSize: "10pt",
     fontWeight: 700,
     textAlign: "center",
   };
   const radius = state.design.headerShape === "pill" ? 6 : theme.radius;
+
+  const showBreaks = state.design.showBreaks;
 
   return (
     <div style={docStyle} dir="rtl">
@@ -122,9 +96,9 @@ export default function TimetablePreview({ state }: Props) {
           fontSize: "8.5pt",
           color: "#475569",
           lineHeight: 1.5,
-          paddingBottom: "3mm",
+          paddingBottom: "2mm",
           borderBottom: `1.4pt solid ${theme.headerBg}`,
-          marginBottom: "4mm",
+          marginBottom: "2.5mm",
         }}
       >
         <div>
@@ -143,8 +117,8 @@ export default function TimetablePreview({ state }: Props) {
         </div>
       </div>
 
-      {/* ===== عنوان الوثيقة ===== */}
-      <div style={{ textAlign: "center", marginBottom: "3mm" }}>
+      {/* ===== عنوان ===== */}
+      <div style={{ textAlign: "center", marginBottom: "2mm" }}>
         <div
           style={{
             fontSize: "17pt",
@@ -164,8 +138,8 @@ export default function TimetablePreview({ state }: Props) {
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
-            gap: "3mm 8mm",
-            marginBottom: "3.5mm",
+            gap: "2mm 6mm",
+            marginBottom: "2.5mm",
             fontSize: "9.5pt",
           }}
         >
@@ -179,162 +153,221 @@ export default function TimetablePreview({ state }: Props) {
       )}
 
       {/* ===== الجدول ===== */}
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "separate",
-          borderSpacing: 0,
-          tableLayout: "fixed",
-        }}
-      >
-        <thead>
-          <tr>
-            <th
-              style={{
-                ...thBase,
-                width: isLandscape ? "30mm" : "26mm",
-                borderTopRightRadius: radius,
-              }}
-            >
-              الحصة / اليوم
-            </th>
-            {dayList.map((d, i) => (
+      {rows.length === 0 ? (
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#94A3B8",
+            fontSize: "11pt",
+            border: `1pt dashed ${theme.cellBorder}`,
+            borderRadius: "3mm",
+          }}
+        >
+          لم تُبرمج أي حصة بعد
+        </div>
+      ) : (
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "separate",
+            borderSpacing: 0,
+            tableLayout: "fixed",
+            breakInside: "auto",
+          }}
+        >
+          <thead>
+            <tr>
               <th
-                key={d.id}
                 style={{
                   ...thBase,
-                  borderTopLeftRadius: i === dayList.length - 1 ? radius : 0,
+                  width: isLandscape ? "30mm" : "26mm",
+                  borderTopRightRadius: radius,
                 }}
               >
-                {d.name}
+                الحصة / اليوم
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {periods.map((p, pi) => {
-            if (p.isBreak) {
-              const dur = formatDuration(periodFacts(p));
-              return (
-                <tr key={p.id}>
-                  <td
-                    colSpan={1 + dayList.length}
-                    style={{
-                      background: theme.zebraBg,
-                      border: `0.6pt solid ${theme.cellBorder}`,
-                      padding: "1.4mm",
-                      textAlign: "center",
-                      fontSize: "9pt",
-                      fontWeight: 700,
-                      color: "#475569",
-                      letterSpacing: "1pt",
-                    }}
-                  >
-                    {p.label || "استراحة"} — {p.start} / {p.end}
-                    {dur ? ` (${dur})` : ""}
-                  </td>
-                </tr>
-              );
-            }
-            return (
-              <tr key={p.id}>
+              {dayList.map((d, i) => (
                 <th
+                  key={d.id}
                   style={{
-                    background: hexToRgba(theme.headerBg, 0.08),
-                    border: `0.6pt solid ${theme.cellBorder}`,
-                    padding: "1.6mm 1mm",
-                    fontSize: "9pt",
-                    fontWeight: 700,
-                    color: theme.heading,
-                    textAlign: "center",
-                    lineHeight: 1.35,
+                    ...thBase,
+                    borderTopLeftRadius: i === dayList.length - 1 ? radius : 0,
                   }}
                 >
-                  <div>{timeLabel(state, p)}</div>
+                  {d.name}
                 </th>
-                {dayList.map((d) => {
-                  const e = state.grid[d.id]?.[p.id];
-                  const subj = subjectOf(e?.subjectId);
-                  const ov = e?.override;
-                  const hasOverride = !!ov?.start || !!ov?.end;
-                  let bg = "#FFFFFF";
-                  let fg = theme.cellText;
-                  let border = `0.6pt solid ${theme.cellBorder}`;
-                  if (subj) {
-                    if (cellFill === "subject") {
-                      bg = subj.color;
-                      fg = readableTextOn(subj.color);
-                    } else if (cellFill === "soft") {
-                      bg = hexToRgba(subj.color, 0.16);
-                      fg = theme.cellText;
-                      border = `0.6pt solid ${hexToRgba(subj.color, 0.5)}`;
-                    } else {
-                      bg = "#FFFFFF";
-                      fg = subj.color;
-                      border = `0.6pt solid ${theme.cellBorder}`;
-                    }
-                  }
-                  return (
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => {
+              const span = showBreaks && rowSpansAllDays(state, row);
+              const anyPeriod = dayList.some((d) => cellAt(state, d.id, row));
+              if (!anyPeriod && !span) return null;
+
+              /* ---- سطر استراحة يشاركه كل الأيام ---- */
+              if (span) {
+                const p = cellAt(state, dayList[0].id, row);
+                const dur = p ? formatDuration(durationOf(p)) : "";
+                return (
+                  <tr key={row.key}>
                     <td
-                      key={d.id}
+                      colSpan={1 + dayList.length}
                       style={{
-                        background: bg,
-                        color: fg,
-                        border,
-                        padding: "1.6mm 1mm",
-                        fontSize: "10pt",
-                        fontWeight: subj ? 700 : 400,
+                        background: theme.zebraBg,
+                        border: `0.6pt solid ${theme.cellBorder}`,
+                        padding: "1mm",
                         textAlign: "center",
-                        verticalAlign: "middle",
-                        lineHeight: 1.3,
-                        minHeight: "9mm",
-                        borderInlineStart:
-                          subj && cellFill === "none"
-                            ? `2.4pt solid ${subj.color}`
-                            : border,
+                        fontSize: "8.5pt",
+                        fontWeight: 700,
+                        color: "#475569",
+                        letterSpacing: "1pt",
                       }}
                     >
-                      {subj ? (
-                        <span>
-                          {state.design.showSubjectNames !== false ? subj.name : "•"}
-                          {hasOverride && (
-                            <span
-                              style={{
-                                display: "block",
-                                fontSize: "7pt",
-                                fontWeight: 400,
-                                opacity: 0.85,
-                              }}
-                            >
-                              {ov?.start || p.start} - {ov?.end || p.end}
-                            </span>
-                          )}
-                        </span>
-                      ) : (
-                        <span style={{ color: "#CBD5E1" }}>—</span>
-                      )}
+                      {p?.label || "استراحة"} — {row.start} / {row.end}
+                      {dur ? ` (${dur})` : ""}
                     </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                  </tr>
+                );
+              }
 
-      {/* ===== الملخص (اختياري) ===== */}
-      {state.design.showTotals && (
-        <div style={{ marginTop: "4mm", fontSize: "9pt" }}>
+              /* ---- سطر حصة عادي ---- */
+              const labelP = cellAt(state, dayList[0].id, row);
+              return (
+                <tr key={row.key}>
+                  <th
+                    style={{
+                      background: hexToRgba(theme.headerBg, 0.08),
+                      border: `0.6pt solid ${theme.cellBorder}`,
+                      padding: "1.1mm 0.8mm",
+                      fontSize: "8.5pt",
+                      fontWeight: 700,
+                      color: theme.heading,
+                      textAlign: "center",
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    <div>{timeLabel(state, labelP ?? row)}</div>
+                  </th>
+                  {dayList.map((d) => {
+                    const p = cellAt(state, d.id, row);
+                    if (!p || (p.isBreak && !showBreaks)) {
+                      return (
+                        <td
+                          key={d.id}
+                          style={{
+                            background: "#FFFFFF",
+                            border: `0.6pt solid ${theme.cellBorder}`,
+                            padding: "1.1mm 0.8mm",
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                          }}
+                        >
+                          <span style={{ color: "#CBD5E1" }}>—</span>
+                        </td>
+                      );
+                    }
+                    if (p.isBreak) {
+                      return (
+                        <td
+                          key={d.id}
+                          style={{
+                            background: theme.zebraBg,
+                            color: "#64748B",
+                            border: `0.6pt solid ${theme.cellBorder}`,
+                            padding: "1.1mm 0.8mm",
+                            fontSize: "8.5pt",
+                            fontWeight: 700,
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                          }}
+                        >
+                          {p.label || "استراحة"}
+                        </td>
+                      );
+                    }
+
+                    const subj = subjectOf(p.subjectId);
+                    let bg = "#FFFFFF";
+                    let fg = theme.cellText;
+                    let border = `0.6pt solid ${theme.cellBorder}`;
+                    if (subj) {
+                      if (cellFill === "subject") {
+                        bg = subj.color;
+                        fg = readableTextOn(subj.color);
+                      } else if (cellFill === "soft") {
+                        bg = hexToRgba(subj.color, 0.16);
+                        fg = theme.cellText;
+                        border = `0.6pt solid ${hexToRgba(subj.color, 0.5)}`;
+                      } else {
+                        bg = "#FFFFFF";
+                        fg = subj.color;
+                      }
+                    }
+                    // توقيت مختلف عن السطر (يوم برمجه الأستاذ بتوقيت خاص)
+                    const diffTime = p.end !== row.end;
+
+                    return (
+                      <td
+                        key={d.id}
+                        style={{
+                          background: bg,
+                          color: fg,
+                          border,
+                          padding: "1.1mm 0.8mm",
+                          fontSize: "9.5pt",
+                          fontWeight: subj ? 700 : 400,
+                          textAlign: "center",
+                          verticalAlign: "middle",
+                          lineHeight: 1.3,
+                          borderInlineStart:
+                            subj && cellFill === "none"
+                              ? `2.4pt solid ${subj.color}`
+                              : border,
+                        }}
+                      >
+                        {subj ? (
+                          <span>
+                            {state.design.showSubjectNames !== false ? subj.name : "•"}
+                            {diffTime && (
+                              <span
+                                style={{
+                                  display: "block",
+                                  fontSize: "7pt",
+                                  fontWeight: 400,
+                                  opacity: 0.85,
+                                }}
+                              >
+                                {p.start} - {p.end}
+                              </span>
+                            )}
+                          </span>
+                        ) : (
+                          <span style={{ color: "#CBD5E1" }}>—</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+
+      {/* ===== الملخّص ===== */}
+      {state.design.showTotals && totalLessons > 0 && (
+        <div style={{ marginTop: "2.5mm", fontSize: "8pt", breakInside: "avoid" }}>
           <div
-            style={{
-              fontWeight: 700,
-              color: theme.heading,
-              marginBottom: "1.5mm",
-            }}
+            style={{ fontWeight: 700, color: theme.heading, marginBottom: "1.5mm" }}
           >
-            ملخّص: {totalLessons} حصة أسبوعيًا — المجموع {formatDuration(totalMin) || "0 د"}
+            ملخّص: {totalLessons} حصة أسبوعيًا — المجموع{" "}
+            {formatDuration(totalMin) || "0 د"}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "2mm 4mm" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "1.4mm 3mm" }}>
             {state.subjects
               .filter((s) => perSubject[s.id])
               .map((s) => (
@@ -344,7 +377,7 @@ export default function TimetablePreview({ state }: Props) {
                     border: `0.6pt solid ${hexToRgba(s.color, 0.6)}`,
                     background: hexToRgba(s.color, 0.12),
                     borderRadius: "2mm",
-                    padding: "0.6mm 2mm",
+                    padding: "0.4mm 1.6mm",
                   }}
                 >
                   <span
@@ -362,7 +395,7 @@ export default function TimetablePreview({ state }: Props) {
                 </span>
               ))}
           </div>
-          <div style={{ marginTop: "1.5mm", color: "#64748B" }}>
+          <div style={{ marginTop: "1mm", color: "#64748B" }}>
             {dayList.map((d) => `${d.name}: ${perDay[d.id]} حصة`).join("  ·  ")}
           </div>
         </div>
@@ -373,12 +406,13 @@ export default function TimetablePreview({ state }: Props) {
         <div
           style={{
             marginTop: "auto",
-            paddingTop: "6mm",
+            paddingTop: "4mm",
             display: "flex",
             justifyContent: "space-between",
             fontSize: "10pt",
             fontWeight: 700,
             color: theme.heading,
+            breakInside: "avoid",
           }}
         >
           <div>توقيع الأستاذ(ة): ..............................</div>
@@ -390,8 +424,8 @@ export default function TimetablePreview({ state }: Props) {
       {state.design.showFooter && (
         <div
           style={{
-            marginTop: "3mm",
-            paddingTop: "2mm",
+            marginTop: "2mm",
+            paddingTop: "1.5mm",
             borderTop: `0.6pt solid ${theme.cellBorder}`,
             fontSize: "7.5pt",
             color: "#94A3B8",
@@ -405,16 +439,20 @@ export default function TimetablePreview({ state }: Props) {
   );
 }
 
-function timeLabel(state: TimetableState, p: Period): string {
-  const dur = formatDuration(periodFacts(p));
+/** تسمية الوقت في عمود الحصة */
+function timeLabel(
+  state: TimetableState,
+  src: Period | { start: string; end: string }
+): string {
+  const dur = formatDuration(durationOf(src as Period));
   switch (state.design.periodDisplay) {
     case "start":
-      return p.start;
+      return src.start;
     case "duration":
       return dur;
     case "range-duration":
-      return `${p.start} - ${p.end}${dur ? ` (${dur})` : ""}`;
+      return `${src.start} - ${src.end}${dur ? ` (${dur})` : ""}`;
     default:
-      return `${p.start} - ${p.end}`;
+      return `${src.start} - ${src.end}`;
   }
 }

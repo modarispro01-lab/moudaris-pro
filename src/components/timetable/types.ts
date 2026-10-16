@@ -18,29 +18,26 @@ export interface DayDef {
   name: string;
 }
 
-/** فترة زمنية (حصة أو استراحة) — التوقيت بصيغة 24 ساعة "HH:MM" */
+/**
+ * فترة زمنية داخل يوم واحد فقط.
+ *
+ * كل يوم يملك فتراته المستقلة (توقيت + مادة)، لذلك لا تؤثر حصة
+ * الاثنين في الثلاثاء. هذه هي الفكرة الأساسية للأداة.
+ */
 export interface Period {
   id: string;
+  /** البداية "HH:MM" */
   start: string;
+  /** النهاية "HH:MM" */
   end: string;
+  /** تسمية اختيارية (تُستعمل تلقائيًا للاستراحات) */
   label: string;
   isBreak: boolean;
-}
-
-/** تخصيص توقيت مادة في يوم محدّد (يتجاوز توقيت الفترة المشترك) */
-export interface CellOverride {
-  start?: string;
-  end?: string;
-}
-
-export interface CellEntry {
+  /** المادة المبرمجة في هذه الفترة من يومها */
   subjectId: SubjectId | null;
-  override?: CellOverride;
+  /** ملاحظة اختيارية */
   note?: string;
 }
-
-/** الشبكة: [dayId][periodId] = خلية */
-export type Grid = Record<string, Record<string, CellEntry | undefined>>;
 
 /** مستوى دراسي مع أفواجه — يختار الأستاذ مستوى أو أكثر، ولكل مستوى فوجًا أو أكثر */
 export interface LevelEntry {
@@ -89,9 +86,10 @@ export type Orientation = "landscape" | "portrait";
 
 export interface TimetableState {
   info: Info;
+  /** أيام العمل مرتّبة */
   days: DayId[];
-  periods: Period[];
-  grid: Grid;
+  /** جدول كل يوم على حدة: DayId -> فتراته */
+  plans: Record<string, Period[]>;
   subjects: Subject[];
   design: Design;
   orientation: Orientation;
@@ -117,4 +115,21 @@ export interface Template {
   radius: number;
   /** لوحة صغيرة للمعاينة */
   swatch: string[];
+}
+
+/* ==================== سطر جدول موحّد (للطباعة) ==================== */
+
+/**
+ * سطر في جدول الطباعة = توقيت beginnings مشترك.
+ * نجمع كل الفترات من كل الأيام، ونجمّعها حسب وقت البداية
+ * حتى لو اختلف توقيت الأيام، فتبقى الوثيقة في جدول واحد مرتّب.
+ */
+export interface ScheduleRow {
+  /** مفتاح السطر: وقت البداية */
+  key: string;
+  start: string;
+  /** النهاية المعتمدة (الأكثر تكرارًا بين الأيام) */
+  end: string;
+  /** هل هو استراحة في كل الأيام؟ (عندئذٍ يشغل السطر كاملًا) */
+  allBreak: boolean;
 }

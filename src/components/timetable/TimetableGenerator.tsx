@@ -12,7 +12,7 @@ import Stepper, { STEPS } from "./Stepper";
 import TimetablePreview from "./TimetablePreview";
 import InfoStep from "./steps/InfoStep";
 import TimingStep from "./steps/TimingStep";
-import DistributionStep from "./steps/DistributionStep";
+import ScheduleStep from "./steps/ScheduleStep";
 import DesignStep from "./steps/DesignStep";
 import { cx } from "./utils";
 
@@ -77,8 +77,8 @@ function Shell() {
               مولّد استعمال الزمن الخاص بالتعليم الصريح
             </h1>
             <p className="mt-1.5 max-w-2xl text-sm text-white/85">
-              أنشئ استعمال الزمن الخاص بك بسهولة: اختر أيام العمل، واضبط توقيت الحصص،
-              ووزّع المواد، ثم حمّل الوثيقة جاهزة للطباعة.
+              اختر أيام عملك، وابرمج جدول كل يوم على حدة (توقيت + مواد)، ثم حمّل الوثيقة
+              جاهزة للطباعة.
             </p>
           </div>
           <button
@@ -122,7 +122,7 @@ function Shell() {
       <div className={cx("transition-opacity", !hydrated && "opacity-60")}>
         {step === 1 && <InfoStep />}
         {step === 2 && <TimingStep />}
-        {step === 3 && <DistributionStep />}
+        {step === 3 && <ScheduleStep />}
         {step === 4 && <DesignStep onEdit={() => go(3)} onNotify={notify} />}
       </div>
 
