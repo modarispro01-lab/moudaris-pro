@@ -5,7 +5,7 @@
    ============================================================ */
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft, ArrowRight, Check, Printer, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Printer, Redo2, Sparkles, Undo2 } from "lucide-react";
 import { TimetableProvider, useTimetable } from "./store";
 import { ConfirmProvider } from "./ConfirmDialog";
 import Stepper, { STEPS } from "./Stepper";
@@ -30,7 +30,7 @@ export default function TimetableGenerator() {
 }
 
 function Shell() {
-  const { state, hydrated } = useTimetable();
+  const { state, hydrated, undo, redo, canUndo, canRedo } = useTimetable();
   const [step, setStep] = useState(1);
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(
     null
@@ -91,9 +91,31 @@ function Shell() {
         </div>
       </header>
 
-      {/* ===== الخطوات ===== */}
-      <div className="mb-6 rounded-2xl border border-border bg-surface p-4">
-        <Stepper current={step} onGo={go} />
+      {/* ===== الخطوات + التراجع ===== */}
+      <div className="mb-6 flex items-center gap-2 rounded-2xl border border-border bg-surface p-4">
+        <div className="min-w-0 flex-1">
+          <Stepper current={step} onGo={go} />
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <button
+            type="button"
+            onClick={undo}
+            disabled={!canUndo}
+            title="تراجع"
+            className="rounded-lg border border-border p-2 text-text transition-colors hover:bg-background disabled:opacity-30"
+          >
+            <Undo2 className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={redo}
+            disabled={!canRedo}
+            title="إعادة"
+            className="rounded-lg border border-border p-2 text-text transition-colors hover:bg-background disabled:opacity-30"
+          >
+            <Redo2 className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {/* ===== محتوى الخطوة ===== */}

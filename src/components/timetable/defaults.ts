@@ -184,14 +184,24 @@ export function defaultPeriods(): Period[] {
   ];
 }
 
+export const LEVEL_SUGGESTIONS = [
+  "المستوى الأول",
+  "المستوى الثاني",
+  "المستوى الثالث",
+  "المستوى الرابع",
+  "المستوى الخامس",
+  "المستوى السادس",
+];
+
+export const GROUP_SUGGESTIONS = ["أ", "ب", "ج", "د", "هـ", "و"];
+
 export const DEFAULT_INFO: Info = {
   academy: "",
   direction: "",
   school: "",
   year: "2026/2027",
   teacher: "",
-  level: "",
-  section: "",
+  levels: [],
   employeeId: "",
   docTitle: "استعمال الزمن الأسبوعي – فترة التعليم الصريح",
 };

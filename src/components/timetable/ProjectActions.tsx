@@ -32,7 +32,9 @@ export default function ProjectActions({
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    const name = (state.info.level || "مشروع").replace(/[\\/:*?"<>|]/g, "-");
+    const name = (
+      state.info.levels?.find((l) => l.name.trim())?.name || "مشروع"
+    ).replace(/[\\/:*?"<>|]/g, "-");
     a.href = url;
     a.download = `استعمال-الزمن-${name}.json`;
     document.body.appendChild(a);

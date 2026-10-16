@@ -42,14 +42,23 @@ export interface CellEntry {
 /** الشبكة: [dayId][periodId] = خلية */
 export type Grid = Record<string, Record<string, CellEntry | undefined>>;
 
+/** مستوى دراسي مع أفواجه — يختار الأستاذ مستوى أو أكثر، ولكل مستوى فوجًا أو أكثر */
+export interface LevelEntry {
+  id: string;
+  /** اسم المستوى، مثال: "المستوى الرابع" */
+  name: string;
+  /** أسماء الأفواج، مثال: ["فوج أ", "فوج ب"] */
+  groups: string[];
+}
+
 export interface Info {
   academy: string;
   direction: string;
   school: string;
   year: string;
   teacher: string;
-  level: string;
-  section: string;
+  /** المستويات الدراسية وأفواجها (اختياري تمامًا) */
+  levels: LevelEntry[];
   employeeId: string;
   docTitle: string;
 }

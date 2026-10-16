@@ -59,8 +59,22 @@ export default function TimetablePreview({ state }: Props) {
 
   const metaItems: Array<[string, string]> = [];
   if (state.info.teacher) metaItems.push(["الأستاذ(ة)", state.info.teacher]);
-  if (state.info.level) metaItems.push(["المستوى", state.info.level]);
-  if (state.info.section) metaItems.push(["القسم", state.info.section]);
+
+  // المستويات الدراسية وأفواجها (اختيارية بالكامل)
+  const levels = (state.info.levels || []).filter(
+    (l) => (l.name || "").trim() || (l.groups || []).some((g) => g.trim())
+  );
+  for (const l of levels) {
+    const gNames = (l.groups || []).map((g) => g.trim()).filter(Boolean);
+    const lName = (l.name || "").trim();
+    if (lName) metaItems.push(["المستوى", lName]);
+    if (gNames.length)
+      metaItems.push([
+        lName ? "الأفواج" : "المستوى والأفواج",
+        gNames.join("، "),
+      ]);
+  }
+
   if (state.info.year) metaItems.push(["الموسم الدراسي", state.info.year]);
   if (state.info.employeeId) metaItems.push(["رقم التأجير", state.info.employeeId]);
 

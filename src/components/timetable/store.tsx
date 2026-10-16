@@ -17,12 +17,13 @@ import type {
   Design,
   Grid,
   Info,
+  LevelEntry,
   Orientation,
   Period,
   Subject,
   TimetableState,
 } from "./types";
-import { makeInitialState, uid } from "./defaults";
+import { DEFAULT_INFO, makeInitialState, uid } from "./defaults";
 
 const STORAGE_KEY = "mp_timetable_generator_v1";
 const PROFILE_KEY = "mp_teacher_profile_v1";
@@ -317,6 +318,49 @@ export function isValidState(v: unknown): v is TimetableState {
   );
 }
 
+/** معلومات قديمة تحتوي level/section بدل levels */
+type RawInfo = Partial<Info> & { level?: string; section?: string };
+
+/**
+ * توحيد بنية المعلومات + ترحيل المشاريع القديمة
+ * (كان الحقل level/section نصًّا واحدًا، صار levels قائمة مستويات وأفواج).
+ */
+export function normalizeInfo(raw: RawInfo | undefined | null): Info {
+  const base: Info = { ...DEFAULT_INFO };
+  if (!raw || typeof raw !== "object") return base;
+
+  const legacyLevel = typeof raw.level === "string" ? raw.level.trim() : "";
+  const legacySection = typeof raw.section === "string" ? raw.section.trim() : "";
+
+  let levels: LevelEntry[] = [];
+  if (Array.isArray(raw.levels)) {
+    levels = raw.levels
+      .filter((l): l is LevelEntry => !!l && typeof l === "object")
+      .map((l) => ({
+        id: l.id || uid(),
+        name: typeof l.name === "string" ? l.name : "",
+        groups: Array.isArray(l.groups)
+          ? l.groups.filter((g): g is string => typeof g === "string")
+          : [],
+      }));
+  }
+  if (!levels.length && (legacyLevel || legacySection)) {
+    levels = [
+      {
+        id: uid(),
+        name: legacyLevel,
+        groups: legacySection ? [legacySection] : [],
+      },
+    ];
+  }
+
+  return {
+    ...base,
+    ...raw,
+    levels,
+  };
+}
+
 function loadInitial(): TimetableState {
   const base = makeInitialState();
   try {
@@ -327,7 +371,7 @@ function loadInitial(): TimetableState {
       return {
         ...base,
         ...parsed,
-        info: { ...base.info, ...parsed.info },
+        info: normalizeInfo(parsed.info as RawInfo),
         design: { ...base.design, ...parsed.design },
         subjects: parsed.subjects.length ? parsed.subjects : base.subjects,
       };
@@ -347,8 +391,10 @@ function loadInitial(): TimetableState {
         direction: prof.direction || "",
         school: prof.establishment || "",
         teacher: prof.fullName || "",
-        level: prof.level || "",
         year: prof.schoolYear || base.info.year,
+        levels: prof.level
+          ? [{ id: uid(), name: prof.level, groups: [] }]
+          : base.info.levels,
       };
     }
   } catch {
@@ -364,9 +410,13 @@ export function serializeState(state: TimetableState): string {
 export function parseImported(text: string): TimetableState | null {
   const v = safeParse(text) as { state?: unknown } | null;
   if (v && isValidState((v as { state?: unknown }).state)) {
-    return (v as { state: TimetableState }).state;
+    const s = (v as { state: TimetableState }).state;
+    return { ...s, info: normalizeInfo(s.info as RawInfo) };
   }
-  if (isValidState(v)) return v as TimetableState;
+  if (isValidState(v)) {
+    const s = v as TimetableState;
+    return { ...s, info: normalizeInfo(s.info as RawInfo) };
+  }
   return null;
 }
 
