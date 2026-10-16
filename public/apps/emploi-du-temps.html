@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>استعمال الزمن - برنامج دعم التعلمات الأساس</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;800;900&display=swap');
 
         :root {
-            --primary: #1a5276;
-            --primary-light: #2980b9;
-            --primary-dark: #0e2f44;
-            --secondary: #148f77;
-            --secondary-light: #1abc9c;
-            --accent: #e74c3c;
+            --primary: #123B5D;
+            --primary-light: #1a5576;
+            --primary-dark: #0a2a44;
+            --secondary: #0F766E;
+            --secondary-light: #148f77;
+            --accent: #F59E0B;
             --accent-light: #ff6b6b;
             --gold: #f39c12;
             --gold-light: #f1c40f;
@@ -32,7 +32,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Cairo', 'Tajawal', sans-serif;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
@@ -824,7 +824,7 @@
 
         @page {
             size: A4 landscape;
-            margin: 5mm;
+            margin: 10mm;
         }
 
         @media print {
@@ -1289,6 +1289,27 @@
             </div>
 
             <div id="printSection">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:5mm; padding:0 0 3mm 0; border-bottom:1.4pt solid var(--primary); margin-bottom:3mm; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+                    <div>
+                        <div style="font-weight:800; color:var(--primary-dark); font-size:10.5pt; letter-spacing:0.2pt;">المملكة المغربية</div>
+                        <div style="font-size:8.5pt; color:#475569;">وزارة التربية الوطنية والتعليم الأولي والرياضة</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <svg width="58" height="58" viewBox="0 0 100 100" style="display:block; margin:0 auto;">
+                            <circle cx="50" cy="50" r="48" fill="none" stroke="var(--primary)" stroke-width="2.6"/>
+                            <circle cx="50" cy="50" r="43.5" fill="none" stroke="var(--primary)" stroke-width="1" opacity="0.6"/>
+                            <path d="M20 60 Q33 51 48 57 L48 79 Q33 73 20 81 Z" fill="var(--primary)" opacity="0.92"/>
+                            <path d="M80 60 Q67 51 52 57 L52 79 Q67 73 80 81 Z" fill="var(--primary)" opacity="0.65"/>
+                            <line x1="50" y1="57" x2="50" y2="79" stroke="var(--primary)" stroke-width="1.4" opacity="0.5"/>
+                            <path d="M50 16 l4.5 9.1 10 1.5 -7.3 7 1.7 10 -8.9-4.7 -8.9 4.7 1.7-10 -7.3-7 10-1.5 Z" fill="var(--primary)"/>
+                        </svg>
+                        <div style="font-size:8.5pt; font-weight:700; color:var(--primary-dark); margin-top:1mm; white-space:nowrap;">الموسم الدراسي <span id="printYear">2026/2027</span></div>
+                    </div>
+                    <div style="text-align:left; font-size:9pt; color:#475569; white-space:nowrap;">
+                        <div style="font-weight:700; color:var(--primary-dark); font-size:10pt;">برنامج الدعم</div>
+                        <div>التعلمات الأساسية</div>
+                    </div>
+                </div>
                 <table class="info-table" id="infoTable">
                     <tr>
                         <td class="info-label">المؤسسة:</td>
@@ -1312,7 +1333,7 @@
                     </tr>
                 </table>
 
-                <div style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color:white; text-align:center; padding:12px; font-weight:800; font-size:1.1em; border: 2px solid var(--primary); border-top:none;">
+                <div style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color:white; text-align:center; padding:10px; font-weight:800; font-size:1.1em; border: 1pt solid var(--primary); margin-top:2mm; border-radius:2mm;">
                     استعمال الزمن – فترة برنامج دعم التعلمات الأساس
                 </div>
 
@@ -1344,17 +1365,20 @@
 
                 <div class="signatures">
                     <div class="signature-box">
+                        <div class="sig-title">الأستاذ(ة)</div>
+                        <div class="sig-line">التوقيع</div>
+                    </div>
+                    <div class="signature-box">
                         <div class="sig-title">المفتش(ة)</div>
                         <div class="sig-line">التوقيع والختم</div>
                     </div>
                     <div class="signature-box">
-                        <div class="sig-title">المدير(ة)</div>
+                        <div class="sig-title">طابع وتوقيع المدير(ة)</div>
                         <div class="sig-line">التوقيع والختم</div>
                     </div>
-                    <div class="signature-box">
-                        <div class="sig-title">الأستاذ(ة)</div>
-                        <div class="sig-line">التوقيع</div>
-                    </div>
+                </div>
+                <div style="margin-top:6mm; padding-top:2mm; border-top:0.6pt solid #dce1e8; font-size:7.5pt; color:#94a3b8; text-align:center;">
+                    أُنجز بواسطة مولّد استعمال الزمن — Modaris Pro · modarispro.com
                 </div>
             </div>
         </div>
