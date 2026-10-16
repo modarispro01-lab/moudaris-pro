@@ -8,6 +8,7 @@ const links = [
   { href: "/", label: "الرئيسية" },
   { href: "/resources", label: "الموارد" },
   { href: "/tools", label: "الأدوات" },
+  { href: "/products", label: "المنتجات" },
   { href: "/actualites", label: "المستجدات" },
 ];
 

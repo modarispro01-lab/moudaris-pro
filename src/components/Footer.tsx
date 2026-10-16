@@ -36,6 +36,11 @@ export default function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/products" className="hover:text-white transition-colors">
+                💎 المنتجات الرقمية
+              </Link>
+            </li>
+            <li>
               <Link href="/actualites" className="hover:text-white transition-colors">
                 📰 المستجدات
               </Link>
