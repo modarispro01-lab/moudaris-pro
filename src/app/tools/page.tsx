@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FileText, Calendar, Sparkles, ArrowRight, Layers, FolderTree, IdCard, Table2, NotebookPen, Award, Tags, ScrollText, Network } from 'lucide-react';
+import { FileText, Calendar, CalendarClock, Sparkles, ArrowRight, Layers, FolderTree, IdCard, Table2, NotebookPen, Award, Tags, ScrollText, Network } from 'lucide-react';
 import type { Metadata } from "next";
 
 // ===== Meta Tags للـ SEO =====
@@ -41,6 +41,14 @@ const tools = [
     description: 'نظم حصصك الأسبوعية بسهولة مع قوالب جاهزة.',
     icon: Calendar,
     color: 'bg-secondary',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'timetable-generator',
+    title: 'مولّد استعمال الزمن — التعليم الصريح',
+    description: 'توقيت حرّ للحصص، توزيع المواد، قوالب متعدّدة، وطباعة A4 أفقي أو عمودي.',
+    icon: CalendarClock,
+    color: 'bg-primary',
     status: 'متاح الآن',
   },
   {

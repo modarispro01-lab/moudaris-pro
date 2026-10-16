@@ -20,3 +20,26 @@ body {
   font-family: var(--font-sans);
   direction: rtl;
 }
+
+/* ============================================================
+   مولّد استعمال الزمن (التعليم الصريح) — نسخة الطباعة
+   ============================================================ */
+@media screen {
+  .tt-print-portal {
+    display: none !important;
+  }
+}
+
+@media print {
+  /* إخفاء كل عناصر الصفحة إلا وثيقة الطباعة */
+  body > *:not(.tt-print-portal) {
+    display: none !important;
+  }
+  .tt-print-portal {
+    display: block !important;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+  }
+}
