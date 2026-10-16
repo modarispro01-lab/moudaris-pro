@@ -41,7 +41,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
     <ConfirmContext.Provider value={confirm}>
       {children}
       {state && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="tt-editor fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => close(false)}
@@ -62,8 +62,8 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={() => close(true)}
                 className={cx(
-                  "rounded-xl px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90",
-                  state.options.danger ? "bg-red-600" : "bg-primary"
+                  "edt-btn edt-btn-sm",
+                  state.options.danger ? "edt-btn-danger" : "edt-btn-primary"
                 )}
               >
                 {state.options.confirmLabel || "تأكيد"}
@@ -71,7 +71,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => close(false)}
-                className="rounded-xl border border-border px-4 py-2 text-sm font-bold text-text transition-colors hover:bg-background"
+                className="edt-btn edt-btn-sm edt-btn-outline"
               >
                 {state.options.cancelLabel || "إلغاء"}
               </button>

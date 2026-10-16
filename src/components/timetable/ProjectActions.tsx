@@ -75,14 +75,14 @@ export default function ProjectActions({
       <button
         type="button"
         onClick={() => window.print()}
-        className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+        className="edt-btn edt-btn-success"
       >
         <FileDown className="h-4 w-4" /> تحميل PDF
       </button>
       <button
         type="button"
         onClick={() => window.print()}
-        className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-bold text-text transition-colors hover:bg-background"
+        className="edt-btn edt-btn-outline"
       >
         <Printer className="h-4 w-4" /> طباعة
       </button>
@@ -90,7 +90,7 @@ export default function ProjectActions({
         <button
           type="button"
           onClick={onEdit}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-bold text-text transition-colors hover:bg-background"
+          className="edt-btn edt-btn-outline"
         >
           <Pencil className="h-4 w-4" /> الرجوع إلى التعديل
         </button>
@@ -98,14 +98,14 @@ export default function ProjectActions({
       <button
         type="button"
         onClick={exportJson}
-        className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-bold text-text transition-colors hover:bg-background"
+        className="edt-btn edt-btn-outline"
       >
         <Save className="h-4 w-4" /> حفظ نسخة من المشروع
       </button>
       <button
         type="button"
         onClick={() => fileRef.current?.click()}
-        className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-bold text-text transition-colors hover:bg-background"
+        className="edt-btn edt-btn-outline"
       >
         <Upload className="h-4 w-4" /> استيراد نسخة
       </button>
@@ -123,7 +123,7 @@ export default function ProjectActions({
       <button
         type="button"
         onClick={clearAllData}
-        className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-600 transition-colors hover:bg-red-100"
+        className="edt-btn edt-btn-danger-outline"
       >
         <Trash2 className="h-4 w-4" /> حذف البيانات
       </button>

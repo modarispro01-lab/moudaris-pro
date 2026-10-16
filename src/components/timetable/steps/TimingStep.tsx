@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /* ============================================================
    الخطوة 2 — اختيار أيام العمل فقط
@@ -29,8 +29,8 @@ export default function TimingStep() {
     dispatch({ type: "SET_DAYS", days: DAYS.slice(0, count).map((d) => d.id) });
 
   return (
-    <section className="rounded-2xl border border-border bg-surface p-5">
-      <h2 className="mb-1 flex items-center gap-2 text-sm font-extrabold text-text">
+    <section className="edt-card">
+      <h2 className="edt-card-title mb-2">
         <CalendarDays className="h-4 w-4 text-primary" /> أيام العمل
       </h2>
       <p className="mb-4 text-xs text-muted">
@@ -44,7 +44,7 @@ export default function TimingStep() {
             key={n}
             type="button"
             onClick={() => setQuick(n)}
-            className="rounded-lg border border-border px-3 py-1.5 text-xs font-bold text-text transition-colors hover:bg-background"
+            className="edt-btn edt-btn-sm edt-btn-outline"
           >
             {n} أيام
           </button>
@@ -60,12 +60,7 @@ export default function TimingStep() {
               key={d.id}
               type="button"
               onClick={() => toggleDay(d.id)}
-              className={cx(
-                "flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors",
-                active
-                  ? "border-primary bg-primary text-white"
-                  : "border-border bg-background text-muted hover:border-primary/40"
-              )}
+              className={cx("edt-chip", active && "is-on")}
             >
               {d.name}
               {active && n > 0 && (

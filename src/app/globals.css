@@ -43,3 +43,404 @@ body {
     background: #ffffff !important;
   }
 }
+
+/* ============================================================
+   محرّر استعمال الزمن — نظام بصري موحّد (كباقي أدوات الموقع)
+   ============================================================ */
+.tt-editor {
+  --edt-primary: #123B5D;
+  --edt-primary-light: #1a5576;
+  --edt-primary-dark: #0a2a44;
+  --edt-secondary: #0F766E;
+  --edt-secondary-light: #148f77;
+  --edt-accent: #F59E0B;
+  --edt-accent-light: #fbbf24;
+  --edt-gold: #f39c12;
+  --edt-bg: #f0f4f8;
+  --edt-card: #ffffff;
+  --edt-border: #dce1e8;
+  --edt-text: #2c3e50;
+  --edt-muted: #7f8c8d;
+  --edt-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --edt-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== ترويسة التطبيق ===== */
+.tt-editor .edt-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--edt-primary-dark) 0%,
+    var(--edt-primary) 50%,
+    var(--edt-primary-light) 100%
+  );
+  color: #fff;
+  text-align: center;
+  padding: 25px 20px;
+  box-shadow: 0 4px 30px rgba(18, 59, 93, 0.3);
+}
+.tt-editor .edt-hero::before {
+  content: "";
+  position: absolute;
+  inset: -50% -50% auto -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 70%
+  );
+  animation: edtShine 8s ease-in-out infinite;
+}
+@keyframes edtShine {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(30px, 20px);
+  }
+}
+.tt-editor .edt-hero h1 {
+  position: relative;
+  z-index: 1;
+  font-size: 1.8em;
+  font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.tt-editor .edt-hero .edt-sub {
+  position: relative;
+  z-index: 1;
+  margin-top: 5px;
+  font-size: 1em;
+  font-weight: 400;
+  opacity: 0.9;
+}
+.tt-editor .edt-badge-gold {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 18px;
+  border-radius: 20px;
+  background: var(--edt-gold);
+  color: var(--edt-primary-dark);
+  font-size: 0.85em;
+  font-weight: 700;
+}
+
+/* ===== تبويبات التنقّل ===== */
+.tt-editor .edt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  padding: 12px 20px;
+  background: #fff;
+  box-shadow: var(--edt-shadow);
+}
+.tt-editor .edt-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: 2px solid var(--edt-border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--edt-text);
+  font-weight: 600;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.tt-editor .edt-tab:hover {
+  border-color: var(--edt-primary-light);
+  color: var(--edt-primary);
+  background: #eaf2f8;
+}
+.tt-editor .edt-tab .tab-icon {
+  display: inline-flex;
+  align-items: center;
+}
+.tt-editor .edt-tab.is-active {
+  background: var(--edt-primary);
+  color: #fff;
+  border-color: var(--edt-primary);
+  box-shadow: 0 4px 15px rgba(18, 59, 93, 0.3);
+}
+.tt-editor .edt-tab.is-done {
+  border-color: var(--edt-secondary);
+  color: var(--edt-secondary);
+}
+
+/* ===== البطاقات ===== */
+.tt-editor .edt-card {
+  background: var(--edt-card);
+  border: 1px solid var(--edt-border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--edt-shadow);
+  transition: box-shadow 0.3s ease;
+}
+.tt-editor .edt-card:hover {
+  box-shadow: var(--edt-shadow-lg);
+}
+.tt-editor .edt-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--edt-primary-light);
+  color: var(--edt-primary);
+  font-size: 1.2em;
+  font-weight: 700;
+}
+
+/* ===== الحقول ===== */
+.tt-editor .edt-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--edt-text);
+  font-size: 0.92em;
+  font-weight: 600;
+}
+.tt-editor .edt-input,
+.tt-editor .edt-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--edt-border);
+  border-radius: 10px;
+  background: #fafbfc;
+  color: var(--edt-text);
+  font-size: 0.95em;
+  outline: none;
+  transition: all 0.3s ease;
+}
+.tt-editor .edt-input::placeholder {
+  color: #bdc3c7;
+}
+.tt-editor .edt-input:focus,
+.tt-editor .edt-select:focus {
+  border-color: var(--edt-primary-light);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.1);
+}
+.tt-editor .edt-input.edt-time {
+  font-size: 1.1em;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+  color: var(--edt-primary-dark);
+}
+.tt-editor .edt-input.edt-w-auto {
+  width: auto;
+}
+.tt-editor .edt-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px;
+  border: 2px solid var(--edt-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--edt-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.tt-editor .edt-icon-btn:not(:disabled):hover {
+  border-color: var(--edt-primary-light);
+  color: var(--edt-primary);
+  background: #eaf2f8;
+}
+.tt-editor .edt-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.tt-editor .edt-icon-btn.is-danger {
+  border-color: #f5b7b1;
+  color: #c0392b;
+}
+.tt-editor .edt-icon-btn.is-danger:not(:disabled):hover {
+  background: #fdedec;
+}
+
+/* ===== الأزرار ===== */
+.tt-editor .edt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.tt-editor .edt-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.tt-editor .edt-btn-primary {
+  background: linear-gradient(135deg, var(--edt-primary), var(--edt-primary-light));
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(18, 59, 93, 0.3);
+}
+.tt-editor .edt-btn-primary:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(18, 59, 93, 0.4);
+}
+.tt-editor .edt-btn-success {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+.tt-editor .edt-btn-success:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(39, 174, 96, 0.4);
+}
+.tt-editor .edt-btn-danger {
+  background: linear-gradient(135deg, var(--edt-accent), var(--edt-accent-light));
+  color: #fff;
+}
+.tt-editor .edt-btn-danger:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+.tt-editor .edt-btn-danger-outline {
+  background: transparent;
+  border: 2px solid #e74c3c;
+  color: #c0392b;
+}
+.tt-editor .edt-btn-danger-outline:not(:disabled):hover {
+  background: #fdedec;
+}
+.tt-editor .edt-btn-soft {
+  background: #e6f4f1;
+  border: 2px solid transparent;
+  color: var(--edt-secondary);
+}
+.tt-editor .edt-btn-soft:not(:disabled):hover {
+  background: #d3ebe6;
+}
+.tt-editor .edt-tpl {
+  background: #fff;
+  border: 2px solid var(--edt-border);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: right;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.tt-editor .edt-tpl:hover {
+  border-color: var(--edt-primary-light);
+  transform: translateY(-1px);
+  box-shadow: var(--edt-shadow);
+}
+.tt-editor .edt-tpl.is-on {
+  border-color: var(--edt-primary);
+  box-shadow: 0 0 0 3px rgba(18, 59, 93, 0.15);
+}
+.tt-editor .edt-btn-outline {
+  background: transparent;
+  border: 2px solid var(--edt-primary);
+  color: var(--edt-primary);
+}
+.tt-editor .edt-btn-outline:not(:disabled):hover {
+  background: var(--edt-primary);
+  color: #fff;
+}
+.tt-editor .edt-btn-sm {
+  padding: 6px 14px;
+  font-size: 0.85em;
+  border-radius: 8px;
+}
+
+/* ===== الشريحة/الزر المحدَّد ===== */
+.tt-editor .edt-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 2px solid var(--edt-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--edt-text);
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+.tt-editor .edt-chip:hover {
+  border-color: var(--edt-primary-light);
+  background: #eaf2f8;
+  transform: translateY(-1px);
+}
+.tt-editor .edt-chip.is-on {
+  background: linear-gradient(135deg, var(--edt-primary), var(--edt-primary-light));
+  color: #fff;
+  border-color: var(--edt-primary);
+  box-shadow: 0 3px 10px rgba(18, 59, 93, 0.25);
+}
+.tt-editor .edt-chip.is-on:hover {
+  transform: translateY(-1px);
+}
+
+/* ===== شارة / وسم ===== */
+.tt-editor .edt-pill {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.82em;
+  font-weight: 700;
+}
+.tt-editor .edt-pill-lesson {
+  background: linear-gradient(135deg, var(--edt-secondary), var(--edt-secondary-light));
+  color: #fff;
+}
+.tt-editor .edt-pill-break {
+  background: linear-gradient(135deg, var(--edt-accent), var(--edt-accent-light));
+  color: #fff;
+}
+
+/* ===== صفوف الجدول داخل المحرّر ===== */
+.tt-editor .edt-period {
+  border: 1px solid var(--edt-border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+  transition: all 0.2s ease;
+}
+.tt-editor .edt-period:hover {
+  box-shadow: var(--edt-shadow);
+}
+.tt-editor .edt-period.is-break {
+  background: linear-gradient(135deg, #fef9e7, #fdebd0);
+  border-color: #f5cba7;
+}
+.tt-editor .edt-period.is-warn {
+  border-color: var(--edt-accent);
+  background: #fef9e7;
+}
+
+/* ===== حركة ظهور الخطوة ===== */
+.tt-editor .edt-fade {
+  animation: edtFade 0.4s ease;
+}
+@keyframes edtFade {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

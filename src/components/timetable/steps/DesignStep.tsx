@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /* ============================================================
    الخطوة 4 — التصميم والمعاينة والتصدير
@@ -77,8 +77,8 @@ export default function DesignStep({
   return (
     <div className="space-y-6">
       {/* ===== القوالب ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <h2 className="mb-1 flex items-center gap-2 text-sm font-extrabold text-text">
+      <section className="edt-card">
+        <h2 className="edt-card-title mb-2">
           <LayoutTemplate className="h-4 w-4 text-primary" /> القوالب البصرية
         </h2>
         <p className="mb-4 text-xs text-muted">
@@ -101,12 +101,7 @@ export default function DesignStep({
                     heading: undefined,
                   })
                 }
-                className={cx(
-                  "rounded-2xl border p-3 text-right transition-all",
-                  active
-                    ? "border-primary ring-2 ring-primary/20"
-                    : "border-border hover:border-primary/40"
-                )}
+                className={cx("edt-tpl", active && "is-on")}
               >
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-sm font-extrabold text-text">{t.name}</span>
@@ -133,8 +128,8 @@ export default function DesignStep({
       </section>
 
       {/* ===== التخصيص ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <h2 className="mb-4 text-sm font-extrabold text-text">تخصيص القالب</h2>
+      <section className="edt-card">
+        <h2 className="edt-card-title">تخصيص القالب</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <ColorField
             label="اللون الرئيسي (رؤوس الجدول)"
@@ -236,8 +231,8 @@ export default function DesignStep({
       </section>
 
       {/* ===== الشعار والتوقيعات ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <h2 className="mb-1 flex items-center gap-2 text-sm font-extrabold text-text">
+      <section className="edt-card">
+        <h2 className="edt-card-title mb-2">
           <ImageIcon className="h-4 w-4 text-primary" /> الشعار والتوقيعات
         </h2>
         <p className="mb-4 text-xs text-muted">
@@ -347,22 +342,20 @@ export default function DesignStep({
       </section>
 
       {/* ===== الاتجاه + المعاينة ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 text-sm font-extrabold text-text">
-            <Eye className="h-4 w-4 text-primary" /> المعاينة المباشرة
+      <section className="edt-card">
+        <div className="edt-card-title" style={{ justifyContent: "space-between" }}>
+          <h2 className="flex items-center gap-2.5">
+            <Eye className="h-4 w-4" /> المعاينة المباشرة
           </h2>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-muted">اتجاه الورقة</span>
-            <div className="flex overflow-hidden rounded-lg border border-border">
+            <div className="flex gap-1.5">
               <button
                 type="button"
                 onClick={() => dispatch({ type: "SET_ORIENTATION", orientation: "landscape" })}
                 className={cx(
-                  "px-3 py-1.5 text-xs font-bold",
-                  state.orientation === "landscape"
-                    ? "bg-primary text-white"
-                    : "bg-surface text-text hover:bg-background"
+                  "edt-chip !py-2 !text-xs",
+                  state.orientation === "landscape" && "is-on"
                 )}
               >
                 أفقي (A4)
@@ -371,10 +364,8 @@ export default function DesignStep({
                 type="button"
                 onClick={() => dispatch({ type: "SET_ORIENTATION", orientation: "portrait" })}
                 className={cx(
-                  "px-3 py-1.5 text-xs font-bold",
-                  state.orientation === "portrait"
-                    ? "bg-primary text-white"
-                    : "bg-surface text-text hover:bg-background"
+                  "edt-chip !py-2 !text-xs",
+                  state.orientation === "portrait" && "is-on"
                 )}
               >
                 عمودي (A4)
@@ -401,14 +392,13 @@ export default function DesignStep({
   );
 }
 
-const selectCls =
-  "w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:bg-surface";
-const inputCls = selectCls;
+const selectCls = "edt-select";
+const inputCls = "edt-input";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-bold text-muted">{label}</span>
+      <span className="edt-label">{label}</span>
       {children}
     </label>
   );
@@ -425,7 +415,7 @@ function ColorField({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-bold text-muted">{label}</span>
+      <span className="edt-label">{label}</span>
       <div className="flex items-center gap-2">
         <input
           type="color"
@@ -458,12 +448,7 @@ function Toggle({
     <button
       type="button"
       onClick={onClick}
-      className={cx(
-        "inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-bold transition-colors",
-        active
-          ? "border-secondary bg-secondary/10 text-secondary"
-          : "border-border bg-surface text-muted hover:bg-background"
-      )}
+      className={cx("edt-chip !py-2 !text-xs", active && "is-on")}
     >
       {icon}
       {label}

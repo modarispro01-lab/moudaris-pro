@@ -37,14 +37,14 @@ export default function PeriodEditor({ day }: { day: DayId }) {
         <button
           type="button"
           onClick={() => dispatch({ type: "ADD_PERIOD", day })}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          className="edt-btn edt-btn-sm edt-btn-primary"
         >
           <Plus className="h-4 w-4" /> إضافة حصة
         </button>
         <button
           type="button"
           onClick={() => dispatch({ type: "ADD_PERIOD", day, isBreak: true })}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-bold text-text transition-colors hover:bg-background"
+          className="edt-btn edt-btn-sm edt-btn-outline"
         >
           <Coffee className="h-4 w-4" /> إضافة استراحة
         </button>
@@ -69,9 +69,9 @@ export default function PeriodEditor({ day }: { day: DayId }) {
               <div
                 key={p.id}
                 className={cx(
-                  "rounded-xl border bg-surface p-3 transition-colors",
-                  issue || overlap ? "border-amber-300" : "border-border",
-                  p.isBreak && "bg-background"
+                  "edt-period",
+                  p.isBreak && "is-break",
+                  (issue || overlap) && "is-warn"
                 )}
               >
                 {/* ===== التوقيت ===== */}
@@ -81,13 +81,11 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                   </span>
 
                   {p.isBreak ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-amber-100 px-2.5 py-1.5 text-xs font-bold text-amber-800">
+                    <span className="edt-pill edt-pill-break inline-flex items-center gap-1.5">
                       <Coffee className="h-3.5 w-3.5" /> استراحة
                     </span>
                   ) : (
-                    <span className="rounded-lg bg-secondary/10 px-2.5 py-1.5 text-xs font-bold text-secondary">
-                      حصة
-                    </span>
+                    <span className="edt-pill edt-pill-lesson">حصة</span>
                   )}
 
                   <label className="flex items-center gap-1.5">
@@ -96,7 +94,8 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                       type="time"
                       value={p.start}
                       onChange={(e) => update(p.id, { start: e.target.value })}
-                      className="rounded-lg border border-border bg-background px-2 py-1.5 text-sm outline-none focus:border-primary"
+                      className="edt-input edt-time edt-w-auto"
+                      style={{ width: "7.5rem" }}
                     />
                   </label>
                   <label className="flex items-center gap-1.5">
@@ -105,12 +104,13 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                       type="time"
                       value={p.end}
                       onChange={(e) => update(p.id, { end: e.target.value })}
-                      className="rounded-lg border border-border bg-background px-2 py-1.5 text-sm outline-none focus:border-primary"
+                      className="edt-input edt-time edt-w-auto"
+                      style={{ width: "7.5rem" }}
                     />
                   </label>
 
                   {dur > 0 && (
-                    <span className="rounded-lg bg-background px-2 py-1.5 text-xs font-bold text-text">
+                    <span className="edt-pill bg-background text-text">
                       {formatDuration(dur)}
                     </span>
                   )}
@@ -121,7 +121,7 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                       title="إلى الأعلى"
                       onClick={() => dispatch({ type: "MOVE_PERIOD", day, id: p.id, dir: -1 })}
                       disabled={i === 0}
-                      className="rounded-lg border border-border p-1.5 text-muted transition-colors hover:bg-background disabled:opacity-30"
+                      className="edt-icon-btn"
                     >
                       <ArrowUp className="h-3.5 w-3.5" />
                     </button>
@@ -130,7 +130,7 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                       title="إلى الأسفل"
                       onClick={() => dispatch({ type: "MOVE_PERIOD", day, id: p.id, dir: 1 })}
                       disabled={i === list.length - 1}
-                      className="rounded-lg border border-border p-1.5 text-muted transition-colors hover:bg-background disabled:opacity-30"
+                      className="edt-icon-btn"
                     >
                       <ArrowDown className="h-3.5 w-3.5" />
                     </button>
@@ -138,7 +138,7 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                       type="button"
                       title="حذف"
                       onClick={() => dispatch({ type: "REMOVE_PERIOD", day, id: p.id })}
-                      className="rounded-lg border border-red-200 p-1.5 text-red-500 transition-colors hover:bg-red-50"
+                      className="edt-icon-btn is-danger"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -154,7 +154,8 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                       onChange={(e) =>
                         update(p.id, { subjectId: e.target.value || null })
                       }
-                      className="min-w-48 flex-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm font-semibold outline-none focus:border-primary"
+                      className="edt-select"
+                      style={{ width: "auto", minWidth: "12rem", flex: 1 }}
                     >
                       <option value="">— اختر المادة —</option>
                       {state.subjects.map((s) => (
@@ -172,7 +173,7 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                     value={p.label ?? ""}
                     onChange={(e) => update(p.id, { label: e.target.value })}
                     placeholder="ملاحظة (اختياري): مثلًا «حصص نهائية»"
-                    className="mt-2 w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs outline-none focus:border-primary"
+                    className="edt-input mt-2 text-xs"
                   />
                 )}
 

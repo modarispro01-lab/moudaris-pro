@@ -1,22 +1,23 @@
 "use client";
 
 /* ============================================================
-   مؤشّر الخطوات
+   مؤشّر الخطوات — شكل تبويبات تنقّل (nav-tabs)
    ============================================================ */
 import React from "react";
-import { Check } from "lucide-react";
+import { Check, ClipboardList, LayoutTemplate, PenLine, Users } from "lucide-react";
 import { cx } from "./utils";
 
 export interface StepDef {
   id: number;
   title: string;
+  icon: React.ReactNode;
 }
 
 export const STEPS: StepDef[] = [
-  { id: 1, title: "المعلومات" },
-  { id: 2, title: "أيام العمل" },
-  { id: 3, title: "برمجة الأيام" },
-  { id: 4, title: "التصميم والتصدير" },
+  { id: 1, title: "المعلومات", icon: <Users className="h-4 w-4" /> },
+  { id: 2, title: "أيام العمل", icon: <ClipboardList className="h-4 w-4" /> },
+  { id: 3, title: "برمجة الأيام", icon: <PenLine className="h-4 w-4" /> },
+  { id: 4, title: "التصميم والتصدير", icon: <LayoutTemplate className="h-4 w-4" /> },
 ];
 
 export default function Stepper({
@@ -27,47 +28,30 @@ export default function Stepper({
   onGo: (n: number) => void;
 }) {
   return (
-    <ol className="flex flex-wrap items-center gap-y-3">
-      {STEPS.map((s, i) => {
-        const done = current > s.id;
+    <nav className="edt-nav">
+      {STEPS.map((s) => {
         const active = current === s.id;
+        const done = current > s.id;
         return (
-          <li key={s.id} className="flex flex-1 items-center gap-2">
-            <button
-              type="button"
-              onClick={() => onGo(s.id)}
-              className="flex items-center gap-2 text-right"
-            >
-              <span
-                className={cx(
-                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-extrabold transition-colors",
-                  done && "bg-secondary text-white",
-                  active && "bg-primary text-white ring-4 ring-primary/15",
-                  !done && !active && "bg-background text-muted ring-1 ring-border"
-                )}
-              >
-                {done ? <Check className="h-4 w-4" /> : s.id}
-              </span>
-              <span
-                className={cx(
-                  "hidden text-sm font-bold sm:block",
-                  active ? "text-text" : "text-muted"
-                )}
-              >
-                {s.title}
-              </span>
-            </button>
-            {i < STEPS.length - 1 && (
-              <span
-                className={cx(
-                  "mx-1 hidden h-px flex-1 sm:block",
-                  done ? "bg-secondary" : "bg-border"
-                )}
-              />
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => onGo(s.id)}
+            className={cx(
+              "edt-tab",
+              active && "is-active",
+              !active && done && "is-done"
             )}
-          </li>
+          >
+            {done && !active ? (
+              <Check className="h-4 w-4" />
+            ) : (
+              <span className="tab-icon">{s.icon}</span>
+            )}
+            {s.title}
+          </button>
         );
       })}
-    </ol>
+    </nav>
   );
 }

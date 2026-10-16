@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /* ============================================================
    الخطوة 3 — برمجة الأيام يومًا بيوم
@@ -117,10 +117,10 @@ export default function ScheduleStep() {
   return (
     <div className="space-y-5">
       {/* ===== شريط الأيام ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-4">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="flex items-center gap-2 text-sm font-extrabold text-text">
-            <ListChecks className="h-4 w-4 text-primary" /> اختر يومًا وابرمج جدوله
+      <section className="edt-card">
+        <div className="edt-card-title" style={{ justifyContent: "space-between" }}>
+          <h2 className="flex items-center gap-2.5">
+            <ListChecks className="h-4 w-4" /> اختر يومًا وابرمج جدوله
           </h2>
           <span
             className={cx(
@@ -145,12 +145,7 @@ export default function ScheduleStep() {
                 key={d}
                 type="button"
                 onClick={() => setActiveDay(d)}
-                className={cx(
-                  "flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-bold transition-colors",
-                  active
-                    ? "border-primary bg-primary text-white"
-                    : "border-border bg-background text-text hover:border-primary/50"
-                )}
+                className={cx("edt-chip shrink-0", active && "is-on")}
               >
                 {complete ? (
                   <CheckCircle2
@@ -195,7 +190,7 @@ export default function ScheduleStep() {
       </section>
 
       {/* ===== جدول اليوم النشط ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
+      <section className="edt-card">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <button
@@ -203,7 +198,7 @@ export default function ScheduleStep() {
               onClick={() => goDay(-1)}
               disabled={idx <= 0}
               title="اليوم السابق"
-              className="rounded-lg border border-border p-2 text-text transition-colors hover:bg-background disabled:opacity-30"
+              className="edt-icon-btn"
             >
               <ArrowRight className="h-4 w-4" />
             </button>
@@ -215,7 +210,7 @@ export default function ScheduleStep() {
               onClick={() => goDay(1)}
               disabled={idx >= state.days.length - 1}
               title="اليوم التالي"
-              className="rounded-lg border border-border p-2 text-text transition-colors hover:bg-background disabled:opacity-30"
+              className="edt-icon-btn"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
@@ -227,7 +222,7 @@ export default function ScheduleStep() {
               onClick={applyToAll}
               disabled={!periods.length || state.days.length < 2}
               title="نسخ توقيت هذا اليوم إلى بقية الأيام (بمواد فارغة)"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-secondary/40 bg-secondary/5 px-2.5 py-1.5 text-[11px] font-bold text-secondary transition-colors hover:bg-secondary/10 disabled:opacity-40"
+              className="edt-btn edt-btn-sm edt-btn-soft"
             >
               <Sparkles className="h-3.5 w-3.5" /> توقيت لكل الأيام
             </button>
@@ -236,7 +231,7 @@ export default function ScheduleStep() {
               type="button"
               onClick={clearDay}
               disabled={!periods.length}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-[11px] font-bold text-muted transition-colors hover:bg-background hover:text-red-600 disabled:opacity-40"
+              className="edt-btn edt-btn-sm edt-btn-danger-outline"
             >
               <Eraser className="h-3.5 w-3.5" /> تفريغ
             </button>
@@ -247,7 +242,8 @@ export default function ScheduleStep() {
           <button
             type="button"
             onClick={seedDay}
-            className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-primary/40 bg-primary/5 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
+            className="edt-btn edt-btn-outline mb-4 w-full justify-center"
+            style={{ borderStyle: "dashed" }}
           >
             <Sparkles className="h-4 w-4" /> ابدأ بتوقيت نموذجي (08:00 – 12:15) ثم عدّله
           </button>
@@ -280,7 +276,7 @@ export default function ScheduleStep() {
           <button
             type="button"
             onClick={() => goDay(1)}
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-secondary px-4 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90"
+            className="edt-btn edt-btn-success mt-4 w-full justify-center"
           >
             اليوم التالي: {DAYS.find((d) => d.id === state.days[idx + 1])?.name}
             <ArrowLeft className="h-4 w-4" />
@@ -320,7 +316,7 @@ function CopyMenu({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-[11px] font-bold text-muted transition-colors hover:bg-background"
+        className="edt-btn edt-btn-sm edt-btn-outline"
       >
         <Copy className="h-3.5 w-3.5" /> نسخ من يوم
       </button>

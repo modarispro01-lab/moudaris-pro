@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /* ============================================================
    الخطوة 1 — معلومات الأستاذ والمؤسسة (كلها اختيارية)
@@ -79,8 +79,8 @@ export default function InfoStep() {
       </div>
 
       {/* ===== معلومات الأستاذ ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <h2 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-text">
+      <section className="edt-card">
+        <h2 className="edt-card-title">
           <User className="h-4 w-4 text-primary" /> معلومات الأستاذ(ة)
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -104,10 +104,10 @@ export default function InfoStep() {
       </section>
 
       {/* ===== المستويات الدراسية والأفواج ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="flex items-center gap-2 text-sm font-extrabold text-text">
-            <Layers className="h-4 w-4 text-primary" /> المستويات الدراسية والأفواج
+      <section className="edt-card">
+        <div className="edt-card-title" style={{ justifyContent: "space-between" }}>
+          <h2 className="flex items-center gap-2.5">
+            <Layers className="h-4 w-4" /> المستويات الدراسية والأفواج
           </h2>
           {levels.length > 0 && (
             <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary">
@@ -245,8 +245,8 @@ export default function InfoStep() {
       </section>
 
       {/* ===== المؤسسة والموسم ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <h2 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-text">
+      <section className="edt-card">
+        <h2 className="edt-card-title">
           <Building2 className="h-4 w-4 text-primary" /> المؤسسة والموسم
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -286,8 +286,8 @@ export default function InfoStep() {
       </section>
 
       {/* ===== عنوان الوثيقة ===== */}
-      <section className="rounded-2xl border border-border bg-surface p-5">
-        <h2 className="mb-4 text-sm font-extrabold text-text">عنوان الوثيقة</h2>
+      <section className="edt-card">
+        <h2 className="edt-card-title">عنوان الوثيقة</h2>
         <Field label="يظهر كعنوان رئيسي في الوثيقة المطبوعة">
           <input
             className={inputCls}
@@ -301,8 +301,7 @@ export default function InfoStep() {
   );
 }
 
-const inputCls =
-  "w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:bg-surface";
+const inputCls = "edt-input";
 
 function Field({
   label,
@@ -313,7 +312,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-bold text-muted">{label}</span>
+      <span className="edt-label">{label}</span>
       {children}
     </label>
   );

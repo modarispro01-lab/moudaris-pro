@@ -65,107 +65,103 @@ function Shell() {
   const canNext = step < STEPS.length && !(step === 2 && state.days.length === 0);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+    <div className="tt-editor">
       {/* ===== ترويسة الأداة ===== */}
-      <header className="mb-6 rounded-3xl border border-border bg-gradient-to-l from-primary to-secondary p-6 text-white shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold">
-              <Sparkles className="h-3.5 w-3.5" /> مجاني · يعمل دون تسجيل
-            </div>
-            <h1 className="text-xl font-extrabold sm:text-2xl">
-              مولّد استعمال الزمن الخاص بالتعليم الصريح
-            </h1>
-            <p className="mt-1.5 max-w-2xl text-sm text-white/85">
-              اختر أيام عملك، وابرمج جدول كل يوم على حدة (توقيت + مواد)، ثم حمّل الوثيقة
-              جاهزة للطباعة.
-            </p>
-          </div>
+      <header className="edt-hero">
+        <h1>استعمال الزمن — التعليم الصريح</h1>
+        <p className="edt-sub">
+          اختر أيام عملك، وابرمج جدول كل يوم على حدة (توقيت + مواد)، ثم حمّل الوثيقة
+          جاهزة للطباعة.
+        </p>
+        <span className="edt-badge-gold">
+          <Sparkles className="me-1 inline h-3.5 w-3.5" />
+          مجاني · يعمل دون تسجيل
+        </span>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-primary transition-opacity hover:opacity-90"
+            className="edt-btn edt-btn-sm edt-btn-outline"
+            style={{ borderColor: "#fff", color: "#fff", background: "transparent" }}
           >
             <Printer className="h-4 w-4" /> طباعة سريعة
           </button>
-        </div>
-      </header>
-
-      {/* ===== الخطوات + التراجع ===== */}
-      <div className="mb-6 flex items-center gap-2 rounded-2xl border border-border bg-surface p-4">
-        <div className="min-w-0 flex-1">
-          <Stepper current={step} onGo={go} />
-        </div>
-        <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
             onClick={undo}
             disabled={!canUndo}
             title="تراجع"
-            className="rounded-lg border border-border p-2 text-text transition-colors hover:bg-background disabled:opacity-30"
+            className="edt-btn edt-btn-sm edt-btn-outline"
+            style={{ borderColor: "rgba(255,255,255,.6)", color: "#fff" }}
           >
-            <Undo2 className="h-4 w-4" />
+            <Undo2 className="h-4 w-4" /> تراجع
           </button>
           <button
             type="button"
             onClick={redo}
             disabled={!canRedo}
             title="إعادة"
-            className="rounded-lg border border-border p-2 text-text transition-colors hover:bg-background disabled:opacity-30"
+            className="edt-btn edt-btn-sm edt-btn-outline"
+            style={{ borderColor: "rgba(255,255,255,.6)", color: "#fff" }}
           >
-            <Redo2 className="h-4 w-4" />
+            <Redo2 className="h-4 w-4" /> إعادة
           </button>
         </div>
-      </div>
+      </header>
+
+      {/* ===== الخطوات (تبويبات لاصقة) ===== */}
+      <Stepper current={step} onGo={go} />
 
       {/* ===== محتوى الخطوة ===== */}
-      <div className={cx("transition-opacity", !hydrated && "opacity-60")}>
-        {step === 1 && <InfoStep />}
-        {step === 2 && <TimingStep />}
-        {step === 3 && <ScheduleStep />}
-        {step === 4 && <DesignStep onEdit={() => go(3)} onNotify={notify} />}
+      <div className="mx-auto mt-6 w-full max-w-6xl px-4 pb-10 sm:px-6">
+        <div key={step} className={cx("edt-fade", !hydrated && "opacity-60")}>
+          {step === 1 && <InfoStep />}
+          {step === 2 && <TimingStep />}
+          {step === 3 && <ScheduleStep />}
+          {step === 4 && <DesignStep onEdit={() => go(3)} onNotify={notify} />}
+        </div>
+
+        {/* ===== التنقّل ===== */}
+        {step < 4 && (
+          <div className="edt-card flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => go(step - 1)}
+              disabled={step === 1}
+              className="edt-btn edt-btn-outline"
+            >
+              <ArrowRight className="h-4 w-4" /> السابق
+            </button>
+            <span className="text-sm font-bold text-muted">
+              الخطوة {step} من {STEPS.length}
+            </span>
+            <button
+              type="button"
+              onClick={() => go(step + 1)}
+              disabled={!canNext}
+              className="edt-btn edt-btn-primary"
+            >
+              التالي <ArrowLeft className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="edt-card flex flex-wrap items-center justify-between gap-3">
+            <span className="inline-flex items-center gap-2 text-sm font-bold text-secondary">
+              <Check className="h-4 w-4" /> كل شيء جاهز — عُد للتعديل متى شئت، فالمشروع
+              يُحفظ تلقائيًا في متصفّحك.
+            </span>
+            <button
+              type="button"
+              onClick={() => go(3)}
+              className="edt-btn edt-btn-sm edt-btn-outline"
+            >
+              تعديل التوزيع
+            </button>
+          </div>
+        )}
       </div>
-
-      {/* ===== التنقّل ===== */}
-      {step < 4 && (
-        <div className="mt-6 flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-3">
-          <button
-            type="button"
-            onClick={() => go(step - 1)}
-            disabled={step === 1}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-border px-4 py-2.5 text-sm font-bold text-text transition-colors hover:bg-background disabled:opacity-40"
-          >
-            <ArrowRight className="h-4 w-4" /> السابق
-          </button>
-          <span className="text-xs font-bold text-muted">
-            الخطوة {step} من {STEPS.length}
-          </span>
-          <button
-            type="button"
-            onClick={() => go(step + 1)}
-            disabled={!canNext}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-          >
-            التالي <ArrowLeft className="h-4 w-4" />
-          </button>
-        </div>
-      )}
-
-      {step === 4 && (
-        <div className="mt-6 flex items-center justify-between gap-3 rounded-2xl border border-secondary/30 bg-secondary/5 p-4">
-          <span className="inline-flex items-center gap-2 text-sm font-bold text-secondary">
-            <Check className="h-4 w-4" /> كل شيء جاهز — عُد للتعديل متى شئت، فالمشروع
-            يُحفظ تلقائيًا في متصفّحك.
-          </span>
-          <button
-            type="button"
-            onClick={() => go(3)}
-            className="shrink-0 rounded-xl border border-border bg-surface px-4 py-2 text-sm font-bold text-text hover:bg-background"
-          >
-            تعديل التوزيع
-          </button>
-        </div>
-      )}
 
       {/* ===== إشعار ===== */}
       {toast && (
