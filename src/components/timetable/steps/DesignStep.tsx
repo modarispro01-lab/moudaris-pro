@@ -8,19 +8,60 @@ import {
   AlignJustify,
   Check,
   Eye,
+  Image as ImageIcon,
   LayoutTemplate,
   Pencil,
   Ruler,
   Smartphone,
+  Trash2,
   Type as TypeIcon,
+  Upload,
 } from "lucide-react";
 import { FONTS, TEMPLATES } from "../defaults";
 import { useTimetable } from "../store";
 import { resolveTheme } from "../theme";
 import PreviewStage from "../PreviewStage";
 import ProjectActions from "../ProjectActions";
+import InstitutionLogo from "../InstitutionLogo";
 import type { Design } from "../types";
 import { cx } from "../utils";
+
+/** تصغير الصورة المرفوعة قبل حفظها في المتصفح */
+function uploadLogo(
+  file: File,
+  set: (patch: Partial<Design>) => void,
+  onNotify?: (msg: string, kind?: "ok" | "err") => void
+) {
+  if (!file.type.startsWith("image/")) {
+    onNotify?.("الرجاء اختيار ملف صورة.", "err");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 512;
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(img.width * scale));
+      canvas.height = Math.max(1, Math.round(img.height * scale));
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      try {
+        set({ logoDataUrl: canvas.toDataURL("image/png") });
+        onNotify?.("تم تحميل الشعار.");
+      } catch {
+        onNotify?.("تعذّر معالجة الصورة.", "err");
+      }
+    };
+    img.onerror = () => onNotify?.("تعذّر قراءة الصورة.", "err");
+    img.src = String(reader.result || "");
+  };
+  reader.readAsDataURL(file);
+}
 
 export default function DesignStep({
   onEdit,
@@ -194,6 +235,117 @@ export default function DesignStep({
         </div>
       </section>
 
+      {/* ===== الشعار والتوقيعات ===== */}
+      <section className="rounded-2xl border border-border bg-surface p-5">
+        <h2 className="mb-1 flex items-center gap-2 text-sm font-extrabold text-text">
+          <ImageIcon className="h-4 w-4 text-primary" /> الشعار والتوقيعات
+        </h2>
+        <p className="mb-4 text-xs text-muted">
+          يظهر الشعار أعلى وسط الورقة، والتوقيعات أسفلها (الأستاذ، المفتش، المدير).
+        </p>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* الشعار */}
+          <div>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-muted">شعار المؤسسة</span>
+              <Toggle
+                active={state.design.showLogo !== false}
+                onClick={() => set({ showLogo: state.design.showLogo === false })}
+                label="إظهار الشعار"
+              />
+            </div>
+
+            <div className="flex items-center gap-3 rounded-xl border border-border bg-background p-3">
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-surface">
+                <InstitutionLogo
+                  size={64}
+                  src={state.design.logoDataUrl}
+                  color="#123B5D"
+                />
+              </div>
+              <div className="flex flex-1 flex-col gap-1.5">
+                <label className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90">
+                  <Upload className="h-3.5 w-3.5" /> ارفع صورة الشعار
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) uploadLogo(f, set, onNotify);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+                {state.design.logoDataUrl && (
+                  <button
+                    type="button"
+                    onClick={() => set({ logoDataUrl: undefined })}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition-colors hover:bg-red-100"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" /> إزالة الصورة
+                  </button>
+                )}
+              </div>
+            </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-muted">
+              إن لم ترفع صورة، يُطبع شعار زخرفي أصلي. يمكنك رفع شعار مؤسستك أو أي
+              شعار تملك حق استعماله.
+            </p>
+          </div>
+
+          {/* صيغة التوقيعات */}
+          <div>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-muted">صيغة التوقيعات</span>
+              <Toggle
+                active={state.design.feminine !== false}
+                onClick={() => set({ feminine: state.design.feminine === false })}
+                label={state.design.feminine !== false ? "مؤنّث «(ة)»" : "مذكر «بدون (ة)»"}
+              />
+            </div>
+
+            <div className="space-y-2">
+              {(
+                [
+                  ["teacher", "توقيع الأستاذ"],
+                  ["inspector", "توقيع المفتش"],
+                  ["manager", "طابع وتوقيع المدير"],
+                ] as const
+              ).map(([k, label]) => (
+                <label key={k} className="block">
+                  <span className="mb-1 block text-[11px] font-bold text-muted">
+                    {label}
+                  </span>
+                  <input
+                    className={inputCls + " py-2 text-xs"}
+                    value={state.design.signLabels?.[k] ?? ""}
+                    placeholder={
+                      state.design.feminine !== false
+                        ? `${label}(ة)`
+                        : `${label}`
+                    }
+                    onChange={(e) =>
+                      set({
+                        signLabels: {
+                          ...(state.design.signLabels ?? {}),
+                          [k]: e.target.value,
+                        },
+                      })
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-muted">
+              اترك الحقل فارغًا لاستعمال الصيغة الافتراضية حسب الجنس، أو اكتب عبارة
+              خاصة (مثل «المفتش التربوي»).
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ===== الاتجاه + المعاينة ===== */}
       <section className="rounded-2xl border border-border bg-surface p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -300,7 +452,7 @@ function Toggle({
   active?: boolean;
   onClick: () => void;
   label: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 }) {
   return (
     <button

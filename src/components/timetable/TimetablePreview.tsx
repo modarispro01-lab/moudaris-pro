@@ -15,6 +15,7 @@ import {
   weekTotals,
 } from "./schedule";
 import { formatDuration, hexToRgba, readableTextOn } from "./utils";
+import InstitutionLogo from "./InstitutionLogo";
 import type { Period, TimetableState } from "./types";
 
 interface Props {
@@ -66,7 +67,10 @@ const levelParts = (state.info.levels || [])
     .filter(Boolean);
   if (levelParts.length) metaItems.push(["المستويات والأفواج", levelParts.join("  ·  ")]);
 
-  if (state.info.year) metaItems.push(["الموسم الدراسي", state.info.year]);
+  // الموسم يظهر تحت الشعار، فلا نكرّره في البيانات إلا عند إخفاء الشعار
+  const showLogo = state.design.showLogo !== false;
+  if (state.info.year && !showLogo)
+    metaItems.push(["الموسم الدراسي", state.info.year]);
   if (state.info.employeeId) metaItems.push(["رقم التأجير", state.info.employeeId]);
 
   /* ---------- الإحصاءات ---------- */
@@ -85,6 +89,18 @@ const levelParts = (state.info.levels || [])
 
   const showBreaks = state.design.showBreaks;
 
+  /* ---------- عبارات التوقيع حسب الجنس / التخصيص ---------- */
+  const sign = (kind: "teacher" | "manager" | "inspector") => {
+    const custom = (state.design.signLabels?.[kind] ?? "").trim();
+    if (custom) return custom;
+    const f = state.design.feminine !== false;
+    return {
+      teacher: f ? "توقيع الأستاذ(ة)" : "توقيع الأستاذ",
+      inspector: f ? "توقيع المفتش(ة)" : "توقيع المفتش",
+      manager: f ? "طابع وتوقيع المدير(ة)" : "طابع وتوقيع المدير",
+    }[kind];
+  };
+
   return (
     <div style={docStyle} dir="rtl">
       {/* ===== ترويسة ===== */}
@@ -92,7 +108,8 @@ const levelParts = (state.info.levels || [])
         style={{
           display: "flex",
           justifyContent: "space-between",
-          gap: "6mm",
+          alignItems: "flex-start",
+          gap: "5mm",
           fontSize: "8.5pt",
           color: "#475569",
           lineHeight: 1.5,
@@ -101,13 +118,37 @@ const levelParts = (state.info.levels || [])
           marginBottom: "2.5mm",
         }}
       >
-        <div>
+        <div style={{ flex: "0 0 auto" }}>
           <div style={{ fontWeight: 700, color: theme.heading, fontSize: "10pt" }}>
             المملكة المغربية
           </div>
           <div>وزارة التربية الوطنية والتعليم الأولي والرياضة</div>
         </div>
-        <div style={{ textAlign: "left" }}>
+
+        {showLogo && (
+          <div style={{ flex: "0 0 auto", textAlign: "center" }}>
+            <InstitutionLogo
+              size={68}
+              src={state.design.logoDataUrl}
+              color={theme.headerBg}
+            />
+            {state.info.year && (
+              <div
+                style={{
+                  fontSize: "8.5pt",
+                  fontWeight: 700,
+                  color: theme.heading,
+                  marginTop: "1mm",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {state.info.year}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div style={{ textAlign: "left", flex: "1 1 auto" }}>
           {instLeft.map(([k, v]) => (
             <div key={k}>
               <span style={{ color: "#94A3B8" }}>{k}: </span>
@@ -401,22 +442,27 @@ const levelParts = (state.info.levels || [])
         </div>
       )}
 
-      {/* ===== التوقيع ===== */}
+      {/* ===== التوقيعات: الأستاذ + المفتش + المدير ===== */}
       {state.design.showSign && (
         <div
           style={{
             marginTop: "auto",
             paddingTop: "4mm",
             display: "flex",
+            flexWrap: "wrap",
             justifyContent: "space-between",
-            fontSize: "10pt",
+            gap: "3mm",
+            fontSize: "9.5pt",
             fontWeight: 700,
             color: theme.heading,
             breakInside: "avoid",
           }}
         >
-          <div>توقيع الأستاذ(ة): ..............................</div>
-          <div>طابع وتوقيع المدير(ة): ..............................</div>
+          {(["teacher", "inspector", "manager"] as const).map((k) => (
+            <div key={k} style={{ flex: "1 1 28%", minWidth: "26mm" }}>
+              {sign(k)}: ..............................
+            </div>
+          ))}
         </div>
       )}
 

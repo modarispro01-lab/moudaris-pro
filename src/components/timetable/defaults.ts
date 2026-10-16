@@ -228,6 +228,10 @@ export const DEFAULT_DESIGN: Design = {
   showSign: true,
   showFooter: true,
   showSubjectNames: true,
+  showLogo: true,
+  logoDataUrl: undefined,
+  feminine: true,
+  signLabels: {},
 };
 
 /** جدول فارغ لكل الأيام — الأستاذ يبرمج كل يوم بنفسه */

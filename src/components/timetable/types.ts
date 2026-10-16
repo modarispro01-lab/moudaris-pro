@@ -80,6 +80,18 @@ export interface Design {
   showFooter: boolean;
   /** إظهار اسم المادة داخل الخلية (لتجنّب الاعتماد على اللون وحده) */
   showSubjectNames: boolean;
+  /** إظهار الشعار أعلى الوسط */
+  showLogo: boolean;
+  /** الشعار المرفوع (data URL) — اختياري */
+  logoDataUrl?: string;
+  /** صيغة المفردات: true = مؤنّث «الأستاذ(ة)»، false = مذكر «الأستاذ» */
+  feminine: boolean;
+  /** نصوص التوقيعات المخصّصة (تُترك فارغة لاستعمال الافتراضي) */
+  signLabels?: {
+    teacher?: string;
+    inspector?: string;
+    manager?: string;
+  };
 }
 
 export type Orientation = "landscape" | "portrait";
