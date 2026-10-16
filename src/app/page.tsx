@@ -4,14 +4,15 @@ import {
   Search, BookOpen, Newspaper, Wrench, Bot, FileText, Gem,
   FileDown, CalendarDays, ClipboardList, Download,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-const services = [
-  { icon: BookOpen, title: 'الموارد التعليمية', desc: 'جذاذات، مذكرات، توازيع، فروض وموارد جاهزة.' },
-  { icon: Newspaper, title: 'المستجدات', desc: 'آخر المذكرات والبلاغات والإعلانات التعليمية.' },
-  { icon: Wrench, title: 'أدوات الأستاذ', desc: 'أدوات لإنشاء الوثائق والملفات التربوية.' },
+const services: { icon: LucideIcon; title: string; desc: string; href?: string }[] = [
+  { icon: BookOpen, title: 'الموارد التعليمية', desc: 'جذاذات، مذكرات، توازيع، فروض وموارد جاهزة.', href: '/resources' },
+  { icon: Newspaper, title: 'المستجدات', desc: 'آخر المذكرات والبلاغات والإعلانات التعليمية.', href: '/actualites' },
+  { icon: Wrench, title: 'أدوات الأستاذ', desc: 'أدوات لإنشاء الوثائق والملفات التربوية.', href: '/tools' },
   { icon: Bot, title: 'أدوات الذكاء الاصطناعي', desc: 'أدوات ذكية تساعد الأستاذ في التحضير والتنظيم.' },
   { icon: FileText, title: 'وثائق جاهزة', desc: 'ملفات قابلة للتحميل والطباعة والتعديل.' },
-  { icon: Gem, title: 'المنتجات الرقمية', desc: 'موارد احترافية مدفوعة للأستاذ.' },
+  { icon: Gem, title: 'المنتجات الرقمية', desc: 'موارد احترافية مدفوعة للأستاذ.', href: '/products' },
 ];
 
 const quickActions = [
@@ -92,18 +93,33 @@ export default async function Home() {
             منصة متكاملة تخدم الأستاذ يومياً
           </h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((s) => (
-              <div
-                key={s.title}
-                className="group rounded-2xl border border-border bg-surface p-6 transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/30"
-              >
-                <div className="mb-4 w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
-                  <s.icon className="w-6 h-6" />
+            {services.map((s) => {
+              const cardClass =
+                'group rounded-2xl border border-border bg-surface p-6 transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/30';
+              const inner = (
+                <>
+                  <div className="mb-4 w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
+                    <s.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-extrabold text-text mb-2">{s.title}</h3>
+                  <p className="text-sm text-muted leading-relaxed">{s.desc}</p>
+                  {s.href ? (
+                    <span className="mt-3 inline-block text-sm font-bold text-secondary group-hover:underline">
+                      تصفّح ←
+                    </span>
+                  ) : null}
+                </>
+              );
+              return s.href ? (
+                <Link key={s.title} href={s.href} className={cardClass}>
+                  {inner}
+                </Link>
+              ) : (
+                <div key={s.title} className={cardClass}>
+                  {inner}
                 </div>
-                <h3 className="text-lg font-extrabold text-text mb-2">{s.title}</h3>
-                <p className="text-sm text-muted leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
