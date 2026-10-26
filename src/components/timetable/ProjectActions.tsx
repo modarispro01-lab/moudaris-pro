@@ -71,62 +71,68 @@ export default function ProjectActions({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <button
-        type="button"
-        onClick={() => window.print()}
-        className="edt-btn edt-btn-success"
-      >
-        <FileDown className="h-4 w-4" /> تحميل PDF
-      </button>
-      <button
-        type="button"
-        onClick={() => window.print()}
-        className="edt-btn edt-btn-outline"
-      >
-        <Printer className="h-4 w-4" /> طباعة
-      </button>
-      {onEdit && (
+    <div className="space-y-2">
+      <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          onClick={onEdit}
+          onClick={() => window.print()}
+          className="edt-btn edt-btn-success"
+        >
+          <FileDown className="h-4 w-4" /> تحميل PDF
+        </button>
+        <button
+          type="button"
+          onClick={() => window.print()}
           className="edt-btn edt-btn-outline"
         >
-          <Pencil className="h-4 w-4" /> الرجوع إلى التعديل
+          <Printer className="h-4 w-4" /> طباعة
         </button>
-      )}
-      <button
-        type="button"
-        onClick={exportJson}
-        className="edt-btn edt-btn-outline"
-      >
-        <Save className="h-4 w-4" /> حفظ نسخة من المشروع
-      </button>
-      <button
-        type="button"
-        onClick={() => fileRef.current?.click()}
-        className="edt-btn edt-btn-outline"
-      >
-        <Upload className="h-4 w-4" /> استيراد نسخة
-      </button>
-      <input
-        ref={fileRef}
-        type="file"
-        accept="application/json,.json"
-        className="hidden"
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          if (f) importJson(f);
-          e.target.value = "";
-        }}
-      />
-      <button
-        type="button"
-        onClick={clearAllData}
-        className="edt-btn edt-btn-danger-outline"
-      >
-        <Trash2 className="h-4 w-4" /> حذف البيانات
-      </button>
+        {onEdit && (
+          <button
+            type="button"
+            onClick={onEdit}
+            className="edt-btn edt-btn-outline"
+          >
+            <Pencil className="h-4 w-4" /> الرجوع إلى التعديل
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={exportJson}
+          className="edt-btn edt-btn-outline"
+        >
+          <Save className="h-4 w-4" /> حفظ نسخة من المشروع
+        </button>
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          className="edt-btn edt-btn-outline"
+        >
+          <Upload className="h-4 w-4" /> استيراد نسخة
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/json,.json"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) importJson(f);
+            e.target.value = "";
+          }}
+        />
+        <button
+          type="button"
+          onClick={clearAllData}
+          className="edt-btn edt-btn-danger-outline"
+        >
+          <Trash2 className="h-4 w-4" /> حذف البيانات
+        </button>
+      </div>
+      <p className="text-[11px] leading-relaxed text-muted">
+        لإخفاء التاريخ وعنوان الصفحة من أعلى الورقة، ألغِ تفعيل خيار
+        «الرؤوس والتذييلات» (Headers and footers) في نافذة الطباعة.
+      </p>
     </div>
   );
 }

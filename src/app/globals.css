@@ -35,12 +35,50 @@ body {
   body > *:not(.tt-print-portal) {
     display: none !important;
   }
+
+  /* إخفاء واجهة المحرّر وترويستها حتى لو تغيّرت بنية الصفحة */
+  .tt-editor,
+  .tt-editor header,
+  .tt-editor .edt-hero,
+  .tt-editor .edt-sub,
+  .tt-editor .edt-badge-gold,
+  .tt-editor nav,
+  .tt-editor footer {
+    display: none !important;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
   .tt-print-portal {
     display: block !important;
   }
-  html,
-  body {
-    background: #ffffff !important;
+
+  /* الوثيقة بمقاس الصفحة بالضبط: يبقى الجدول ممدودًا
+     وتبقى التواقيع في أسفل الورقة دون أن تنتقل لصفحة ثانية */
+  .tt-print-portal .tt-doc {
+    overflow: hidden !important;
+    break-inside: avoid;
+  }
+  .tt-print-portal .tt-doc[data-orientation="landscape"] {
+    height: 185mm !important;
+    min-height: 185mm !important;
+    max-height: 185mm !important;
+  }
+  .tt-print-portal .tt-doc[data-orientation="portrait"] {
+    height: 272mm !important;
+    min-height: 272mm !important;
+    max-height: 272mm !important;
+  }
+
+  /* خانة التواقيع لا تُقطع */
+  .tt-print-portal .tt-sign {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
 

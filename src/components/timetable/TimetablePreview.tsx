@@ -112,7 +112,12 @@ export default function TimetablePreview({ state }: Props) {
   const showDuration = state.design.showDuration !== false;
 
   return (
-    <div style={docStyle} dir="rtl">
+    <div
+      className="tt-doc"
+      data-orientation={isLandscape ? "landscape" : "portrait"}
+      style={docStyle}
+      dir="rtl"
+    >
       {/* ===== الترويسة والعنوان والبيانات ===== */}
       <div>
         {/* ===== ترويسة ===== */}
@@ -513,22 +518,36 @@ export default function TimetablePreview({ state }: Props) {
       {/* ===== التوقيعات: الأستاذ + المفتش + المدير ===== */}
       {state.design.showSign && (
         <div
+          className="tt-sign"
           style={{
-            marginTop: "auto",
+            marginTop: "5mm",
             paddingTop: "4mm",
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "space-between",
-            gap: "3mm",
+            gap: "4mm 8mm",
             fontSize: "9.5pt",
             fontWeight: 700,
             color: theme.heading,
             breakInside: "avoid",
+            flexShrink: 0,
           }}
         >
           {(["teacher", "inspector", "manager"] as const).map((k) => (
-            <div key={k} style={{ flex: "1 1 28%", minWidth: "26mm" }}>
-              {sign(k)}: ..............................
+            <div
+              key={k}
+              style={{
+                flex: "1 1 28%",
+                minWidth: "40mm",
+                textAlign: "center",
+              }}
+            >
+              <div style={{ marginBottom: "7mm" }}>{sign(k)}</div>
+              <div
+                style={{
+                  borderTop: `0.8pt dotted ${hexToRgba(theme.headerBg, 0.5)}`,
+                }}
+              />
             </div>
           ))}
         </div>

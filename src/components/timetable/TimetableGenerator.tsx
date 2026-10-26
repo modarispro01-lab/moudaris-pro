@@ -50,6 +50,25 @@ function Shell() {
     document.head.appendChild(link);
   }, []);
 
+  /* إخفاء عنوان الصفحة من رؤوس الطباعة التي يضيفها المتصفّح */
+  useEffect(() => {
+    let previous = document.title;
+    const before = () => {
+      previous = document.title;
+      document.title = " ";
+    };
+    const after = () => {
+      document.title = previous;
+    };
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+      document.title = previous;
+    };
+  }, []);
+
   const notify = (msg: string, kind: "ok" | "err" = "ok") => {
     setToast({ msg, kind });
     window.setTimeout(() => setToast(null), 3200);
