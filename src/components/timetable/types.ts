@@ -35,6 +35,10 @@ export interface Period {
   isBreak: boolean;
   /** المادة المبرمجة في هذه الفترة من يومها */
   subjectId: SubjectId | null;
+  /** معرّف المستوى الدراسي لهذه الحصة (اختياري) */
+  levelId?: string;
+  /** اسم الفوج داخل المستوى (اختياري) */
+  group?: string;
   /** ملاحظة اختيارية */
   note?: string;
 }
@@ -82,6 +86,8 @@ export interface Design {
   showSubjectNames: boolean;
   /** إظهار مدّة الحصة بجانب اسمها داخل الخلية */
   showDuration: boolean;
+  /** إظهار المستوى والفوج تحت اسم المادة داخل الخلية */
+  showLevelGroup?: boolean;
   /** إظهار الشعار أعلى الوسط */
   showLogo: boolean;
   /** الشعار المرفوع (data URL) — اختياري */

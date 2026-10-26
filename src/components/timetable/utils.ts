@@ -90,6 +90,20 @@ export function detectOverlaps(
   return out;
 }
 
+/* ============================ المستوى والفوج ============================ */
+
+/** اسم الفوج جاهزًا للعرض: "أ" -> "الفوج أ"، و"فوج أ" تبقى كما هي */
+export function groupLabel(name?: string): string {
+  const t = (name || "").trim();
+  if (!t) return "";
+  return /^(ال)?فوج/.test(t) ? t : `الفوج ${t}`;
+}
+
+/** سطر المستوى والفوج تحت اسم المادة، مثال: "المستوى الأول · الفوج أ" */
+export function audienceLabel(levelName?: string, group?: string): string {
+  return [(levelName || "").trim(), groupLabel(group)].filter(Boolean).join(" · ");
+}
+
 /* ============================ الألوان ============================ */
 
 /** #RRGGBB -> rgba(r,g,b,a) */

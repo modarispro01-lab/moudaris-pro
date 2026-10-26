@@ -10,6 +10,7 @@ import {
   Clock,
   Eye,
   Image as ImageIcon,
+  Layers,
   LayoutTemplate,
   Palette,
   Pencil,
@@ -211,6 +212,14 @@ export default function DesignStep({
             onClick={() => set({ showDuration: state.design.showDuration === false })}
             icon={<Clock className="h-3.5 w-3.5" />}
             label="مدّة الحصة"
+          />
+          <Toggle
+            active={state.design.showLevelGroup !== false}
+            onClick={() =>
+              set({ showLevelGroup: state.design.showLevelGroup === false })
+            }
+            icon={<Layers className="h-3.5 w-3.5" />}
+            label="المستوى والفوج"
           />
           <Toggle
             active={state.design.showBreaks}

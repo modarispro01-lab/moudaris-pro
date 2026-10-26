@@ -19,6 +19,7 @@ import {
   cx,
   detectOverlaps,
   formatDuration,
+  groupLabel,
   validatePeriod,
 } from "./utils";
 import type { DayId } from "./types";
@@ -27,6 +28,7 @@ export default function PeriodEditor({ day }: { day: DayId }) {
   const { state, dispatch } = useTimetable();
   const list = dayPeriods(state, day);
   const overlaps = detectOverlaps(list);
+  const levels = (state.info.levels || []).filter((l) => l.name.trim());
 
   const update = (id: string, patch: Partial<typeof list[number]>) =>
     dispatch({ type: "UPDATE_PERIOD", day, id, patch });
@@ -64,6 +66,7 @@ export default function PeriodEditor({ day }: { day: DayId }) {
             const overlap = overlaps[p.id];
             const dur = durationOf(p);
             const valid = !issue && !overlap && dur > 0;
+            const selectedLevel = levels.find((l) => l.id === p.levelId);
 
             return (
               <div
@@ -164,6 +167,64 @@ export default function PeriodEditor({ day }: { day: DayId }) {
                         </option>
                       ))}
                     </select>
+                  </div>
+                )}
+
+                {/* ===== المستوى والفوج (يظهران تحت المادة في الجدول) ===== */}
+                {!p.isBreak && valid && p.subjectId && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-bold text-muted">المستوى والفوج:</span>
+                    {levels.length ? (
+                      <>
+                        <select
+                          value={p.levelId ?? ""}
+                          onChange={(e) => {
+                            const levelId = e.target.value || undefined;
+                            const lv = levels.find((l) => l.id === levelId);
+                            update(p.id, {
+                              levelId,
+                              group: lv?.groups[0] || undefined,
+                            });
+                          }}
+                          className="edt-select"
+                          style={{ width: "auto", minWidth: "10rem", flex: 1 }}
+                          aria-label="المستوى الدراسي"
+                        >
+                          <option value="">— بدون مستوى —</option>
+                          {levels.map((l) => (
+                            <option key={l.id} value={l.id}>
+                              {l.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          value={p.group ?? ""}
+                          onChange={(e) =>
+                            update(p.id, { group: e.target.value || undefined })
+                          }
+                          disabled={!selectedLevel || !selectedLevel.groups.length}
+                          className="edt-select"
+                          style={{ width: "auto", minWidth: "8rem" }}
+                          aria-label="الفوج"
+                        >
+                          <option value="">
+                            {selectedLevel && !selectedLevel.groups.length
+                              ? "لا أفواج لهذا المستوى"
+                              : "— بدون فوج —"}
+                          </option>
+                          {(selectedLevel?.groups || []).map((g) => (
+                            <option key={g} value={g}>
+                              {groupLabel(g)}
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    ) : (
+                      <span className="text-[11px] leading-relaxed text-muted">
+                        أضف المستوى والأفواج في الخطوة 1 «المعلومات» ليظهرا هنا وفي
+                        الجدول.
+                      </span>
+                    )}
                   </div>
                 )}
 

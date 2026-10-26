@@ -11,7 +11,7 @@ import React from "react";
 import { DAYS } from "./defaults";
 import { resolveTheme } from "./theme";
 import { dayPeriods, durationOf, weekTotals } from "./schedule";
-import { formatDuration, hexToRgba, readableTextOn } from "./utils";
+import { formatDuration, hexToRgba, readableTextOn, audienceLabel } from "./utils";
 import InstitutionLogo from "./InstitutionLogo";
 import type { Period, TimetableState } from "./types";
 
@@ -25,6 +25,8 @@ export default function TimetablePreview({ state }: Props) {
   const docWidth = isLandscape ? "277mm" : "190mm";
   const subjectOf = (id: string | null | undefined) =>
     state.subjects.find((s) => s.id === id);
+  const levelOf = (id: string | undefined) =>
+    (state.info.levels || []).find((l) => l.id === id)?.name;
 
   const dayList = DAYS.filter((d) => state.days.includes(d.id));
   const cellFill = state.design.cellFill || theme.template.cellFill;
@@ -110,6 +112,7 @@ export default function TimetablePreview({ state }: Props) {
 
   const showNames = state.design.showSubjectNames !== false;
   const showDuration = state.design.showDuration !== false;
+  const showLevelGroup = state.design.showLevelGroup !== false;
 
   return (
     <div
@@ -311,6 +314,10 @@ export default function TimetablePreview({ state }: Props) {
                   periods.map((p, periodIndex) => {
                     const subj = subjectOf(p.subjectId);
                     const dur = durationOf(p);
+                    const audience =
+                      showLevelGroup && subj && showNames
+                        ? audienceLabel(levelOf(p.levelId), p.group)
+                        : "";
                     // توزيع الارتفاع على الحصص بحسب مدّتها؛ نمنح الاستراحة
                     // حدًّا أدنى حتى يبقى نصّها مقروءًا في الأيام المزدحمة.
                     const weight = p.isBreak
@@ -446,6 +453,21 @@ export default function TimetablePreview({ state }: Props) {
                                 </span>
                               )}
                             </div>
+                            {audience && (
+                              <div
+                                style={{
+                                  fontSize: "7pt",
+                                  fontWeight: 600,
+                                  lineHeight: 1.15,
+                                  color: badgeFg,
+                                  opacity: 0.9,
+                                  maxWidth: "100%",
+                                  overflowWrap: "break-word",
+                                }}
+                              >
+                                {audience}
+                              </div>
+                            )}
                             {/* نتجنّب تكرار المدّة حين تُعرض شارةً وبجانبها */}
                             {!(showDuration && state.design.periodDisplay === "duration") && (
                               <div style={{ fontSize: "7.5pt", opacity: 0.85 }}>

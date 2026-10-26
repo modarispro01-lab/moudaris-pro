@@ -69,6 +69,8 @@ function clonePeriods(list: Period[], keepSubjects: boolean): Period[] {
     ...p,
     id: uid(),
     subjectId: keepSubjects ? p.subjectId : null,
+    levelId: keepSubjects ? p.levelId : undefined,
+    group: keepSubjects ? p.group : undefined,
   }));
 }
 

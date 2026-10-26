@@ -229,6 +229,7 @@ export const DEFAULT_DESIGN: Design = {
   showFooter: true,
   showSubjectNames: true,
   showDuration: true,
+  showLevelGroup: true,
   showLogo: true,
   logoDataUrl: undefined,
   feminine: true,
