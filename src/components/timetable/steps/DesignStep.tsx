@@ -7,10 +7,13 @@ import React from "react";
 import {
   AlignJustify,
   Check,
+  Clock,
   Eye,
   Image as ImageIcon,
   LayoutTemplate,
+  Palette,
   Pencil,
+  RotateCcw,
   Ruler,
   Smartphone,
   Trash2,
@@ -204,6 +207,12 @@ export default function DesignStep({
             label="أسماء المواد"
           />
           <Toggle
+            active={state.design.showDuration !== false}
+            onClick={() => set({ showDuration: state.design.showDuration === false })}
+            icon={<Clock className="h-3.5 w-3.5" />}
+            label="مدّة الحصة"
+          />
+          <Toggle
             active={state.design.showBreaks}
             onClick={() => set({ showBreaks: !state.design.showBreaks })}
             icon={<AlignJustify className="h-3.5 w-3.5" />}
@@ -228,6 +237,64 @@ export default function DesignStep({
             label="تذييل"
           />
         </div>
+      </section>
+
+      {/* ===== ألوان المواد ===== */}
+      <section className="edt-card">
+        <h2 className="edt-card-title mb-2">
+          <Palette className="h-4 w-4 text-primary" /> ألوان المواد
+        </h2>
+        <p className="mb-4 text-xs text-muted">
+          لكل مادة لون خاص بها يظهر في الجدول والملخّص. اضغط على اللون لتغييره،
+          أو اكتب رمز اللون مباشرة (مثال: <span dir="ltr">#047857</span>).
+        </p>
+
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {state.subjects.map((s) => (
+            <div
+              key={s.id}
+              className="flex items-center gap-3 rounded-xl border border-border bg-background px-3 py-2"
+            >
+              <input
+                type="color"
+                value={s.color}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_SUBJECT",
+                    id: s.id,
+                    patch: { color: e.target.value },
+                  })
+                }
+                className="h-9 w-10 shrink-0 cursor-pointer rounded-lg border border-border bg-surface p-1"
+                aria-label={`لون مادة ${s.name}`}
+              />
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-xs font-bold text-text">{s.name}</div>
+                <input
+                  value={s.color}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "SET_SUBJECT",
+                      id: s.id,
+                      patch: { color: e.target.value },
+                    })
+                  }
+                  dir="ltr"
+                  className={inputCls + " mt-1 py-1 text-[11px] font-mono uppercase"}
+                  aria-label={`رمز لون مادة ${s.name}`}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "RESET_SUBJECT_COLORS" })}
+          className="edt-btn edt-btn-sm edt-btn-outline mt-4"
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> استعادة الألوان الافتراضية
+        </button>
       </section>
 
       {/* ===== الشعار والتوقيعات ===== */}

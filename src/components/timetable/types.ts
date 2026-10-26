@@ -80,6 +80,8 @@ export interface Design {
   showFooter: boolean;
   /** إظهار اسم المادة داخل الخلية (لتجنّب الاعتماد على اللون وحده) */
   showSubjectNames: boolean;
+  /** إظهار مدّة الحصة بجانب اسمها داخل الخلية */
+  showDuration: boolean;
   /** إظهار الشعار أعلى الوسط */
   showLogo: boolean;
   /** الشعار المرفوع (data URL) — اختياري */

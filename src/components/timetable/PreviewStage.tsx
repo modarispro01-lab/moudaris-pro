@@ -41,7 +41,7 @@ export default function PreviewStage({ state }: { state: TimetableState }) {
       <div className="relative w-full" style={{ height: boxH || undefined }}>
         <div
           ref={docRef}
-          className="absolute end-0 top-0 overflow-hidden rounded-md shadow-lg ring-1 ring-border"
+          className="absolute start-0 top-0 overflow-hidden rounded-md shadow-lg ring-1 ring-border"
           style={{
             width: `${mm}mm`,
             transform: `scale(${scale})`,

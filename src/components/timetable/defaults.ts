@@ -228,6 +228,7 @@ export const DEFAULT_DESIGN: Design = {
   showSign: true,
   showFooter: true,
   showSubjectNames: true,
+  showDuration: true,
   showLogo: true,
   logoDataUrl: undefined,
   feminine: true,

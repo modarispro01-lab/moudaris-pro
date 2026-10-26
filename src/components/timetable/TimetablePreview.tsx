@@ -2,18 +2,15 @@
 
 /* ============================================================
    الوثيقة المطبوعة — A4 أفقي أو عمودي، نصوص متجهية بالعربية
+
+   الجدول مبنيّ على أعمدة الأيام بدل سطور التوقيت:
+   كل يوم يعرض حصصه متتابعة، وكل حصة تأخذ من الارتفاع بحسب
+   مدّتها، فتمتلئ الخانة كاملة ولا تظهر خانات فارغة.
    ============================================================ */
 import React from "react";
 import { DAYS } from "./defaults";
 import { resolveTheme } from "./theme";
-import {
-  buildRows,
-  cellAt,
-  dayPeriods,
-  durationOf,
-  rowSpansAllDays,
-  weekTotals,
-} from "./schedule";
+import { dayPeriods, durationOf, weekTotals } from "./schedule";
 import { formatDuration, hexToRgba, readableTextOn } from "./utils";
 import InstitutionLogo from "./InstitutionLogo";
 import type { Period, TimetableState } from "./types";
@@ -30,8 +27,17 @@ export default function TimetablePreview({ state }: Props) {
     state.subjects.find((s) => s.id === id);
 
   const dayList = DAYS.filter((d) => state.days.includes(d.id));
-  const rows = buildRows(state);
   const cellFill = state.design.cellFill || theme.template.cellFill;
+
+  /* كل يوم عمود مستقلّ: نُخفي الاستراحات إن اختار الأستاذ ذلك */
+  const dayColumns = dayList.map((day) => {
+    const all = dayPeriods(state, day.id);
+    const periods = state.design.showBreaks
+      ? all
+      : all.filter((p) => !p.isBreak);
+    return { day, periods };
+  });
+  const hasVisiblePeriods = dayColumns.some((c) => c.periods.length > 0);
 
   const docStyle: React.CSSProperties = {
     width: docWidth,
@@ -41,8 +47,8 @@ export default function TimetablePreview({ state }: Props) {
     fontFamily: theme.fontFamily,
     padding: "6mm",
     boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
+    display: "grid",
+    gridTemplateRows: "auto minmax(0, 1fr) auto",
     WebkitPrintColorAdjust: "exact",
     printColorAdjust: "exact",
   } as React.CSSProperties;
@@ -57,7 +63,7 @@ export default function TimetablePreview({ state }: Props) {
   if (state.info.teacher) metaItems.push(["الأستاذ(ة)", state.info.teacher]);
 
   // المستويات والأفواج في سطر واحد مضغوط: "المستوى الرابع (فوج أ، فوج ب) · ..."
-const levelParts = (state.info.levels || [])
+  const levelParts = (state.info.levels || [])
     .map((l) => {
       const g = (l.groups || []).map((x) => x.trim()).filter(Boolean);
       const n = (l.name || "").trim();
@@ -85,9 +91,10 @@ const levelParts = (state.info.levels || [])
     fontWeight: 700,
     textAlign: "center",
   };
-  const radius = state.design.headerShape === "pill" ? 6 : theme.radius;
-
-  const showBreaks = state.design.showBreaks;
+  const radius = Math.min(
+    state.design.headerShape === "pill" ? 16 : theme.radius,
+    16
+  );
 
   /* ---------- عبارات التوقيع حسب الجنس / التخصيص ---------- */
   const sign = (kind: "teacher" | "manager" | "inspector") => {
@@ -101,9 +108,14 @@ const levelParts = (state.info.levels || [])
     }[kind];
   };
 
+  const showNames = state.design.showSubjectNames !== false;
+  const showDuration = state.design.showDuration !== false;
+
   return (
     <div style={docStyle} dir="rtl">
-      {/* ===== ترويسة ===== */}
+      {/* ===== الترويسة والعنوان والبيانات ===== */}
+      <div>
+        {/* ===== ترويسة ===== */}
       <div
         style={{
           display: "flex",
@@ -193,8 +205,11 @@ const levelParts = (state.info.levels || [])
         </div>
       )}
 
-      {/* ===== الجدول ===== */}
-      {rows.length === 0 ? (
+      </div>
+
+      {/* ===== الجدول: عمود لكل يوم، وكل حصة تتمدّد حسب مدّتها ===== */}
+      <div style={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
+      {!hasVisiblePeriods ? (
         <div
           style={{
             flex: 1,
@@ -210,195 +225,248 @@ const levelParts = (state.info.levels || [])
           لم تُبرمج أي حصة بعد
         </div>
       ) : (
-        <table
+        <div
           style={{
-            width: "100%",
-            borderCollapse: "separate",
-            borderSpacing: 0,
-            tableLayout: "fixed",
-            breakInside: "auto",
+            flex: 1,
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
+            border: `0.6pt solid ${theme.cellBorder}`,
+            borderRadius: radius ? `${radius}px` : 0,
+            overflow: "hidden",
+            breakInside: "avoid",
           }}
         >
-          <thead>
-            <tr>
-              <th
+          {/* رؤوس الأيام */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${dayColumns.length}, minmax(0, 1fr))`,
+              background: theme.headerBg,
+            }}
+          >
+            {dayColumns.map(({ day }, i) => (
+              <div
+                key={day.id}
                 style={{
                   ...thBase,
-                  width: isLandscape ? "30mm" : "26mm",
-                  borderTopRightRadius: radius,
+                  background: "transparent",
+                  border: "none",
+                  borderInlineStart:
+                    i > 0
+                      ? `0.6pt solid ${hexToRgba(theme.headerText, 0.35)}`
+                      : undefined,
+                  padding: "2mm 1.2mm",
+                  fontSize: "10.5pt",
                 }}
               >
-                الحصة / اليوم
-              </th>
-              {dayList.map((d, i) => (
-                <th
-                  key={d.id}
-                  style={{
-                    ...thBase,
-                    borderTopLeftRadius: i === dayList.length - 1 ? radius : 0,
-                  }}
-                >
-                  {d.name}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => {
-              const span = showBreaks && rowSpansAllDays(state, row);
-              const anyPeriod = dayList.some((d) => cellAt(state, d.id, row));
-              if (!anyPeriod && !span) return null;
+                {day.name}
+              </div>
+            ))}
+          </div>
 
-              /* ---- سطر استراحة يشاركه كل الأيام ---- */
-              if (span) {
-                const p = cellAt(state, dayList[0].id, row);
-                const dur = p ? formatDuration(durationOf(p)) : "";
-                return (
-                  <tr key={row.key}>
-                    <td
-                      colSpan={1 + dayList.length}
-                      style={{
-                        background: theme.zebraBg,
-                        border: `0.6pt solid ${theme.cellBorder}`,
-                        padding: "1mm",
-                        textAlign: "center",
-                        fontSize: "8.5pt",
-                        fontWeight: 700,
-                        color: "#475569",
-                        letterSpacing: "1pt",
-                      }}
-                    >
-                      {p?.label || "استراحة"} — {row.start} / {row.end}
-                      {dur ? ` (${dur})` : ""}
-                    </td>
-                  </tr>
-                );
-              }
-
-              /* ---- سطر حصة عادي ---- */
-              const labelP = cellAt(state, dayList[0].id, row);
-              return (
-                <tr key={row.key}>
-                  <th
+          {/* أعمدة الأيام */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${dayColumns.length}, minmax(0, 1fr))`,
+              flex: 1,
+              minHeight: 0,
+            }}
+          >
+            {dayColumns.map(({ day, periods }, colIndex) => (
+              <div
+                key={day.id}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minWidth: 0,
+                  minHeight: 0,
+                  background: "#FFFFFF",
+                  borderInlineStart:
+                    colIndex > 0 ? `0.6pt solid ${theme.cellBorder}` : undefined,
+                }}
+              >
+                {periods.length === 0 ? (
+                  <div
                     style={{
-                      background: hexToRgba(theme.headerBg, 0.08),
-                      border: `0.6pt solid ${theme.cellBorder}`,
-                      padding: "1.1mm 0.8mm",
-                      fontSize: "8.5pt",
-                      fontWeight: 700,
-                      color: theme.heading,
+                      flex: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "2mm",
+                      color: "#94A3B8",
+                      fontSize: "8pt",
                       textAlign: "center",
-                      lineHeight: 1.35,
                     }}
                   >
-                    <div>{timeLabel(state, labelP ?? row)}</div>
-                  </th>
-                  {dayList.map((d) => {
-                    const p = cellAt(state, d.id, row);
-                    if (!p || (p.isBreak && !showBreaks)) {
-                      return (
-                        <td
-                          key={d.id}
-                          style={{
-                            background: "#FFFFFF",
-                            border: `0.6pt solid ${theme.cellBorder}`,
-                            padding: "1.1mm 0.8mm",
-                            textAlign: "center",
-                            verticalAlign: "middle",
-                          }}
-                        >
-                          <span style={{ color: "#CBD5E1" }}>—</span>
-                        </td>
-                      );
-                    }
-                    if (p.isBreak) {
-                      return (
-                        <td
-                          key={d.id}
-                          style={{
-                            background: theme.zebraBg,
-                            color: "#64748B",
-                            border: `0.6pt solid ${theme.cellBorder}`,
-                            padding: "1.1mm 0.8mm",
-                            fontSize: "8.5pt",
-                            fontWeight: 700,
-                            textAlign: "center",
-                            verticalAlign: "middle",
-                          }}
-                        >
-                          {p.label || "استراحة"}
-                        </td>
-                      );
-                    }
-
+                    لم تُبرمج حصص
+                  </div>
+                ) : (
+                  periods.map((p, periodIndex) => {
                     const subj = subjectOf(p.subjectId);
-                    let bg = "#FFFFFF";
-                    let fg = theme.cellText;
-                    let border = `0.6pt solid ${theme.cellBorder}`;
-                    if (subj) {
+                    const dur = durationOf(p);
+                    // توزيع الارتفاع على الحصص بحسب مدّتها؛ نمنح الاستراحة
+                    // حدًّا أدنى حتى يبقى نصّها مقروءًا في الأيام المزدحمة.
+                    const weight = p.isBreak
+                      ? Math.max(dur, 25)
+                      : Math.max(dur > 0 ? dur : 30, 10);
+                    const isLast = periodIndex === periods.length - 1;
+
+                    let bg = "#F8FAFC";
+                    let fg = "#64748B";
+                    let sideBar: string | undefined;
+
+                    if (p.isBreak) {
+                      bg = theme.zebraBg;
+                      fg = "#64748B";
+                    } else if (subj) {
                       if (cellFill === "subject") {
                         bg = subj.color;
                         fg = readableTextOn(subj.color);
                       } else if (cellFill === "soft") {
-                        bg = hexToRgba(subj.color, 0.16);
+                        bg = hexToRgba(subj.color, 0.14);
                         fg = theme.cellText;
-                        border = `0.6pt solid ${hexToRgba(subj.color, 0.5)}`;
                       } else {
                         bg = "#FFFFFF";
-                        fg = subj.color;
+                        fg = theme.cellText;
+                        sideBar = `3pt solid ${subj.color}`;
                       }
                     }
-                    // توقيت مختلف عن السطر (يوم برمجه الأستاذ بتوقيت خاص)
-                    const diffTime = p.end !== row.end;
+
+                    const badgeBg =
+                      cellFill === "subject" && subj
+                        ? "rgba(255,255,255,0.24)"
+                        : subj
+                          ? hexToRgba(subj.color, 0.16)
+                          : "rgba(148,163,184,0.16)";
+                    const badgeFg =
+                      cellFill === "subject" && subj ? fg : subj?.color || fg;
 
                     return (
-                      <td
-                        key={d.id}
+                      <div
+                        key={p.id}
                         style={{
+                          flexGrow: weight,
+                          flexShrink: 1,
+                          flexBasis: 0,
+                          minHeight: 0,
                           background: bg,
                           color: fg,
-                          border,
-                          padding: "1.1mm 0.8mm",
-                          fontSize: "9.5pt",
-                          fontWeight: subj ? 700 : 400,
+                          padding: "0.6mm 1mm",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.3mm",
                           textAlign: "center",
-                          verticalAlign: "middle",
-                          lineHeight: 1.3,
-                          borderInlineStart:
-                            subj && cellFill === "none"
-                              ? `2.4pt solid ${subj.color}`
-                              : border,
+                          lineHeight: 1.2,
+                          overflow: "hidden",
+                          borderInlineStart: sideBar,
+                          borderBottom: isLast
+                            ? undefined
+                            : `0.6pt solid ${theme.cellBorder}`,
                         }}
                       >
-                        {subj ? (
-                          <span>
-                            {state.design.showSubjectNames !== false ? subj.name : "•"}
-                            {diffTime && (
+                        {p.isBreak ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexWrap: "wrap",
+                              gap: "1.2mm",
+                            }}
+                          >
+                            <span style={{ fontSize: "8.5pt", fontWeight: 700 }}>
+                              {p.label || "استراحة"}
+                            </span>
+                            {showDuration && dur > 0 && (
                               <span
                                 style={{
-                                  display: "block",
                                   fontSize: "7pt",
-                                  fontWeight: 400,
-                                  opacity: 0.85,
+                                  fontWeight: 700,
+                                  padding: "0.2mm 1.1mm",
+                                  borderRadius: "2mm",
+                                  background: "rgba(100,116,139,0.12)",
+                                  whiteSpace: "nowrap",
                                 }}
                               >
-                                {p.start} - {p.end}
+                                {formatDuration(dur)}
                               </span>
                             )}
-                          </span>
+                          </div>
                         ) : (
-                          <span style={{ color: "#CBD5E1" }}>—</span>
+                          <>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                flexWrap: "wrap",
+                                gap: "1.2mm",
+                                maxWidth: "100%",
+                              }}
+                            >
+                              {subj ? (
+                                showNames ? (
+                                  <span
+                                    style={{
+                                      fontSize: "10pt",
+                                      fontWeight: 800,
+                                      overflowWrap: "break-word",
+                                    }}
+                                  >
+                                    {subj.name}
+                                  </span>
+                                ) : null
+                              ) : (
+                                <span style={{ fontSize: "9.5pt", fontWeight: 700 }}>
+                                  {p.label || "حصة"}
+                                </span>
+                              )}
+                              {showDuration && dur > 0 && (
+                                <span
+                                  style={{
+                                    fontSize: "7.5pt",
+                                    fontWeight: 700,
+                                    padding: "0.3mm 1.2mm",
+                                    borderRadius: "2mm",
+                                    background: badgeBg,
+                                    color: badgeFg,
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  {formatDuration(dur)}
+                                </span>
+                              )}
+                            </div>
+                            {/* نتجنّب تكرار المدّة حين تُعرض شارةً وبجانبها */}
+                            {!(showDuration && state.design.periodDisplay === "duration") && (
+                              <div style={{ fontSize: "7.5pt", opacity: 0.85 }}>
+                                {timeLabel(state, p)}
+                              </div>
+                            )}
+                            {p.note && (
+                              <div style={{ fontSize: "7pt", opacity: 0.75 }}>
+                                {p.note}
+                              </div>
+                            )}
+                          </>
                         )}
-                      </td>
+                      </div>
                     );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  })
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       )}
+      </div>
 
+      {/* ===== أسفل الوثيقة: الملخّص والتوقيعات والتذييل ===== */}
+      <div>
       {/* ===== الملخّص ===== */}
       {state.design.showTotals && totalLessons > 0 && (
         <div style={{ marginTop: "2.5mm", fontSize: "8pt", breakInside: "avoid" }}>
@@ -481,16 +549,14 @@ const levelParts = (state.info.levels || [])
           أُنجز بواسطة مولّد استعمال الزمن — Modaris Pro · modarispro.com
         </div>
       )}
+      </div>
     </div>
   );
 }
 
-/** تسمية الوقت في عمود الحصة */
-function timeLabel(
-  state: TimetableState,
-  src: Period | { start: string; end: string }
-): string {
-  const dur = formatDuration(durationOf(src as Period));
+/** تسمية الوقت داخل الحصة */
+function timeLabel(state: TimetableState, src: Period): string {
+  const dur = formatDuration(durationOf(src));
   switch (state.design.periodDisplay) {
     case "start":
       return src.start;

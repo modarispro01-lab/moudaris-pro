@@ -26,6 +26,7 @@ import type {
 } from "./types";
 import {
   DEFAULT_INFO,
+  DEFAULT_SUBJECTS,
   defaultPeriods,
   emptyPlans,
   makeInitialState,
@@ -43,6 +44,7 @@ export type Action =
   | { type: "SET_INFO"; patch: Partial<Info> }
   | { type: "SET_DESIGN"; patch: Partial<Design> }
   | { type: "SET_SUBJECT"; id: string; patch: Partial<Subject> }
+  | { type: "RESET_SUBJECT_COLORS" }
   | { type: "SET_ORIENTATION"; orientation: Orientation }
   | { type: "SET_DAYS"; days: DayId[] }
   /* ===== يوم واحد ===== */
@@ -119,6 +121,15 @@ function applyAction(state: TimetableState, action: Action): TimetableState {
         subjects: state.subjects.map((s) =>
           s.id === action.id ? { ...s, ...action.patch } : s
         ),
+      };
+
+    case "RESET_SUBJECT_COLORS":
+      return {
+        ...state,
+        subjects: state.subjects.map((s) => {
+          const def = DEFAULT_SUBJECTS.find((d) => d.id === s.id);
+          return def ? { ...s, color: def.color } : s;
+        }),
       };
 
     case "SET_ORIENTATION":
