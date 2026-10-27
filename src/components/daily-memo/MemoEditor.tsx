@@ -5,6 +5,7 @@ import {
   ArrowDown,
   ArrowUp,
   Clock3,
+  Coffee,
   Copy,
   Eraser,
   FileText,
@@ -26,8 +27,10 @@ import {
   cx,
   durationLabel,
   fieldLabel,
+  formatDuration,
   formatLongDate,
   KIND_LABELS,
+  lessonBreakMinutes,
   lessonsCountLabel,
   periodLabel,
   sortedFields,
@@ -128,6 +131,8 @@ function LessonCard({
   const objectives = template.fields.find((field) => field.key === "objectives");
   const stages = template.fields.find((field) => field.key === "stages");
   const duration = durationLabel(lesson.timeFrom, lesson.timeTo);
+  const breakMinutes = lessonBreakMinutes(lesson);
+  const breakActive = breakMinutes > 0;
   const update = (patch: Partial<MemoLesson>) => onLessonChange(lesson.id, patch);
 
   return (
@@ -228,6 +233,71 @@ function LessonCard({
         <Label field={stages}>
           {inputFor(stages!, lesson.stages, (value) => update({ stages: value }))}
         </Label>
+      </div>
+
+      <div className={cx("memo-break-box", breakActive && "is-active")}>
+        <div className="memo-break-head">
+          <span className="memo-break-label">
+            <Coffee className="h-3.5 w-3.5" />
+            استراحة بين الحصص
+          </span>
+          {breakActive ? (
+            <span className="memo-break-summary">
+              {formatDuration(breakMinutes)} بعد هذه الحصة
+            </span>
+          ) : (
+            <button
+              type="button"
+              className="memo-break-add"
+              onClick={() => update({ breakMinutes: 15 })}
+            >
+              <Plus className="h-3.5 w-3.5" />
+              إضافة استراحة
+            </button>
+          )}
+        </div>
+        {breakActive ? (
+          <div className="memo-break-body">
+            <label className="memo-break-duration">
+              <span>المدة بالدقائق</span>
+              <input
+                type="number"
+                min={1}
+                max={180}
+                step={1}
+                value={breakMinutes}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  update({
+                    breakMinutes: Number.isFinite(value)
+                      ? Math.min(180, Math.max(1, Math.round(value)))
+                      : 1,
+                  });
+                }}
+              />
+            </label>
+            <div className="memo-break-presets" role="group" aria-label="مدد جاهزة للاستراحة">
+              {[10, 15, 20, 30].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={cx("memo-break-preset", breakMinutes === value && "is-active")}
+                  onClick={() => update({ breakMinutes: value })}
+                >
+                  {value} د
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="memo-break-remove"
+              onClick={() => update({ breakMinutes: 0 })}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              إزالة
+            </button>
+          </div>
+        ) : null}
       </div>
     </article>
   );
@@ -341,7 +411,7 @@ export default function MemoEditor({
               <h2>حصص اليوم</h2>
               <p>
                 {memo.lessons.length
-                  ? `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}. عدّل المدة من/إلى والقسم لكل حصة.`
+                  ? `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}. عدّل المدة من/إلى والقسم لكل حصة، وأضف استراحة قابلة للتعديل بين الحصص.`
                   : `لا توجد حصص بعد. أضف حصة فارغة أو اختر درسًا من خريطة الأسبوع — ${periodLabel(template, memo.period)}.`}
               </p>
             </div>

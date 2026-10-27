@@ -950,6 +950,178 @@
   font-weight: 900;
 }
 
+/* ============================ استراحة بين الحصص ============================ */
+
+.memo-break-box {
+  margin: 0 14px 14px;
+  border: 1px dashed #e3cfa5;
+  border-radius: 11px;
+  background: #fffdf8;
+  overflow: hidden;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.memo-break-box.is-active {
+  border-style: solid;
+  border-color: #e6cf9f;
+  background: linear-gradient(145deg, #fffdf8, #fdf6e7);
+}
+
+.memo-break-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 11px;
+}
+
+.memo-break-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #7b5a1c;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.memo-break-label svg {
+  color: #b8892d;
+  flex-shrink: 0;
+}
+
+.memo-break-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid #e6cf9f;
+  border-radius: 8px;
+  background: #fff;
+  color: #7b5a1c;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.memo-break-add:hover {
+  background: #fbf1dd;
+  border-color: #d9b66e;
+}
+
+.memo-break-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border: 1px solid #efdcb6;
+  border-radius: 999px;
+  background: #fff;
+  color: #7b5a1c;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.memo-break-body {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: -1px;
+  padding: 9px 11px 10px;
+  border-top: 1px dashed #efdfbf;
+}
+
+.memo-break-duration {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.memo-break-duration span {
+  color: #8a6a29;
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+.memo-break-duration input {
+  width: 84px;
+  height: 34px;
+  padding: 0 9px;
+  border: 1px solid #e6cf9f;
+  border-radius: 8px;
+  background: #fff;
+  color: #5b420f;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.memo-break-duration input:focus {
+  outline: none;
+  border-color: #c89a3f;
+  box-shadow: 0 0 0 3px rgba(201, 151, 54, 0.12);
+}
+
+.memo-break-presets {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.memo-break-preset {
+  height: 28px;
+  min-width: 38px;
+  padding: 0 7px;
+  border: 1px solid #e8d7b4;
+  border-radius: 7px;
+  background: #fff;
+  color: #80652c;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.memo-break-preset:hover {
+  background: #fbf3e3;
+}
+
+.memo-break-preset.is-active {
+  border-color: #7b5a1c;
+  background: #7b5a1c;
+  color: #fff;
+}
+
+.memo-break-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  margin-inline-start: auto;
+  padding: 0 8px;
+  border: 1px solid #f0d5d5;
+  border-radius: 7px;
+  background: #fff;
+  color: #a14747;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.memo-break-remove:hover {
+  background: #fdf2f2;
+  border-color: #e8bcbc;
+}
+
 .memo-empty-add {
   display: flex;
   flex-direction: column;
@@ -1876,14 +2048,46 @@
   padding-top: 0.3mm;
 }
 
-.ms-break td {
-  background: #f3f6f9 !important;
-  color: #7a8d9c !important;
+.ms-table tbody tr.ms-break-row {
+  height: 7mm;
+}
+
+.ms-table tbody tr.ms-break-row td {
+  background: linear-gradient(90deg, #fdf8ee, #fbf3e3 50%, #fdf8ee) !important;
+  border-top: 0.3mm dashed #d8b46b;
+  border-bottom: 0.3mm dashed #d8b46b;
+  padding: 1mm 2mm !important;
   text-align: center !important;
+}
+
+.ms-break-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2mm;
+  color: #7b5a1c;
+}
+
+.ms-break-inner b {
   font-size: 6pt;
-  font-weight: 700;
-  letter-spacing: 0.25mm;
-  padding: 0.9mm !important;
+  font-weight: 800;
+  letter-spacing: 0.3mm;
+}
+
+.ms-break-inner i {
+  width: 16mm;
+  height: 0.25mm;
+  background: #e3c98f;
+}
+
+.ms-break-inner em {
+  padding: 0.25mm 2mm;
+  border: 0.25mm solid #e7cf9e;
+  border-radius: 99px;
+  background: #fffdf8;
+  font-style: normal;
+  font-size: 5.8pt;
+  font-weight: 800;
 }
 
 .ms-center {
@@ -2276,6 +2480,18 @@
   .memo-lesson-grid {
     padding: 11px;
     gap: 9px;
+  }
+
+  .memo-break-box {
+    margin: 0 11px 11px;
+  }
+
+  .memo-break-body {
+    gap: 8px;
+  }
+
+  .memo-break-remove {
+    margin-inline-start: 0;
   }
 
   .memo-lesson-grid > .memo-field,

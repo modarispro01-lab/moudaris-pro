@@ -189,6 +189,7 @@ function buildMemo(
     sourceLessonNumber: day.lessonNumber ?? null,
     sourceDayKey: day.dayKey,
     kind: day.kind,
+    breakMinutes: 0,
   };
 
   return {
@@ -570,6 +571,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         session: `الحصة ${previous.lessons.length + 1}`,
         rj: "",
         kind: "lesson",
+        breakMinutes: 0,
       };
       return { ...previous, lessons: [...previous.lessons, lesson] };
     });
@@ -600,6 +602,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         sourceLessonNumber: sourceDay.lessonNumber ?? null,
         sourceDayKey: sourceDay.dayKey,
         kind: sourceDay.kind,
+        breakMinutes: 0,
       };
       return { ...previous, lessons: [...base, lesson] };
     });
@@ -628,6 +631,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         sourceLessonNumber: undefined,
         kind: "lesson",
         session: `الحصة ${previous.lessons.length + 1}`,
+        breakMinutes: 0,
       };
       return { ...previous, lessons: [...previous.lessons, copy] };
     });

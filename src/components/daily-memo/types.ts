@@ -153,6 +153,8 @@ export interface MemoLesson {
   sourceLessonNumber?: number | null;
   sourceDayKey?: string;
   kind?: LessonKind;
+  /** مدة الاستراحة بالدقائق بعد هذه الحصة؛ 0 أو غير موجودة = بدون استراحة. */
+  breakMinutes?: number;
 }
 
 export interface MemoState {
@@ -266,6 +268,20 @@ export function formatDuration(minutes: number | null): string {
 
 export function durationLabel(from: string, to: string): string {
   return formatDuration(timesToMinutes(from, to));
+}
+
+/** مدة الاستراحة بعد الحصة، مع تجاهل القيم غير الصالحة. */
+export function lessonBreakMinutes(lesson: MemoLesson): number {
+  const value = Number(lesson.breakMinutes ?? 0);
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  return Math.min(180, Math.round(value));
+}
+
+export function breaksCountLabel(count: number): string {
+  if (count === 1) return "استراحة واحدة";
+  if (count === 2) return "استراحتان";
+  if (count >= 3 && count <= 10) return `${count} استراحات`;
+  return `${count} استراحة`;
 }
 
 export function todayIso(): string {

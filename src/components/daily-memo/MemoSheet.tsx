@@ -1,11 +1,15 @@
 "use client";
 
+import { Fragment } from "react";
 import type { MemoLesson, MemoState, TemplateConfig } from "./types";
 import {
+  breaksCountLabel,
   cx,
   durationLabel,
   fieldLabel,
+  formatDuration,
   formatLongDate,
+  lessonBreakMinutes,
   lessonsCountLabel,
   periodLabel,
 } from "./types";
@@ -116,11 +120,28 @@ function blankRow(template: TemplateConfig, rowKey: string) {
   );
 }
 
+function breakRow(lesson: MemoLesson, template: TemplateConfig) {
+  const minutes = lessonBreakMinutes(lesson);
+  if (!minutes) return null;
+  return (
+    <tr key={`${lesson.id}-break`} className="ms-break-row">
+      <td colSpan={template.tableColumns.length}>
+        <span className="ms-break-inner">
+          <b>استراحة</b>
+          <i aria-hidden="true" />
+          <em>{formatDuration(minutes)}</em>
+        </span>
+      </td>
+    </tr>
+  );
+}
+
 export default function MemoSheet({ memo, template }: Props) {
   const lessons = memo.lessons;
   const period = memo.period;
   const blockTitle = periodLabel(template, period);
-  const blankRows = Math.max(0, 8 - lessons.length);
+  const breakCount = lessons.filter((lesson) => lessonBreakMinutes(lesson) > 0).length;
+  const blankRows = Math.max(0, 8 - lessons.length - breakCount);
   const meta = [
     { label: fieldLabel(template, "date", "التاريخ"), value: formatLongDate(memo.date) },
     { label: fieldLabel(template, "day", "اليوم"), value: valueOrDash(memo.day) },
@@ -196,12 +217,19 @@ export default function MemoSheet({ memo, template }: Props) {
               <span>{blockTitle}</span>
               <em>
                 {lessons.length
-                  ? lessonsCountLabel(lessons.length)
+                  ? `${lessonsCountLabel(lessons.length)}${
+                      breakCount ? ` · ${breaksCountLabel(breakCount)}` : ""
+                    }`
                   : "بدون حصص — استعمل الصفوف الفارغة"}
               </em>
             </td>
           </tr>
-          {lessons.map((lesson, index) => lessonRow(lesson, template, index))}
+          {lessons.map((lesson, index) => (
+            <Fragment key={lesson.id}>
+              {lessonRow(lesson, template, index)}
+              {breakRow(lesson, template)}
+            </Fragment>
+          ))}
           {Array.from({ length: blankRows }).map((_, index) =>
             blankRow(template, `blank-${period}-${index}`)
           )}
