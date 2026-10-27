@@ -1,0 +1,55 @@
+{
+  "appTitle_ar": "المذكرة اليومية الاحترافية — التعليم الصريح",
+  "appTitle_fr": "Fiche quotidienne professionnelle — Enseignement explicite",
+  "defaultSubjectCode": "math",
+  "autoDiscoverLevels": true,
+  "dataRoot": "data/enseignement-explicite",
+  "templatePath": "data/enseignement-explicite/template/math-template.json",
+  "storage": {
+    "profileKey": "mp_daily_memo_profile_v1",
+    "draftsKey": "mp_daily_memo_drafts_v1",
+    "preferencesKey": "mp_daily_memo_preferences_v1"
+  },
+  "weekDays": [
+    {
+      "key": "samedi",
+      "label_ar": "السبت",
+      "label_fr": "Samedi"
+    },
+    {
+      "key": "dimanche",
+      "label_ar": "الأحد",
+      "label_fr": "Dimanche"
+    },
+    {
+      "key": "lundi",
+      "label_ar": "الاثنين",
+      "label_fr": "Lundi"
+    },
+    {
+      "key": "mardi",
+      "label_ar": "الثلاثاء",
+      "label_fr": "Mardi"
+    },
+    {
+      "key": "mercredi",
+      "label_ar": "الأربعاء",
+      "label_fr": "Mercredi"
+    },
+    {
+      "key": "jeudi",
+      "label_ar": "الخميس",
+      "label_fr": "Jeudi"
+    }
+  ],
+  "sourceFiles": [
+    "docs/tawazi3/modele-memoire.pdf.pdf",
+    "docs/tawazi3/tawzi3-math-niveau1.pdf.pdf",
+    "docs/tawazi3/tawzi3-math-niveau2.pdf.pdf"
+  ],
+  "notes": [
+    "كل ملف مستوى مستقل داخل مجلد المادة؛ إضافة niveau-3.json تكفي لدعم المستوى الثالث دون تعديل كود الأداة.",
+    "عبارات الدروس مستخرجة من جداول التوزيع المرفقة. الحقول غير الواردة (الأهداف، الأنشطة، الوسائل، التقويم) تُترك فارغة للتعبئة اليدوية.",
+    "توزيع الدروس على أيام الأسبوع اقتراح قابل للتعديل داخل الأداة، وليس نصًّا من ملف التوزيع."
+  ]
+}

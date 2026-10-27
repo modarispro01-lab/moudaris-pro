@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FileText, Calendar, CalendarClock, Sparkles, ArrowRight, Layers, FolderTree, IdCard, Table2, NotebookPen, Award, Tags, ScrollText, Network, BookOpen } from 'lucide-react';
+import { FileText, Calendar, CalendarClock, Sparkles, ArrowRight, Layers, FolderTree, IdCard, Table2, NotebookPen, Award, Tags, ScrollText, Network, BookOpen, BookOpenCheck } from 'lucide-react';
 import type { Metadata } from "next";
 
 // ===== Meta Tags للـ SEO =====
@@ -33,6 +33,14 @@ const tools = [
     description: 'مذكرة يومية كاملة وفق مراحل التعليم الصريح، انطلاقاً من التوازيع المرحلية الرسمية للرياضيات.',
     icon: BookOpen,
     color: 'bg-primary',
+    status: 'متاح الآن',
+  },
+  {
+    id: 'daily-memo-explicit',
+    title: 'المذكرة اليومية الاحترافية',
+    description: 'مذكرة يومية للتعليم الصريح: موضوع الدرس من التوزيع الرسمي، تعديل مباشر، وطباعة A4.',
+    icon: BookOpenCheck,
+    color: 'bg-accent',
     status: 'متاح الآن',
   },
   {

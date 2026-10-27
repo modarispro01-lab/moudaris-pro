@@ -1,0 +1,289 @@
+{
+  "id": "math-daily-memo",
+  "title_ar": "مذكرة الدروس اليومية",
+  "title_fr": "Fiche de préparation quotidienne",
+  "subtitle_ar": "التعليم الصريح — الرياضيات",
+  "subjectCode": "math",
+  "subject_ar": "الرياضيات",
+  "version": "1.0.0",
+  "fields": [
+    {
+      "key": "institution",
+      "label_ar": "المؤسسة",
+      "label_fr": "Établissement",
+      "order": 1,
+      "type": "text",
+      "scope": "document",
+      "placeholder_ar": "اسم المؤسسة",
+      "width": "half"
+    },
+    {
+      "key": "teacher",
+      "label_ar": "الأستاذ(ة)",
+      "label_fr": "Enseignant(e)",
+      "order": 2,
+      "type": "text",
+      "scope": "document",
+      "placeholder_ar": "الاسم الكامل",
+      "width": "half"
+    },
+    {
+      "key": "academicYear",
+      "label_ar": "الموسم الدراسي",
+      "label_fr": "Année scolaire",
+      "order": 3,
+      "type": "text",
+      "scope": "document",
+      "placeholder_ar": "مثال: 2026/2027",
+      "width": "third"
+    },
+    {
+      "key": "level",
+      "label_ar": "المستوى",
+      "label_fr": "Niveau",
+      "order": 4,
+      "type": "text",
+      "scope": "document",
+      "width": "third"
+    },
+    {
+      "key": "subject",
+      "label_ar": "المادة",
+      "label_fr": "Matière",
+      "order": 5,
+      "type": "text",
+      "scope": "document",
+      "width": "third"
+    },
+    {
+      "key": "date",
+      "label_ar": "التاريخ",
+      "label_fr": "Date",
+      "order": 6,
+      "type": "date",
+      "scope": "header",
+      "width": "third"
+    },
+    {
+      "key": "unit",
+      "label_ar": "الوحدة",
+      "label_fr": "Unité",
+      "order": 7,
+      "type": "text",
+      "scope": "header",
+      "placeholder_ar": "تُكتب من طرف الأستاذ(ة)",
+      "width": "third"
+    },
+    {
+      "key": "week",
+      "label_ar": "الأسبوع",
+      "label_fr": "Semaine",
+      "order": 8,
+      "type": "text",
+      "scope": "header",
+      "width": "third"
+    },
+    {
+      "key": "day",
+      "label_ar": "اليوم",
+      "label_fr": "Jour",
+      "order": 9,
+      "type": "text",
+      "scope": "header",
+      "width": "third"
+    },
+    {
+      "key": "section",
+      "label_ar": "القسم",
+      "label_fr": "Classe",
+      "order": 10,
+      "type": "text",
+      "scope": "header",
+      "placeholder_ar": "مثال: القسم 1",
+      "width": "third"
+    },
+    {
+      "key": "timeFrom",
+      "label_ar": "زمن التعلم — من",
+      "label_fr": "Début",
+      "order": 11,
+      "type": "time",
+      "scope": "lesson",
+      "width": "half"
+    },
+    {
+      "key": "timeTo",
+      "label_ar": "زمن التعلم — إلى",
+      "label_fr": "Fin",
+      "order": 12,
+      "type": "time",
+      "scope": "lesson",
+      "width": "half"
+    },
+    {
+      "key": "duration",
+      "label_ar": "المدة",
+      "label_fr": "Durée",
+      "order": 13,
+      "type": "number",
+      "scope": "lesson",
+      "width": "third"
+    },
+    {
+      "key": "component",
+      "label_ar": "المكون",
+      "label_fr": "Composante",
+      "order": 14,
+      "type": "text",
+      "scope": "lesson",
+      "placeholder_ar": "الرياضيات",
+      "width": "third"
+    },
+    {
+      "key": "session",
+      "label_ar": "الحصة",
+      "label_fr": "Séance",
+      "order": 15,
+      "type": "text",
+      "scope": "lesson",
+      "placeholder_ar": "الحصة 1",
+      "width": "third"
+    },
+    {
+      "key": "rj",
+      "label_ar": "ر-ج",
+      "label_fr": "R-G",
+      "order": 16,
+      "type": "text",
+      "scope": "lesson",
+      "placeholder_ar": "—",
+      "width": "third"
+    },
+    {
+      "key": "topic",
+      "label_ar": "الموضوع",
+      "label_fr": "Sujet",
+      "order": 17,
+      "type": "textarea",
+      "scope": "lesson",
+      "placeholder_ar": "عنوان الدرس أو موضوع الحصة",
+      "width": "full"
+    },
+    {
+      "key": "objectives",
+      "label_ar": "الأهداف",
+      "label_fr": "Objectifs",
+      "order": 18,
+      "type": "textarea",
+      "scope": "lesson",
+      "placeholder_ar": "تُكتب من طرف الأستاذ(ة)",
+      "width": "half"
+    },
+    {
+      "key": "stages",
+      "label_ar": "المراحل",
+      "label_fr": "Étapes",
+      "order": 19,
+      "type": "textarea",
+      "scope": "lesson",
+      "placeholder_ar": "مراحل سير الحصة",
+      "width": "half"
+    },
+    {
+      "key": "notes",
+      "label_ar": "ملاحظات",
+      "label_fr": "Notes",
+      "order": 20,
+      "type": "textarea",
+      "scope": "footer",
+      "placeholder_ar": "ملاحظات حول سير الحصة أو المتابعة",
+      "width": "full"
+    }
+  ],
+  "blocks": [
+    {
+      "key": "morning",
+      "label_ar": "الفترة الصباحية",
+      "label_fr": "Matin",
+      "order": 1
+    },
+    {
+      "key": "afternoon",
+      "label_ar": "الفترة المسائية",
+      "label_fr": "Après-midi",
+      "order": 2
+    }
+  ],
+  "tableColumns": [
+    {
+      "key": "time",
+      "label_ar": "زمن التعلم",
+      "label_fr": "Temps",
+      "width": "12%",
+      "kind": "timeRange"
+    },
+    {
+      "key": "section",
+      "label_ar": "القسم",
+      "label_fr": "Classe",
+      "width": "9%",
+      "kind": "text"
+    },
+    {
+      "key": "component",
+      "label_ar": "المكون",
+      "label_fr": "Composante",
+      "width": "10%",
+      "kind": "text"
+    },
+    {
+      "key": "duration",
+      "label_ar": "المدة",
+      "label_fr": "Durée",
+      "width": "7%",
+      "kind": "duration"
+    },
+    {
+      "key": "content",
+      "label_ar": "عناصر الدرس",
+      "label_fr": "Éléments de la leçon",
+      "width": "38%",
+      "kind": "content"
+    },
+    {
+      "key": "session",
+      "label_ar": "الحصة",
+      "label_fr": "Séance",
+      "width": "8%",
+      "kind": "text"
+    },
+    {
+      "key": "rj",
+      "label_ar": "ر-ج",
+      "label_fr": "R-G",
+      "width": "7%",
+      "kind": "text"
+    }
+  ],
+  "signatures": [
+    {
+      "key": "teacher",
+      "label_ar": "الأستاذ(ة)",
+      "label_fr": "Enseignant(e)"
+    },
+    {
+      "key": "director",
+      "label_ar": "المدير(ة)",
+      "label_fr": "Directeur(trice)"
+    },
+    {
+      "key": "inspector",
+      "label_ar": "المفتش(ة)",
+      "label_fr": "Inspecteur(trice)"
+    }
+  ],
+  "source": {
+    "template": "modele-memoire.pdf.pdf",
+    "note": "هيكل الحقول مستخرج من قالب المذكرة اليومية المرفق، مع إعادة تصميم الوثيقة. لا يتضمن القالب شعار الوزارة أو ترويسة المؤسسة الأصلية."
+  }
+}

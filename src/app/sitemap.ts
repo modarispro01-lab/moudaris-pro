@@ -12,6 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/tools`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/tools/daily-lesson-plan`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.95 },
     { url: `${baseUrl}/tools/explicit-teaching`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${baseUrl}/tools/daily-memo-explicit`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.95 },
     { url: `${baseUrl}/tools/mind-map`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/tools/emploi-du-temps`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/tools/timetable-generator`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.95 },
