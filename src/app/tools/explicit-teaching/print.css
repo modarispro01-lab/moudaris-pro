@@ -1,0 +1,71 @@
+/* ============================================================
+   التعليم الصريح — عقد الطباعة الخاص بالمذكرة (A4)
+   يُحمَّل مع صفحة الأداة فقط، حتى لا تعتمد طباعة المذكرة على
+   قواعد الطباعة العامة الخاصة بأدوات أخرى.
+   ============================================================ */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  html,
+  body {
+    background: var(--color-surface, #fff) !important;
+  }
+
+  body {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* بعض القواعد العامة تُخفي جذر التطبيق عند الطباعة. نُعيد إظهار
+     السلسلة التي تحتوي المذكرة فقط، ثم نُخفي كل ما عداها. */
+  body:has(.planner-print-page) > *:has(.planner-print-page) {
+    display: block !important;
+  }
+
+  body *:not(.planner-print-page):not(.planner-print-page *):not(:has(.planner-print-page)) {
+    display: none !important;
+  }
+
+  .planner-print-page {
+    width: 100%;
+    padding: 0 !important;
+  }
+
+  .planner-print-page > section {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .planner-print-page .grid {
+    display: block !important;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-sheet {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-sheet tr,
+  .print-sheet .break-inside-avoid {
+    break-inside: avoid;
+  }
+
+  .print-sheet thead {
+    display: table-header-group;
+  }
+}
