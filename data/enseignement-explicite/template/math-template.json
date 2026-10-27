@@ -104,7 +104,7 @@
     },
     {
       "key": "timeFrom",
-      "label_ar": "زمن التعلم — من",
+      "label_ar": "المدة — من",
       "label_fr": "Début",
       "order": 11,
       "type": "time",
@@ -113,7 +113,7 @@
     },
     {
       "key": "timeTo",
-      "label_ar": "زمن التعلم — إلى",
+      "label_ar": "المدة — إلى",
       "label_fr": "Fin",
       "order": 12,
       "type": "time",

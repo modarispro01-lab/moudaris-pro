@@ -25,6 +25,42 @@ function listJsonFiles(dir: string): string[] {
 }
 
 /**
+ * يوحّد أيام كل أسبوع مع أيام التدريس المعرّفة في config.json:
+ * يحذف الأيام غير المدرّسة (مثل الأحد)، ويعيد الترتيب، ويضيف الأيام الناقصة فارغة.
+ * بهذا تبقى ملفات المستويات الجديدة متوافقة دون تعديل الكود.
+ */
+function normalizeLevelDays(
+  level: LevelData,
+  weekDays: NonNullable<AppConfig["weekDays"]>
+): LevelData {
+  if (!weekDays.length) return level;
+  return {
+    ...level,
+    stages: level.stages.map((stage) => ({
+      ...stage,
+      weeks: stage.weeks.map((week) => {
+        const byKey = new Map(week.days.map((day) => [day.dayKey, day]));
+        return {
+          ...week,
+          days: weekDays.map(({ key, label_ar, label_fr }) => {
+            const existing = byKey.get(key);
+            if (existing) return { ...existing, label_ar, label_fr };
+            return {
+              dayKey: key,
+              label_ar,
+              label_fr,
+              lessonNumber: null,
+              kind: "empty" as const,
+              content: { topic_ar: "", topic_fr: "" },
+            };
+          }),
+        };
+      }),
+    })),
+  };
+}
+
+/**
  * يقرأ القالب وملفات المستويات تلقائيًا من مجلدات المواد.
  * إضافة ملف niveau-3.json داخل math/ تكفي لعرض المستوى الثالث.
  */
@@ -51,7 +87,12 @@ export function loadCatalog(): Catalog {
       if (!data || !Array.isArray(data.stages) || !data.stages.length) {
         throw new Error(`ملف مستوى غير صالح (لا يحتوي على مراحل): ${file}`);
       }
-      levels.push({ ...data, source: data.source || file });
+      levels.push(
+        normalizeLevelDays(
+          { ...data, source: data.source || file },
+          config.weekDays ?? []
+        )
+      );
     }
 
     if (levels.length) {

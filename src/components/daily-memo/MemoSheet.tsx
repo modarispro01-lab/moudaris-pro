@@ -7,6 +7,7 @@ import {
   fieldLabel,
   formatLongDate,
   lessonsCountLabel,
+  periodLabel,
 } from "./types";
 
 interface Props {
@@ -116,10 +117,10 @@ function blankRow(template: TemplateConfig, rowKey: string) {
 }
 
 export default function MemoSheet({ memo, template }: Props) {
-  const blocks = template.blocks.slice().sort((a, b) => a.order - b.order);
-  const morning = memo.lessons.filter((lesson) => lesson.block === "morning");
-  const afternoon = memo.lessons.filter((lesson) => lesson.block === "afternoon");
-  const hasAny = memo.lessons.length > 0;
+  const lessons = memo.lessons;
+  const period = memo.period;
+  const blockTitle = periodLabel(template, period);
+  const blankRows = Math.max(0, 8 - lessons.length);
   const meta = [
     { label: fieldLabel(template, "date", "التاريخ"), value: formatLongDate(memo.date) },
     { label: fieldLabel(template, "day", "اليوم"), value: valueOrDash(memo.day) },
@@ -140,7 +141,7 @@ export default function MemoSheet({ memo, template }: Props) {
             <p className="ms-kicker">وثيقة تربوية · التعليم الصريح</p>
             <h1>{template.title_ar}</h1>
             <p className="ms-subtitle">
-              {[memo.subject, memo.level, memo.stage].filter(Boolean).join(" · ")}
+              {[memo.subject, memo.level, memo.stage, blockTitle].filter(Boolean).join(" · ")}
             </p>
           </div>
         </div>
@@ -189,41 +190,22 @@ export default function MemoSheet({ memo, template }: Props) {
           </tr>
         </thead>
 
-        {blocks.map((block, blockIndex) => {
-          const rows = block.key === "morning" ? morning : afternoon;
-          if (!hasAny) return null;
-          const emptyRows = Math.max(0, 4 - rows.length);
-          const showBreak = blockIndex === 0;
-          return (
-            <tbody key={block.key}>
-              <tr className="ms-block">
-                <td colSpan={template.tableColumns.length}>
-                  <span>{block.label_ar}</span>
-                  <em>{rows.length ? lessonsCountLabel(rows.length) : "بدون حصص"}</em>
-                </td>
-              </tr>
-              {rows.map((lesson, index) => lessonRow(lesson, template, index))}
-              {Array.from({ length: emptyRows }).map((_, index) =>
-                blankRow(template, `blank-${block.key}-${index}`)
-              )}
-              {showBreak ? (
-                <tr className="ms-break">
-                  <td colSpan={template.tableColumns.length}>فترة استراحة</td>
-                </tr>
-              ) : null}
-            </tbody>
-          );
-        })}
-
-        {!hasAny ? (
-          <tbody>
-            <tr>
-              <td colSpan={template.tableColumns.length} className="ms-empty">
-                لم تُضف حصص بعد — أضف حصة من لوحة التحرير لتظهر هنا.
-              </td>
-            </tr>
-          </tbody>
-        ) : null}
+        <tbody>
+          <tr className="ms-block">
+            <td colSpan={template.tableColumns.length}>
+              <span>{blockTitle}</span>
+              <em>
+                {lessons.length
+                  ? lessonsCountLabel(lessons.length)
+                  : "بدون حصص — استعمل الصفوف الفارغة"}
+              </em>
+            </td>
+          </tr>
+          {lessons.map((lesson, index) => lessonRow(lesson, template, index))}
+          {Array.from({ length: blankRows }).map((_, index) =>
+            blankRow(template, `blank-${period}-${index}`)
+          )}
+        </tbody>
       </table>
 
       {memo.showNotes ? (

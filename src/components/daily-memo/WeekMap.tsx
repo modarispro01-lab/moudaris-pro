@@ -22,9 +22,11 @@ import { cx, KIND_LABELS } from "./types";
 
 interface Props {
   level: LevelData;
+  levels: LevelData[];
   stage: LevelStage;
   week: LevelWeek;
   selection: MemoSelection;
+  onLevelChange: (levelNumber: number) => void;
   onGo: (patch: Partial<MemoSelection>) => void;
   onAddDay: (day: LevelDay) => void;
   isAdded: (day: LevelDay) => boolean;
@@ -38,9 +40,11 @@ function kindClass(kind: LevelDay["kind"]): string {
 
 export default function WeekMap({
   level,
+  levels,
   stage,
   week,
   selection,
+  onLevelChange,
   onGo,
   onAddDay,
   isAdded,
@@ -64,10 +68,33 @@ export default function WeekMap({
             </span>
             <div>
               <h2>خريطة الأسبوع</h2>
-              <p>اختر الدرس ثم أضفه إلى مذكرة اليوم.</p>
+              <p>اختر الدرس ثم أضفه إلى مذكرة اليوم. الأحد عطلة أسبوعية.</p>
             </div>
           </div>
         </div>
+
+        {levels.length > 1 ? (
+          <div className="memo-level-tabs">
+            <span className="memo-level-tabs-label">المذكرة الحالية</span>
+            <div className="memo-level-tabs-list" role="tablist" aria-label="المستوى الحالي">
+              {levels.map((item) => (
+                <button
+                  key={item.level}
+                  type="button"
+                  role="tab"
+                  aria-selected={item.level === selection.level}
+                  className={cx(
+                    "memo-level-tab",
+                    item.level === selection.level && "is-active"
+                  )}
+                  onClick={() => onLevelChange(item.level)}
+                >
+                  {item.levelLabel_ar}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         <div className="memo-stage-switch">
           <button

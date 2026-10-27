@@ -7,7 +7,7 @@
   "levelLabel_fr": "Niveau 1",
   "source": "tawzi3-math-niveau1.pdf.pdf",
   "source_note": "عبارات الدروس منقولة من جدول توزيع الرياضيات — المستوى الأول. لم تُضف أهداف أو أنشطة أو وسائل غير واردة في الملف؛ تبقى الحقول التربوية فارغة للتعبئة من طرف الأستاذ(ة).",
-  "dayPlanNote": "توزيع الأيام المقترح: السبت إلى الثلاثاء للدروس الجديدة، والخميس للمراجعة الأسبوعية، والأربعاء فارغ. قابل للتعديل داخل الأداة.",
+  "dayPlanNote": "أيام التدريس: الاثنين إلى السبت. الأحد عطلة أسبوعية. الدروس الجديدة موزعة على الاثنين والثلاثاء والخميس والجمعة، والأربعاء فارغ، والسبت للمراجعة الأسبوعية. التوزيع اقتراح قابل للتعديل داخل الأداة.",
   "stages": [
     {
       "id": "stage-1",
@@ -21,9 +21,9 @@
           "title_fr": "Semaine 1",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 1,
               "kind": "lesson",
               "content": {
@@ -32,35 +32,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 2,
               "kind": "lesson",
               "content": {
                 "topic_ar": "قراءة وكتابة الأعداد من 1 إلى 5",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 3,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "تفكيك العددين 2 و3",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 4,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "تفكيك العددين 4 و5",
                 "topic_fr": ""
               }
             },
@@ -79,6 +57,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "تفكيك العددين 2 و3",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "تفكيك العددين 4 و5",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -94,9 +94,9 @@
           "title_fr": "Semaine 2",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 5,
               "kind": "lesson",
               "content": {
@@ -105,35 +105,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 6,
               "kind": "lesson",
               "content": {
                 "topic_ar": "قراءة وكتابة الأعداد من 1 إلى 9",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 7,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "العددان 0 و10",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 8,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "مقارنة عدد عناصر مجموعتين",
                 "topic_fr": ""
               }
             },
@@ -152,6 +130,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "العددان 0 و10",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "مقارنة عدد عناصر مجموعتين",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -167,9 +167,9 @@
           "title_fr": "Semaine 3",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 9,
               "kind": "lesson",
               "content": {
@@ -178,35 +178,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 10,
               "kind": "lesson",
               "content": {
                 "topic_ar": "تفكيك العدد 7",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 11,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "تفكيك العدد 8",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 12,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "تفكيك العدد 9",
                 "topic_fr": ""
               }
             },
@@ -225,6 +203,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "تفكيك العدد 8",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "تفكيك العدد 9",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -240,9 +240,9 @@
           "title_fr": "Semaine 4",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 13,
               "kind": "lesson",
               "content": {
@@ -251,35 +251,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 14,
               "kind": "lesson",
               "content": {
                 "topic_ar": "مقارنة الأعداد من 0 إلى 10",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 15,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "تأطير الأعداد من 0 إلى 10",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 16,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "ترتيب الأعداد من 0 إلى 10",
                 "topic_fr": ""
               }
             },
@@ -298,6 +276,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 15,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "تأطير الأعداد من 0 إلى 10",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 16,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "ترتيب الأعداد من 0 إلى 10",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -313,9 +313,9 @@
           "title_fr": "Semaine 5",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 17,
               "kind": "lesson",
               "content": {
@@ -324,35 +324,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 18,
               "kind": "lesson",
               "content": {
                 "topic_ar": "التوضع في المكان (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 19,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "موضعة أشياء على خانات شبكة",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 20,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "موضعة أشياء على عقد شبكة",
                 "topic_fr": ""
               }
             },
@@ -371,6 +349,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 19,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "موضعة أشياء على خانات شبكة",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 20,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "موضعة أشياء على عقد شبكة",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -386,35 +386,13 @@
           "title_fr": "Semaine 6",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
-              "lessonNumber": null,
-              "kind": "stage-review",
-              "content": {
-                "topic_ar": "أراجع ما تعلمته في المرحلة الأولى (التقويم الذاتي)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
-              "lessonNumber": null,
-              "kind": "empty",
-              "content": {
-                "topic_ar": "",
-                "topic_fr": ""
-              }
-            },
-            {
               "dayKey": "lundi",
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "empty",
+              "kind": "stage-review",
               "content": {
-                "topic_ar": "",
+                "topic_ar": "أراجع ما تعلمته في المرحلة الأولى (التقويم الذاتي)",
                 "topic_fr": ""
               }
             },
@@ -444,6 +422,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "empty",
               "content": {
@@ -467,9 +467,9 @@
           "title_fr": "Semaine 1",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 1,
               "kind": "lesson",
               "content": {
@@ -478,35 +478,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 2,
               "kind": "lesson",
               "content": {
                 "topic_ar": "وضعيات الطرح",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 3,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حساب مجموع عددين باستعمال المستقيم العددي",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 4,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حساب فرق عددين باستعمال المستقيم العددي",
                 "topic_fr": ""
               }
             },
@@ -525,6 +503,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حساب مجموع عددين باستعمال المستقيم العددي",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حساب فرق عددين باستعمال المستقيم العددي",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -540,9 +540,9 @@
           "title_fr": "Semaine 2",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 5,
               "kind": "lesson",
               "content": {
@@ -551,35 +551,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 6,
               "kind": "lesson",
               "content": {
                 "topic_ar": "مقارنة الأطوال (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 7,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "أستعمل المسطرة",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 8,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل انطلاقا من مشهد",
                 "topic_fr": ""
               }
             },
@@ -598,6 +576,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "أستعمل المسطرة",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل انطلاقا من مشهد",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -613,9 +613,9 @@
           "title_fr": "Semaine 3",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 9,
               "kind": "lesson",
               "content": {
@@ -624,35 +624,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 10,
               "kind": "lesson",
               "content": {
                 "topic_ar": "تسمية الأشكال الهندسية",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 11,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "رسم المربع والمستطيل",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 12,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل المسائل برسم تمثيلات",
                 "topic_fr": ""
               }
             },
@@ -671,6 +649,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "رسم المربع والمستطيل",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل المسائل برسم تمثيلات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -686,9 +686,9 @@
           "title_fr": "Semaine 4",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 13,
               "kind": "lesson",
               "content": {
@@ -697,35 +697,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 14,
               "kind": "lesson",
               "content": {
                 "topic_ar": "الكتابات الجمعية للأعداد في حدود 10",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 15,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "الجمع والطرح",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 16,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل المسائل برسم تمثيلات",
                 "topic_fr": ""
               }
             },
@@ -744,6 +722,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 15,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "الجمع والطرح",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 16,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل المسائل برسم تمثيلات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -759,9 +759,9 @@
           "title_fr": "Semaine 5",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 17,
               "kind": "lesson",
               "content": {
@@ -770,35 +770,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 18,
               "kind": "lesson",
               "content": {
                 "topic_ar": "الأعداد من 11 إلى 19",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 19,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "الأعداد الترتيبية",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 20,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل المسائل برسم تمثيلات",
                 "topic_fr": ""
               }
             },
@@ -817,6 +795,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 19,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "الأعداد الترتيبية",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 20,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل المسائل برسم تمثيلات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -832,35 +832,13 @@
           "title_fr": "Semaine 6",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
-              "lessonNumber": null,
-              "kind": "stage-review",
-              "content": {
-                "topic_ar": "أراجع ما تعلمته في المرحلة الثانية (التقويم الذاتي)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
-              "lessonNumber": null,
-              "kind": "empty",
-              "content": {
-                "topic_ar": "",
-                "topic_fr": ""
-              }
-            },
-            {
               "dayKey": "lundi",
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "empty",
+              "kind": "stage-review",
               "content": {
-                "topic_ar": "",
+                "topic_ar": "أراجع ما تعلمته في المرحلة الثانية (التقويم الذاتي)",
                 "topic_fr": ""
               }
             },
@@ -890,6 +868,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "empty",
               "content": {
@@ -913,9 +913,9 @@
           "title_fr": "Semaine 1",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 1,
               "kind": "lesson",
               "content": {
@@ -924,35 +924,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 2,
               "kind": "lesson",
               "content": {
                 "topic_ar": "مقارنة الأعداد من 0 إلى 19",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 3,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حساب مجموع عددين على السطر",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 4,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (1)",
                 "topic_fr": ""
               }
             },
@@ -971,6 +949,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حساب مجموع عددين على السطر",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (1)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -986,9 +986,9 @@
           "title_fr": "Semaine 2",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 5,
               "kind": "lesson",
               "content": {
@@ -997,35 +997,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 6,
               "kind": "lesson",
               "content": {
                 "topic_ar": "حساب فرق عددين على السطر (1)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 7,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حساب فرق عددين على السطر (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 8,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (2)",
                 "topic_fr": ""
               }
             },
@@ -1044,6 +1022,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حساب فرق عددين على السطر (2)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (2)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1059,9 +1059,9 @@
           "title_fr": "Semaine 3",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 9,
               "kind": "lesson",
               "content": {
@@ -1070,35 +1070,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 10,
               "kind": "lesson",
               "content": {
                 "topic_ar": "الأعداد من 20 إلى 50 (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 11,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "مقارنة الأعداد من 20 إلى 50",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 12,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (3)",
                 "topic_fr": ""
               }
             },
@@ -1117,6 +1095,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "مقارنة الأعداد من 20 إلى 50",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (3)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1132,9 +1132,9 @@
           "title_fr": "Semaine 4",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 13,
               "kind": "lesson",
               "content": {
@@ -1143,35 +1143,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 14,
               "kind": "lesson",
               "content": {
                 "topic_ar": "الأعداد من 0 إلى 99 (1)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 15,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "الأعداد من 0 إلى 99 (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 16,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (4)",
                 "topic_fr": ""
               }
             },
@@ -1190,6 +1168,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 15,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "الأعداد من 0 إلى 99 (2)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 16,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (4)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1205,9 +1205,9 @@
           "title_fr": "Semaine 5",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 17,
               "kind": "lesson",
               "content": {
@@ -1216,35 +1216,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 18,
               "kind": "lesson",
               "content": {
                 "topic_ar": "مقارنة الأعداد من 0 إلى 99",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 19,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "ترتيب الأعداد من 0 إلى 99",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 20,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (5)",
                 "topic_fr": ""
               }
             },
@@ -1263,6 +1241,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 19,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "ترتيب الأعداد من 0 إلى 99",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 20,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل متعلقة بالجمع أو الطرح (5)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1278,35 +1278,13 @@
           "title_fr": "Semaine 6",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
-              "lessonNumber": null,
-              "kind": "stage-review",
-              "content": {
-                "topic_ar": "أراجع ما تعلمته في المرحلة الثالثة (التقويم الذاتي)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
-              "lessonNumber": null,
-              "kind": "empty",
-              "content": {
-                "topic_ar": "",
-                "topic_fr": ""
-              }
-            },
-            {
               "dayKey": "lundi",
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "empty",
+              "kind": "stage-review",
               "content": {
-                "topic_ar": "",
+                "topic_ar": "أراجع ما تعلمته في المرحلة الثالثة (التقويم الذاتي)",
                 "topic_fr": ""
               }
             },
@@ -1336,6 +1314,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "empty",
               "content": {
@@ -1359,9 +1359,9 @@
           "title_fr": "Semaine 1",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 1,
               "kind": "lesson",
               "content": {
@@ -1370,35 +1370,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 2,
               "kind": "lesson",
               "content": {
                 "topic_ar": "قراءة الساعة (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 3,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حساب فرق عددين على السطر (3)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 4,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل (الجزء والكل) (1)",
                 "topic_fr": ""
               }
             },
@@ -1417,6 +1395,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حساب فرق عددين على السطر (3)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل (الجزء والكل) (1)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1432,9 +1432,9 @@
           "title_fr": "Semaine 2",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 5,
               "kind": "lesson",
               "content": {
@@ -1443,35 +1443,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 6,
               "kind": "lesson",
               "content": {
                 "topic_ar": "التوزيع بالتساوي",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 7,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "التجمع بالتساوي",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 8,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل (الجزء والكل) (2)",
                 "topic_fr": ""
               }
             },
@@ -1490,6 +1468,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "التجمع بالتساوي",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل (الجزء والكل) (2)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1505,9 +1505,9 @@
           "title_fr": "Semaine 3",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 9,
               "kind": "lesson",
               "content": {
@@ -1516,35 +1516,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 10,
               "kind": "lesson",
               "content": {
                 "topic_ar": "قراءة معطيات مبين (1)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 11,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "قراءة معطيات مبين (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 12,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل (الجزء والكل) (3)",
                 "topic_fr": ""
               }
             },
@@ -1563,6 +1541,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "قراءة معطيات مبين (2)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل (الجزء والكل) (3)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1578,9 +1578,9 @@
           "title_fr": "Semaine 4",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 13,
               "kind": "lesson",
               "content": {
@@ -1589,35 +1589,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 14,
               "kind": "lesson",
               "content": {
                 "topic_ar": "النقود (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 15,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حساب مجموع عددين على السطر (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 16,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل (الجزء والكل) (4)",
                 "topic_fr": ""
               }
             },
@@ -1636,6 +1614,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 15,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حساب مجموع عددين على السطر (2)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 16,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل (الجزء والكل) (4)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1651,9 +1651,9 @@
           "title_fr": "Semaine 5",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 17,
               "kind": "lesson",
               "content": {
@@ -1662,35 +1662,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 18,
               "kind": "lesson",
               "content": {
                 "topic_ar": "التقنية الاعتيادية للجمع (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 19,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "التقنية الاعتيادية للجمع (3)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 20,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل (الجزء والكل) (5)",
                 "topic_fr": ""
               }
             },
@@ -1709,6 +1687,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 19,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "التقنية الاعتيادية للجمع (3)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 20,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل (الجزء والكل) (5)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1724,35 +1724,13 @@
           "title_fr": "Semaine 6",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
-              "lessonNumber": null,
-              "kind": "stage-review",
-              "content": {
-                "topic_ar": "أراجع ما تعلمته في المرحلة الرابعة (التقويم الذاتي)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
-              "lessonNumber": null,
-              "kind": "empty",
-              "content": {
-                "topic_ar": "",
-                "topic_fr": ""
-              }
-            },
-            {
               "dayKey": "lundi",
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "empty",
+              "kind": "stage-review",
               "content": {
-                "topic_ar": "",
+                "topic_ar": "أراجع ما تعلمته في المرحلة الرابعة (التقويم الذاتي)",
                 "topic_fr": ""
               }
             },
@@ -1782,6 +1760,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "empty",
               "content": {
@@ -1805,9 +1805,9 @@
           "title_fr": "Semaine 1",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 1,
               "kind": "lesson",
               "content": {
@@ -1816,35 +1816,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 2,
               "kind": "lesson",
               "content": {
                 "topic_ar": "التقنية الاعتيادية للطرح (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 3,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "التقنية الاعتيادية للجمع والطرح",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 4,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل (المقارنة) (1)",
                 "topic_fr": ""
               }
             },
@@ -1863,6 +1841,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "التقنية الاعتيادية للجمع والطرح",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل (المقارنة) (1)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1878,9 +1878,9 @@
           "title_fr": "Semaine 2",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
               "lessonNumber": 5,
               "kind": "lesson",
               "content": {
@@ -1889,35 +1889,13 @@
               }
             },
             {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
               "lessonNumber": 6,
               "kind": "lesson",
               "content": {
                 "topic_ar": "الأعداد من 0 إلى 100 (1)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "lundi",
-              "label_ar": "الاثنين",
-              "label_fr": "Lundi",
-              "lessonNumber": 7,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "الأعداد من 0 إلى 100 (2)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "mardi",
-              "label_ar": "الثلاثاء",
-              "label_fr": "Mardi",
-              "lessonNumber": 8,
-              "kind": "lesson",
-              "content": {
-                "topic_ar": "حل مسائل (المقارنة) (2)",
                 "topic_fr": ""
               }
             },
@@ -1936,6 +1914,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "الأعداد من 0 إلى 100 (2)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "content": {
+                "topic_ar": "حل مسائل (المقارنة) (2)",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "weekly-review",
               "content": {
@@ -1951,35 +1951,13 @@
           "title_fr": "Semaine 3",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
-              "lessonNumber": null,
-              "kind": "stage-review",
-              "content": {
-                "topic_ar": "أراجع ما تعلمته في المرحلة الخامسة",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
-              "lessonNumber": null,
-              "kind": "empty",
-              "content": {
-                "topic_ar": "",
-                "topic_fr": ""
-              }
-            },
-            {
               "dayKey": "lundi",
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "empty",
+              "kind": "stage-review",
               "content": {
-                "topic_ar": "",
+                "topic_ar": "أراجع ما تعلمته في المرحلة الخامسة",
                 "topic_fr": ""
               }
             },
@@ -2009,6 +1987,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "empty",
               "content": {
@@ -2024,35 +2024,13 @@
           "title_fr": "Semaine 4",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
-              "lessonNumber": null,
-              "kind": "general-review",
-              "content": {
-                "topic_ar": "مراجعة عامة",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
-              "lessonNumber": null,
-              "kind": "empty",
-              "content": {
-                "topic_ar": "",
-                "topic_fr": ""
-              }
-            },
-            {
               "dayKey": "lundi",
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "empty",
+              "kind": "general-review",
               "content": {
-                "topic_ar": "",
+                "topic_ar": "مراجعة عامة",
                 "topic_fr": ""
               }
             },
@@ -2082,6 +2060,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "empty",
               "content": {
@@ -2097,35 +2097,13 @@
           "title_fr": "Semaine 5",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
-              "lessonNumber": null,
-              "kind": "general-review",
-              "content": {
-                "topic_ar": "مراجعة عامة",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
-              "lessonNumber": null,
-              "kind": "empty",
-              "content": {
-                "topic_ar": "",
-                "topic_fr": ""
-              }
-            },
-            {
               "dayKey": "lundi",
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "empty",
+              "kind": "general-review",
               "content": {
-                "topic_ar": "",
+                "topic_ar": "مراجعة عامة",
                 "topic_fr": ""
               }
             },
@@ -2155,6 +2133,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "empty",
               "content": {
@@ -2170,35 +2170,13 @@
           "title_fr": "Semaine 6",
           "days": [
             {
-              "dayKey": "samedi",
-              "label_ar": "السبت",
-              "label_fr": "Samedi",
-              "lessonNumber": null,
-              "kind": "general-review",
-              "content": {
-                "topic_ar": "مراجعة عامة – التقويم الذاتي (المرحلة الخامسة)",
-                "topic_fr": ""
-              }
-            },
-            {
-              "dayKey": "dimanche",
-              "label_ar": "الأحد",
-              "label_fr": "Dimanche",
-              "lessonNumber": null,
-              "kind": "empty",
-              "content": {
-                "topic_ar": "",
-                "topic_fr": ""
-              }
-            },
-            {
               "dayKey": "lundi",
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "empty",
+              "kind": "general-review",
               "content": {
-                "topic_ar": "",
+                "topic_ar": "مراجعة عامة – التقويم الذاتي (المرحلة الخامسة)",
                 "topic_fr": ""
               }
             },
@@ -2228,6 +2206,28 @@
               "dayKey": "jeudi",
               "label_ar": "الخميس",
               "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
               "lessonNumber": null,
               "kind": "empty",
               "content": {

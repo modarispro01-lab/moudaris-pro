@@ -21,9 +21,11 @@ import type {
   Catalog,
   LevelDay,
   LevelWeek,
+  MemoBlock,
   MemoLesson,
   MemoSelection,
   MemoState,
+  Preferences,
   Profile,
 } from "./types";
 import {
@@ -33,6 +35,7 @@ import {
   findLevel,
   findStage,
   findWeek,
+  periodLabel,
   todayIso,
   uid,
 } from "./types";
@@ -89,10 +92,52 @@ function firstSelection(catalog: Catalog): MemoSelection {
   const day = firstDay(week);
   return {
     subjectCode: subject?.code || catalog.template.subjectCode || "math",
+    levels: [level?.level ?? 1],
     level: level?.level ?? 1,
+    period: "morning",
     stageId: stage?.id || "stage-1",
     weekNumber: week?.weekNumber ?? 1,
-    dayKey: day?.dayKey || "samedi",
+    dayKey: day?.dayKey || "lundi",
+  };
+}
+
+function sameLevels(a: number[], b: number[]): boolean {
+  return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+/** يعيد اختيارًا كاملًا للمستوى النشط مع الحفاظ على المرحلة والأسبوع واليوم إن أمكن. */
+function selectionForLevel(
+  catalog: Catalog,
+  base: MemoSelection,
+  levelNumber: number,
+  levels: number[]
+): MemoSelection {
+  const nextLevel = catalog.subjects
+    .find((subject) => subject.code === base.subjectCode)
+    ?.levels.find((item) => item.level === levelNumber);
+  const stage =
+    nextLevel?.stages.find((item) => item.id === base.stageId) ??
+    nextLevel?.stages[0];
+  const week =
+    stage?.weeks.find((item) => item.weekNumber === base.weekNumber) ??
+    stage?.weeks[0];
+  const day =
+    week?.days.find((item) => item.dayKey === base.dayKey) ?? firstDay(week);
+  return {
+    ...base,
+    levels,
+    level: levelNumber,
+    stageId: stage?.id || base.stageId,
+    weekNumber: week?.weekNumber ?? base.weekNumber,
+    dayKey: day?.dayKey || base.dayKey,
+  };
+}
+
+function withPeriod(memo: MemoState, period: MemoBlock): MemoState {
+  return {
+    ...memo,
+    period,
+    lessons: memo.lessons.map((lesson) => ({ ...lesson, block: period })),
   };
 }
 
@@ -105,13 +150,9 @@ function minuteToTime(total: number): string {
 
 function nextSlot(
   lessons: MemoLesson[],
-  preferredBlock?: MemoLesson["block"]
-): { block: MemoLesson["block"]; timeFrom: string; timeTo: string } {
-  const morningCount = lessons.filter((lesson) => lesson.block === "morning").length;
-  const afternoonCount = lessons.filter((lesson) => lesson.block === "afternoon").length;
-  const block = preferredBlock ?? (morningCount < 2 ? "morning" : "afternoon");
-  const count = block === "morning" ? morningCount : afternoonCount;
-  const start = (block === "morning" ? 8 : 14) * 60 + count * 60;
+  block: MemoBlock
+): { block: MemoBlock; timeFrom: string; timeTo: string } {
+  const start = (block === "morning" ? 8 : 14) * 60 + lessons.length * 60;
   return { block, timeFrom: minuteToTime(start), timeTo: minuteToTime(start + 60) };
 }
 
@@ -127,11 +168,13 @@ function buildMemo(
   if (!level || !stage || !week || !day) return null;
 
   const hasLesson = day.kind !== "empty" && !!day.content.topic_ar.trim();
+  const start = selection.period === "morning" ? "08:00" : "14:00";
+  const end = selection.period === "morning" ? "09:00" : "15:00";
   const lesson: MemoLesson = {
     id: uid(),
-    block: "morning",
-    timeFrom: "08:00",
-    timeTo: "09:00",
+    block: selection.period,
+    timeFrom: start,
+    timeTo: end,
     section: profile.section,
     component: level.subject_ar || level.subject || catalog.template.subject_ar,
     topic: hasLesson ? day.content.topic_ar : "",
@@ -163,6 +206,7 @@ function buildMemo(
     day: day.label_ar,
     section: profile.section,
     notes: "",
+    period: selection.period,
     showNotes: true,
     showSignatures: true,
     lessons: hasLesson ? [lesson] : [],
@@ -188,6 +232,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   const profileKey =
     catalog.config.storage?.profileKey || "mp_daily_memo_profile_v1";
   const draftsKey = catalog.config.storage?.draftsKey || "mp_daily_memo_drafts_v1";
+  const prefsKey =
+    catalog.config.storage?.preferencesKey || "mp_daily_memo_preferences_v1";
 
   const level = useMemo(
     () => findLevel(catalog, selection),
@@ -228,7 +274,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     return { levels, stages, weeks, lessons };
   }, [catalog]);
 
-  /* تحميل الملف الشخصي والمسودات مرة واحدة */
+  /* تحميل الملف الشخصي والمسودات والتفضيلات مرة واحدة */
   useEffect(() => {
     if (hydratedRef.current) return;
     hydratedRef.current = true;
@@ -241,12 +287,87 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     const storedDrafts = readStorage<Record<string, MemoState>>(draftsKey, {});
     draftsRef.current =
       storedDrafts && typeof storedDrafts === "object" ? storedDrafts : {};
+
+    const storedPrefs = readStorage<Partial<Preferences>>(prefsKey, {});
+    const subjectCode =
+      storedPrefs.subjectCode &&
+      catalog.subjects.some((subject) => subject.code === storedPrefs.subjectCode)
+        ? storedPrefs.subjectCode
+        : initialSelection.subjectCode;
+    const availableLevels =
+      catalog.subjects.find((subject) => subject.code === subjectCode)
+        ?.levels.map((item) => item.level) ?? [];
+    const selectedLevels = Array.from(
+      new Set(
+        (Array.isArray(storedPrefs.levels) ? storedPrefs.levels : []).filter((value) =>
+          availableLevels.includes(value)
+        )
+      )
+    ).sort((a, b) => a - b);
+    const levels = selectedLevels.length ? selectedLevels : initialSelection.levels;
+    const preferredLevel =
+      typeof storedPrefs.activeLevel === "number" &&
+      levels.includes(storedPrefs.activeLevel)
+        ? storedPrefs.activeLevel
+        : initialSelection.level;
+    const activeLevel = levels.includes(preferredLevel) ? preferredLevel : levels[0];
+    const period: MemoBlock = storedPrefs.period === "afternoon" ? "afternoon" : "morning";
+    const hydratedSelection = selectionForLevel(
+      catalog,
+      {
+        ...initialSelection,
+        subjectCode,
+        period,
+        stageId: storedPrefs.stageId || initialSelection.stageId,
+        weekNumber:
+          typeof storedPrefs.weekNumber === "number"
+            ? storedPrefs.weekNumber
+            : initialSelection.weekNumber,
+        dayKey: storedPrefs.dayKey || initialSelection.dayKey,
+      },
+      activeLevel,
+      levels
+    );
+
     setProfile(mergedProfile);
-    const initialKey = draftKey(initialSelection);
-    const stored = draftsRef.current[initialKey];
-    setMemo(stored ?? buildMemo(catalog, initialSelection, mergedProfile));
+    setSelection(hydratedSelection);
+    const stored = draftsRef.current[draftKey(hydratedSelection)];
+    setMemo(
+      stored
+        ? withPeriod(stored, period)
+        : buildMemo(catalog, hydratedSelection, mergedProfile)
+    );
     setMounted(true);
-  }, [catalog, draftsKey, initialSelection, profileKey]);
+  }, [catalog, draftsKey, initialSelection, prefsKey, profileKey]);
+
+  /* حفظ المستويات المدرّسة والفترة والاختيار الحالي */
+  useEffect(() => {
+    if (!mounted) return;
+    const timer = window.setTimeout(() => {
+      const stored = readStorage<Partial<Preferences>>(prefsKey, {});
+      writeStorage(prefsKey, {
+        ...stored,
+        subjectCode: selection.subjectCode,
+        levels: selection.levels,
+        activeLevel: selection.level,
+        period: selection.period,
+        stageId: selection.stageId,
+        weekNumber: selection.weekNumber,
+        dayKey: selection.dayKey,
+      });
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [
+    mounted,
+    prefsKey,
+    selection.subjectCode,
+    selection.levels,
+    selection.level,
+    selection.period,
+    selection.stageId,
+    selection.weekNumber,
+    selection.dayKey,
+  ]);
 
   /* حفظ الملف الشخصي */
   useEffect(() => {
@@ -304,6 +425,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     if (
       next.subjectCode === selection.subjectCode &&
       next.level === selection.level &&
+      sameLevels(next.levels, selection.levels) &&
+      next.period === selection.period &&
       next.stageId === selection.stageId &&
       next.weekNumber === selection.weekNumber &&
       next.dayKey === selection.dayKey
@@ -316,7 +439,11 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     }
     const stored = draftsRef.current[draftKey(next)];
     setSelection(next);
-    setMemo(stored ?? buildMemo(catalog, next, profile));
+    setMemo(
+      stored
+        ? withPeriod(stored, next.period)
+        : buildMemo(catalog, next, profile)
+    );
   }
 
   function changeSubject(code: string) {
@@ -328,6 +455,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     if (!subject || !nextLevel || !nextStage || !nextWeek || !nextDay) return;
     goTo({
       subjectCode: code,
+      levels: [nextLevel.level],
       level: nextLevel.level,
       stageId: nextStage.id,
       weekNumber: nextWeek.weekNumber,
@@ -335,21 +463,38 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     });
   }
 
-  function changeLevel(levelNumber: number) {
-    const nextLevel = level
-      ? catalog.subjects
-          .find((item) => item.code === level.subjectCode)
-          ?.levels.find((item) => item.level === levelNumber)
-      : undefined;
-    const nextStage = nextLevel?.stages[0];
-    const nextWeek = nextStage?.weeks[0];
-    const nextDay = firstDay(nextWeek);
-    if (!nextLevel || !nextStage || !nextWeek || !nextDay) return;
-    goTo({
-      level: nextLevel.level,
-      stageId: nextStage.id,
-      weekNumber: nextWeek.weekNumber,
-      dayKey: nextDay.dayKey,
+  function switchLevel(levelNumber: number) {
+    goTo(selectionForLevel(catalog, selection, levelNumber, selection.levels));
+  }
+
+  function toggleLevel(levelNumber: number) {
+    const selected = selection.levels.includes(levelNumber);
+    /* النقر على مستوى مختار وغير نشط يجعله المستوى الحالي بدل إلغائه */
+    if (selected && selection.level !== levelNumber) {
+      goTo(selectionForLevel(catalog, selection, levelNumber, selection.levels));
+      return;
+    }
+    if (selected && selection.levels.length === 1) {
+      setToast({ msg: "اختر مستوى واحدًا على الأقل.", kind: "err" });
+      return;
+    }
+    const levels = selected
+      ? selection.levels.filter((value) => value !== levelNumber)
+      : [...selection.levels, levelNumber].sort((a, b) => a - b);
+    const activeLevel = selected
+      ? selection.level === levelNumber
+        ? levels[0]
+        : selection.level
+      : levelNumber;
+    goTo(selectionForLevel(catalog, selection, activeLevel, levels));
+  }
+
+  function changePeriod(period: MemoBlock) {
+    if (period === selection.period) return;
+    goTo({ period });
+    setToast({
+      msg: `تم اختيار ${periodLabel(catalog.template, period)} — الورقة مخصصة لها بالكامل.`,
+      kind: "ok",
     });
   }
 
@@ -413,7 +558,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   function addLesson() {
     setMemo((previous) => {
       if (!previous) return previous;
-      const slot = nextSlot(previous.lessons);
+      const slot = nextSlot(previous.lessons, previous.period);
       const lesson: MemoLesson = {
         id: uid(),
         ...slot,
@@ -441,7 +586,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
           lesson.objectives.trim() ||
           lesson.stages.trim()
       );
-      const slot = nextSlot(base);
+      const slot = nextSlot(base, previous.period);
       const lesson: MemoLesson = {
         id: uid(),
         ...slot,
@@ -474,7 +619,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
       if (!previous) return previous;
       const original = previous.lessons.find((lesson) => lesson.id === id);
       if (!original) return previous;
-      const slot = nextSlot(previous.lessons, original.block);
+      const slot = nextSlot(previous.lessons, previous.period);
       const copy: MemoLesson = {
         ...original,
         ...slot,
@@ -558,6 +703,12 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   }
 
   const dayOptions = week.days;
+  const subjectLevels =
+    catalog.subjects.find((subject) => subject.code === selection.subjectCode)?.levels ??
+    [];
+  const assignedLevels = subjectLevels.filter((item) =>
+    selection.levels.includes(item.level)
+  );
 
   return (
     <div className="memo-app">
@@ -633,17 +784,59 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
               </label>
             ) : null}
 
-            <label className="memo-select">
-              <span>المستوى</span>
-              <select
-                value={selection.level}
-                onChange={(event) => changeLevel(Number(event.target.value))}
-              >
-                {catalog.subjects
-                  .find((subject) => subject.code === selection.subjectCode)
-                  ?.levels.map((item) => (
-                    <option key={item.level} value={item.level}>
+            <div className="memo-select memo-select-levels">
+              <span>
+                المستويات المدرّسة
+                <em>يمكن اختيار مستوى واحد أو أكثر</em>
+              </span>
+              <div className="memo-level-chips" role="group" aria-label="المستويات المدرّسة">
+                {(catalog.subjects.find((subject) => subject.code === selection.subjectCode)
+                  ?.levels ?? []).map((item) => {
+                  const selected = selection.levels.includes(item.level);
+                  const active = selection.level === item.level;
+                  return (
+                    <button
+                      key={item.level}
+                      type="button"
+                      className={cx(
+                        "memo-level-chip",
+                        selected && "is-selected",
+                        active && "is-active"
+                      )}
+                      onClick={() => toggleLevel(item.level)}
+                      aria-pressed={selected}
+                      title={
+                        active && selected
+                          ? selection.levels.length > 1
+                            ? `إلغاء اختيار ${item.levelLabel_ar}`
+                            : `${item.levelLabel_ar} — المستوى الوحيد المختار`
+                          : selected
+                            ? `تحرير مذكرة ${item.levelLabel_ar}`
+                            : `إضافة ${item.levelLabel_ar}`
+                      }
+                    >
+                      <span className="memo-level-chip-mark" aria-hidden="true">
+                        {selected ? <Check className="h-3 w-3" /> : null}
+                      </span>
                       {item.levelLabel_ar}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <label className="memo-select memo-select-period">
+              <span>الفترة</span>
+              <select
+                value={selection.period}
+                onChange={(event) => changePeriod(event.target.value as MemoBlock)}
+              >
+                {catalog.template.blocks
+                  .slice()
+                  .sort((a, b) => a.order - b.order)
+                  .map((block) => (
+                    <option key={block.key} value={block.key}>
+                      {block.label_ar}
                     </option>
                   ))}
               </select>
@@ -758,9 +951,11 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
 
           <WeekMap
             level={level}
+            levels={assignedLevels}
             stage={stage}
             week={week}
             selection={selection}
+            onLevelChange={switchLevel}
             onGo={goToDayFromMap}
             onAddDay={addFromDay}
             isAdded={isAdded}

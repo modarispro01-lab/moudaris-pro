@@ -170,6 +170,7 @@ export interface MemoState {
   day: string;
   section: string;
   notes: string;
+  period: MemoBlock;
   showNotes: boolean;
   showSignatures: boolean;
   lessons: MemoLesson[];
@@ -187,11 +188,20 @@ export interface Profile {
 export interface Preferences {
   showNotes: boolean;
   showSignatures: boolean;
+  period?: MemoBlock;
+  levels?: number[];
+  activeLevel?: number;
+  subjectCode?: string;
+  stageId?: string;
+  weekNumber?: number;
+  dayKey?: string;
 }
 
 export interface MemoSelection {
   subjectCode: string;
+  levels: number[];
   level: number;
+  period: MemoBlock;
   stageId: string;
   weekNumber: number;
   dayKey: string;
@@ -286,6 +296,7 @@ export function draftKey(selection: MemoSelection): string {
   return [
     selection.subjectCode,
     selection.level,
+    selection.period,
     selection.stageId,
     selection.weekNumber,
     selection.dayKey,
@@ -326,6 +337,16 @@ export function findDay(
   dayKey: string
 ): LevelDay | undefined {
   return week?.days.find((day) => day.dayKey === dayKey) ?? week?.days[0];
+}
+
+export function periodLabel(
+  template: TemplateConfig,
+  period: MemoBlock
+): string {
+  return (
+    template.blocks.find((block) => block.key === period)?.label_ar ||
+    (period === "morning" ? "الفترة الصباحية" : "الفترة المسائية")
+  );
 }
 
 export const KIND_LABELS: Record<LessonKind, string> = {

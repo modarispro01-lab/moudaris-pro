@@ -29,6 +29,7 @@ import {
   formatLongDate,
   KIND_LABELS,
   lessonsCountLabel,
+  periodLabel,
   sortedFields,
 } from "./types";
 
@@ -146,23 +147,10 @@ function LessonCard({
           </p>
         </div>
         <div className="memo-lesson-actions">
-          <select
-            className="memo-mini-select"
-            value={lesson.block}
-            onChange={(event) =>
-              update({ block: event.target.value as MemoLesson["block"] })
-            }
-            aria-label="الفترة"
-          >
-            {template.blocks
-              .slice()
-              .sort((a, b) => a.order - b.order)
-              .map((block) => (
-                <option key={block.key} value={block.key}>
-                  {block.label_ar}
-                </option>
-              ))}
-          </select>
+          <span className="memo-period-tag">
+            <Clock3 className="h-3.5 w-3.5" />
+            {periodLabel(template, lesson.block)}
+          </span>
           <button
             type="button"
             className="memo-icon-btn"
@@ -217,7 +205,7 @@ function LessonCard({
           </span>
           <strong>{duration}</strong>
         </div>
-        <Label field={section}>
+        <Label field={section} hint="تظهر مباشرة في خانة القسم بالجدول.">
           {inputFor(section!, lesson.section, (value) => update({ section: value }))}
         </Label>
         <Label field={component}>
@@ -295,6 +283,7 @@ export default function MemoEditor({
             <span>{memo.subject}</span>
             <span>{memo.level}</span>
             <span>{memo.stage}</span>
+            <span>{periodLabel(template, memo.period)}</span>
           </div>
         </div>
 
@@ -352,8 +341,8 @@ export default function MemoEditor({
               <h2>حصص اليوم</h2>
               <p>
                 {memo.lessons.length
-                  ? `${lessonsCountLabel(memo.lessons.length)} — عدّل التوقيت والموضوع كما تشاء.`
-                  : "لا توجد حصص بعد. أضف حصة فارغة أو اختر درسًا من خريطة الأسبوع."}
+                  ? `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}. عدّل المدة من/إلى والقسم لكل حصة.`
+                  : `لا توجد حصص بعد. أضف حصة فارغة أو اختر درسًا من خريطة الأسبوع — ${periodLabel(template, memo.period)}.`}
               </p>
             </div>
           </div>
