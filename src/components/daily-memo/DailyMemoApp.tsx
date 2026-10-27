@@ -19,7 +19,9 @@ import SheetPreview from "./SheetPreview";
 import WeekMap from "./WeekMap";
 import type {
   Catalog,
+  LevelData,
   LevelDay,
+  LevelStage,
   LevelWeek,
   MemoBlock,
   MemoLesson,
@@ -30,12 +32,16 @@ import type {
 } from "./types";
 import {
   cx,
+  DEFAULT_GROUP_LABELS,
   draftKey,
   findDay,
   findLevel,
   findStage,
   findWeek,
+  lessonBreakMinutes,
+  minutesToTime,
   periodLabel,
+  timeToMinutes,
   todayIso,
   uid,
 } from "./types";
@@ -141,19 +147,163 @@ function withPeriod(memo: MemoState, period: MemoBlock): MemoState {
   };
 }
 
-function minuteToTime(total: number): string {
-  const safe = Math.max(0, Math.min(23 * 60 + 59, total));
-  return `${String(Math.floor(safe / 60)).padStart(2, "0")}:${String(
-    safe % 60
-  ).padStart(2, "0")}`;
-}
-
 function nextSlot(
   lessons: MemoLesson[],
   block: MemoBlock
 ): { block: MemoBlock; timeFrom: string; timeTo: string } {
-  const start = (block === "morning" ? 8 : 14) * 60 + lessons.length * 60;
-  return { block, timeFrom: minuteToTime(start), timeTo: minuteToTime(start + 60) };
+  const base = (block === "morning" ? 8 : 14) * 60;
+  const last = lessons[lessons.length - 1];
+  const lastEnd = last ? timeToMinutes(last.timeTo) : null;
+  const start =
+    lastEnd == null
+      ? base
+      : Math.max(base, lastEnd + lessonBreakMinutes(last));
+  return {
+    block,
+    timeFrom: minutesToTime(start),
+    timeTo: minutesToTime(start + 60),
+  };
+}
+
+interface CombinedPlan {
+  level: LevelData;
+  stage: LevelStage;
+  week: LevelWeek;
+  day: LevelDay;
+  hasLesson: boolean;
+}
+
+/** يجلب المرحلة والأسبوع واليوم المقابل لكل مستوى داخل الاختيار نفسه. */
+function planForLevel(
+  catalog: Catalog,
+  selection: MemoSelection,
+  levelNumber: number
+): CombinedPlan | null {
+  const level = catalog.subjects
+    .find((subject) => subject.code === selection.subjectCode)
+    ?.levels.find((item) => item.level === levelNumber);
+  if (!level) return null;
+  const stage =
+    level.stages.find((item) => item.id === selection.stageId) ?? level.stages[0];
+  const week =
+    stage?.weeks.find((item) => item.weekNumber === selection.weekNumber) ??
+    stage?.weeks[0];
+  const day =
+    week?.days.find((item) => item.dayKey === selection.dayKey) ?? week?.days[0];
+  if (!stage || !week || !day) return null;
+  return {
+    level,
+    stage,
+    week,
+    day,
+    hasLesson: day.kind !== "empty" && !!day.content.topic_ar.trim(),
+  };
+}
+
+function combinedLesson(
+  plan: CombinedPlan,
+  selection: MemoSelection,
+  profile: Profile,
+  catalog: Catalog,
+  startMinute: number,
+  sessionNumber: number,
+  groupLabel: string
+): MemoLesson {
+  return {
+    id: uid(),
+    block: selection.period,
+    timeFrom: minutesToTime(startMinute),
+    timeTo: minutesToTime(startMinute + 60),
+    section: profile.section,
+    component:
+      plan.level.subject_ar || plan.level.subject || catalog.template.subject_ar,
+    topic: plan.day.content.topic_ar,
+    objectives: "",
+    stages: "",
+    session: `الحصة ${sessionNumber}`,
+    rj: "",
+    sourceLessonNumber: plan.day.lessonNumber ?? null,
+    sourceDayKey: plan.day.dayKey,
+    kind: plan.day.kind,
+    breakMinutes: 0,
+    levelNumber: plan.level.level,
+    levelLabel: plan.level.levelLabel_ar,
+    groupLabel,
+  };
+}
+
+/**
+ * مذكرة مشتركة عند اختيار أكثر من مستوى:
+ * تتناوب المستويات والأفواج، مع استراحة بعد الجولة الأولى وصف خروج في النهاية.
+ * مثال مستويين: م1/ف1 ← م2/ف2 ← استراحة ← م1/ف2 ← م2/ف1 ← الخروج.
+ */
+function buildCombinedMemo(
+  catalog: Catalog,
+  selection: MemoSelection,
+  profile: Profile
+): MemoState | null {
+  const plans = selection.levels
+    .map((levelNumber) => planForLevel(catalog, selection, levelNumber))
+    .filter((plan): plan is CombinedPlan => !!plan);
+  if (!plans.length) return null;
+
+  const activePlan =
+    plans.find((plan) => plan.level.level === selection.level) ?? plans[0];
+  const scheduled = plans.filter((plan) => plan.hasLesson);
+  const lessons: MemoLesson[] = [];
+  let cursor = (selection.period === "morning" ? 8 : 14) * 60;
+
+  if (scheduled.length) {
+    for (let round = 0; round < DEFAULT_GROUP_LABELS.length; round++) {
+      scheduled.forEach((plan, index) => {
+        const groupLabel =
+          DEFAULT_GROUP_LABELS[
+            (round + index) % DEFAULT_GROUP_LABELS.length
+          ];
+        const lesson = combinedLesson(
+          plan,
+          selection,
+          profile,
+          catalog,
+          cursor,
+          lessons.length + 1,
+          groupLabel
+        );
+        cursor += 60;
+        /* استراحة واحدة بعد الجولة الأولى، أي بعد آخر حصة قبل تغيير الأفواج. */
+        if (round === 0 && index === scheduled.length - 1) {
+          lesson.breakMinutes = 15;
+          cursor += 15;
+        }
+        lessons.push(lesson);
+      });
+    }
+  }
+
+  return {
+    institution: profile.institution,
+    teacher: profile.teacher,
+    director: profile.director,
+    inspector: profile.inspector,
+    academicYear: profile.academicYear || defaultAcademicYear(),
+    level: plans.map((plan) => plan.level.levelLabel_ar).join(" · "),
+    stage: activePlan.stage.title_ar,
+    subject:
+      activePlan.level.subject_ar ||
+      activePlan.level.subject ||
+      catalog.template.subject_ar,
+    date: todayIso(),
+    unit: "",
+    week: activePlan.week.title_ar,
+    day: activePlan.day.label_ar,
+    section: profile.section,
+    notes: "",
+    period: selection.period,
+    showNotes: true,
+    showSignatures: true,
+    showDismissal: lessons.length > 0,
+    lessons,
+  };
 }
 
 function buildMemo(
@@ -161,6 +311,11 @@ function buildMemo(
   selection: MemoSelection,
   profile: Profile
 ): MemoState | null {
+  if (selection.levels.length > 1) {
+    const combined = buildCombinedMemo(catalog, selection, profile);
+    if (combined) return combined;
+  }
+
   const level = findLevel(catalog, selection);
   const stage = findStage(level, selection.stageId);
   const week = findWeek(stage, selection.weekNumber);
@@ -488,6 +643,12 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         : selection.level
       : levelNumber;
     goTo(selectionForLevel(catalog, selection, activeLevel, levels));
+    if (!selected && levels.length > 1) {
+      setToast({
+        msg: "تم دمج المستويات المختارة في مذكرة واحدة: تناوب الحصص والأفواج، استراحة، ثم الخروج.",
+        kind: "ok",
+      });
+    }
   }
 
   function changePeriod(period: MemoBlock) {
@@ -544,27 +705,60 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   }
 
   function updateLesson(id: string, patch: Partial<MemoLesson>) {
-    setMemo((previous) =>
-      previous
-        ? {
-            ...previous,
-            lessons: previous.lessons.map((lesson) =>
-              lesson.id === id ? { ...lesson, ...patch } : lesson
-            ),
+    setMemo((previous) => {
+      if (!previous) return previous;
+      const index = previous.lessons.findIndex((lesson) => lesson.id === id);
+      if (index < 0) return previous;
+      const current = previous.lessons[index];
+      const lessons = previous.lessons.map((lesson) =>
+        lesson.id === id ? { ...lesson, ...patch } : lesson
+      );
+
+      /* تغيير مدة الاستراحة يزيح الحصص الموالية التي تبدأ مباشرة بعدها،
+         حتى تبقى الأوقات متسقة في المعاينة والطباعة. */
+      const nextBreak = patch.breakMinutes;
+      const oldBreak = lessonBreakMinutes(current);
+      if (
+        nextBreak !== undefined &&
+        nextBreak !== oldBreak &&
+        lessons[index + 1]
+      ) {
+        const end = timeToMinutes(current.timeTo);
+        const nextStart = timeToMinutes(lessons[index + 1].timeFrom);
+        if (end != null && nextStart != null && nextStart === end + oldBreak) {
+          const delta = nextBreak - oldBreak;
+          for (let i = index + 1; i < lessons.length; i += 1) {
+            const from = timeToMinutes(lessons[i].timeFrom);
+            const to = timeToMinutes(lessons[i].timeTo);
+            if (from == null || to == null) continue;
+            lessons[i] = {
+              ...lessons[i],
+              timeFrom: minutesToTime(from + delta),
+              timeTo: minutesToTime(to + delta),
+            };
           }
-        : previous
-    );
+        }
+      }
+
+      return { ...previous, lessons };
+    });
   }
 
   function addLesson() {
+    const multiLevel = selection.levels.length > 1;
+    const activeLevel = findLevel(catalog, selection);
     setMemo((previous) => {
       if (!previous) return previous;
       const slot = nextSlot(previous.lessons, previous.period);
+      const sameLevelCount = previous.lessons.filter(
+        (lesson) => lesson.levelNumber === selection.level
+      ).length;
       const lesson: MemoLesson = {
         id: uid(),
         ...slot,
         section: previous.section,
-        component: previous.subject,
+        component:
+          activeLevel?.subject_ar || activeLevel?.subject || previous.subject,
         topic: "",
         objectives: "",
         stages: "",
@@ -572,13 +766,27 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         rj: "",
         kind: "lesson",
         breakMinutes: 0,
+        levelNumber: multiLevel ? selection.level : undefined,
+        levelLabel: multiLevel ? activeLevel?.levelLabel_ar : undefined,
+        groupLabel: multiLevel
+          ? DEFAULT_GROUP_LABELS[sameLevelCount % DEFAULT_GROUP_LABELS.length]
+          : undefined,
       };
-      return { ...previous, lessons: [...previous.lessons, lesson] };
+      return {
+        ...previous,
+        showDismissal: previous.showDismissal || multiLevel,
+        lessons: [...previous.lessons, lesson],
+      };
     });
   }
 
-  function addFromDay(sourceDay: LevelDay) {
+  function addFromDay(sourceDay: LevelDay, levelNumber: number) {
     if (!sourceDay.content.topic_ar.trim()) return;
+    const multiLevel = selection.levels.length > 1;
+    const sourceLevel = findLevel(catalog, {
+      subjectCode: selection.subjectCode,
+      level: levelNumber,
+    });
     setMemo((previous) => {
       if (!previous) return previous;
       const base = previous.lessons.filter(
@@ -589,24 +797,48 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
           lesson.stages.trim()
       );
       const slot = nextSlot(base, previous.period);
+      const levelGroupCount = base.filter(
+        (lesson) => lesson.levelNumber === levelNumber
+      ).length;
       const lesson: MemoLesson = {
         id: uid(),
         ...slot,
         section: previous.section,
-        component: previous.subject,
+        component:
+          sourceLevel?.subject_ar || sourceLevel?.subject || previous.subject,
         topic: sourceDay.content.topic_ar,
         objectives: "",
         stages: "",
-        session: sourceDay.lessonNumber ? `الحصة ${sourceDay.lessonNumber}` : "مراجعة",
+        session: multiLevel
+          ? `الحصة ${base.length + 1}`
+          : sourceDay.lessonNumber
+            ? `الحصة ${sourceDay.lessonNumber}`
+            : "مراجعة",
         rj: "",
         sourceLessonNumber: sourceDay.lessonNumber ?? null,
         sourceDayKey: sourceDay.dayKey,
         kind: sourceDay.kind,
         breakMinutes: 0,
+        levelNumber: multiLevel ? levelNumber : undefined,
+        levelLabel: multiLevel ? sourceLevel?.levelLabel_ar : undefined,
+        groupLabel: multiLevel
+          ? DEFAULT_GROUP_LABELS[
+              levelGroupCount % DEFAULT_GROUP_LABELS.length
+            ]
+          : undefined,
       };
-      return { ...previous, lessons: [...base, lesson] };
+      return {
+        ...previous,
+        showDismissal: previous.showDismissal || multiLevel,
+        lessons: [...base, lesson],
+      };
     });
-    setToast({ msg: "أُضيف الدرس إلى مذكرة اليوم.", kind: "ok" });
+    setToast({
+      msg: multiLevel
+        ? `أُضيف درس ${sourceLevel?.levelLabel_ar || "المستوى"} إلى المذكرة المشتركة.`
+        : "أُضيف الدرس إلى مذكرة اليوم.",
+      kind: "ok",
+    });
   }
 
   function removeLesson(id: string) {
@@ -675,12 +907,16 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     window.setTimeout(() => window.print(), 120);
   }
 
-  function isAdded(sourceDay: LevelDay): boolean {
+  function isAdded(sourceDay: LevelDay, levelNumber: number): boolean {
+    const multiLevel = selection.levels.length > 1;
     return !!memo?.lessons.some(
       (lesson) =>
         lesson.kind !== "empty" &&
         lesson.sourceDayKey === sourceDay.dayKey &&
-        (lesson.sourceLessonNumber ?? null) === (sourceDay.lessonNumber ?? null)
+        (lesson.sourceLessonNumber ?? null) === (sourceDay.lessonNumber ?? null) &&
+        (multiLevel
+          ? lesson.levelNumber === levelNumber
+          : lesson.levelNumber == null)
     );
   }
 
@@ -909,6 +1145,11 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
               <MemoEditor
                 memo={memo}
                 template={catalog.template}
+                levelOptions={assignedLevels.map((item) => ({
+                  level: item.level,
+                  label: item.levelLabel_ar,
+                }))}
+                multiLevel={selection.levels.length > 1}
                 onChange={updateMemo}
                 onLessonChange={updateLesson}
                 onAddLesson={addLesson}

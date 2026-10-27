@@ -11,11 +11,13 @@ import {
   FileText,
   GripVertical,
   Layers3,
+  LogOut,
   Plus,
   Signature,
   Sparkles,
   Trash2,
   UserRound,
+  UsersRound,
 } from "lucide-react";
 import type {
   MemoLesson,
@@ -39,6 +41,8 @@ import {
 interface Props {
   memo: MemoState;
   template: TemplateConfig;
+  levelOptions: Array<{ level: number; label: string }>;
+  multiLevel: boolean;
   onChange: (patch: Partial<MemoState>) => void;
   onLessonChange: (id: string, patch: Partial<MemoLesson>) => void;
   onAddLesson: () => void;
@@ -47,6 +51,24 @@ interface Props {
   onMoveLesson: (id: string, direction: -1 | 1) => void;
   onReset: () => void;
 }
+
+const LEVEL_FIELD: TemplateField = {
+  key: "level",
+  label_ar: "المستوى",
+  label_fr: "Niveau",
+  order: 0,
+  type: "select",
+  scope: "lesson",
+};
+
+const GROUP_FIELD: TemplateField = {
+  key: "group",
+  label_ar: "الفوج",
+  label_fr: "Groupe",
+  order: 0,
+  type: "text",
+  scope: "lesson",
+};
 
 function Label({
   field,
@@ -104,6 +126,8 @@ function LessonCard({
   lesson,
   index,
   template,
+  levelOptions,
+  multiLevel,
   onLessonChange,
   onRemove,
   onDuplicate,
@@ -114,6 +138,8 @@ function LessonCard({
   lesson: MemoLesson;
   index: number;
   template: TemplateConfig;
+  levelOptions: Array<{ level: number; label: string }>;
+  multiLevel: boolean;
   onLessonChange: (id: string, patch: Partial<MemoLesson>) => void;
   onRemove: (id: string) => void;
   onDuplicate: (id: string) => void;
@@ -151,6 +177,13 @@ function LessonCard({
             {lesson.sourceLessonNumber ? ` · الدرس ${lesson.sourceLessonNumber}` : ""}
           </p>
         </div>
+        {lesson.levelLabel ? (
+          <span className="memo-lesson-level-pill">
+            <Layers3 className="h-3.5 w-3.5" />
+            {lesson.levelLabel}
+            {lesson.groupLabel ? <b>{lesson.groupLabel}</b> : null}
+          </span>
+        ) : null}
         <div className="memo-lesson-actions">
           <span className="memo-period-tag">
             <Clock3 className="h-3.5 w-3.5" />
@@ -210,9 +243,56 @@ function LessonCard({
           </span>
           <strong>{duration}</strong>
         </div>
-        <Label field={section} hint="تظهر مباشرة في خانة القسم بالجدول.">
+        <Label
+          field={section}
+          hint={
+            multiLevel
+              ? "تظهر أسفل المستوى والفوج في الجدول."
+              : "تظهر مباشرة في خانة القسم بالجدول."
+          }
+        >
           {inputFor(section!, lesson.section, (value) => update({ section: value }))}
         </Label>
+        {multiLevel ? (
+          <>
+            <Label field={LEVEL_FIELD} hint="يحدّد المستوى الذي تتبعه الحصة.">
+              <select
+                className="memo-input"
+                value={lesson.levelNumber ?? ""}
+                onChange={(event) => {
+                  const nextLevel = Number(event.target.value);
+                  const option = levelOptions.find(
+                    (item) => item.level === nextLevel
+                  );
+                  update({
+                    levelNumber: option ? option.level : undefined,
+                    levelLabel: option?.label,
+                  });
+                }}
+              >
+                <option value="">— اختر المستوى —</option>
+                {levelOptions.map((item) => (
+                  <option key={item.level} value={item.level}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </Label>
+            <Label field={GROUP_FIELD} hint="الفوج الأول أو الثاني، ويمكن كتابة اسم آخر.">
+              <input
+                className="memo-input"
+                list={`memo-groups-${lesson.id}`}
+                value={lesson.groupLabel || ""}
+                onChange={(event) => update({ groupLabel: event.target.value })}
+                placeholder="مثال: الفوج الأول"
+              />
+              <datalist id={`memo-groups-${lesson.id}`}>
+                <option value="الفوج الأول" />
+                <option value="الفوج الثاني" />
+              </datalist>
+            </Label>
+          </>
+        ) : null}
         <Label field={component}>
           {inputFor(component!, lesson.component, (value) => update({ component: value }))}
         </Label>
@@ -306,6 +386,8 @@ function LessonCard({
 export default function MemoEditor({
   memo,
   template,
+  levelOptions,
+  multiLevel,
   onChange,
   onLessonChange,
   onAddLesson,
@@ -314,6 +396,7 @@ export default function MemoEditor({
   onMoveLesson,
   onReset,
 }: Props) {
+  const lastLesson = memo.lessons[memo.lessons.length - 1];
   const documentFields = sortedFields(template, "document");
   const headerFields = sortedFields(template, "header");
   const notesField = sortedFields(template, "footer")[0];
@@ -408,10 +491,12 @@ export default function MemoEditor({
               <Layers3 className="h-4 w-4" />
             </span>
             <div>
-              <h2>حصص اليوم</h2>
+              <h2>{multiLevel ? "حصص اليوم المشتركة" : "حصص اليوم"}</h2>
               <p>
                 {memo.lessons.length
-                  ? `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}. عدّل المدة من/إلى والقسم لكل حصة، وأضف استراحة قابلة للتعديل بين الحصص.`
+                  ? multiLevel
+                    ? `${lessonsCountLabel(memo.lessons.length)} — ${memo.level}. تتناوب المستويات والأفواج، ويمكن تعديل كل حصة واستراحتها.`
+                    : `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}. عدّل المدة من/إلى والقسم لكل حصة، وأضف استراحة قابلة للتعديل بين الحصص.`
                   : `لا توجد حصص بعد. أضف حصة فارغة أو اختر درسًا من خريطة الأسبوع — ${periodLabel(template, memo.period)}.`}
               </p>
             </div>
@@ -422,6 +507,24 @@ export default function MemoEditor({
           </button>
         </div>
 
+        {multiLevel ? (
+          <div className="memo-combined-note">
+            <span className="memo-combined-icon">
+              <UsersRound className="h-4 w-4" />
+            </span>
+            <div>
+              <b>مذكرة مشتركة: {memo.level}</b>
+              <span>
+                {levelOptions.length === 2
+                  ? "التناوب: المستوى الأول/الفوج الأول ← المستوى الثاني/الفوج الثاني ← استراحة ← المستوى الأول/الفوج الثاني ← المستوى الثاني/الفوج الأول ← الخروج."
+                  : "تتناوب المستويات المختارة والأفواج، مع استراحة بعد الجولة الأولى ثم صف خروج في النهاية."}{" "}
+                كل سطر قابل للتعديل، وإذا كان أحد المستويات بلا درس في هذا اليوم
+                يُعتمد المستوى الآخر.
+              </span>
+            </div>
+          </div>
+        ) : null}
+
         <div className="memo-lessons">
           {memo.lessons.map((lesson, index) => (
             <LessonCard
@@ -429,6 +532,8 @@ export default function MemoEditor({
               lesson={lesson}
               index={index}
               template={template}
+              levelOptions={levelOptions}
+              multiLevel={multiLevel}
               onLessonChange={onLessonChange}
               onRemove={onRemoveLesson}
               onDuplicate={onDuplicateLesson}
@@ -445,6 +550,30 @@ export default function MemoEditor({
             </button>
           ) : null}
         </div>
+
+        {memo.lessons.length && (multiLevel || memo.showDismissal) ? (
+          <div className="memo-exit-box">
+            <div className="memo-exit-info">
+              <span className="memo-exit-label">
+                <LogOut className="h-4 w-4" />
+                الخروج
+              </span>
+              <strong dir="ltr">{lastLesson?.timeTo || "—"}</strong>
+              <small>يُحسب تلقائيًا من نهاية آخر حصة بعد الاستراحة.</small>
+            </div>
+            <label className="memo-switch">
+              <input
+                type="checkbox"
+                checked={memo.showDismissal ?? false}
+                onChange={(event) =>
+                  onChange({ showDismissal: event.target.checked })
+                }
+              />
+              <span />
+              إظهار صف الخروج في الطباعة
+            </label>
+          </div>
+        ) : null}
       </section>
 
       <section className="memo-panel">

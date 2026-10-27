@@ -28,8 +28,8 @@ interface Props {
   selection: MemoSelection;
   onLevelChange: (levelNumber: number) => void;
   onGo: (patch: Partial<MemoSelection>) => void;
-  onAddDay: (day: LevelDay) => void;
-  isAdded: (day: LevelDay) => boolean;
+  onAddDay: (day: LevelDay, levelNumber: number) => void;
+  isAdded: (day: LevelDay, levelNumber: number) => boolean;
 }
 
 function kindClass(kind: LevelDay["kind"]): string {
@@ -68,14 +68,18 @@ export default function WeekMap({
             </span>
             <div>
               <h2>خريطة الأسبوع</h2>
-              <p>اختر الدرس ثم أضفه إلى مذكرة اليوم. الأحد عطلة أسبوعية.</p>
+              <p>
+                {levels.length > 1
+                  ? "اختر المستوى النشط ثم أضف درسه إلى المذكرة المشتركة. الأحد عطلة أسبوعية."
+                  : "اختر الدرس ثم أضفه إلى مذكرة اليوم. الأحد عطلة أسبوعية."}
+              </p>
             </div>
           </div>
         </div>
 
         {levels.length > 1 ? (
           <div className="memo-level-tabs">
-            <span className="memo-level-tabs-label">المذكرة الحالية</span>
+            <span className="memo-level-tabs-label">المستوى النشط</span>
             <div className="memo-level-tabs-list" role="tablist" aria-label="المستوى الحالي">
               {levels.map((item) => (
                 <button
@@ -164,7 +168,7 @@ export default function WeekMap({
         <div className="memo-days" aria-label="أيام الأسبوع">
           {week.days.map((day) => {
             const active = day.dayKey === selection.dayKey;
-            const added = isAdded(day);
+            const added = isAdded(day, level.level);
             const hasLesson = day.kind !== "empty" && !!day.content.topic_ar.trim();
             return (
               <div
@@ -194,7 +198,7 @@ export default function WeekMap({
                   <button
                     type="button"
                     className={cx("memo-day-add", added && "is-added")}
-                    onClick={() => onAddDay(day)}
+                    onClick={() => onAddDay(day, level.level)}
                     disabled={added}
                     title={added ? "مضاف إلى مذكرة اليوم" : "أضف إلى مذكرة اليوم"}
                     aria-label={added ? "مضاف إلى مذكرة اليوم" : "أضف إلى مذكرة اليوم"}

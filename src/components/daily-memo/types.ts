@@ -155,6 +155,12 @@ export interface MemoLesson {
   kind?: LessonKind;
   /** مدة الاستراحة بالدقائق بعد هذه الحصة؛ 0 أو غير موجودة = بدون استراحة. */
   breakMinutes?: number;
+  /** رقم المستوى عند دمج أكثر من مستوى في المذكرة نفسها. */
+  levelNumber?: number;
+  /** اسم المستوى كما يظهر في خانة المستوى/الفوج بالورقة. */
+  levelLabel?: string;
+  /** الفوج داخل المستوى، مثل: الفوج الأول. */
+  groupLabel?: string;
 }
 
 export interface MemoState {
@@ -175,6 +181,8 @@ export interface MemoState {
   period: MemoBlock;
   showNotes: boolean;
   showSignatures: boolean;
+  /** صف الخروج أسفل جدول الحصص؛ يُفعّل تلقائيًا عند دمج المستويات. */
+  showDismissal?: boolean;
   lessons: MemoLesson[];
 }
 
@@ -242,17 +250,25 @@ export function sortedFields(
     .sort((a, b) => a.order - b.order);
 }
 
+export function timeToMinutes(value: string): number | null {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
+  return hours * 60 + minutes;
+}
+
+export function minutesToTime(total: number): string {
+  const safe = Math.max(0, Math.min(23 * 60 + 59, Math.round(total)));
+  return `${String(Math.floor(safe / 60)).padStart(2, "0")}:${String(
+    safe % 60
+  ).padStart(2, "0")}`;
+}
+
 export function timesToMinutes(from: string, to: string): number | null {
-  const parse = (value: string) => {
-    const match = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
-    if (!match) return null;
-    const hours = Number(match[1]);
-    const minutes = Number(match[2]);
-    if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
-    return hours * 60 + minutes;
-  };
-  const start = parse(from);
-  const end = parse(to);
+  const start = timeToMinutes(from);
+  const end = timeToMinutes(to);
   if (start == null || end == null || end <= start) return null;
   return end - start;
 }
@@ -309,9 +325,14 @@ export function formatLongDate(iso: string): string {
 }
 
 export function draftKey(selection: MemoSelection): string {
+  /* المستويات المختارة كلها جزء من المسودة نفسها. عند مستوى واحد يبقى
+     المفتاح بالصيغة القديمة نفسها حتى لا تضيع المسودات المحفوظة. */
+  const levels = selection.levels.length
+    ? [...selection.levels].sort((a, b) => a - b).join("+")
+    : String(selection.level);
   return [
     selection.subjectCode,
-    selection.level,
+    levels,
     selection.period,
     selection.stageId,
     selection.weekNumber,
@@ -364,6 +385,9 @@ export function periodLabel(
     (period === "morning" ? "الفترة الصباحية" : "الفترة المسائية")
   );
 }
+
+/** أفواج التناوب الافتراضية عند دمج مستويين أو أكثر في مذكرة واحدة. */
+export const DEFAULT_GROUP_LABELS = ["الفوج الأول", "الفوج الثاني"] as const;
 
 export const KIND_LABELS: Record<LessonKind, string> = {
   lesson: "درس",

@@ -77,6 +77,21 @@ function lessonRow(lesson: MemoLesson, template: TemplateConfig, index: number) 
           );
         }
         if (column.key === "section") {
+          if (lesson.levelLabel || lesson.groupLabel) {
+            return (
+              <td key={column.key} className="ms-center ms-level-cell">
+                <span className="ms-level-name">
+                  {lesson.levelLabel || valueOrDash(lesson.section)}
+                </span>
+                {lesson.groupLabel ? (
+                  <span className="ms-group-name">{lesson.groupLabel}</span>
+                ) : null}
+                {lesson.section.trim() ? (
+                  <span className="ms-section-name">{lesson.section}</span>
+                ) : null}
+              </td>
+            );
+          }
           return (
             <td key={column.key} className="ms-center">
               {valueOrDash(lesson.section)}
@@ -136,12 +151,35 @@ function breakRow(lesson: MemoLesson, template: TemplateConfig) {
   );
 }
 
+function dismissalRow(time: string, template: TemplateConfig) {
+  return (
+    <tr className="ms-dismissal-row">
+      <td colSpan={template.tableColumns.length}>
+        <span className="ms-dismissal-inner">
+          <b>الخروج</b>
+          <i aria-hidden="true" />
+          <em dir="ltr">{time || "—"}</em>
+        </span>
+      </td>
+    </tr>
+  );
+}
+
 export default function MemoSheet({ memo, template }: Props) {
   const lessons = memo.lessons;
   const period = memo.period;
   const blockTitle = periodLabel(template, period);
   const breakCount = lessons.filter((lesson) => lessonBreakMinutes(lesson) > 0).length;
-  const blankRows = Math.max(0, 8 - lessons.length - breakCount);
+  const hasLevels = lessons.some(
+    (lesson) => !!lesson.levelLabel || !!lesson.groupLabel
+  );
+  const lastLesson = lessons[lessons.length - 1];
+  const showDismissal = !!memo.showDismissal && !!lastLesson;
+  const dismissalTime = lastLesson?.timeTo || "";
+  const blankRows = Math.max(
+    0,
+    8 - lessons.length - breakCount - (showDismissal ? 1 : 0)
+  );
   const meta = [
     { label: fieldLabel(template, "date", "التاريخ"), value: formatLongDate(memo.date) },
     { label: fieldLabel(template, "day", "اليوم"), value: valueOrDash(memo.day) },
@@ -206,7 +244,11 @@ export default function MemoSheet({ memo, template }: Props) {
         <thead>
           <tr>
             {template.tableColumns.map((column) => (
-              <th key={column.key}>{column.label_ar}</th>
+              <th key={column.key}>
+                {column.key === "section" && hasLevels
+                  ? "المستوى / الفوج"
+                  : column.label_ar}
+              </th>
             ))}
           </tr>
         </thead>
@@ -219,7 +261,7 @@ export default function MemoSheet({ memo, template }: Props) {
                 {lessons.length
                   ? `${lessonsCountLabel(lessons.length)}${
                       breakCount ? ` · ${breaksCountLabel(breakCount)}` : ""
-                    }`
+                    }${showDismissal ? ` · الخروج ${dismissalTime}` : ""}`
                   : "بدون حصص — استعمل الصفوف الفارغة"}
               </em>
             </td>
@@ -233,6 +275,7 @@ export default function MemoSheet({ memo, template }: Props) {
           {Array.from({ length: blankRows }).map((_, index) =>
             blankRow(template, `blank-${period}-${index}`)
           )}
+          {showDismissal ? dismissalRow(dismissalTime, template) : null}
         </tbody>
       </table>
 
