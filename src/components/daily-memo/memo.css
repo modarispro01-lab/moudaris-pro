@@ -967,6 +967,15 @@
   grid-column: 1 / -1;
 }
 
+/* اختيار المكون في المواد ذات المحاور (النشاط العلمي) يأتي مباشرة بعد المدة. */
+.memo-lesson-grid > .memo-field.memo-field-component {
+  grid-column: span 4;
+}
+
+.memo-lesson-grid > .memo-field.memo-field-component select {
+  font-weight: 700;
+}
+
 .memo-lesson-grid > .memo-field:nth-last-child(2),
 .memo-lesson-grid > .memo-field:nth-last-child(1) {
   grid-column: span 6;
@@ -2578,6 +2587,10 @@
     grid-column: span 3;
   }
 
+  .memo-lesson-grid > .memo-field.memo-field-component {
+    grid-column: span 3;
+  }
+
   .memo-duration-box {
     grid-column: span 3;
   }
@@ -2781,6 +2794,10 @@
   .memo-lesson-grid > .memo-field,
   .memo-duration-box {
     grid-column: span 6;
+  }
+
+  .memo-lesson-grid > .memo-field.memo-field-component {
+    grid-column: 1 / -1;
   }
 
   .memo-lesson-grid > .memo-field.memo-span-full {

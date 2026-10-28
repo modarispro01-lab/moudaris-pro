@@ -1,0 +1,898 @@
+{
+  "subject": "النشاط العلمي",
+  "subject_ar": "النشاط العلمي",
+  "subjectCode": "science",
+  "level": 2,
+  "levelLabel_ar": "المستوى الثاني",
+  "levelLabel_fr": "Niveau 2",
+  "sessionCount": 2,
+  "source": "توازيع النشاط العلمي.pdf",
+  "source_note": "عبارات الدروس والمحاور منقولة من توزيع النشاط العلمي الرسمي — المستوى الثاني. لم تُضف أهداف أو أنشطة أو وسائل غير واردة في الملف؛ تبقى الحقول التربوية فارغة للتعبئة من طرف الأستاذ(ة).",
+  "dayPlanNote": "حصتان في الأسبوع: الحصة 1 والحصة 2 حسب توزيع الأسبوع. اليوم الفعلي يُختار في الشريط العلوي ويخص الترويسة فقط. الأسبوع 5 مراجعة وتوليف، والأسبوع 6 تقويم المرحلة، حسب ما ورد في التوزيع.",
+  "stages": [
+    {
+      "id": "stage-1",
+      "number": 1,
+      "title_ar": "المرحلة الأولى",
+      "title_fr": "Étape 1",
+      "theme_ar": "الإنسان: الصحة والتغذية / الكائنات الحية والتكاثر والوراثة",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "title_ar": "الأسبوع الأول",
+          "title_fr": "Semaine 1",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "الإنسان: الصحة والتغذية",
+              "content": {
+                "topic_ar": "بماذا ألمس الأشياء من حولي",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "الإنسان: الصحة والتغذية",
+              "content": {
+                "topic_ar": "هل تكفي حاسة واحدة لاكتشاف المحيط",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "title_ar": "الأسبوع الثاني",
+          "title_fr": "Semaine 2",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "الإنسان: الصحة والتغذية",
+              "content": {
+                "topic_ar": "ماهي مفاصل جسمي وما وظائفها",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "الإنسان: الصحة والتغذية",
+              "content": {
+                "topic_ar": "ما الأعضاء التي تساعدني على مضغ الطعام",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "title_ar": "الأسبوع الثالث",
+          "title_fr": "Semaine 3",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "الإنسان: الصحة والتغذية",
+              "content": {
+                "topic_ar": "ماهي أنواع أسناني وما وظائفها",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "الأوساط الحية والتنوع والتكيف",
+              "content": {
+                "topic_ar": "كيف أصنف الحيوانات حسب أوساط عيشها",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "title_ar": "الأسبوع الرابع",
+          "title_fr": "Semaine 4",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "كيف تنمو النباتات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "ماهي الأنظمة الغذائية للحيوانات",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 5,
+          "title_ar": "الأسبوع الخامس",
+          "title_fr": "Semaine 5",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "component": "الإنسان: الصحة والتغذية / الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "مراجعة وتوليف 1",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "component": "الإنسان: الصحة والتغذية / الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "مراجعة وتوليف 2",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "title_ar": "الأسبوع السادس",
+          "title_fr": "Semaine 6",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "component": "الإنسان: الصحة والتغذية / الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "تقويم المرحلة 1",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-2",
+      "number": 2,
+      "title_ar": "المرحلة الثانية",
+      "title_fr": "Étape 2",
+      "theme_ar": "الكائنات الحية والتكاثر والوراثة / الأوساط الحية والتنوع والتكيف",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 7,
+          "title_ar": "الأسبوع السابع",
+          "title_fr": "Semaine 7",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "ماهي أجزاء النباتات الرئيسية",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "كيف تنمو النباتات وماهي الأجزاء التي تؤكل منها",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 8,
+          "title_ar": "الأسبوع الثامن",
+          "title_fr": "Semaine 8",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "ما الأعضاء التي تساعد الحيوانات على التنقل في الهواء والماء",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "الكائنات الحية والتكاثر والوراثة",
+              "content": {
+                "topic_ar": "كيف تتنفس الحيوانات البرية",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 9,
+          "title_ar": "الأسبوع التاسع",
+          "title_fr": "Semaine 9",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "الأوساط الحية والتنوع والتكيف",
+              "content": {
+                "topic_ar": "كيف تتنفس الحيوانات البرية",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "الأوساط الحية والتنوع والتكيف",
+              "content": {
+                "topic_ar": "كيف تتنفس السمكة",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 10,
+          "title_ar": "الأسبوع العاشر",
+          "title_fr": "Semaine 10",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "الأوساط الحية والتنوع والتكيف",
+              "content": {
+                "topic_ar": "كيف تتنفس الحيوانات البرمائية",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "الأوساط الحية والتنوع والتكيف",
+              "content": {
+                "topic_ar": "ما السلسلة الغذائية وكيف نرتب عناصرها",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 11,
+          "title_ar": "الأسبوع الحادي عشر",
+          "title_fr": "Semaine 11",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "component": "الكائنات الحية والتكاثر والوراثة / الأوساط الحية والتنوع والتكيف",
+              "content": {
+                "topic_ar": "مراجعة وتوليف 1",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "component": "الكائنات الحية والتكاثر والوراثة / الأوساط الحية والتنوع والتكيف",
+              "content": {
+                "topic_ar": "مراجعة وتوليف 2",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 12,
+          "title_ar": "الأسبوع الثاني عشر",
+          "title_fr": "Semaine 12",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "component": "الكائنات الحية والتكاثر والوراثة / الأوساط الحية والتنوع والتكيف",
+              "content": {
+                "topic_ar": "تقويم المرحلة 2",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-3",
+      "number": 3,
+      "title_ar": "المرحلة الثالثة",
+      "title_fr": "Étape 3",
+      "theme_ar": "المادة / الطاقة والحركة الضوء والصوت",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 13,
+          "title_ar": "الأسبوع الثالث عشر",
+          "title_fr": "Semaine 13",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "المادة",
+              "content": {
+                "topic_ar": "كيف أميز الحالة الصلبة",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "المادة",
+              "content": {
+                "topic_ar": "كيف أميز الحالة السائلة",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 14,
+          "title_ar": "الأسبوع الرابع عشر",
+          "title_fr": "Semaine 14",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "المادة",
+              "content": {
+                "topic_ar": "كيف أميز الحالة الغازية",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "المادة",
+              "content": {
+                "topic_ar": "كيف أصنف المواد الصلبة حسب درجة صلابتها",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 15,
+          "title_ar": "الأسبوع الخامس عشر",
+          "title_fr": "Semaine 15",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "الطاقة والحركة",
+              "content": {
+                "topic_ar": "كيف أتعرف على مفعول القوة",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "الطاقة والحركة",
+              "content": {
+                "topic_ar": "كيف أتعرف على مفعول القوة",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 16,
+          "title_ar": "الأسبوع السادس عشر",
+          "title_fr": "Semaine 16",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "الطاقة والحركة",
+              "content": {
+                "topic_ar": "كيف تتحرك الأجسام",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "الضوء والصوت",
+              "content": {
+                "topic_ar": "كيف ينتج الصوت وماخصائصه",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 17,
+          "title_ar": "الأسبوع السابع عشر",
+          "title_fr": "Semaine 17",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "component": "المادة / الطاقة والحركة الضوء والصوت",
+              "content": {
+                "topic_ar": "مراجعة وتوليف 1",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "component": "المادة / الطاقة والحركة الضوء والصوت",
+              "content": {
+                "topic_ar": "مراجعة وتوليف 2",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 18,
+          "title_ar": "الأسبوع الثامن عشر",
+          "title_fr": "Semaine 18",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "component": "المادة / الطاقة والحركة الضوء والصوت",
+              "content": {
+                "topic_ar": "تقويم المرحلة 3",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-4",
+      "number": 4,
+      "title_ar": "المرحلة الرابعة",
+      "title_fr": "Étape 4",
+      "theme_ar": "الكهرباء والمغناطيسية / الضوء والصوت / الأرض وخصائصها الطبيعية",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 19,
+          "title_ar": "الأسبوع التاسع عشر",
+          "title_fr": "Semaine 19",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "الكهرباء والمغناطيسية",
+              "content": {
+                "topic_ar": "مماذا يتكون المصباح الكهربائي وكيف يضيء",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "الكهرباء والمغناطيسية",
+              "content": {
+                "topic_ar": "ماهي عناصر الدارة الكهربائية البسيطة",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 20,
+          "title_ar": "الأسبوع العشرون",
+          "title_fr": "Semaine 20",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "الكهرباء والمغناطيسية",
+              "content": {
+                "topic_ar": "كيف أميز بين الأجسام الموصلة والأجسام العازلة كهربائيا",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "الكهرباء والمغناطيسية",
+              "content": {
+                "topic_ar": "كيف أركب دارة كهربائية بسيطة",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 21,
+          "title_ar": "الأسبوع الحادي والعشرون",
+          "title_fr": "Semaine 21",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "الأرض وخصائصها الطبيعية",
+              "content": {
+                "topic_ar": "ما شكل الأرض",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "الأرض وخصائصها الطبيعية",
+              "content": {
+                "topic_ar": "من أين تأتينا المياه",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 22,
+          "title_ar": "الأسبوع الثاني والعشرون",
+          "title_fr": "Semaine 22",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "الأرض وخصائصها الطبيعية",
+              "content": {
+                "topic_ar": "كيف تؤثر الرياح على سطح الأرض",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "الأرض وخصائصها الطبيعية",
+              "content": {
+                "topic_ar": "ما آثار الماء على سطح الأرض",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 23,
+          "title_ar": "الأسبوع الثالث والعشرون",
+          "title_fr": "Semaine 23",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "component": "الكهرباء والمغناطيسية / الضوء والصوت / الأرض وخصائصها الطبيعية",
+              "content": {
+                "topic_ar": "مراجعة وتوليف 1",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "component": "الكهرباء والمغناطيسية / الضوء والصوت / الأرض وخصائصها الطبيعية",
+              "content": {
+                "topic_ar": "مراجعة وتوليف 2",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 24,
+          "title_ar": "الأسبوع الرابع والعشرون",
+          "title_fr": "Semaine 24",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "component": "الكهرباء والمغناطيسية / الضوء والصوت / الأرض وخصائصها الطبيعية",
+              "content": {
+                "topic_ar": "تقويم المرحلة 4",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-5",
+      "number": 5,
+      "title_ar": "المرحلة الخامسة",
+      "title_fr": "Étape 5",
+      "theme_ar": "المناخ والطقس",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 25,
+          "title_ar": "الأسبوع الخامس والعشرون",
+          "title_fr": "Semaine 25",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "المناخ والطقس",
+              "content": {
+                "topic_ar": "من أين يأتي ضوء النهار",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "المناخ والطقس",
+              "content": {
+                "topic_ar": "من أين تأتينا حرارة الجو",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 26,
+          "title_ar": "الأسبوع السادس والعشرون",
+          "title_fr": "Semaine 26",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "النظام الشمسي",
+              "content": {
+                "topic_ar": "كيف يأتي الليل والنهار",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "النظام الشمسي",
+              "content": {
+                "topic_ar": "كيف تتكون الفصول الأربعة",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 27,
+          "title_ar": "الأسبوع السابع والعشرون",
+          "title_fr": "Semaine 27",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "general-review",
+              "component": "المناخ والطقس",
+              "content": {
+                "topic_ar": "أنشطة التوليف والدعم",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 28,
+          "title_ar": "الأسبوع الثامن والعشرون",
+          "title_fr": "Semaine 28",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "general-review",
+              "component": "المناخ والطقس",
+              "content": {
+                "topic_ar": "أنشطة التوليف والدعم",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 29,
+          "title_ar": "الأسبوع التاسع والعشرون",
+          "title_fr": "Semaine 29",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "general-review",
+              "component": "المناخ والطقس",
+              "content": {
+                "topic_ar": "أنشطة التوليف والدعم",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 30,
+          "title_ar": "الأسبوع الثلاثون",
+          "title_fr": "Semaine 30",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "component": "المناخ والطقس",
+              "content": {
+                "topic_ar": "تقويم المرحلة 5",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

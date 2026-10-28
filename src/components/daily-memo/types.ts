@@ -79,6 +79,7 @@ export type LessonKind =
   | "lesson"
   | "weekly-review"
   | "stage-review"
+  | "stage-evaluation"
   | "general-review"
   | "empty";
 
@@ -88,6 +89,8 @@ export interface LevelDay {
   label_fr: string;
   lessonNumber?: number | null;
   kind: LessonKind;
+  /** المكون المقترح لهذه الحصة (محور المادة)، ويبقى قابلًا للتغيير في المحرر. */
+  component?: string;
   content: {
     topic_ar: string;
     topic_fr?: string;
@@ -106,6 +109,9 @@ export interface LevelStage {
   number: number;
   title_ar: string;
   title_fr: string;
+  /** محور المرحلة في المواد التي تعتمد مكونات متعددة (مثل النشاط العلمي). */
+  theme_ar?: string;
+  theme_fr?: string;
   weeks: LevelWeek[];
 }
 
@@ -116,6 +122,8 @@ export interface LevelData {
   level: number;
   levelLabel_ar: string;
   levelLabel_fr: string;
+  /** عدد الحصص الأسبوعية المتاحة في هذه المادة (افتراضيًا 5). */
+  sessionCount?: number;
   source?: string;
   source_note?: string;
   dayPlanNote?: string;
@@ -403,13 +411,32 @@ export function findDay(
 /** الحصص الأسبوعية التي يختار منها الأستاذ(ة) حسب استعماله الزمني. */
 export const SESSION_NUMBERS = [1, 2, 3, 4, 5] as const;
 
-export function clampSessionNumber(value: unknown, fallback = 1): number {
-  const numeric = Number(value);
-  if (!Number.isFinite(numeric)) return fallback;
+/** عدد الحصص المتاحة في المادة؛ المواد التي لا تحدد عددًا تبقى على 5 حصص. */
+export function levelSessionCount(level: LevelData | undefined): number {
+  const value = Number(level?.sessionCount);
+  if (!Number.isFinite(value)) return SESSION_NUMBERS[SESSION_NUMBERS.length - 1];
   return Math.min(
     SESSION_NUMBERS[SESSION_NUMBERS.length - 1],
-    Math.max(SESSION_NUMBERS[0], Math.round(numeric))
+    Math.max(1, Math.round(value))
   );
+}
+
+export function sessionNumbersFor(level: LevelData | undefined): number[] {
+  return SESSION_NUMBERS.slice(0, levelSessionCount(level));
+}
+
+export function clampSessionNumber(
+  value: unknown,
+  fallback: number = 1,
+  max: number = SESSION_NUMBERS[SESSION_NUMBERS.length - 1]
+): number {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  const safeMax = Math.min(
+    SESSION_NUMBERS[SESSION_NUMBERS.length - 1],
+    Math.max(1, Math.round(max))
+  );
+  return Math.min(safeMax, Math.max(SESSION_NUMBERS[0], Math.round(numeric)));
 }
 
 export function sessionLabel(sessionNumber: number): string {
@@ -445,13 +472,18 @@ export function sessionSourceDay(
   return days[index];
 }
 
-/** قائمة الحصص الخمس مع مصدر كل واحدة، لعرضها في خريطة الأسبوع. */
+/** قائمة الحصص المتاحة مع مصدر كل واحدة، لعرضها في خريطة الأسبوع. */
 export function sessionSources(
-  week: LevelWeek | undefined
+  week: LevelWeek | undefined,
+  sessionCount: number = SESSION_NUMBERS[SESSION_NUMBERS.length - 1]
 ): Array<{ sessionNumber: number; day: LevelDay; repeated: boolean }> {
   const days = contentDays(week);
   if (!days.length) return [];
-  return SESSION_NUMBERS.map((sessionNumber) => {
+  const max = Math.min(
+    SESSION_NUMBERS[SESSION_NUMBERS.length - 1],
+    Math.max(1, Math.round(sessionCount))
+  );
+  return SESSION_NUMBERS.slice(0, max).map((sessionNumber) => {
     const index = Math.min(sessionNumber - 1, days.length - 1);
     return {
       sessionNumber,
@@ -487,6 +519,7 @@ export const KIND_LABELS: Record<LessonKind, string> = {
   lesson: "درس",
   "weekly-review": "مراجعة أسبوعية",
   "stage-review": "مراجعة المرحلة",
+  "stage-evaluation": "تقويم المرحلة",
   "general-review": "مراجعة عامة",
   empty: "بدون درس",
 };

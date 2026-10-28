@@ -41,12 +41,13 @@ import {
   findWeek,
   legacyDraftKey,
   lessonBreakMinutes,
+  levelSessionCount,
   minutesToTime,
   periodLabel,
   sessionLabel,
   sessionNumberForDay,
+  sessionNumbersFor,
   sessionSourceDay,
-  SESSION_NUMBERS,
   timeToMinutes,
   todayIso,
   uid,
@@ -226,7 +227,11 @@ function combinedLesson(
     timeTo: minutesToTime(startMinute + 60),
     section: profile.section,
     component:
-      plan.level.subject_ar || plan.level.subject || catalog.template.subject_ar,
+      sourceDay?.component ||
+      plan.stage.theme_ar ||
+      plan.level.subject_ar ||
+      plan.level.subject ||
+      catalog.template.subject_ar,
     topic: sourceDay?.content.topic_ar ?? "",
     objectives: "",
     stages: "",
@@ -346,7 +351,12 @@ function buildMemo(
     timeFrom: start,
     timeTo: end,
     section: profile.section,
-    component: level.subject_ar || level.subject || catalog.template.subject_ar,
+    component:
+      sourceDay?.component ||
+      stage.theme_ar ||
+      level.subject_ar ||
+      level.subject ||
+      catalog.template.subject_ar,
     topic: sourceDay?.content.topic_ar ?? "",
     objectives: "",
     stages: "",
@@ -535,12 +545,17 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
       baseSelection.stageId
     );
     const baseWeek = findWeek(baseStage, baseSelection.weekNumber);
+    const baseSessionLimit = levelSessionCount(findLevel(catalog, baseSelection));
     /* عند فتح تفضيلات قديمة لا تحمل رقم الحصة، نستنتج الحصة من اليوم
        المحفوظ حتى تبقى عبارة الدرس نفسها التي كان الأستاذ(ة) يعمل عليها. */
     const sessionNumber =
       typeof storedPrefs.sessionNumber === "number"
-        ? clampSessionNumber(storedPrefs.sessionNumber)
-        : sessionNumberForDay(baseWeek, baseSelection.dayKey) ?? 1;
+        ? clampSessionNumber(storedPrefs.sessionNumber, 1, baseSessionLimit)
+        : clampSessionNumber(
+            sessionNumberForDay(baseWeek, baseSelection.dayKey) ?? 1,
+            1,
+            baseSessionLimit
+          );
     const hydratedSelection = selectionForLevel(
       catalog,
       { ...baseSelection, sessionNumber },
@@ -641,10 +656,13 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     const next: MemoSelection = {
       ...selection,
       ...patch,
-      sessionNumber: clampSessionNumber(
-        patch.sessionNumber ?? selection.sessionNumber
-      ),
     };
+    const nextLevel = findLevel(catalog, next);
+    next.sessionNumber = clampSessionNumber(
+      patch.sessionNumber ?? selection.sessionNumber,
+      1,
+      levelSessionCount(nextLevel)
+    );
     if (
       next.subjectCode === selection.subjectCode &&
       next.level === selection.level &&
@@ -727,7 +745,11 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
 
   /** الحصة تحدد موضوع الدرس، واليوم الفعلي يبقى اختيارًا مستقلًا. */
   function changeSession(sessionNumber: number) {
-    const nextSession = clampSessionNumber(sessionNumber);
+    const nextSession = clampSessionNumber(
+      sessionNumber,
+      1,
+      levelSessionCount(level)
+    );
     if (nextSession === selection.sessionNumber) return;
     goTo({ sessionNumber: nextSession });
     setToast({
@@ -857,7 +879,10 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         ...slot,
         section: previous.section,
         component:
-          activeLevel?.subject_ar || activeLevel?.subject || previous.subject,
+          stage?.theme_ar ||
+          activeLevel?.subject_ar ||
+          activeLevel?.subject ||
+          previous.subject,
         topic: "",
         objectives: "",
         stages: "",
@@ -909,7 +934,11 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         ...slot,
         section: previous.section,
         component:
-          sourceLevel?.subject_ar || sourceLevel?.subject || previous.subject,
+          sourceDay.component ||
+          findStage(sourceLevel, selection.stageId)?.theme_ar ||
+          sourceLevel?.subject_ar ||
+          sourceLevel?.subject ||
+          previous.subject,
         topic: sourceDay.content.topic_ar,
         objectives: "",
         stages: "",
@@ -1059,6 +1088,24 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   const assignedLevels = subjectLevels.filter((item) =>
     selection.levels.includes(item.level)
   );
+  /* مكونات المادة المستخرجة من محاور المراحل ودروس التوزيع (النشاط العلمي)؛
+     تبقى فارغة في الرياضيات حتى يحتفظ حقل المكون بسلوكه النصي الحالي. */
+  const componentOptions = Array.from(
+    new Set(
+      assignedLevels
+        .flatMap((item) =>
+          item.stages.flatMap((stageItem) => [
+            stageItem.theme_ar?.trim() ?? "",
+            ...stageItem.weeks.flatMap((weekItem) =>
+              weekItem.days
+                .filter((dayItem) => dayItem.kind === "lesson")
+                .map((dayItem) => dayItem.component?.trim() ?? "")
+            ),
+          ])
+        )
+        .filter(Boolean)
+    )
+  );
 
   return (
     <div className="memo-app">
@@ -1070,7 +1117,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
             </span>
             <h1>المذكرة اليومية الاحترافية</h1>
             <p className="memo-hero-sub">
-              من توزيع الرياضيات الرسمي إلى مذكرة يومية منظمة، قابلة للتعديل وجاهزة
+              من التوزيع الرسمي للمادة إلى مذكرة يومية منظمة، قابلة للتعديل وجاهزة
               للطباعة على صفحة A4 واحدة.
             </p>
             <div className="memo-hero-points">
@@ -1230,7 +1277,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
                 role="group"
                 aria-label="الحصة حسب استعمال الزمن"
               >
-                {SESSION_NUMBERS.map((sessionNumber) => (
+                {sessionNumbersFor(level).map((sessionNumber) => (
                   <button
                     key={sessionNumber}
                     type="button"
@@ -1291,6 +1338,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
                   level: item.level,
                   label: item.levelLabel_ar,
                 }))}
+                componentOptions={componentOptions}
                 multiLevel={selection.levels.length > 1}
                 onChange={updateMemo}
                 onLessonChange={updateLesson}

@@ -21,6 +21,7 @@ import type {
 import {
   cx,
   KIND_LABELS,
+  levelSessionCount,
   sessionLabel,
   sessionSources,
 } from "./types";
@@ -65,7 +66,8 @@ export default function WeekMap({
   const stageIndex = level.stages.findIndex((item) => item.id === stage.id);
   const canPrev = stageIndex > 0;
   const canNext = stageIndex >= 0 && stageIndex < level.stages.length - 1;
-  const sessions = sessionSources(week);
+  const sessionCount = levelSessionCount(level);
+  const sessions = sessionSources(week, sessionCount);
 
   const goStage = (delta: -1 | 1) => {
     const next = level.stages[stageIndex + delta];
@@ -84,8 +86,8 @@ export default function WeekMap({
               <h2>حصص الأسبوع</h2>
               <p>
                 {levels.length > 1
-                  ? "اختر المستوى النشط ثم الحصة 1–5 حسب استعمال زمنك. اليوم الفعلي مستقل ويُختار في الشريط العلوي."
-                  : "اختر الحصة 1–5 حسب استعمال زمنك. اليوم الفعلي مستقل ويُختار في الشريط العلوي."}
+                  ? `اختر المستوى النشط ثم الحصة 1–${sessionCount} حسب استعمال زمنك. اليوم الفعلي مستقل ويُختار في الشريط العلوي.`
+                  : `اختر الحصة 1–${sessionCount} حسب استعمال زمنك. اليوم الفعلي مستقل ويُختار في الشريط العلوي.`}
               </p>
             </div>
           </div>

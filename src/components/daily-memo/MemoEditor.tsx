@@ -42,6 +42,7 @@ interface Props {
   memo: MemoState;
   template: TemplateConfig;
   levelOptions: Array<{ level: number; label: string }>;
+  componentOptions: string[];
   multiLevel: boolean;
   onChange: (patch: Partial<MemoState>) => void;
   onLessonChange: (id: string, patch: Partial<MemoLesson>) => void;
@@ -127,6 +128,7 @@ function LessonCard({
   index,
   template,
   levelOptions,
+  componentOptions,
   multiLevel,
   sessionNumber,
   onLessonChange,
@@ -140,6 +142,7 @@ function LessonCard({
   index: number;
   template: TemplateConfig;
   levelOptions: Array<{ level: number; label: string }>;
+  componentOptions: string[];
   multiLevel: boolean;
   sessionNumber: number;
   onLessonChange: (id: string, patch: Partial<MemoLesson>) => void;
@@ -163,6 +166,18 @@ function LessonCard({
   const breakActive = breakMinutes > 0;
   const currentSession = lesson.sessionNumber ?? sessionNumber;
   const update = (patch: Partial<MemoLesson>) => onLessonChange(lesson.id, patch);
+  /* في المواد ذات المحاور يُعرض المكون كقائمة اختيار، مع الحفاظ على أي قيمة
+     مكتوبة سابقًا حتى لا يضيع عمل الأستاذ(ة) عند تغيير المادة. */
+  const componentChoices = componentOptions.length
+    ? Array.from(
+        new Set(
+          [...componentOptions, lesson.component]
+            .map((value) => value.trim())
+            .filter(Boolean)
+        )
+      )
+    : [];
+  const hasComponentChoices = componentChoices.length > 0;
 
   return (
     <article className="memo-lesson-card">
@@ -245,6 +260,25 @@ function LessonCard({
           </span>
           <strong>{duration}</strong>
         </div>
+        {hasComponentChoices ? (
+          <Label
+            field={component}
+            className="memo-field-component"
+            hint="اختر المكون من محاور المادة."
+          >
+            <select
+              className="memo-input"
+              value={lesson.component}
+              onChange={(event) => update({ component: event.target.value })}
+            >
+              {componentChoices.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </Label>
+        ) : null}
         <Label
           field={section}
           hint={
@@ -295,9 +329,11 @@ function LessonCard({
             </Label>
           </>
         ) : null}
-        <Label field={component}>
-          {inputFor(component!, lesson.component, (value) => update({ component: value }))}
-        </Label>
+        {hasComponentChoices ? null : (
+          <Label field={component}>
+            {inputFor(component!, lesson.component, (value) => update({ component: value }))}
+          </Label>
+        )}
         <Label field={session}>
           {inputFor(session!, lesson.session, (value) => update({ session: value }))}
         </Label>
@@ -389,6 +425,7 @@ export default function MemoEditor({
   memo,
   template,
   levelOptions,
+  componentOptions,
   multiLevel,
   onChange,
   onLessonChange,
@@ -481,7 +518,7 @@ export default function MemoEditor({
         <div className="memo-source-line">
           <Sparkles className="h-3.5 w-3.5" />
           <span>
-            موضوع الحصة يُستخرج تلقائيًا من توزيع الأسبوع حسب الحصة المختارة (1–5).
+            موضوع الحصة يُستخرج تلقائيًا من توزيع الأسبوع حسب الحصة المختارة.
             اليوم الفعلي يظهر في الترويسة فقط، والحقول التربوية الأخرى تبقى فارغة لتكتبها بنفسك.
           </span>
         </div>
@@ -536,6 +573,7 @@ export default function MemoEditor({
               index={index}
               template={template}
               levelOptions={levelOptions}
+              componentOptions={componentOptions}
               multiLevel={multiLevel}
               sessionNumber={memo.sessionNumber ?? 1}
               onLessonChange={onLessonChange}
