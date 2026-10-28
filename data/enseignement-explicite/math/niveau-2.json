@@ -1065,7 +1065,7 @@
               "lessonNumber": 9,
               "kind": "lesson",
               "content": {
-                "topic_ar": "جدول الضرب للعدد",
+                "topic_ar": "جدول الضرب للعدد 9",
                 "topic_fr": ""
               }
             },
@@ -1955,9 +1955,9 @@
               "label_ar": "الاثنين",
               "label_fr": "Lundi",
               "lessonNumber": null,
-              "kind": "stage-review",
+              "kind": "general-review",
               "content": {
-                "topic_ar": "أراجع ما تعلمته في المرحلة الخامسة",
+                "topic_ar": "مراجعة دروس الوحدة 5",
                 "topic_fr": ""
               }
             },
@@ -2176,7 +2176,7 @@
               "lessonNumber": null,
               "kind": "general-review",
               "content": {
-                "topic_ar": "مراجعة عامة – التقويم الذاتي (المرحلة الخامسة)",
+                "topic_ar": "مراجعة عامة – التقويم الذاتي",
                 "topic_fr": ""
               }
             },
