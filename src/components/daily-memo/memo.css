@@ -405,6 +405,56 @@
   min-width: 145px;
 }
 
+.memo-select > span em {
+  color: #a3b2bf;
+  font-style: normal;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.memo-select-session {
+  min-width: 176px;
+}
+
+.memo-select-session > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.memo-session-chips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.memo-session-chip {
+  width: 32px;
+  height: 36px;
+  border: 1px solid var(--memo-line);
+  border-radius: 9px;
+  background: #fff;
+  color: #5c7182;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.memo-session-chip:hover {
+  border-color: #bfd3e2;
+  background: #f7fbfd;
+  color: var(--memo-navy);
+}
+
+.memo-session-chip.is-active {
+  border-color: var(--memo-navy);
+  background: var(--memo-navy);
+  color: #fff;
+  box-shadow: 0 5px 12px rgba(18, 59, 93, 0.18);
+}
+
 .memo-select-levels {
   min-width: 240px;
 }
@@ -2543,6 +2593,11 @@
     padding: 34px 18px 58px;
   }
 
+  /* شريط الاختيار طويل على الهاتف؛ لا نثبّته حتى لا يحجب المذكرة أثناء التحرير. */
+  .memo-toolbar {
+    position: static;
+  }
+
   .memo-hero-inner {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -2644,6 +2699,20 @@
   .memo-select select {
     width: 100%;
     min-width: 0;
+  }
+
+  .memo-select-session {
+    flex: 1 0 100%;
+    min-width: 100%;
+  }
+
+  .memo-session-chips {
+    width: 100%;
+  }
+
+  .memo-session-chip {
+    flex: 1;
+    width: auto;
   }
 
   .memo-toolbar-actions .memo-btn {

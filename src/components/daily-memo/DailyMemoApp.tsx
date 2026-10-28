@@ -31,6 +31,7 @@ import type {
   Profile,
 } from "./types";
 import {
+  clampSessionNumber,
   cx,
   DEFAULT_GROUP_LABELS,
   draftKey,
@@ -38,9 +39,14 @@ import {
   findLevel,
   findStage,
   findWeek,
+  legacyDraftKey,
   lessonBreakMinutes,
   minutesToTime,
   periodLabel,
+  sessionLabel,
+  sessionNumberForDay,
+  sessionSourceDay,
+  SESSION_NUMBERS,
   timeToMinutes,
   todayIso,
   uid,
@@ -104,6 +110,7 @@ function firstSelection(catalog: Catalog): MemoSelection {
     stageId: stage?.id || "stage-1",
     weekNumber: week?.weekNumber ?? 1,
     dayKey: day?.dayKey || "lundi",
+    sessionNumber: 1,
   };
 }
 
@@ -169,11 +176,14 @@ interface CombinedPlan {
   level: LevelData;
   stage: LevelStage;
   week: LevelWeek;
-  day: LevelDay;
+  sourceDay?: LevelDay;
   hasLesson: boolean;
 }
 
-/** يجلب المرحلة والأسبوع واليوم المقابل لكل مستوى داخل الاختيار نفسه. */
+/**
+ * يجلب المرحلة والأسبوع ومصدر محتوى الحصة المختارة لكل مستوى.
+ * اليوم الفعلي لا يدخل في اختيار المحتوى؛ الحصة وحدها تحدد الدرس.
+ */
 function planForLevel(
   catalog: Catalog,
   selection: MemoSelection,
@@ -188,15 +198,14 @@ function planForLevel(
   const week =
     stage?.weeks.find((item) => item.weekNumber === selection.weekNumber) ??
     stage?.weeks[0];
-  const day =
-    week?.days.find((item) => item.dayKey === selection.dayKey) ?? week?.days[0];
-  if (!stage || !week || !day) return null;
+  if (!stage || !week) return null;
+  const sourceDay = sessionSourceDay(week, selection.sessionNumber);
   return {
     level,
     stage,
     week,
-    day,
-    hasLesson: day.kind !== "empty" && !!day.content.topic_ar.trim(),
+    sourceDay,
+    hasLesson: !!sourceDay,
   };
 }
 
@@ -209,6 +218,7 @@ function combinedLesson(
   sessionNumber: number,
   groupLabel: string
 ): MemoLesson {
+  const sourceDay = plan.sourceDay;
   return {
     id: uid(),
     block: selection.period,
@@ -217,14 +227,15 @@ function combinedLesson(
     section: profile.section,
     component:
       plan.level.subject_ar || plan.level.subject || catalog.template.subject_ar,
-    topic: plan.day.content.topic_ar,
+    topic: sourceDay?.content.topic_ar ?? "",
     objectives: "",
     stages: "",
-    session: `الحصة ${sessionNumber}`,
+    session: sessionLabel(sessionNumber),
+    sessionNumber,
     rj: "",
-    sourceLessonNumber: plan.day.lessonNumber ?? null,
-    sourceDayKey: plan.day.dayKey,
-    kind: plan.day.kind,
+    sourceLessonNumber: sourceDay?.lessonNumber ?? null,
+    sourceDayKey: sourceDay?.dayKey,
+    kind: sourceDay?.kind ?? "lesson",
     breakMinutes: 0,
     levelNumber: plan.level.level,
     levelLabel: plan.level.levelLabel_ar,
@@ -249,6 +260,8 @@ function buildCombinedMemo(
 
   const activePlan =
     plans.find((plan) => plan.level.level === selection.level) ?? plans[0];
+  const displayDay =
+    findDay(activePlan.week, selection.dayKey) ?? activePlan.sourceDay;
   const scheduled = plans.filter((plan) => plan.hasLesson);
   const lessons: MemoLesson[] = [];
   let cursor = (selection.period === "morning" ? 8 : 14) * 60;
@@ -266,7 +279,7 @@ function buildCombinedMemo(
           profile,
           catalog,
           cursor,
-          lessons.length + 1,
+          selection.sessionNumber,
           groupLabel
         );
         cursor += 60;
@@ -295,13 +308,14 @@ function buildCombinedMemo(
     date: todayIso(),
     unit: "",
     week: activePlan.week.title_ar,
-    day: activePlan.day.label_ar,
+    day: displayDay?.label_ar ?? "",
     section: profile.section,
     notes: "",
     period: selection.period,
     showNotes: true,
     showSignatures: true,
     showDismissal: lessons.length > 0,
+    sessionNumber: selection.sessionNumber,
     lessons,
   };
 }
@@ -319,10 +333,11 @@ function buildMemo(
   const level = findLevel(catalog, selection);
   const stage = findStage(level, selection.stageId);
   const week = findWeek(stage, selection.weekNumber);
-  const day = findDay(week, selection.dayKey);
-  if (!level || !stage || !week || !day) return null;
+  const displayDay = findDay(week, selection.dayKey);
+  if (!level || !stage || !week || !displayDay) return null;
 
-  const hasLesson = day.kind !== "empty" && !!day.content.topic_ar.trim();
+  const sourceDay = sessionSourceDay(week, selection.sessionNumber);
+  const hasLesson = !!sourceDay;
   const start = selection.period === "morning" ? "08:00" : "14:00";
   const end = selection.period === "morning" ? "09:00" : "15:00";
   const lesson: MemoLesson = {
@@ -332,18 +347,15 @@ function buildMemo(
     timeTo: end,
     section: profile.section,
     component: level.subject_ar || level.subject || catalog.template.subject_ar,
-    topic: hasLesson ? day.content.topic_ar : "",
+    topic: sourceDay?.content.topic_ar ?? "",
     objectives: "",
     stages: "",
-    session: day.lessonNumber
-      ? `الحصة ${day.lessonNumber}`
-      : hasLesson
-        ? "مراجعة"
-        : "الحصة 1",
+    session: sessionLabel(selection.sessionNumber),
+    sessionNumber: selection.sessionNumber,
     rj: "",
-    sourceLessonNumber: day.lessonNumber ?? null,
-    sourceDayKey: day.dayKey,
-    kind: day.kind,
+    sourceLessonNumber: sourceDay?.lessonNumber ?? null,
+    sourceDayKey: sourceDay?.dayKey,
+    kind: sourceDay?.kind ?? "lesson",
     breakMinutes: 0,
   };
 
@@ -359,20 +371,56 @@ function buildMemo(
     date: todayIso(),
     unit: "",
     week: week.title_ar,
-    day: day.label_ar,
+    day: displayDay.label_ar,
     section: profile.section,
     notes: "",
     period: selection.period,
     showNotes: true,
     showSignatures: true,
+    sessionNumber: selection.sessionNumber,
     lessons: hasLesson ? [lesson] : [],
   };
 }
 
-function optionLabel(day: LevelDay): string {
-  return day.kind === "empty"
-    ? `${day.label_ar} — بدون درس`
-    : `${day.label_ar} — ${day.content.topic_ar}`;
+/** يهيّئ مسودة محفوظة للاختيار الحالي ويحوّل المسودات القديمة إلى نموذج الحصة. */
+function prepareDraft(memo: MemoState, selection: MemoSelection): MemoState {
+  return {
+    ...withPeriod(memo, selection.period),
+    sessionNumber: selection.sessionNumber,
+    lessons: memo.lessons.map((lesson) =>
+      lesson.sessionNumber == null
+        ? {
+            ...lesson,
+            sessionNumber: selection.sessionNumber,
+            session: sessionLabel(selection.sessionNumber),
+          }
+        : lesson
+    ),
+  };
+}
+
+/**
+ * يبحث عن مسودة الحصة الحالية. إن لم يجد المفتاح الجديد يستعمل مفتاح
+ * النسخة القديمة (المبني على اليوم) فقط عندما يطابق اليوم رقم الحصة،
+ * حتى لا تُحمّل عبارة درس يوم آخر على الحصة المختارة.
+ */
+function storedDraftFor(
+  catalog: Catalog,
+  drafts: Record<string, MemoState>,
+  selection: MemoSelection
+): MemoState | undefined {
+  const direct = drafts[draftKey(selection)];
+  if (direct) return prepareDraft(direct, selection);
+
+  const legacy = drafts[legacyDraftKey(selection)];
+  if (!legacy) return undefined;
+  const level = findLevel(catalog, selection);
+  const stage = findStage(level, selection.stageId);
+  const week = findWeek(stage, selection.weekNumber);
+  if (sessionNumberForDay(week, selection.dayKey) !== selection.sessionNumber) {
+    return undefined;
+  }
+  return prepareDraft(legacy, selection);
 }
 
 export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
@@ -468,31 +516,42 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         : initialSelection.level;
     const activeLevel = levels.includes(preferredLevel) ? preferredLevel : levels[0];
     const period: MemoBlock = storedPrefs.period === "afternoon" ? "afternoon" : "morning";
+    const baseSelection: MemoSelection = {
+      ...initialSelection,
+      subjectCode,
+      period,
+      levels,
+      level: activeLevel,
+      stageId: storedPrefs.stageId || initialSelection.stageId,
+      weekNumber:
+        typeof storedPrefs.weekNumber === "number"
+          ? storedPrefs.weekNumber
+          : initialSelection.weekNumber,
+      dayKey: storedPrefs.dayKey || initialSelection.dayKey,
+      sessionNumber: 1,
+    };
+    const baseStage = findStage(
+      findLevel(catalog, baseSelection),
+      baseSelection.stageId
+    );
+    const baseWeek = findWeek(baseStage, baseSelection.weekNumber);
+    /* عند فتح تفضيلات قديمة لا تحمل رقم الحصة، نستنتج الحصة من اليوم
+       المحفوظ حتى تبقى عبارة الدرس نفسها التي كان الأستاذ(ة) يعمل عليها. */
+    const sessionNumber =
+      typeof storedPrefs.sessionNumber === "number"
+        ? clampSessionNumber(storedPrefs.sessionNumber)
+        : sessionNumberForDay(baseWeek, baseSelection.dayKey) ?? 1;
     const hydratedSelection = selectionForLevel(
       catalog,
-      {
-        ...initialSelection,
-        subjectCode,
-        period,
-        stageId: storedPrefs.stageId || initialSelection.stageId,
-        weekNumber:
-          typeof storedPrefs.weekNumber === "number"
-            ? storedPrefs.weekNumber
-            : initialSelection.weekNumber,
-        dayKey: storedPrefs.dayKey || initialSelection.dayKey,
-      },
+      { ...baseSelection, sessionNumber },
       activeLevel,
       levels
     );
 
     setProfile(mergedProfile);
     setSelection(hydratedSelection);
-    const stored = draftsRef.current[draftKey(hydratedSelection)];
-    setMemo(
-      stored
-        ? withPeriod(stored, period)
-        : buildMemo(catalog, hydratedSelection, mergedProfile)
-    );
+    const stored = storedDraftFor(catalog, draftsRef.current, hydratedSelection);
+    setMemo(stored ?? buildMemo(catalog, hydratedSelection, mergedProfile));
     setMounted(true);
   }, [catalog, draftsKey, initialSelection, prefsKey, profileKey]);
 
@@ -510,6 +569,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         stageId: selection.stageId,
         weekNumber: selection.weekNumber,
         dayKey: selection.dayKey,
+        sessionNumber: selection.sessionNumber,
       });
     }, 300);
     return () => window.clearTimeout(timer);
@@ -523,6 +583,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     selection.stageId,
     selection.weekNumber,
     selection.dayKey,
+    selection.sessionNumber,
   ]);
 
   /* حفظ الملف الشخصي */
@@ -577,7 +638,13 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   }
 
   function goTo(patch: Partial<MemoSelection>) {
-    const next = { ...selection, ...patch };
+    const next: MemoSelection = {
+      ...selection,
+      ...patch,
+      sessionNumber: clampSessionNumber(
+        patch.sessionNumber ?? selection.sessionNumber
+      ),
+    };
     if (
       next.subjectCode === selection.subjectCode &&
       next.level === selection.level &&
@@ -585,7 +652,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
       next.period === selection.period &&
       next.stageId === selection.stageId &&
       next.weekNumber === selection.weekNumber &&
-      next.dayKey === selection.dayKey
+      next.dayKey === selection.dayKey &&
+      next.sessionNumber === selection.sessionNumber
     ) {
       return;
     }
@@ -593,13 +661,9 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
       draftsRef.current[draftKey(selection)] = memo;
       writeStorage(draftsKey, draftsRef.current);
     }
-    const stored = draftsRef.current[draftKey(next)];
+    const stored = storedDraftFor(catalog, draftsRef.current, next);
     setSelection(next);
-    setMemo(
-      stored
-        ? withPeriod(stored, next.period)
-        : buildMemo(catalog, next, profile)
-    );
+    setMemo(stored ?? buildMemo(catalog, next, profile));
   }
 
   function changeSubject(code: string) {
@@ -616,6 +680,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
       stageId: nextStage.id,
       weekNumber: nextWeek.weekNumber,
       dayKey: nextDay.dayKey,
+      sessionNumber: 1,
     });
   }
 
@@ -660,21 +725,55 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     });
   }
 
+  /** الحصة تحدد موضوع الدرس، واليوم الفعلي يبقى اختيارًا مستقلًا. */
+  function changeSession(sessionNumber: number) {
+    const nextSession = clampSessionNumber(sessionNumber);
+    if (nextSession === selection.sessionNumber) return;
+    goTo({ sessionNumber: nextSession });
+    setToast({
+      msg: `تم اختيار ${sessionLabel(nextSession)} — المحتوى من توزيع الأسبوع، واليوم مستقل عن الحصة.`,
+      kind: "ok",
+    });
+  }
+
+  /** تغيير اليوم يحدّث ترويسة المذكرة فقط ولا يبدّل موضوع الحصة. */
+  function changeDay(dayKey: string) {
+    if (dayKey === selection.dayKey) return;
+    const nextDay = findDay(week, dayKey);
+    if (!nextDay) return;
+    const updated = memo ? { ...memo, day: nextDay.label_ar } : null;
+    setSelection((previous) => ({ ...previous, dayKey: nextDay.dayKey }));
+    if (updated) {
+      setMemo(updated);
+      draftsRef.current[draftKey(selection)] = updated;
+      writeStorage(draftsKey, draftsRef.current);
+    }
+    setToast({
+      msg: `تم تغيير يوم الإنجاز إلى ${nextDay.label_ar}؛ موضوع الحصة لم يتغيّر.`,
+      kind: "ok",
+    });
+  }
+
   function changeStage(stageId: string) {
     const nextStage = level?.stages.find((item) => item.id === stageId);
     const nextWeek = nextStage?.weeks[0];
-    const nextDay =
-      nextWeek?.days.find((item) => item.dayKey === selection.dayKey) ?? firstDay(nextWeek);
-    if (!nextStage || !nextWeek || !nextDay) return;
-    goTo({ stageId: nextStage.id, weekNumber: nextWeek.weekNumber, dayKey: nextDay.dayKey });
+    if (!nextStage || !nextWeek) return;
+    const nextDay = findDay(nextWeek, selection.dayKey);
+    goTo({
+      stageId: nextStage.id,
+      weekNumber: nextWeek.weekNumber,
+      dayKey: nextDay?.dayKey ?? selection.dayKey,
+    });
   }
 
   function changeWeek(weekNumber: number) {
     const nextWeek = stage?.weeks.find((item) => item.weekNumber === weekNumber);
-    const nextDay =
-      nextWeek?.days.find((item) => item.dayKey === selection.dayKey) ?? firstDay(nextWeek);
-    if (!nextWeek || !nextDay) return;
-    goTo({ weekNumber: nextWeek.weekNumber, dayKey: nextDay.dayKey });
+    if (!nextWeek) return;
+    const nextDay = findDay(nextWeek, selection.dayKey);
+    goTo({
+      weekNumber: nextWeek.weekNumber,
+      dayKey: nextDay?.dayKey ?? selection.dayKey,
+    });
   }
 
   function updateMemo(patch: Partial<MemoState>) {
@@ -762,7 +861,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         topic: "",
         objectives: "",
         stages: "",
-        session: `الحصة ${previous.lessons.length + 1}`,
+        session: sessionLabel(selection.sessionNumber),
+        sessionNumber: selection.sessionNumber,
         rj: "",
         kind: "lesson",
         breakMinutes: 0,
@@ -780,7 +880,11 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     });
   }
 
-  function addFromDay(sourceDay: LevelDay, levelNumber: number) {
+  function addFromSession(
+    sourceDay: LevelDay,
+    levelNumber: number,
+    sessionNumber: number
+  ) {
     if (!sourceDay.content.topic_ar.trim()) return;
     const multiLevel = selection.levels.length > 1;
     const sourceLevel = findLevel(catalog, {
@@ -809,11 +913,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         topic: sourceDay.content.topic_ar,
         objectives: "",
         stages: "",
-        session: multiLevel
-          ? `الحصة ${base.length + 1}`
-          : sourceDay.lessonNumber
-            ? `الحصة ${sourceDay.lessonNumber}`
-            : "مراجعة",
+        session: sessionLabel(sessionNumber),
+        sessionNumber,
         rj: "",
         sourceLessonNumber: sourceDay.lessonNumber ?? null,
         sourceDayKey: sourceDay.dayKey,
@@ -835,8 +936,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     });
     setToast({
       msg: multiLevel
-        ? `أُضيف درس ${sourceLevel?.levelLabel_ar || "المستوى"} إلى المذكرة المشتركة.`
-        : "أُضيف الدرس إلى مذكرة اليوم.",
+        ? `أُضيفت ${sessionLabel(sessionNumber)} — ${sourceLevel?.levelLabel_ar || "المستوى"} إلى المذكرة المشتركة.`
+        : `أُضيفت ${sessionLabel(sessionNumber)} إلى المذكرة.`,
       kind: "ok",
     });
   }
@@ -862,7 +963,6 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         sourceDayKey: undefined,
         sourceLessonNumber: undefined,
         kind: "lesson",
-        session: `الحصة ${previous.lessons.length + 1}`,
         breakMinutes: 0,
       };
       return { ...previous, lessons: [...previous.lessons, copy] };
@@ -907,20 +1007,30 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     window.setTimeout(() => window.print(), 120);
   }
 
-  function isAdded(sourceDay: LevelDay, levelNumber: number): boolean {
+  function isAdded(
+    sourceDay: LevelDay,
+    levelNumber: number,
+    sessionNumber: number
+  ): boolean {
     const multiLevel = selection.levels.length > 1;
-    return !!memo?.lessons.some(
-      (lesson) =>
-        lesson.kind !== "empty" &&
-        lesson.sourceDayKey === sourceDay.dayKey &&
-        (lesson.sourceLessonNumber ?? null) === (sourceDay.lessonNumber ?? null) &&
+    return !!memo?.lessons.some((lesson) => {
+      if (lesson.kind === "empty") return false;
+      const sameSource =
+        lesson.sessionNumber != null
+          ? lesson.sessionNumber === sessionNumber
+          : lesson.sourceDayKey === sourceDay.dayKey &&
+            (lesson.sourceLessonNumber ?? null) ===
+              (sourceDay.lessonNumber ?? null);
+      return (
+        sameSource &&
         (multiLevel
           ? lesson.levelNumber === levelNumber
           : lesson.levelNumber == null)
-    );
+      );
+    });
   }
 
-  function goToDayFromMap(patch: Partial<MemoSelection>) {
+  function goToFromMap(patch: Partial<MemoSelection>) {
     goTo(patch);
   }
 
@@ -942,7 +1052,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     );
   }
 
-  const dayOptions = week.days;
+  const dayOptions = week.days.filter((item) => item.dayKey !== "dimanche");
   const subjectLevels =
     catalog.subjects.find((subject) => subject.code === selection.subjectCode)?.levels ??
     [];
@@ -1110,15 +1220,47 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
               </select>
             </label>
 
+            <div className="memo-select memo-select-session">
+              <span>
+                الحصة
+                <em>حسب استعمال الزمن</em>
+              </span>
+              <div
+                className="memo-session-chips"
+                role="group"
+                aria-label="الحصة حسب استعمال الزمن"
+              >
+                {SESSION_NUMBERS.map((sessionNumber) => (
+                  <button
+                    key={sessionNumber}
+                    type="button"
+                    className={cx(
+                      "memo-session-chip",
+                      selection.sessionNumber === sessionNumber && "is-active"
+                    )}
+                    onClick={() => changeSession(sessionNumber)}
+                    aria-pressed={selection.sessionNumber === sessionNumber}
+                    aria-label={sessionLabel(sessionNumber)}
+                    title={`${sessionLabel(sessionNumber)} — موضوعها من توزيع الأسبوع`}
+                  >
+                    {sessionNumber}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <label className="memo-select memo-select-day">
-              <span>اليوم</span>
+              <span>
+                اليوم الفعلي
+                <em>للترويسة فقط</em>
+              </span>
               <select
                 value={day.dayKey}
-                onChange={(event) => goTo({ dayKey: event.target.value })}
+                onChange={(event) => changeDay(event.target.value)}
               >
                 {dayOptions.map((item) => (
                   <option key={item.dayKey} value={item.dayKey}>
-                    {optionLabel(item)}
+                    {item.label_ar}
                   </option>
                 ))}
               </select>
@@ -1201,8 +1343,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
             week={week}
             selection={selection}
             onLevelChange={switchLevel}
-            onGo={goToDayFromMap}
-            onAddDay={addFromDay}
+            onGo={goToFromMap}
+            onAddSession={addFromSession}
             isAdded={isAdded}
           />
         </div>

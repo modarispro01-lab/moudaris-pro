@@ -161,6 +161,8 @@ export interface MemoLesson {
   levelLabel?: string;
   /** الفوج داخل المستوى، مثل: الفوج الأول. */
   groupLabel?: string;
+  /** الحصة الأسبوعية المختارة من 1 إلى 5 التي تنتمي إليها هذه الحصة. */
+  sessionNumber?: number;
 }
 
 export interface MemoState {
@@ -183,6 +185,8 @@ export interface MemoState {
   showSignatures: boolean;
   /** صف الخروج أسفل جدول الحصص؛ يُفعّل تلقائيًا عند دمج المستويات. */
   showDismissal?: boolean;
+  /** الحصة الأسبوعية المختارة من 1 إلى 5 (مستقلة عن اليوم). */
+  sessionNumber?: number;
   lessons: MemoLesson[];
 }
 
@@ -205,6 +209,7 @@ export interface Preferences {
   stageId?: string;
   weekNumber?: number;
   dayKey?: string;
+  sessionNumber?: number;
 }
 
 export interface MemoSelection {
@@ -214,7 +219,10 @@ export interface MemoSelection {
   period: MemoBlock;
   stageId: string;
   weekNumber: number;
+  /** اليوم الفعلي الذي ستُنجز فيه الحصة؛ لا يحدد موضوعها. */
   dayKey: string;
+  /** الحصة الأسبوعية المختارة من 1 إلى 5 حسب استعمال الزمن. */
+  sessionNumber: number;
 }
 
 /* ============================================================
@@ -325,8 +333,24 @@ export function formatLongDate(iso: string): string {
 }
 
 export function draftKey(selection: MemoSelection): string {
-  /* المستويات المختارة كلها جزء من المسودة نفسها. عند مستوى واحد يبقى
-     المفتاح بالصيغة القديمة نفسها حتى لا تضيع المسودات المحفوظة. */
+  /* المستويات المختارة كلها جزء من المسودة نفسها. اليوم ليس جزءًا من
+     المفتاح لأن الحصة هي التي تحدد المحتوى، أما اليوم فيحدد الترويسة فقط.
+     عند مستوى واحد يبقى جزء المستويات بالصيغة القديمة نفسها. */
+  const levels = selection.levels.length
+    ? [...selection.levels].sort((a, b) => a - b).join("+")
+    : String(selection.level);
+  return [
+    selection.subjectCode,
+    levels,
+    selection.period,
+    selection.stageId,
+    selection.weekNumber,
+    `s${clampSessionNumber(selection.sessionNumber)}`,
+  ].join(":");
+}
+
+/** مفتاح المسودات القديمة (قبل فصل الحصة عن اليوم) لاسترجاع عمل الأستاذ(ة). */
+export function legacyDraftKey(selection: MemoSelection): string {
   const levels = selection.levels.length
     ? [...selection.levels].sort((a, b) => a - b).join("+")
     : String(selection.level);
@@ -374,6 +398,76 @@ export function findDay(
   dayKey: string
 ): LevelDay | undefined {
   return week?.days.find((day) => day.dayKey === dayKey) ?? week?.days[0];
+}
+
+/** الحصص الأسبوعية التي يختار منها الأستاذ(ة) حسب استعماله الزمني. */
+export const SESSION_NUMBERS = [1, 2, 3, 4, 5] as const;
+
+export function clampSessionNumber(value: unknown, fallback = 1): number {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.min(
+    SESSION_NUMBERS[SESSION_NUMBERS.length - 1],
+    Math.max(SESSION_NUMBERS[0], Math.round(numeric))
+  );
+}
+
+export function sessionLabel(sessionNumber: number): string {
+  return `الحصة ${clampSessionNumber(sessionNumber)}`;
+}
+
+/** أيام الأسبوع التي تحمل محتوى دراسيًا، باستثناء الأحد العطلة والأيام الفارغة. */
+export function contentDays(week: LevelWeek | undefined): LevelDay[] {
+  return (week?.days ?? []).filter(
+    (day) =>
+      day.dayKey !== "dimanche" &&
+      day.kind !== "empty" &&
+      !!day.content.topic_ar.trim()
+  );
+}
+
+/**
+ * مصدر محتوى الحصة الأسبوعية: الحصة 1 تأخذ أول درس في توزيع الأسبوع،
+ * والحصة 5 تأخذ المراجعة الأسبوعية. اليوم الفعلي لا يتدخل في هذا الاختيار.
+ * إذا كان الأسبوع لا يتضمن إلا حصة واحدة (مراجعة مرحلة مثلًا) تُستعمل
+ * للحصص المتبقية نفس عبارة المراجعة حتى لا تبقى المذكرة فارغة.
+ */
+export function sessionSourceDay(
+  week: LevelWeek | undefined,
+  sessionNumber: number
+): LevelDay | undefined {
+  const days = contentDays(week);
+  if (!days.length) return undefined;
+  const index = Math.min(
+    clampSessionNumber(sessionNumber) - 1,
+    days.length - 1
+  );
+  return days[index];
+}
+
+/** قائمة الحصص الخمس مع مصدر كل واحدة، لعرضها في خريطة الأسبوع. */
+export function sessionSources(
+  week: LevelWeek | undefined
+): Array<{ sessionNumber: number; day: LevelDay; repeated: boolean }> {
+  const days = contentDays(week);
+  if (!days.length) return [];
+  return SESSION_NUMBERS.map((sessionNumber) => {
+    const index = Math.min(sessionNumber - 1, days.length - 1);
+    return {
+      sessionNumber,
+      day: days[index],
+      repeated: sessionNumber > days.length,
+    };
+  });
+}
+
+/** رقم الحصة الأسبوعية المقابل ليوم معيّن، لترحيل المسودات القديمة. */
+export function sessionNumberForDay(
+  week: LevelWeek | undefined,
+  dayKey: string
+): number | null {
+  const index = contentDays(week).findIndex((day) => day.dayKey === dayKey);
+  return index >= 0 ? index + 1 : null;
 }
 
 export function periodLabel(

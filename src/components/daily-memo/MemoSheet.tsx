@@ -256,7 +256,10 @@ export default function MemoSheet({ memo, template }: Props) {
         <tbody>
           <tr className="ms-block">
             <td colSpan={template.tableColumns.length}>
-              <span>{blockTitle}</span>
+              <span>
+                {blockTitle}
+                {memo.sessionNumber ? ` · الحصة ${memo.sessionNumber}` : ""}
+              </span>
               <em>
                 {lessons.length
                   ? `${lessonsCountLabel(lessons.length)}${

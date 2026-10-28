@@ -128,6 +128,7 @@ function LessonCard({
   template,
   levelOptions,
   multiLevel,
+  sessionNumber,
   onLessonChange,
   onRemove,
   onDuplicate,
@@ -140,6 +141,7 @@ function LessonCard({
   template: TemplateConfig;
   levelOptions: Array<{ level: number; label: string }>;
   multiLevel: boolean;
+  sessionNumber: number;
   onLessonChange: (id: string, patch: Partial<MemoLesson>) => void;
   onRemove: (id: string) => void;
   onDuplicate: (id: string) => void;
@@ -159,6 +161,7 @@ function LessonCard({
   const duration = durationLabel(lesson.timeFrom, lesson.timeTo);
   const breakMinutes = lessonBreakMinutes(lesson);
   const breakActive = breakMinutes > 0;
+  const currentSession = lesson.sessionNumber ?? sessionNumber;
   const update = (patch: Partial<MemoLesson>) => onLessonChange(lesson.id, patch);
 
   return (
@@ -169,12 +172,11 @@ function LessonCard({
           <span>{String(index + 1).padStart(2, "0")}</span>
         </div>
         <div className="memo-lesson-title">
-          <h3>
-            {index === 0 ? "الحصة الأولى" : index === 1 ? "الحصة الثانية" : `الحصة ${index + 1}`}
-          </h3>
+          <h3>{`الحصة ${currentSession}`}</h3>
           <p>
             {KIND_LABELS[lesson.kind || "lesson"]}
             {lesson.sourceLessonNumber ? ` · الدرس ${lesson.sourceLessonNumber}` : ""}
+            {` · السطر ${String(index + 1).padStart(2, "0")}`}
           </p>
         </div>
         {lesson.levelLabel ? (
@@ -437,6 +439,7 @@ export default function MemoEditor({
             <span>{memo.level}</span>
             <span>{memo.stage}</span>
             <span>{periodLabel(template, memo.period)}</span>
+            {memo.sessionNumber ? <span>{`الحصة ${memo.sessionNumber}`}</span> : null}
           </div>
         </div>
 
@@ -478,8 +481,8 @@ export default function MemoEditor({
         <div className="memo-source-line">
           <Sparkles className="h-3.5 w-3.5" />
           <span>
-            موضوع الحصة يُستخرج تلقائيًا من توزيع الأسبوع. الحقول التربوية الأخرى تبقى
-            فارغة لتكتبها بنفسك.
+            موضوع الحصة يُستخرج تلقائيًا من توزيع الأسبوع حسب الحصة المختارة (1–5).
+            اليوم الفعلي يظهر في الترويسة فقط، والحقول التربوية الأخرى تبقى فارغة لتكتبها بنفسك.
           </span>
         </div>
       </section>
@@ -491,13 +494,13 @@ export default function MemoEditor({
               <Layers3 className="h-4 w-4" />
             </span>
             <div>
-              <h2>{multiLevel ? "حصص اليوم المشتركة" : "حصص اليوم"}</h2>
+              <h2>{multiLevel ? "حصص المذكرة المشتركة" : "حصص المذكرة"}</h2>
               <p>
                 {memo.lessons.length
                   ? multiLevel
                     ? `${lessonsCountLabel(memo.lessons.length)} — ${memo.level}. تتناوب المستويات والأفواج، ويمكن تعديل كل حصة واستراحتها.`
-                    : `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}. عدّل المدة من/إلى والقسم لكل حصة، وأضف استراحة قابلة للتعديل بين الحصص.`
-                  : `لا توجد حصص بعد. أضف حصة فارغة أو اختر درسًا من خريطة الأسبوع — ${periodLabel(template, memo.period)}.`}
+                    : `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}${memo.sessionNumber ? ` · الحصة ${memo.sessionNumber}` : ""}. عدّل المدة من/إلى والقسم لكل حصة، وأضف استراحة قابلة للتعديل بين الحصص.`
+                  : `لا توجد حصص بعد. أضف حصة فارغة أو اختر حصة جاهزة من خريطة الأسبوع — ${periodLabel(template, memo.period)}.`}
               </p>
             </div>
           </div>
@@ -518,7 +521,7 @@ export default function MemoEditor({
                 {levelOptions.length === 2
                   ? "التناوب: المستوى الأول/الفوج الأول ← المستوى الثاني/الفوج الثاني ← استراحة ← المستوى الأول/الفوج الثاني ← المستوى الثاني/الفوج الأول ← الخروج."
                   : "تتناوب المستويات المختارة والأفواج، مع استراحة بعد الجولة الأولى ثم صف خروج في النهاية."}{" "}
-                كل سطر قابل للتعديل، وإذا كان أحد المستويات بلا درس في هذا اليوم
+                كل سطر قابل للتعديل، وإذا كان أحد المستويات بلا درس في هذه الحصة
                 يُعتمد المستوى الآخر.
               </span>
             </div>
@@ -534,6 +537,7 @@ export default function MemoEditor({
               template={template}
               levelOptions={levelOptions}
               multiLevel={multiLevel}
+              sessionNumber={memo.sessionNumber ?? 1}
               onLessonChange={onLessonChange}
               onRemove={onRemoveLesson}
               onDuplicate={onDuplicateLesson}
@@ -545,8 +549,8 @@ export default function MemoEditor({
           {!memo.lessons.length ? (
             <button type="button" className="memo-empty-add" onClick={onAddLesson}>
               <Plus className="h-5 w-5" />
-              <span>أضف الحصة الأولى لهذا اليوم</span>
-              <small>أو اختر درسًا جاهزًا من خريطة الأسبوع الجانبية</small>
+              <span>أضف حصة فارغة لهذه المذكرة</span>
+              <small>أو اختر حصة جاهزة من خريطة الأسبوع الجانبية</small>
             </button>
           ) : null}
         </div>
