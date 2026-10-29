@@ -221,6 +221,7 @@ export const DEFAULT_INFO: Info = {
 export const DEFAULT_DESIGN: Design = {
   templateId: "classic",
   fontId: "tajawal",
+  fontScale: 1,
   headerShape: "flat",
   periodDisplay: "range",
   showBreaks: true,
