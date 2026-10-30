@@ -158,6 +158,27 @@ export default function DesignStep({
               ))}
             </select>
           </Field>
+          <Field label="حجم خط الجدول">
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min={0.8}
+                max={1.1}
+                step={0.05}
+                value={state.design.fontScale ?? 1}
+                onChange={(e) => set({ fontScale: Number(e.target.value) })}
+                className="h-2 w-full cursor-pointer"
+                style={{ accentColor: theme.headerBg }}
+                aria-label="حجم خط الجدول"
+              />
+              <span className="w-12 shrink-0 rounded-md bg-background px-1 py-0.5 text-center text-xs font-extrabold text-primary">
+                {Math.round((state.design.fontScale ?? 1) * 100)}%
+              </span>
+            </div>
+            <span className="mt-1 block text-[11px] text-muted">
+              صغّر الخط إذا كانت الحصص كثيرة، أو كبّره لقراءة أوضح.
+            </span>
+          </Field>
           <Field label="شكل رؤوس الجدول">
             <select
               value={state.design.headerShape}

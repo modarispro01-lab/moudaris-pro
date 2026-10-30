@@ -58,21 +58,19 @@ body {
     display: block !important;
   }
 
-  /* الوثيقة بمقاس الصفحة بالضبط: يبقى الجدول ممدودًا
-     وتبقى التواقيع في أسفل الورقة دون أن تنتقل لصفحة ثانية */
+  /* الوثيقة تحافظ على الحدّ الأدنى لمقاس الصفحة، لكنها تنمو
+     بحرّية إذا احتاج المحتوى مساحة أكبر بدل أن يُقطع */
   .tt-print-portal .tt-doc {
-    overflow: hidden !important;
-    break-inside: avoid;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    break-inside: auto;
   }
   .tt-print-portal .tt-doc[data-orientation="landscape"] {
-    height: 185mm !important;
     min-height: 185mm !important;
-    max-height: 185mm !important;
   }
   .tt-print-portal .tt-doc[data-orientation="portrait"] {
-    height: 272mm !important;
     min-height: 272mm !important;
-    max-height: 272mm !important;
   }
 
   /* خانة التواقيع لا تُقطع */

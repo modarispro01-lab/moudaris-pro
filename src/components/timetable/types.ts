@@ -75,6 +75,8 @@ export interface Design {
   /** لون العناوين المخصّص */
   heading?: string;
   fontId: string;
+  /** معامل حجم خط الجدول (0.8 = 80%، 1 = 100%، 1.1 = 110%) */
+  fontScale?: number;
   headerShape: HeaderShape;
   periodDisplay: PeriodDisplay;
   cellFill?: CellFill;
