@@ -960,29 +960,66 @@
 }
 
 .memo-lesson-grid > .memo-field {
-  grid-column: span 2;
+  grid-column: span 3;
 }
 
 .memo-lesson-grid > .memo-field.memo-span-full {
   grid-column: 1 / -1;
 }
 
-/* اختيار المكون في المواد ذات المحاور (النشاط العلمي) يأتي مباشرة بعد المدة. */
+/* المادة والمكون: المادة تُختار للحصة نفسها، ثم يتفعّل المكون. */
+.memo-lesson-grid > .memo-field.memo-field-subject {
+  grid-column: span 3;
+}
+
+.memo-lesson-grid > .memo-field.memo-field-subject .memo-field-label {
+  color: #0f766e;
+}
+
+.memo-lesson-grid > .memo-field.memo-field-subject select {
+  border-color: #b9ded9;
+  background: #f5fbfa;
+  font-weight: 800;
+}
+
 .memo-lesson-grid > .memo-field.memo-field-component {
-  grid-column: span 4;
+  grid-column: span 6;
 }
 
 .memo-lesson-grid > .memo-field.memo-field-component select {
   font-weight: 700;
 }
 
-.memo-lesson-grid > .memo-field:nth-last-child(2),
-.memo-lesson-grid > .memo-field:nth-last-child(1) {
+.memo-lesson-grid > .memo-field.memo-field-component .memo-input:disabled {
+  background: #f4f7f9;
+  color: #9aabb9;
+  cursor: not-allowed;
+}
+
+/* صفوف متوازنة: المكون مع القسم والحصة، ثم ر-ج بجانب الموضوع. */
+.memo-lesson-grid > .memo-field.memo-field-topic {
+  grid-column: span 9;
+}
+
+.memo-lesson-grid > .memo-field.memo-field-objectives,
+.memo-lesson-grid > .memo-field.memo-field-stages {
   grid-column: span 6;
 }
 
+/* في المذكرة المشتركة يمتد المستوى والفوج في الصف الأول، ثم تأخذ
+   القسم والحصة ور-ج صفًا كاملًا قبل الموضوع. */
+.memo-lesson-grid:has(.memo-field-level) > .memo-field.memo-field-section,
+.memo-lesson-grid:has(.memo-field-level) > .memo-field.memo-field-session,
+.memo-lesson-grid:has(.memo-field-level) > .memo-field.memo-field-rj {
+  grid-column: span 4;
+}
+
+.memo-lesson-grid:has(.memo-field-level) > .memo-field.memo-field-topic {
+  grid-column: 1 / -1;
+}
+
 .memo-duration-box {
-  grid-column: span 2;
+  grid-column: span 3;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1036,6 +1073,21 @@
   border-inline-start: 1px solid #e3cfa5;
   color: #8a6a29;
   font-weight: 800;
+}
+
+.memo-lesson-subject-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  max-width: 100%;
+  padding: 3px 10px;
+  border: 1px solid #bfe3dd;
+  border-radius: 999px;
+  background: #f0fbf8;
+  color: #0f766e;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 /* ============================ المذكرة المشتركة ============================ */
@@ -1488,6 +1540,36 @@
   background: var(--memo-navy);
   color: #fff;
   box-shadow: 0 4px 10px rgba(18, 59, 93, 0.18);
+}
+
+.memo-subject-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #cfe8e3;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #f2fbf9, #f8fdfc);
+}
+
+.memo-subject-tab {
+  border-color: #c8e2dd;
+  color: #3f6f67;
+}
+
+.memo-subject-tab:hover {
+  border-color: #9fc9c1;
+  background: #eaf8f4;
+  color: #0f766e;
+}
+
+.memo-subject-tab.is-active {
+  border-color: #0f766e;
+  background: #0f766e;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
 }
 
 .memo-stage-switch {
@@ -2583,20 +2665,31 @@
     gap: 18px;
   }
 
-  .memo-lesson-grid > .memo-field {
-    grid-column: span 3;
+  .memo-lesson-grid > .memo-field,
+  .memo-duration-box {
+    grid-column: span 4;
   }
 
   .memo-lesson-grid > .memo-field.memo-field-component {
-    grid-column: span 3;
+    grid-column: span 8;
   }
 
-  .memo-duration-box {
-    grid-column: span 3;
+  .memo-lesson-grid > .memo-field.memo-field-subject {
+    grid-column: span 4;
   }
 
-  .memo-lesson-grid > .memo-field:nth-last-child(2),
-  .memo-lesson-grid > .memo-field:nth-last-child(1) {
+  /* في المذكرة المشتركة يمتلئ الصف الثاني بالمستوى والفوج والمادة،
+     فيأخذ المكون صفًا كاملًا حتى لا تبقى فراغات قبل القسم. */
+  .memo-lesson-grid:has(.memo-field-level) > .memo-field.memo-field-component {
+    grid-column: 1 / -1;
+  }
+
+  .memo-lesson-grid > .memo-field.memo-field-topic {
+    grid-column: 1 / -1;
+  }
+
+  .memo-lesson-grid > .memo-field.memo-field-objectives,
+  .memo-lesson-grid > .memo-field.memo-field-stages {
     grid-column: span 6;
   }
 }
@@ -2800,13 +2893,20 @@
     grid-column: 1 / -1;
   }
 
-  .memo-lesson-grid > .memo-field.memo-span-full {
+  .memo-lesson-grid > .memo-field.memo-field-subject {
+    grid-column: span 6;
+  }
+
+  .memo-lesson-grid > .memo-field.memo-field-topic,
+  .memo-lesson-grid > .memo-field.memo-field-objectives,
+  .memo-lesson-grid > .memo-field.memo-field-stages {
     grid-column: 1 / -1;
   }
 
-  .memo-lesson-grid > .memo-field:nth-last-child(2),
-  .memo-lesson-grid > .memo-field:nth-last-child(1) {
-    grid-column: 1 / -1;
+  .memo-lesson-grid:has(.memo-field-level) > .memo-field.memo-field-section,
+  .memo-lesson-grid:has(.memo-field-level) > .memo-field.memo-field-session,
+  .memo-lesson-grid:has(.memo-field-level) > .memo-field.memo-field-rj {
+    grid-column: span 6;
   }
 
   .memo-lesson-head {

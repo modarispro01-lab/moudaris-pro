@@ -20,6 +20,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import type {
+  LessonSubjectOption,
   MemoLesson,
   MemoState,
   TemplateConfig,
@@ -42,7 +43,8 @@ interface Props {
   memo: MemoState;
   template: TemplateConfig;
   levelOptions: Array<{ level: number; label: string }>;
-  componentOptions: string[];
+  subjectOptions: LessonSubjectOption[];
+  defaultLevel: number;
   multiLevel: boolean;
   onChange: (patch: Partial<MemoState>) => void;
   onLessonChange: (id: string, patch: Partial<MemoLesson>) => void;
@@ -68,6 +70,15 @@ const GROUP_FIELD: TemplateField = {
   label_fr: "Groupe",
   order: 0,
   type: "text",
+  scope: "lesson",
+};
+
+const SUBJECT_FIELD: TemplateField = {
+  key: "subject",
+  label_ar: "المادة",
+  label_fr: "Matière",
+  order: 0,
+  type: "select",
   scope: "lesson",
 };
 
@@ -128,7 +139,8 @@ function LessonCard({
   index,
   template,
   levelOptions,
-  componentOptions,
+  subjectOptions,
+  defaultLevel,
   multiLevel,
   sessionNumber,
   onLessonChange,
@@ -142,7 +154,8 @@ function LessonCard({
   index: number;
   template: TemplateConfig;
   levelOptions: Array<{ level: number; label: string }>;
-  componentOptions: string[];
+  subjectOptions: LessonSubjectOption[];
+  defaultLevel: number;
   multiLevel: boolean;
   sessionNumber: number;
   onLessonChange: (id: string, patch: Partial<MemoLesson>) => void;
@@ -166,18 +179,27 @@ function LessonCard({
   const breakActive = breakMinutes > 0;
   const currentSession = lesson.sessionNumber ?? sessionNumber;
   const update = (patch: Partial<MemoLesson>) => onLessonChange(lesson.id, patch);
+  const currentSubjectCode = lesson.subjectCode ?? "";
+  const currentSubject = subjectOptions.find(
+    (subject) => subject.code === currentSubjectCode
+  );
+  const lessonLevel = lesson.levelNumber ?? defaultLevel;
+  const subjectLevel =
+    currentSubject?.levels.find((item) => item.level === lessonLevel) ??
+    currentSubject?.levels[0];
   /* في المواد ذات المحاور يُعرض المكون كقائمة اختيار، مع الحفاظ على أي قيمة
-     مكتوبة سابقًا حتى لا يضيع عمل الأستاذ(ة) عند تغيير المادة. */
-  const componentChoices = componentOptions.length
+     مكتوبة سابقًا حتى لا يضيع عمل الأستاذ(ة) عند تغيير المادة أو المستوى. */
+  const componentChoices = currentSubject
     ? Array.from(
         new Set(
-          [...componentOptions, lesson.component]
+          [...(subjectLevel?.componentOptions ?? []), lesson.component]
             .map((value) => value.trim())
             .filter(Boolean)
         )
       )
     : [];
-  const hasComponentChoices = componentChoices.length > 0;
+  const hasComponentChoices =
+    !!currentSubject?.structuredComponents && componentChoices.length > 0;
 
   return (
     <article className="memo-lesson-card">
@@ -199,6 +221,11 @@ function LessonCard({
             <Layers3 className="h-3.5 w-3.5" />
             {lesson.levelLabel}
             {lesson.groupLabel ? <b>{lesson.groupLabel}</b> : null}
+          </span>
+        ) : null}
+        {currentSubject ? (
+          <span className="memo-lesson-subject-pill">
+            {currentSubject.name}
           </span>
         ) : null}
         <div className="memo-lesson-actions">
@@ -260,41 +287,16 @@ function LessonCard({
           </span>
           <strong>{duration}</strong>
         </div>
-        {hasComponentChoices ? (
-          <Label
-            field={component}
-            className="memo-field-component"
-            hint="اختر المكون من محاور المادة."
-          >
-            <select
-              className="memo-input"
-              value={lesson.component}
-              onChange={(event) => update({ component: event.target.value })}
-            >
-              {componentChoices.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </Label>
-        ) : null}
-        <Label
-          field={section}
-          hint={
-            multiLevel
-              ? "تظهر أسفل المستوى والفوج في الجدول."
-              : "تظهر مباشرة في خانة القسم بالجدول."
-          }
-        >
-          {inputFor(section!, lesson.section, (value) => update({ section: value }))}
-        </Label>
         {multiLevel ? (
           <>
-            <Label field={LEVEL_FIELD} hint="يحدّد المستوى الذي تتبعه الحصة.">
+            <Label
+              field={LEVEL_FIELD}
+              className="memo-field-level"
+              hint="يحدّد المستوى الذي تتبعه هذه الحصة."
+            >
               <select
                 className="memo-input"
-                value={lesson.levelNumber ?? ""}
+                value={lesson.levelNumber ?? defaultLevel}
                 onChange={(event) => {
                   const nextLevel = Number(event.target.value);
                   const option = levelOptions.find(
@@ -306,7 +308,6 @@ function LessonCard({
                   });
                 }}
               >
-                <option value="">— اختر المستوى —</option>
                 {levelOptions.map((item) => (
                   <option key={item.level} value={item.level}>
                     {item.label}
@@ -329,26 +330,98 @@ function LessonCard({
             </Label>
           </>
         ) : null}
-        {hasComponentChoices ? null : (
-          <Label field={component}>
-            {inputFor(component!, lesson.component, (value) => update({ component: value }))}
-          </Label>
-        )}
-        <Label field={session}>
+        <Label
+          field={SUBJECT_FIELD}
+          className="memo-field-subject"
+          hint={
+            currentSubject
+              ? "مادة هذه الحصة وحدها، ويمكن أن تختلف عن بقية الحصص."
+              : "اختر مادة هذه الحصة لتفعيل حقل المكون."
+          }
+        >
+          <select
+            className="memo-input"
+            value={currentSubjectCode}
+            onChange={(event) => {
+              const nextCode = event.target.value;
+              if (!nextCode) {
+                update({ subjectCode: undefined, component: "", topic: "" });
+                return;
+              }
+              update({ subjectCode: nextCode });
+            }}
+          >
+            <option value="">— اختر المادة —</option>
+            {subjectOptions.map((subject) => (
+              <option key={subject.code} value={subject.code}>
+                {subject.name}
+              </option>
+            ))}
+          </select>
+        </Label>
+        <Label
+          field={component}
+          className="memo-field-component"
+          hint={
+            !currentSubject
+              ? "يتفعّل بعد اختيار المادة."
+              : hasComponentChoices
+                ? "اختر المكون من محاور المادة."
+                : "حقل حر: اكتب المكون كما تريده."
+          }
+        >
+          {!currentSubject ? (
+            <input
+              className="memo-input"
+              value=""
+              disabled
+              placeholder="اختر المادة أولًا"
+            />
+          ) : hasComponentChoices ? (
+            <select
+              className="memo-input"
+              value={lesson.component}
+              onChange={(event) => update({ component: event.target.value })}
+            >
+              <option value="">— اختر المكون —</option>
+              {componentChoices.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          ) : (
+            inputFor(component!, lesson.component, (value) =>
+              update({ component: value })
+            )
+          )}
+        </Label>
+        <Label
+          field={section}
+          className="memo-field-section"
+          hint={
+            multiLevel
+              ? "تظهر أسفل المستوى والفوج في الجدول."
+              : "تظهر مباشرة في خانة القسم بالجدول."
+          }
+        >
+          {inputFor(section!, lesson.section, (value) => update({ section: value }))}
+        </Label>
+        <Label field={session} className="memo-field-session">
           {inputFor(session!, lesson.session, (value) => update({ session: value }))}
         </Label>
-        <Label field={rj}>
+        <Label field={rj} className="memo-field-rj">
           {inputFor(rj!, lesson.rj, (value) => update({ rj: value }))}
         </Label>
-        <Label field={topic} className="memo-span-full">
+        <Label field={topic} className="memo-field-topic">
           {inputFor(topic!, lesson.topic, (value) => update({ topic: value }))}
         </Label>
-        <Label field={objectives}>
+        <Label field={objectives} className="memo-field-objectives">
           {inputFor(objectives!, lesson.objectives, (value) =>
             update({ objectives: value })
           )}
         </Label>
-        <Label field={stages}>
+        <Label field={stages} className="memo-field-stages">
           {inputFor(stages!, lesson.stages, (value) => update({ stages: value }))}
         </Label>
       </div>
@@ -425,7 +498,8 @@ export default function MemoEditor({
   memo,
   template,
   levelOptions,
-  componentOptions,
+  subjectOptions,
+  defaultLevel,
   multiLevel,
   onChange,
   onLessonChange,
@@ -518,8 +592,8 @@ export default function MemoEditor({
         <div className="memo-source-line">
           <Sparkles className="h-3.5 w-3.5" />
           <span>
-            موضوع الحصة يُستخرج تلقائيًا من توزيع الأسبوع حسب الحصة المختارة.
-            اليوم الفعلي يظهر في الترويسة فقط، والحقول التربوية الأخرى تبقى فارغة لتكتبها بنفسك.
+            موضوع الحصة يُستخرج تلقائيًا من توزيع الأسبوع حسب الحصة والمادة المختارة.
+            اختر مادة كل حصة داخل بطاقتها، ثم عدّل المكون والموضوع عند الحاجة؛ واليوم الفعلي يظهر في الترويسة فقط.
           </span>
         </div>
       </section>
@@ -535,8 +609,8 @@ export default function MemoEditor({
               <p>
                 {memo.lessons.length
                   ? multiLevel
-                    ? `${lessonsCountLabel(memo.lessons.length)} — ${memo.level}. تتناوب المستويات والأفواج، ويمكن تعديل كل حصة واستراحتها.`
-                    : `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}${memo.sessionNumber ? ` · الحصة ${memo.sessionNumber}` : ""}. عدّل المدة من/إلى والقسم لكل حصة، وأضف استراحة قابلة للتعديل بين الحصص.`
+                    ? `${lessonsCountLabel(memo.lessons.length)} — ${memo.level}. تتناوب المستويات والأفواج، ويمكن تعديل كل حصة ومادتها واستراحتها.`
+                    : `${lessonsCountLabel(memo.lessons.length)} — ${periodLabel(template, memo.period)}${memo.sessionNumber ? ` · الحصة ${memo.sessionNumber}` : ""}. لكل حصة مدتها ومادتها ومكونها وقسمها، مع استراحة قابلة للتعديل بين الحصص.`
                   : `لا توجد حصص بعد. أضف حصة فارغة أو اختر حصة جاهزة من خريطة الأسبوع — ${periodLabel(template, memo.period)}.`}
               </p>
             </div>
@@ -573,7 +647,8 @@ export default function MemoEditor({
               index={index}
               template={template}
               levelOptions={levelOptions}
-              componentOptions={componentOptions}
+              subjectOptions={subjectOptions}
+              defaultLevel={defaultLevel}
               multiLevel={multiLevel}
               sessionNumber={memo.sessionNumber ?? 1}
               onLessonChange={onLessonChange}

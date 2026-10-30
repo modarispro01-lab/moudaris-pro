@@ -20,7 +20,6 @@ import type {
 } from "./types";
 import {
   cx,
-  KIND_LABELS,
   levelSessionCount,
   sessionLabel,
   sessionSources,
@@ -32,17 +31,22 @@ interface Props {
   stage: LevelStage;
   week: LevelWeek;
   selection: MemoSelection;
+  subjects: Array<{ code: string; name: string }>;
+  subjectCode: string;
+  onSubjectChange: (code: string) => void;
   onLevelChange: (levelNumber: number) => void;
   onGo: (patch: Partial<MemoSelection>) => void;
   onAddSession: (
     day: LevelDay,
     levelNumber: number,
-    sessionNumber: number
+    sessionNumber: number,
+    subjectCode: string
   ) => void;
   isAdded: (
     day: LevelDay,
     levelNumber: number,
-    sessionNumber: number
+    sessionNumber: number,
+    subjectCode: string
   ) => boolean;
 }
 
@@ -58,6 +62,9 @@ export default function WeekMap({
   stage,
   week,
   selection,
+  subjects,
+  subjectCode,
+  onSubjectChange,
   onLevelChange,
   onGo,
   onAddSession,
@@ -68,6 +75,8 @@ export default function WeekMap({
   const canNext = stageIndex >= 0 && stageIndex < level.stages.length - 1;
   const sessionCount = levelSessionCount(level);
   const sessions = sessionSources(week, sessionCount);
+  const subjectName =
+    subjects.find((subject) => subject.code === subjectCode)?.name || "";
 
   const goStage = (delta: -1 | 1) => {
     const next = level.stages[stageIndex + delta];
@@ -86,12 +95,41 @@ export default function WeekMap({
               <h2>حصص الأسبوع</h2>
               <p>
                 {levels.length > 1
-                  ? `اختر المستوى النشط ثم الحصة 1–${sessionCount} حسب استعمال زمنك. اليوم الفعلي مستقل ويُختار في الشريط العلوي.`
-                  : `اختر الحصة 1–${sessionCount} حسب استعمال زمنك. اليوم الفعلي مستقل ويُختار في الشريط العلوي.`}
+                  ? `${subjectName} — اختر المستوى النشط ثم الحصة 1–${sessionCount} حسب استعمال زمنك. اليوم الفعلي مستقل ويُختار في الشريط العلوي.`
+                  : `${subjectName} — اختر الحصة 1–${sessionCount} حسب استعمال زمنك. اليوم الفعلي مستقل ويُختار في الشريط العلوي.`}
               </p>
             </div>
           </div>
         </div>
+
+        {subjects.length > 1 ? (
+          <div className="memo-subject-tabs">
+            <span className="memo-level-tabs-label">توزيع المادة</span>
+            <div
+              className="memo-level-tabs-list"
+              role="tablist"
+              aria-label="مادة خريطة الأسبوع"
+            >
+              {subjects.map((subject) => (
+                <button
+                  key={subject.code}
+                  type="button"
+                  role="tab"
+                  aria-selected={subject.code === subjectCode}
+                  className={cx(
+                    "memo-level-tab",
+                    "memo-subject-tab",
+                    subject.code === subjectCode && "is-active"
+                  )}
+                  onClick={() => onSubjectChange(subject.code)}
+                  title={`اعرض توزيع ${subject.name} في الخريطة`}
+                >
+                  {subject.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         {levels.length > 1 ? (
           <div className="memo-level-tabs">
@@ -184,7 +222,12 @@ export default function WeekMap({
         <div className="memo-days" aria-label="حصص الأسبوع">
           {sessions.map(({ sessionNumber, day, repeated }) => {
             const active = sessionNumber === selection.sessionNumber;
-            const added = isAdded(day, level.level, sessionNumber);
+            const added = isAdded(
+              day,
+              level.level,
+              sessionNumber,
+              subjectCode
+            );
             return (
               <div
                 key={sessionNumber}
@@ -217,7 +260,9 @@ export default function WeekMap({
                 <button
                   type="button"
                   className={cx("memo-day-add", added && "is-added")}
-                  onClick={() => onAddSession(day, level.level, sessionNumber)}
+                  onClick={() =>
+                    onAddSession(day, level.level, sessionNumber, subjectCode)
+                  }
                   disabled={added}
                   title={
                     added

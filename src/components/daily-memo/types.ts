@@ -152,6 +152,8 @@ export interface MemoLesson {
   timeFrom: string;
   timeTo: string;
   section: string;
+  /** مادة الحصة: يمكن أن تختلف من حصة إلى أخرى داخل المذكرة نفسها. */
+  subjectCode?: string;
   component: string;
   topic: string;
   objectives: string;
@@ -171,6 +173,22 @@ export interface MemoLesson {
   groupLabel?: string;
   /** الحصة الأسبوعية المختارة من 1 إلى 5 التي تنتمي إليها هذه الحصة. */
   sessionNumber?: number;
+}
+
+/** خيارات المادة المتاحة داخل بطاقة الحصة. */
+export interface LessonSubjectLevel {
+  level: number;
+  label: string;
+  /** مكونات التوزيع الخاصة بالمستوى (تكون فارغة في المواد ذات الحقل الحر). */
+  componentOptions: string[];
+}
+
+export interface LessonSubjectOption {
+  code: string;
+  name: string;
+  /** هل تعتمد المادة مكونات محاور تُختار من قائمة؟ */
+  structuredComponents: boolean;
+  levels: LessonSubjectLevel[];
 }
 
 export interface MemoState {
