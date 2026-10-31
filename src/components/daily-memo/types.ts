@@ -231,6 +231,8 @@ export interface Preferences {
   period?: MemoBlock;
   levels?: number[];
   activeLevel?: number;
+  /** الأفواج المختارة لكل مستوى مدرّس. */
+  groupsByLevel?: Record<number, string[]>;
   subjectCode?: string;
   stageId?: string;
   weekNumber?: number;
@@ -242,6 +244,8 @@ export interface MemoSelection {
   subjectCode: string;
   levels: number[];
   level: number;
+  /** الأفواج المختارة لكل مستوى: مفتاح الخريطة هو رقم المستوى. */
+  groupsByLevel: Record<number, string[]>;
   period: MemoBlock;
   stageId: string;
   weekNumber: number;
@@ -358,7 +362,68 @@ export function formatLongDate(iso: string): string {
   }
 }
 
-export function draftKey(selection: MemoSelection): string {
+/** أفواج التناوب الافتراضية عند تدريس مستوى واحد أو عدة مستويات. */
+export const DEFAULT_GROUP_LABELS = ["الفوج الأول", "الفوج الثاني"] as const;
+
+/** ينظّف أسماء الأفواج ويحذف الفراغات والتكرار مع الحفاظ على ترتيب الاختيار. */
+export function normalizeGroupLabels(value: unknown): string[] {
+  const list = Array.isArray(value)
+    ? value
+    : typeof value === "string"
+      ? value.split(",")
+      : [];
+  const labels: string[] = [];
+  for (const item of list) {
+    const label = String(item ?? "").trim();
+    if (label && !labels.includes(label)) labels.push(label);
+  }
+  return labels;
+}
+
+/** ترتيب ثابت يطابق عرض الأفواج: الفوجان الافتراضيان ثم الأفواج المخصّصة. */
+export function orderGroupLabels(labels: string[]): string[] {
+  const defaults = DEFAULT_GROUP_LABELS.filter((label) =>
+    labels.includes(label)
+  );
+  const extras = labels.filter(
+    (label) => !DEFAULT_GROUP_LABELS.some((item) => item === label)
+  );
+  return [...defaults, ...extras];
+}
+
+/**
+ * أفواج مستوى معيّن. عند غياب اختيار صريح نستعمل الفوجين معًا في المذكرة
+ * المشتركة بين مستويات، والفوج الأول وحده في مذكرة مستوى واحد.
+ */
+export function groupsForLevel(
+  selection: {
+    levels?: number[];
+    level?: number;
+    groupsByLevel?: Record<number, string[]>;
+  },
+  levelNumber: number
+): string[] {
+  const labels = normalizeGroupLabels(selection.groupsByLevel?.[levelNumber]);
+  if (labels.length) return orderGroupLabels(labels);
+  const levels = selection.levels ?? [];
+  return levels.length > 1
+    ? [...DEFAULT_GROUP_LABELS]
+    : [DEFAULT_GROUP_LABELS[0]];
+}
+
+/** قيم افتراضية لأفواج كل مستوى حسب عدد المستويات المختارة. */
+export function defaultGroupsForLevels(
+  levels: number[]
+): Record<number, string[]> {
+  const labels =
+    levels.length > 1
+      ? [...DEFAULT_GROUP_LABELS]
+      : [DEFAULT_GROUP_LABELS[0]];
+  return Object.fromEntries(levels.map((levelNumber) => [levelNumber, [...labels]]));
+}
+
+/** المفتاح القديم للمسودة قبل إضافة اختيار الأفواج (يبقى للتوافق). */
+export function baseDraftKey(selection: MemoSelection): string {
   /* المستويات المختارة كلها جزء من المسودة نفسها. اليوم ليس جزءًا من
      المفتاح لأن الحصة هي التي تحدد المحتوى، أما اليوم فيحدد الترويسة فقط.
      عند مستوى واحد يبقى جزء المستويات بالصيغة القديمة نفسها. */
@@ -373,6 +438,18 @@ export function draftKey(selection: MemoSelection): string {
     selection.weekNumber,
     `s${clampSessionNumber(selection.sessionNumber)}`,
   ].join(":");
+}
+
+export function draftKey(selection: MemoSelection): string {
+  /* الأفواج تغيّر عدد الحصص ومحتواها، لذلك لكل تشكيلة أفواج مسودتها الخاصة. */
+  const levels = selection.levels.length
+    ? [...selection.levels].sort((a, b) => a - b)
+    : [selection.level];
+  const groups = levels.map((levelNumber) => [
+    levelNumber,
+    groupsForLevel(selection, levelNumber),
+  ]);
+  return `${baseDraftKey(selection)}:g:${encodeURIComponent(JSON.stringify(groups))}`;
 }
 
 /** مفتاح المسودات القديمة (قبل فصل الحصة عن اليوم) لاسترجاع عمل الأستاذ(ة). */
@@ -529,9 +606,6 @@ export function periodLabel(
     (period === "morning" ? "الفترة الصباحية" : "الفترة المسائية")
   );
 }
-
-/** أفواج التناوب الافتراضية عند دمج مستويين أو أكثر في مذكرة واحدة. */
-export const DEFAULT_GROUP_LABELS = ["الفوج الأول", "الفوج الثاني"] as const;
 
 export const KIND_LABELS: Record<LessonKind, string> = {
   lesson: "درس",

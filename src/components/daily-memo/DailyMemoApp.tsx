@@ -8,10 +8,12 @@ import {
   CheckCircle2,
   FileText,
   Loader2,
+  Plus,
   Printer,
   Save,
   Sparkles,
   TriangleAlert,
+  X,
 } from "lucide-react";
 import MemoEditor from "./MemoEditor";
 import MemoSheet from "./MemoSheet";
@@ -33,18 +35,22 @@ import type {
   Profile,
 } from "./types";
 import {
+  baseDraftKey,
   clampSessionNumber,
   cx,
   DEFAULT_GROUP_LABELS,
+  defaultGroupsForLevels,
   draftKey,
   findDay,
   findLevel,
   findStage,
   findWeek,
+  groupsForLevel,
   legacyDraftKey,
   lessonBreakMinutes,
   levelSessionCount,
   minutesToTime,
+  normalizeGroupLabels,
   periodLabel,
   sessionLabel,
   sessionNumberForDay,
@@ -104,10 +110,12 @@ function firstSelection(catalog: Catalog): MemoSelection {
   const stage = level?.stages[0];
   const week = stage?.weeks[0];
   const day = firstDay(week);
+  const levels = [level?.level ?? 1];
   return {
     subjectCode: subject?.code || catalog.template.subjectCode || "math",
-    levels: [level?.level ?? 1],
+    levels,
     level: level?.level ?? 1,
+    groupsByLevel: defaultGroupsForLevels(levels),
     period: "morning",
     stageId: stage?.id || "stage-1",
     weekNumber: week?.weekNumber ?? 1,
@@ -118,6 +126,41 @@ function firstSelection(catalog: Catalog): MemoSelection {
 
 function sameLevels(a: number[], b: number[]): boolean {
   return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+function sameGroups(
+  a: Record<number, string[]>,
+  b: Record<number, string[]>
+): boolean {
+  const keysA = Object.keys(a).map(Number).sort((x, y) => x - y);
+  const keysB = Object.keys(b).map(Number).sort((x, y) => x - y);
+  if (keysA.length !== keysB.length) return false;
+  return keysA.every(
+    (key, index) =>
+      key === keysB[index] &&
+      a[key].length === b[key]?.length &&
+      a[key].every((label, labelIndex) => label === b[key][labelIndex])
+  );
+}
+
+/**
+ * يبني خريطة أفواج كاملة للمستويات المختارة. المستوى الجديد يبدأ بالفوج
+ * الأول، ثم يختار الأستاذ(ة) بقية الأفواج من الشريط العلوي.
+ */
+function groupsMapForLevels(
+  selection: MemoSelection,
+  levels: number[]
+): Record<number, string[]> {
+  const next: Record<number, string[]> = {};
+  for (const levelNumber of levels) {
+    const existing = normalizeGroupLabels(
+      selection.groupsByLevel?.[levelNumber]
+    );
+    next[levelNumber] = existing.length
+      ? groupsForLevel(selection, levelNumber)
+      : [DEFAULT_GROUP_LABELS[0]];
+  }
+  return next;
 }
 
 /** يعيد اختيارًا كاملًا للمستوى النشط مع الحفاظ على المرحلة والأسبوع واليوم إن أمكن. */
@@ -401,12 +444,48 @@ function combinedLesson(
   };
 }
 
+/** هل تستعمل المذكرة صفوف المستوى/الفوج (تعدد مستويات أو أفواج)؟ */
+function isGroupedSelection(selection: MemoSelection): boolean {
+  if (selection.levels.length > 1) return true;
+  return selection.levels.some(
+    (levelNumber) => groupsForLevel(selection, levelNumber).length > 1
+  );
+}
+
+/** هل تمثّل الحصة المصدر نفسه لمستوى وفوج وحصة معيّنة؟ */
+function lessonMatchesTarget(
+  lesson: MemoLesson,
+  selection: MemoSelection,
+  sourceDay: LevelDay,
+  levelNumber: number,
+  sessionNumber: number,
+  subjectCode: string,
+  groupLabel: string
+): boolean {
+  if (lesson.kind === "empty") return false;
+  if ((lesson.subjectCode ?? selection.subjectCode) !== subjectCode) {
+    return false;
+  }
+  const sameSource =
+    lesson.sessionNumber != null
+      ? lesson.sessionNumber === sessionNumber
+      : lesson.sourceDayKey === sourceDay.dayKey &&
+        (lesson.sourceLessonNumber ?? null) === (sourceDay.lessonNumber ?? null);
+  if (!sameSource) return false;
+  const levelMatches =
+    selection.levels.length > 1
+      ? lesson.levelNumber === levelNumber
+      : lesson.levelNumber == null || lesson.levelNumber === levelNumber;
+  if (!levelMatches) return false;
+  return (lesson.groupLabel?.trim() || groupLabel) === groupLabel;
+}
+
 /**
- * مذكرة مشتركة عند اختيار أكثر من مستوى:
- * تتناوب المستويات والأفواج، مع استراحة بعد الجولة الأولى وصف خروج في النهاية.
- * مثال مستويين: م1/ف1 ← م2/ف2 ← استراحة ← م1/ف2 ← م2/ف1 ← الخروج.
+ * يبني مذكرة الحصة من التوزيع حسب المستويات والأفواج المختارة:
+ * حصة مستقلة لكل فوج، وتتناوب المستويات في كل جولة كما كان في المذكرة
+ * المشتركة، مع استراحة بعد الجولة الأولى حين توجد جولة أخرى.
  */
-function buildCombinedMemo(
+function buildGroupedMemo(
   catalog: Catalog,
   selection: MemoSelection,
   profile: Profile
@@ -421,33 +500,41 @@ function buildCombinedMemo(
   const displayDay =
     findDay(activePlan.week, selection.dayKey) ?? activePlan.sourceDay;
   const scheduled = plans.filter((plan) => plan.hasLesson);
+  /* إن لم توجد حصة في التوزيع نُبقي صفوفًا فارغة قابلة للكتابة، كما كان
+     الشأن في الحصص العلمية 3–5، بدل إرجاع مذكرة بلا حصص. */
+  const targets = scheduled.length ? scheduled : plans;
+  const groupCounts = targets.map(
+    (plan) => groupsForLevel(selection, plan.level.level).length
+  );
+  const roundCount = Math.max(1, ...groupCounts);
   const lessons: MemoLesson[] = [];
   let cursor = (selection.period === "morning" ? 8 : 14) * 60;
 
-  if (scheduled.length) {
-    for (let round = 0; round < DEFAULT_GROUP_LABELS.length; round++) {
-      scheduled.forEach((plan, index) => {
-        const groupLabel =
-          DEFAULT_GROUP_LABELS[
-            (round + index) % DEFAULT_GROUP_LABELS.length
-          ];
-        const lesson = combinedLesson(
-          plan,
-          selection,
-          profile,
-          catalog,
-          cursor,
-          selection.sessionNumber,
-          groupLabel
-        );
-        cursor += 60;
-        /* استراحة واحدة بعد الجولة الأولى، أي بعد آخر حصة قبل تغيير الأفواج. */
-        if (round === 0 && index === scheduled.length - 1) {
-          lesson.breakMinutes = 15;
-          cursor += 15;
-        }
-        lessons.push(lesson);
-      });
+  for (let round = 0; round < roundCount; round++) {
+    const roundLessons: MemoLesson[] = [];
+    targets.forEach((plan, index) => {
+      const groups = groupsForLevel(selection, plan.level.level);
+      /* كل فوج يظهر مرة واحدة فقط؛ المستوى الذي له فوج واحد لا يتكرر
+         في جولة ثانية. */
+      if (round >= groups.length) return;
+      const groupLabel = groups[(round + index) % groups.length];
+      const lesson = combinedLesson(
+        plan,
+        selection,
+        profile,
+        catalog,
+        cursor,
+        selection.sessionNumber,
+        groupLabel
+      );
+      cursor += 60;
+      roundLessons.push(lesson);
+      lessons.push(lesson);
+    });
+    if (round < roundCount - 1 && roundLessons.length) {
+      const last = roundLessons[roundLessons.length - 1];
+      last.breakMinutes = 15;
+      cursor += 15;
     }
   }
 
@@ -472,7 +559,7 @@ function buildCombinedMemo(
     period: selection.period,
     showNotes: true,
     showSignatures: true,
-    showDismissal: lessons.length > 0,
+    showDismissal: isGroupedSelection(selection) && lessons.length > 0,
     sessionNumber: selection.sessionNumber,
     lessons,
   };
@@ -483,69 +570,7 @@ function buildMemo(
   selection: MemoSelection,
   profile: Profile
 ): MemoState | null {
-  if (selection.levels.length > 1) {
-    const combined = buildCombinedMemo(catalog, selection, profile);
-    if (combined) return combined;
-  }
-
-  const level = findLevel(catalog, selection);
-  const stage = findStage(level, selection.stageId);
-  const week = findWeek(stage, selection.weekNumber);
-  const displayDay = findDay(week, selection.dayKey);
-  if (!level || !stage || !week || !displayDay) return null;
-
-  const sourceDay =
-    selection.sessionNumber <= levelSessionCount(level)
-      ? sessionSourceDay(week, selection.sessionNumber)
-      : undefined;
-  const start = selection.period === "morning" ? "08:00" : "14:00";
-  const end = selection.period === "morning" ? "09:00" : "15:00";
-  const lesson: MemoLesson = {
-    id: uid(),
-    block: selection.period,
-    timeFrom: start,
-    timeTo: end,
-    section: profile.section,
-    subjectCode: selection.subjectCode,
-    component:
-      sourceDay?.component ||
-      stage.theme_ar ||
-      level.subject_ar ||
-      level.subject ||
-      catalog.template.subject_ar,
-    topic: sourceDay?.content.topic_ar ?? "",
-    objectives: "",
-    stages: "",
-    session: sessionLabel(selection.sessionNumber),
-    sessionNumber: selection.sessionNumber,
-    rj: "",
-    sourceLessonNumber: sourceDay?.lessonNumber ?? null,
-    sourceDayKey: sourceDay?.dayKey,
-    kind: sourceDay?.kind ?? "lesson",
-    breakMinutes: 0,
-  };
-
-  return {
-    institution: profile.institution,
-    teacher: profile.teacher,
-    director: profile.director,
-    inspector: profile.inspector,
-    academicYear: profile.academicYear || defaultAcademicYear(),
-    level: level.levelLabel_ar,
-    stage: stage.title_ar,
-    subject: level.subject_ar || level.subject || catalog.template.subject_ar,
-    date: todayIso(),
-    unit: "",
-    week: week.title_ar,
-    day: displayDay.label_ar,
-    section: profile.section,
-    notes: "",
-    period: selection.period,
-    showNotes: true,
-    showSignatures: true,
-    sessionNumber: selection.sessionNumber,
-    lessons: [lesson],
-  };
+  return buildGroupedMemo(catalog, selection, profile);
 }
 
 /** يهيّئ مسودة محفوظة للاختيار الحالي ويحوّل المسودات القديمة إلى نموذج الحصة. */
@@ -574,10 +599,17 @@ function prepareDraft(memo: MemoState, selection: MemoSelection): MemoState {
 function storedDraftFor(
   catalog: Catalog,
   drafts: Record<string, MemoState>,
-  selection: MemoSelection
+  selection: MemoSelection,
+  allowUngrouped = false
 ): MemoState | undefined {
   const direct = drafts[draftKey(selection)];
   if (direct) return prepareDraft(direct, selection);
+
+  /* المسودات المحفوظة قبل إضافة اختيار الأفواج كانت بمفتاح دون جزء الأفواج. */
+  if (allowUngrouped) {
+    const ungrouped = drafts[baseDraftKey(selection)];
+    if (ungrouped) return prepareDraft(ungrouped, selection);
+  }
 
   const legacy = drafts[legacyDraftKey(selection)];
   if (!legacy) return undefined;
@@ -600,6 +632,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   const [profile, setProfile] = useState<Profile>(EMPTY_PROFILE);
   const [mounted, setMounted] = useState(false);
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
+  const [groupEditor, setGroupEditor] = useState<number | null>(null);
+  const [groupDraft, setGroupDraft] = useState<Record<number, string>>({});
   const draftsRef = useRef<Record<string, MemoState>>({});
   const hydratedRef = useRef(false);
 
@@ -729,12 +763,26 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         : initialSelection.level;
     const activeLevel = levels.includes(preferredLevel) ? preferredLevel : levels[0];
     const period: MemoBlock = storedPrefs.period === "afternoon" ? "afternoon" : "morning";
+    const defaultGroups = defaultGroupsForLevels(levels);
+    const storedGroups =
+      storedPrefs.groupsByLevel &&
+      typeof storedPrefs.groupsByLevel === "object"
+        ? storedPrefs.groupsByLevel
+        : {};
+    const groupsByLevel: Record<number, string[]> = {};
+    for (const levelNumber of levels) {
+      const labels = normalizeGroupLabels(storedGroups[levelNumber]);
+      groupsByLevel[levelNumber] = labels.length
+        ? labels
+        : defaultGroups[levelNumber];
+    }
     const baseSelection: MemoSelection = {
       ...initialSelection,
       subjectCode,
       period,
       levels,
       level: activeLevel,
+      groupsByLevel,
       stageId: storedPrefs.stageId || initialSelection.stageId,
       weekNumber:
         typeof storedPrefs.weekNumber === "number"
@@ -772,7 +820,12 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     setProfile(mergedProfile);
     setBrowseSubjectCode(subjectCode);
     setSelection(hydratedSelection);
-    const stored = storedDraftFor(catalog, draftsRef.current, hydratedSelection);
+    const stored = storedDraftFor(
+      catalog,
+      draftsRef.current,
+      hydratedSelection,
+      true
+    );
     setMemo(stored ?? buildMemo(catalog, hydratedSelection, mergedProfile));
     setMounted(true);
   }, [catalog, draftsKey, initialSelection, prefsKey, profileKey]);
@@ -787,6 +840,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         subjectCode: selection.subjectCode,
         levels: selection.levels,
         activeLevel: selection.level,
+        groupsByLevel: selection.groupsByLevel,
         period: selection.period,
         stageId: selection.stageId,
         weekNumber: selection.weekNumber,
@@ -801,6 +855,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     selection.subjectCode,
     selection.levels,
     selection.level,
+    selection.groupsByLevel,
     selection.period,
     selection.stageId,
     selection.weekNumber,
@@ -875,6 +930,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
       next.subjectCode === selection.subjectCode &&
       next.level === selection.level &&
       sameLevels(next.levels, selection.levels) &&
+      sameGroups(next.groupsByLevel, selection.groupsByLevel) &&
       next.period === selection.period &&
       next.stageId === selection.stageId &&
       next.weekNumber === selection.weekNumber &&
@@ -931,6 +987,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
       subjectCode: code,
       levels: nextLevels,
       level: levelData.level,
+      groupsByLevel: groupsMapForLevels(selection, nextLevels),
       stageId: stage?.id ?? selection.stageId,
       weekNumber: week?.weekNumber ?? selection.weekNumber,
     });
@@ -960,13 +1017,74 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         ? levels[0]
         : selection.level
       : levelNumber;
-    goTo(selectionForLevel(catalog, selection, activeLevel, levels));
+    const nextSelection = selectionForLevel(
+      catalog,
+      selection,
+      activeLevel,
+      levels
+    );
+    nextSelection.groupsByLevel = groupsMapForLevels(selection, levels);
+    goTo(nextSelection);
     if (!selected && levels.length > 1) {
       setToast({
-        msg: "تم دمج المستويات المختارة في مذكرة واحدة: تناوب الحصص والأفواج، استراحة، ثم الخروج.",
+        msg: "تم دمج المستويات المختارة في مذكرة واحدة: حصة لكل فوج مختار، استراحة، ثم الخروج.",
         kind: "ok",
       });
     }
+  }
+
+  /** إضافة فوج أو إزالته لمستوى معيّن مع إبقاء فوج واحد على الأقل. */
+  function toggleGroup(levelNumber: number, label: string) {
+    const current = groupsForLevel(selection, levelNumber);
+    const selected = current.includes(label);
+    if (selected && current.length === 1) {
+      setToast({
+        msg: "اختر فوجًا واحدًا على الأقل لكل مستوى مدرّس.",
+        kind: "err",
+      });
+      return;
+    }
+    const nextGroups = selected
+      ? current.filter((item) => item !== label)
+      : [...current, label];
+    goTo({
+      groupsByLevel: {
+        ...selection.groupsByLevel,
+        [levelNumber]: nextGroups,
+      },
+    });
+    const levelLabel =
+      allLevels.find((item) => item.level === levelNumber)?.label ||
+      `المستوى ${levelNumber}`;
+    setToast({
+      msg: selected
+        ? `أُزيل ${label} من ${levelLabel}؛ أُعيد توليد الحصص حسب الأفواج المختارة.`
+        : `أُضيف ${label} إلى ${levelLabel}؛ أُضيفت حصة مستقلة لهذا الفوج.`,
+      kind: "ok",
+    });
+  }
+
+  /** إضافة فوج باسم مخصّص (مثل: الفوج الثالث أو فوج أ). */
+  function addCustomGroup(levelNumber: number, label: string) {
+    const clean = normalizeGroupLabels(label)[0];
+    if (!clean) return;
+    const current = groupsForLevel(selection, levelNumber);
+    if (current.includes(clean)) {
+      setToast({ msg: `${clean} مختار أصلًا لهذا المستوى.`, kind: "err" });
+      return;
+    }
+    goTo({
+      groupsByLevel: {
+        ...selection.groupsByLevel,
+        [levelNumber]: [...current, clean],
+      },
+    });
+    setGroupEditor(null);
+    setGroupDraft((previous) => ({ ...previous, [levelNumber]: "" }));
+    setToast({
+      msg: `أُضيف ${clean}؛ أُضيفت حصة مستقلة لهذا الفوج.`,
+      kind: "ok",
+    });
   }
 
   function changePeriod(period: MemoBlock) {
@@ -1165,14 +1283,17 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   }
 
   function addLesson() {
-    const multiLevel = selection.levels.length > 1;
+    const grouped = isGroupedSelection(selection);
     const activeLevel = findLevel(catalog, selection);
+    const groups = groupsForLevel(selection, selection.level);
     setMemo((previous) => {
       if (!previous) return previous;
       const slot = nextSlot(previous.lessons, previous.period);
       const sameLevelCount = previous.lessons.filter(
         (lesson) => lesson.levelNumber === selection.level
       ).length;
+      const groupLabel =
+        groups[sameLevelCount % groups.length] ?? groups[0];
       const lesson: MemoLesson = {
         id: uid(),
         ...slot,
@@ -1187,15 +1308,13 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         rj: "",
         kind: "lesson",
         breakMinutes: 0,
-        levelNumber: multiLevel ? selection.level : undefined,
-        levelLabel: multiLevel ? activeLevel?.levelLabel_ar : undefined,
-        groupLabel: multiLevel
-          ? DEFAULT_GROUP_LABELS[sameLevelCount % DEFAULT_GROUP_LABELS.length]
-          : undefined,
+        levelNumber: selection.level,
+        levelLabel: activeLevel?.levelLabel_ar,
+        groupLabel,
       };
       return {
         ...previous,
-        showDismissal: previous.showDismissal || multiLevel,
+        showDismissal: previous.showDismissal || grouped,
         lessons: [...previous.lessons, lesson],
       };
     });
@@ -1208,12 +1327,35 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     subjectCode: string
   ) {
     if (!sourceDay.content.topic_ar.trim()) return;
-    const multiLevel = selection.levels.length > 1;
+    const grouped = isGroupedSelection(selection);
+    const groups = groupsForLevel(selection, levelNumber);
     const sourceLevel = findLevel(catalog, {
       subjectCode,
       level: levelNumber,
     });
     const subjectName = subjectNameFor(catalog, subjectCode);
+    const missingGroups = groups.filter(
+      (groupLabel) =>
+        !memo?.lessons.some((lesson) =>
+          lessonMatchesTarget(
+            lesson,
+            selection,
+            sourceDay,
+            levelNumber,
+            sessionNumber,
+            subjectCode,
+            groupLabel
+          )
+        )
+    );
+    if (!missingGroups.length) {
+      setToast({
+        msg: `${sessionLabel(sessionNumber)} — ${subjectName} مضافة أصلًا لكل أفواج هذا المستوى.`,
+        kind: "ok",
+      });
+      return;
+    }
+
     setMemo((previous) => {
       if (!previous) return previous;
       const base = previous.lessons.filter(
@@ -1223,50 +1365,49 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
           lesson.objectives.trim() ||
           lesson.stages.trim()
       );
-      const slot = nextSlot(base, previous.period);
-      const levelGroupCount = base.filter(
-        (lesson) => lesson.levelNumber === levelNumber
-      ).length;
-      const lesson: MemoLesson = {
-        id: uid(),
-        ...slot,
-        section: previous.section,
-        subjectCode,
-        component:
-          sourceDay.component ||
-          findStage(sourceLevel, selection.stageId)?.theme_ar ||
-          sourceLevel?.subject_ar ||
-          sourceLevel?.subject ||
-          subjectName ||
-          previous.subject,
-        topic: sourceDay.content.topic_ar,
-        objectives: "",
-        stages: "",
-        session: sessionLabel(sessionNumber),
-        sessionNumber,
-        rj: "",
-        sourceLessonNumber: sourceDay.lessonNumber ?? null,
-        sourceDayKey: sourceDay.dayKey,
-        kind: sourceDay.kind,
-        breakMinutes: 0,
-        levelNumber: multiLevel ? levelNumber : undefined,
-        levelLabel: multiLevel ? sourceLevel?.levelLabel_ar : undefined,
-        groupLabel: multiLevel
-          ? DEFAULT_GROUP_LABELS[
-              levelGroupCount % DEFAULT_GROUP_LABELS.length
-            ]
-          : undefined,
-      };
+      let working = base;
+      for (const groupLabel of missingGroups) {
+        const slot = nextSlot(working, previous.period);
+        const lesson: MemoLesson = {
+          id: uid(),
+          ...slot,
+          section: previous.section,
+          subjectCode,
+          component:
+            sourceDay.component ||
+            findStage(sourceLevel, selection.stageId)?.theme_ar ||
+            sourceLevel?.subject_ar ||
+            sourceLevel?.subject ||
+            subjectName ||
+            previous.subject,
+          topic: sourceDay.content.topic_ar,
+          objectives: "",
+          stages: "",
+          session: sessionLabel(sessionNumber),
+          sessionNumber,
+          rj: "",
+          sourceLessonNumber: sourceDay.lessonNumber ?? null,
+          sourceDayKey: sourceDay.dayKey,
+          kind: sourceDay.kind,
+          breakMinutes: 0,
+          levelNumber,
+          levelLabel: sourceLevel?.levelLabel_ar,
+          groupLabel,
+        };
+        working = [...working, lesson];
+      }
       return {
         ...previous,
-        showDismissal: previous.showDismissal || multiLevel,
-        lessons: [...base, lesson],
+        showDismissal: previous.showDismissal || grouped,
+        lessons: working,
       };
     });
+    const levelLabel = sourceLevel?.levelLabel_ar || `المستوى ${levelNumber}`;
     setToast({
-      msg: multiLevel
-        ? `أُضيفت ${sessionLabel(sessionNumber)} — ${subjectName} · ${sourceLevel?.levelLabel_ar || "المستوى"} إلى المذكرة المشتركة.`
-        : `أُضيفت ${sessionLabel(sessionNumber)} — ${subjectName} إلى المذكرة.`,
+      msg:
+        missingGroups.length > 1
+          ? `أُضيفت ${sessionLabel(sessionNumber)} — ${subjectName} · ${levelLabel} لأفواج: ${missingGroups.join("، ")}.`
+          : `أُضيفت ${sessionLabel(sessionNumber)} — ${subjectName} · ${levelLabel} · ${missingGroups[0]}.`,
       kind: "ok",
     });
   }
@@ -1342,25 +1483,20 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     sessionNumber: number,
     subjectCode: string
   ): boolean {
-    const multiLevel = selection.levels.length > 1;
-    return !!memo?.lessons.some((lesson) => {
-      if (lesson.kind === "empty") return false;
-      if ((lesson.subjectCode ?? selection.subjectCode) !== subjectCode) {
-        return false;
-      }
-      const sameSource =
-        lesson.sessionNumber != null
-          ? lesson.sessionNumber === sessionNumber
-          : lesson.sourceDayKey === sourceDay.dayKey &&
-            (lesson.sourceLessonNumber ?? null) ===
-              (sourceDay.lessonNumber ?? null);
-      return (
-        sameSource &&
-        (multiLevel
-          ? lesson.levelNumber === levelNumber
-          : lesson.levelNumber == null)
-      );
-    });
+    const groups = groupsForLevel(selection, levelNumber);
+    return groups.every((groupLabel) =>
+      !!memo?.lessons.some((lesson) =>
+        lessonMatchesTarget(
+          lesson,
+          selection,
+          sourceDay,
+          levelNumber,
+          sessionNumber,
+          subjectCode,
+          groupLabel
+        )
+      )
+    );
   }
 
   function goToFromMap(patch: Partial<MemoSelection>) {
@@ -1393,6 +1529,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   const assignedLevels = allLevels.filter((item) =>
     selection.levels.includes(item.level)
   );
+  const groupedMemo = isGroupedSelection(selection);
 
   /* خريطة الأسبوع تعرض مادة مرجعية مستقلة عن مواد الحصص، مع إمكانية الإضافة منها. */
   const mapSubject =
@@ -1507,6 +1644,124 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
                       </span>
                       {item.label}
                     </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="memo-select memo-select-groups">
+              <span>
+                الأفواج المدرّسة
+                <em>فوج واحد أو أكثر لكل مستوى</em>
+              </span>
+              <div className="memo-group-levels">
+                {assignedLevels.map((levelItem) => {
+                  const selectedGroups = groupsForLevel(
+                    selection,
+                    levelItem.level
+                  );
+                  const extraGroups = selectedGroups.filter(
+                    (label) =>
+                      !DEFAULT_GROUP_LABELS.some((item) => item === label)
+                  );
+                  const groupChoices = [
+                    ...DEFAULT_GROUP_LABELS,
+                    ...extraGroups,
+                  ];
+                  return (
+                    <div className="memo-group-level" key={levelItem.level}>
+                      <span className="memo-group-level-name">
+                        {levelItem.label}
+                      </span>
+                      <div
+                        className="memo-group-chips"
+                        role="group"
+                        aria-label={`أفواج ${levelItem.label}`}
+                      >
+                        {groupChoices.map((label) => {
+                          const selected = selectedGroups.includes(label);
+                          return (
+                            <button
+                              key={label}
+                              type="button"
+                              className={cx(
+                                "memo-group-chip",
+                                selected && "is-selected"
+                              )}
+                              onClick={() =>
+                                toggleGroup(levelItem.level, label)
+                              }
+                              aria-pressed={selected}
+                              title={
+                                selected
+                                  ? `إزالة ${label} من ${levelItem.label}`
+                                  : `إضافة ${label} إلى ${levelItem.label}`
+                              }
+                            >
+                              <span
+                                className="memo-group-chip-mark"
+                                aria-hidden="true"
+                              >
+                                {selected ? <Check className="h-3 w-3" /> : null}
+                              </span>
+                              {label}
+                            </button>
+                          );
+                        })}
+                        {groupEditor === levelItem.level ? (
+                          <form
+                            className="memo-group-add-form"
+                            onSubmit={(event) => {
+                              event.preventDefault();
+                              addCustomGroup(
+                                levelItem.level,
+                                groupDraft[levelItem.level] ?? ""
+                              );
+                            }}
+                          >
+                            <input
+                              autoFocus
+                              value={groupDraft[levelItem.level] ?? ""}
+                              onChange={(event) =>
+                                setGroupDraft((previous) => ({
+                                  ...previous,
+                                  [levelItem.level]: event.target.value,
+                                }))
+                              }
+                              placeholder="اسم الفوج"
+                              aria-label={`اسم فوج جديد لـ${levelItem.label}`}
+                            />
+                            <button
+                              type="submit"
+                              className="memo-group-add-confirm"
+                              title="إضافة الفوج"
+                              aria-label="إضافة الفوج"
+                            >
+                              <Check className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              className="memo-group-add-cancel"
+                              onClick={() => setGroupEditor(null)}
+                              title="إلغاء"
+                              aria-label="إلغاء إضافة الفوج"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </form>
+                        ) : (
+                          <button
+                            type="button"
+                            className="memo-group-add"
+                            onClick={() => setGroupEditor(levelItem.level)}
+                            title={`إضافة فوج آخر إلى ${levelItem.label}`}
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                            فوج
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   );
                 })}
               </div>
@@ -1631,6 +1886,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
                 subjectOptions={subjectOptions}
                 defaultLevel={selection.level}
                 multiLevel={selection.levels.length > 1}
+                grouped={groupedMemo}
                 onChange={updateMemo}
                 onLessonChange={updateLesson}
                 onAddLesson={addLesson}
