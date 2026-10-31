@@ -28,6 +28,7 @@ import type {
 } from "./types";
 import {
   cx,
+  DEFAULT_GROUP_LABELS,
   durationLabel,
   fieldLabel,
   formatDuration,
@@ -43,6 +44,7 @@ interface Props {
   memo: MemoState;
   template: TemplateConfig;
   levelOptions: Array<{ level: number; label: string }>;
+  groupOptionsByLevel: Record<number, string[]>;
   subjectOptions: LessonSubjectOption[];
   defaultLevel: number;
   multiLevel: boolean;
@@ -70,7 +72,7 @@ const GROUP_FIELD: TemplateField = {
   label_ar: "الفوج",
   label_fr: "Groupe",
   order: 0,
-  type: "text",
+  type: "select",
   scope: "lesson",
 };
 
@@ -140,6 +142,7 @@ function LessonCard({
   index,
   template,
   levelOptions,
+  groupOptionsByLevel,
   subjectOptions,
   defaultLevel,
   multiLevel,
@@ -156,6 +159,7 @@ function LessonCard({
   index: number;
   template: TemplateConfig;
   levelOptions: Array<{ level: number; label: string }>;
+  groupOptionsByLevel: Record<number, string[]>;
   subjectOptions: LessonSubjectOption[];
   defaultLevel: number;
   multiLevel: boolean;
@@ -187,6 +191,16 @@ function LessonCard({
     (subject) => subject.code === currentSubjectCode
   );
   const lessonLevel = lesson.levelNumber ?? defaultLevel;
+  /* أفواج المستوى المختار تأتي من الاختيار العلوي، مع إبقاء أي اسم قديم
+     محفوظ في المسودة حتى لا يضيع عمل الأستاذ(ة). */
+  const levelGroups = groupOptionsByLevel[lessonLevel]?.length
+    ? groupOptionsByLevel[lessonLevel]
+    : [...DEFAULT_GROUP_LABELS];
+  const currentGroup = (lesson.groupLabel ?? "").trim();
+  const groupChoices =
+    currentGroup && !levelGroups.includes(currentGroup)
+      ? [...levelGroups, currentGroup]
+      : levelGroups;
   const subjectLevel =
     currentSubject?.levels.find((item) => item.level === lessonLevel) ??
     currentSubject?.levels[0];
@@ -304,9 +318,15 @@ function LessonCard({
                 const option = levelOptions.find(
                   (item) => item.level === nextLevel
                 );
+                const nextGroups = groupOptionsByLevel[nextLevel] ?? [];
                 update({
                   levelNumber: option ? option.level : undefined,
                   levelLabel: option?.label,
+                  /* الفوج يتبع المستوى: إذا لم يكن الفوج الحالي ضمن أفواج
+                     المستوى الجديد يُختار أول فوج متاح تلقائيًا. */
+                  groupLabel: nextGroups.includes(currentGroup)
+                    ? currentGroup
+                    : nextGroups[0],
                 });
               }}
             >
@@ -321,19 +341,22 @@ function LessonCard({
         {grouped ? (
           <Label
             field={GROUP_FIELD}
-            hint="الفوج المختار لهذه الحصة، ويمكن كتابة اسم آخر."
+            hint="اختر الفوج من الأفواج المحدّدة لهذا المستوى في الأعلى."
           >
-            <input
+            <select
               className="memo-input"
-              list={`memo-groups-${lesson.id}`}
-              value={lesson.groupLabel || ""}
+              value={currentGroup}
               onChange={(event) => update({ groupLabel: event.target.value })}
-              placeholder="مثال: الفوج الأول"
-            />
-            <datalist id={`memo-groups-${lesson.id}`}>
-              <option value="الفوج الأول" />
-              <option value="الفوج الثاني" />
-            </datalist>
+            >
+              {!currentGroup ? (
+                <option value="">— اختر الفوج —</option>
+              ) : null}
+              {groupChoices.map((label) => (
+                <option key={label} value={label}>
+                  {label}
+                </option>
+              ))}
+            </select>
           </Label>
         ) : null}
         <Label
@@ -504,6 +527,7 @@ export default function MemoEditor({
   memo,
   template,
   levelOptions,
+  groupOptionsByLevel,
   subjectOptions,
   defaultLevel,
   multiLevel,
@@ -664,6 +688,7 @@ export default function MemoEditor({
               index={index}
               template={template}
               levelOptions={levelOptions}
+              groupOptionsByLevel={groupOptionsByLevel}
               subjectOptions={subjectOptions}
               defaultLevel={defaultLevel}
               multiLevel={multiLevel}

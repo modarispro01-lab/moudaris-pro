@@ -1531,6 +1531,12 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     selection.levels.includes(item.level)
   );
   const groupedMemo = isGroupedSelection(selection);
+  const groupOptionsByLevel = Object.fromEntries(
+    assignedLevels.map((item) => [
+      item.level,
+      groupsForLevel(selection, item.level),
+    ])
+  );
 
   /* خريطة الأسبوع تعرض مادة مرجعية مستقلة عن مواد الحصص، مع إمكانية الإضافة منها. */
   const mapSubject =
@@ -1884,6 +1890,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
                   level: item.level,
                   label: item.label,
                 }))}
+                groupOptionsByLevel={groupOptionsByLevel}
                 subjectOptions={subjectOptions}
                 defaultLevel={selection.level}
                 multiLevel={selection.levels.length > 1}
