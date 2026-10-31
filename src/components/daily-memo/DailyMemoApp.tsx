@@ -329,6 +329,24 @@ function subjectNameFor(catalog: Catalog, code: string | undefined): string {
   );
 }
 
+/** خيارات اليوم التربوي للاختيار اليدوي في الترويسة. */
+const STUDY_DAY_OPTIONS = [
+  "اليوم التربوي الأول",
+  "اليوم التربوي الثاني",
+  "اليوم التربوي الثالث",
+  "اليوم التربوي الرابع",
+  "اليوم التربوي الخامس",
+  "اليوم التربوي السادس",
+];
+
+/** يحوّل مفتاح اليوم (lundi…) إلى «اليوم التربوي…» للتوافق مع مسودات قديمة. */
+function studyDayLabel(catalog: Catalog, dayKey: string | undefined): string {
+  const days = catalog.config.weekDays ?? [];
+  const index = days.findIndex((day) => day.key === dayKey);
+  if (index < 0) return "";
+  return STUDY_DAY_OPTIONS[index] ?? "";
+}
+
 /** أقصى عدد حصص متاح للمستوى عبر كل المواد، حتى تبقى شرائح الحصة صالحة للرياضيات. */
 function maxSessionCountForLevel(catalog: Catalog, levelNumber: number): number {
   return Math.max(
@@ -528,8 +546,6 @@ function buildGroupedMemo(
 
   const activePlan =
     plans.find((plan) => plan.level.level === selection.level) ?? plans[0];
-  const displayDay =
-    findDay(activePlan.week, selection.dayKey) ?? activePlan.sourceDay;
   const scheduled = plans.filter((plan) => plan.hasLesson);
   /* إن لم توجد حصة في التوزيع نُبقي صفوفًا فارغة قابلة للكتابة، كما كان
      الشأن في الحصص العلمية 3–5، بدل إرجاع مذكرة بلا حصص. */
@@ -585,7 +601,7 @@ function buildGroupedMemo(
     date: todayIso(),
     unit: "",
     week: activePlan.week.title_ar,
-    day: displayDay?.label_ar ?? "",
+    day: studyDayLabel(catalog, selection.dayKey),
     section: profile.section,
     notes: "",
     period: selection.period,
@@ -606,9 +622,22 @@ function buildMemo(
 }
 
 /** يهيّئ مسودة محفوظة للاختيار الحالي ويحوّل المسودات القديمة إلى نموذج الحصة. */
-function prepareDraft(memo: MemoState, selection: MemoSelection): MemoState {
+function prepareDraft(
+  memo: MemoState,
+  selection: MemoSelection,
+  catalog: Catalog
+): MemoState {
+  /* المسودات القديمة كانت تخزّن اسم يوم الأسبوع (الاثنين…)؛ نحوّله إلى
+     «اليوم التربوي…» مع الحفاظ على أي نص كتبه الأستاذ(ة) بنفسه. */
+  const weekdayLabels = (catalog.config.weekDays ?? []).map((day) =>
+    day.label_ar.trim()
+  );
+  const storedDay = memo.day.trim();
+  const isLegacy = !storedDay || weekdayLabels.includes(storedDay);
+  const day = isLegacy ? studyDayLabel(catalog, selection.dayKey) : memo.day;
   return {
     ...withPeriod(memo, selection.period),
+    day,
     sessionNumber: selection.sessionNumber,
     lessons: memo.lessons.map((lesson) => ({
       ...lesson,
@@ -635,12 +664,12 @@ function storedDraftFor(
   allowUngrouped = false
 ): MemoState | undefined {
   const direct = drafts[draftKey(selection)];
-  if (direct) return prepareDraft(direct, selection);
+  if (direct) return prepareDraft(direct, selection, catalog);
 
   /* المسودات المحفوظة قبل إضافة اختيار الأفواج كانت بمفتاح دون جزء الأفواج. */
   if (allowUngrouped) {
     const ungrouped = drafts[baseDraftKey(selection)];
-    if (ungrouped) return prepareDraft(ungrouped, selection);
+    if (ungrouped) return prepareDraft(ungrouped, selection, catalog);
   }
 
   const legacy = drafts[legacyDraftKey(selection)];
@@ -651,7 +680,7 @@ function storedDraftFor(
   if (sessionNumberForDay(week, selection.dayKey) !== selection.sessionNumber) {
     return undefined;
   }
-  return prepareDraft(legacy, selection);
+  return prepareDraft(legacy, selection, catalog);
 }
 
 export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
@@ -1147,20 +1176,17 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     });
   }
 
-  /** تغيير اليوم يحدّث ترويسة المذكرة فقط ولا يبدّل موضوع الحصة. */
-  function changeDay(dayKey: string) {
-    if (dayKey === selection.dayKey) return;
-    const nextDay = findDay(week, dayKey);
-    if (!nextDay) return;
-    const updated = memo ? { ...memo, day: nextDay.label_ar } : null;
-    setSelection((previous) => ({ ...previous, dayKey: nextDay.dayKey }));
+  /** تغيير اليوم التربوي يحدّث ترويسة المذكرة فقط ولا يبدّل موضوع الحصة. */
+  function changeDay(dayLabel: string) {
+    if (dayLabel === memo?.day) return;
+    const updated = memo ? { ...memo, day: dayLabel } : null;
     if (updated) {
       setMemo(updated);
       draftsRef.current[draftKey(selection)] = updated;
       writeStorage(draftsKey, draftsRef.current);
     }
     setToast({
-      msg: `تم تغيير يوم الإنجاز إلى ${nextDay.label_ar}؛ موضوع الحصة لم يتغيّر.`,
+      msg: `تم تغيير اليوم التربوي إلى ${dayLabel}؛ موضوع الحصة لم يتغيّر.`,
       kind: "ok",
     });
   }
@@ -1560,7 +1586,6 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     );
   }
 
-  const dayOptions = week.days.filter((item) => item.dayKey !== "dimanche");
   const assignedLevels = allLevels.filter((item) =>
     selection.levels.includes(item.level)
   );
@@ -1884,16 +1909,17 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
 
             <label className="memo-select memo-select-day">
               <span>
-                اليوم الفعلي
+                اليوم التربوي
                 <em>للترويسة فقط</em>
               </span>
               <select
-                value={day.dayKey}
+                value={memo?.day || ""}
                 onChange={(event) => changeDay(event.target.value)}
               >
-                {dayOptions.map((item) => (
-                  <option key={item.dayKey} value={item.dayKey}>
-                    {item.label_ar}
+                <option value="">— اختر اليوم التربوي —</option>
+                {STUDY_DAY_OPTIONS.map((label) => (
+                  <option key={label} value={label}>
+                    {label}
                   </option>
                 ))}
               </select>
