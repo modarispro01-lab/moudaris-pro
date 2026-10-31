@@ -70,6 +70,15 @@ export interface AppConfig {
     draftsKey?: string;
     preferencesKey?: string;
   };
+  /**
+   * مواد تُدرَّس دون توزيع دروس (مثل الأمازيغية): تظهر في قائمة مادة الحصة،
+   * وتُترك حقول الموضوع والأهداف والمراحل فارغة ليكتبها الأستاذ(ة).
+   */
+  extraSubjects?: Array<{
+    code: string;
+    name_ar: string;
+    name_fr?: string;
+  }>;
   weekDays?: Array<{ key: string; label_ar: string; label_fr: string }>;
   sourceFiles?: string[];
   notes?: string[];

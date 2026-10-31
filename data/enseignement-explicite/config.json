@@ -42,6 +42,13 @@
       "label_fr": "Samedi"
     }
   ],
+  "extraSubjects": [
+    {
+      "code": "tamazight",
+      "name_ar": "الأمازيغية",
+      "name_fr": "Tamazight"
+    }
+  ],
   "sourceFiles": [
     "docs/tawazi3/modele-memoire.pdf.pdf",
     "docs/tawazi3/tawzi3-math-niveau1.pdf.pdf",

@@ -286,7 +286,7 @@ function componentOptionsForLevel(level: LevelData): string[] {
 
 /** يجهّز خيارات المادة لكل بطاقة حصة، مع مكونات كل مستوى على حدة. */
 function buildSubjectOptions(catalog: Catalog): LessonSubjectOption[] {
-  return catalog.subjects.map((subject) => {
+  const catalogOptions = catalog.subjects.map((subject) => {
     const levels = subject.levels.map((item) => ({
       level: item.level,
       label: item.levelLabel_ar,
@@ -301,11 +301,29 @@ function buildSubjectOptions(catalog: Catalog): LessonSubjectOption[] {
       levels,
     };
   });
+  /* مواد تُدرَّس دون توزيع دروس (مثل الأمازيغية): تظهر في اختيار المادة
+     بلا مستويات ولا مكونات، فتبقى حقول الموضوع والأهداف والمراحل يدوية. */
+  const extraOptions = (catalog.config.extraSubjects ?? []).map((subject) => ({
+    code: subject.code,
+    name: subject.name_ar,
+    structuredComponents: false,
+    levels: [],
+  }));
+  return [...catalogOptions, ...extraOptions];
+}
+
+function isExtraSubject(catalog: Catalog, code: string | undefined): boolean {
+  if (!code) return false;
+  return (catalog.config.extraSubjects ?? []).some(
+    (subject) => subject.code === code
+  );
 }
 
 function subjectNameFor(catalog: Catalog, code: string | undefined): string {
   return (
     catalog.subjects.find((subject) => subject.code === code)?.name_ar ||
+    catalog.config.extraSubjects?.find((subject) => subject.code === code)
+      ?.name_ar ||
     code ||
     ""
   );
@@ -334,6 +352,19 @@ function lessonAutoContent(
   selection: MemoSelection,
   sessionNumber: number
 ): LessonContentSnapshot {
+  /* المادة بدون توزيع (مثل الأمازيغية): لا موضوع تلقائي؛ يكتبه الأستاذ(ة)
+     إن أراد، وتبقى الأهداف والمراحل يدوية. يُعرض اسم المادة في خانة المكون
+     حتى تبقى الحصة واضحة في الجدول المطبوع. */
+  if (isExtraSubject(catalog, subjectCode)) {
+    return {
+      topic: "",
+      component: subjectNameFor(catalog, subjectCode),
+      kind: "lesson",
+      sourceLessonNumber: null,
+      sourceDayKey: undefined,
+      hasSource: false,
+    };
+  }
   const subject = catalog.subjects.find((item) => item.code === subjectCode);
   const level =
     subject?.levels.find((item) => item.level === levelNumber) ??
@@ -1266,7 +1297,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
 
     if (subjectWillChange && currentLesson && patch.subjectCode) {
       const code = patch.subjectCode;
-      setBrowseSubjectCode(code);
+      const extra = isExtraSubject(catalog, code);
+      if (!extra) setBrowseSubjectCode(code);
       const snapshot = lessonAutoContent(
         catalog,
         code,
@@ -1275,9 +1307,11 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
         currentLesson.sessionNumber ?? selection.sessionNumber
       );
       setToast({
-        msg: snapshot.hasSource
-          ? `تم اختيار ${subjectNameFor(catalog, code)} لهذه الحصة؛ حُدّث الموضوع والمكون من التوزيع.`
-          : `تم اختيار ${subjectNameFor(catalog, code)} لهذه الحصة؛ لا توجد حصة مقابلة في توزيع المادة لهذا الرقم، فاكتب الموضوع يدويًا.`,
+        msg: extra
+          ? `تم اختيار ${subjectNameFor(catalog, code)} لهذه الحصة؛ المادة بلا توزيع دروس، فاكتب الموضوع والأهداف والمراحل إن أردت.`
+          : snapshot.hasSource
+            ? `تم اختيار ${subjectNameFor(catalog, code)} لهذه الحصة؛ حُدّث الموضوع والمكون من التوزيع.`
+            : `تم اختيار ${subjectNameFor(catalog, code)} لهذه الحصة؛ لا توجد حصة مقابلة في توزيع المادة لهذا الرقم، فاكتب الموضوع يدويًا.`,
         kind: "ok",
       });
     }
