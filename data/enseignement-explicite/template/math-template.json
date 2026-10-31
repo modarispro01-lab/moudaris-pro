@@ -151,8 +151,8 @@
     },
     {
       "key": "rj",
-      "label_ar": "ر-ج",
-      "label_fr": "R-G",
+      "label_ar": "ر.خ.ذ",
+      "label_fr": "R-KH-D",
       "order": 16,
       "type": "text",
       "scope": "lesson",
@@ -259,8 +259,8 @@
     },
     {
       "key": "rj",
-      "label_ar": "ر-ج",
-      "label_fr": "R-G",
+      "label_ar": "ر.خ.ذ",
+      "label_fr": "R-KH-D",
       "width": "7%",
       "kind": "text"
     }

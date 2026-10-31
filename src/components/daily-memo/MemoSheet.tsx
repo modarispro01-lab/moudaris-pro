@@ -181,12 +181,36 @@ export default function MemoSheet({ memo, template }: Props) {
     8 - lessons.length - breakCount - (showDismissal ? 1 : 0)
   );
   const meta = [
-    { label: fieldLabel(template, "date", "التاريخ"), value: formatLongDate(memo.date) },
-    { label: fieldLabel(template, "day", "اليوم"), value: valueOrDash(memo.day) },
-    { label: fieldLabel(template, "week", "الأسبوع"), value: valueOrDash(memo.week) },
-    { label: fieldLabel(template, "unit", "الوحدة"), value: valueOrDash(memo.unit) },
-    { label: fieldLabel(template, "section", "القسم"), value: valueOrDash(memo.section) },
-    { label: "المستوى / المادة", value: [memo.level, memo.subject].filter(Boolean).join(" · ") },
+    {
+      key: "date",
+      label: fieldLabel(template, "date", "التاريخ"),
+      value: formatLongDate(memo.date),
+      wide: true,
+    },
+    {
+      key: "stage",
+      label: fieldLabel(template, "stage", "المرحلة"),
+      value: valueOrDash(memo.stage),
+      wide: false,
+    },
+    {
+      key: "week",
+      label: fieldLabel(template, "week", "الأسبوع"),
+      value: valueOrDash(memo.week),
+      wide: false,
+    },
+    {
+      key: "day",
+      label: fieldLabel(template, "day", "اليوم"),
+      value: valueOrDash(memo.day),
+      wide: false,
+    },
+    {
+      key: "level",
+      label: "المستوى / المادة",
+      value: [memo.level, memo.subject].filter(Boolean).join(" · "),
+      wide: false,
+    },
   ];
 
   return (
@@ -228,7 +252,10 @@ export default function MemoSheet({ memo, template }: Props) {
 
       <section className="ms-meta" aria-label="معطيات المذكرة">
         {meta.map((item) => (
-          <div key={item.label} className="ms-meta-item">
+          <div
+            key={item.key}
+            className={cx("ms-meta-item", item.wide && "is-wide")}
+          >
             <span>{item.label}</span>
             <strong>{item.value}</strong>
           </div>

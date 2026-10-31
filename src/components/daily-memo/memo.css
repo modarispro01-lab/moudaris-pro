@@ -2398,6 +2398,10 @@
   border-inline-start: 0;
 }
 
+.ms-meta-item.is-wide {
+  grid-column: span 2;
+}
+
 .ms-meta-item span {
   color: #8a9baa;
   font-size: 5.4pt;

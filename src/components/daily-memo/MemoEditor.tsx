@@ -604,20 +604,20 @@ export default function MemoEditor({
               </Label>
             ))}
 
-          {headerFields.map((field) => (
-            <Label
-              key={field.key}
-              field={field}
-              className={
-                field.key === "week" || field.key === "day" ? "memo-col-2" : "memo-col-2"
-              }
-              hint={field.key === "date" ? formatLongDate(memo.date) : undefined}
-            >
-              {inputFor(field, headerValue(field.key), (value) =>
-                onChange({ [field.key]: value } as Partial<MemoState>)
-              )}
-            </Label>
-          ))}
+          {headerFields
+            .filter((field) => field.key !== "unit" && field.key !== "section")
+            .map((field) => (
+              <Label
+                key={field.key}
+                field={field}
+                className="memo-col-2"
+                hint={field.key === "date" ? formatLongDate(memo.date) : undefined}
+              >
+                {inputFor(field, headerValue(field.key), (value) =>
+                  onChange({ [field.key]: value } as Partial<MemoState>)
+                )}
+              </Label>
+            ))}
         </div>
 
         <div className="memo-source-line">
