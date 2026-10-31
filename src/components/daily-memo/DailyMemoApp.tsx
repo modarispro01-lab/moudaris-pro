@@ -512,12 +512,13 @@ function buildGroupedMemo(
 
   for (let round = 0; round < roundCount; round++) {
     const roundLessons: MemoLesson[] = [];
-    targets.forEach((plan, index) => {
+    targets.forEach((plan) => {
       const groups = groupsForLevel(selection, plan.level.level);
       /* كل فوج يظهر مرة واحدة فقط؛ المستوى الذي له فوج واحد لا يتكرر
-         في جولة ثانية. */
+         في جولة ثانية. ترتيب الأفواج داخل كل مستوى يبقى ثابتًا:
+         الفوج الأول ثم الثاني ثم الأفواج المخصّصة. */
       if (round >= groups.length) return;
-      const groupLabel = groups[(round + index) % groups.length];
+      const groupLabel = groups[round];
       const lesson = combinedLesson(
         plan,
         selection,
