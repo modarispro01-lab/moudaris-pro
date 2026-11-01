@@ -1164,6 +1164,25 @@
   cursor: not-allowed;
 }
 
+/* النشاط العلمي: خانة المكون تحمل اسم المادة ويُختار المحور في حقل مجاور. */
+.memo-lesson-grid > .memo-field.memo-field-component.memo-field-component-fixed {
+  grid-column: span 3;
+}
+
+.memo-lesson-grid > .memo-field.memo-field-axis {
+  grid-column: span 3;
+}
+
+.memo-lesson-grid
+  > .memo-field.memo-field-component
+  .memo-input.memo-component-fixed {
+  background: #f5fbfa;
+  border-color: #b9ded9;
+  color: #0f5a54;
+  font-weight: 800;
+  cursor: default;
+}
+
 /* صفوف متوازنة: المكون مع القسم والحصة، ثم ر-ج بجانب الموضوع. */
 .memo-lesson-grid > .memo-field.memo-field-topic {
   grid-column: span 9;
@@ -2609,6 +2628,28 @@
   text-align: center;
 }
 
+/* خانة المكون في المواد التي تحمل محورًا: اسم المادة ثم المحور بخط أصغر. */
+.ms-component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5mm;
+  line-height: 1.25;
+}
+
+.ms-component-name {
+  color: var(--ms-ink);
+  font-size: 7pt;
+  font-weight: 800;
+}
+
+.ms-component-axis {
+  color: #586e80;
+  font-size: 5.6pt;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .ms-time {
   color: var(--ms-navy);
   white-space: nowrap;
@@ -2846,6 +2887,14 @@
     grid-column: span 8;
   }
 
+  .memo-lesson-grid > .memo-field.memo-field-component.memo-field-component-fixed {
+    grid-column: span 4;
+  }
+
+  .memo-lesson-grid > .memo-field.memo-field-axis {
+    grid-column: span 4;
+  }
+
   .memo-lesson-grid > .memo-field.memo-field-subject {
     grid-column: span 4;
   }
@@ -3080,6 +3129,14 @@
 
   .memo-lesson-grid > .memo-field.memo-field-component {
     grid-column: 1 / -1;
+  }
+
+  .memo-lesson-grid > .memo-field.memo-field-component.memo-field-component-fixed {
+    grid-column: span 6;
+  }
+
+  .memo-lesson-grid > .memo-field.memo-field-axis {
+    grid-column: span 6;
   }
 
   .memo-lesson-grid > .memo-field.memo-field-subject {

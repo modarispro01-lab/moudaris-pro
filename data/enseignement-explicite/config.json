@@ -49,6 +49,7 @@
       "name_fr": "Tamazight"
     }
   ],
+  "componentAxisSubjects": ["science"],
   "sourceFiles": [
     "docs/tawazi3/modele-memoire.pdf.pdf",
     "docs/tawazi3/tawzi3-math-niveau1.pdf.pdf",

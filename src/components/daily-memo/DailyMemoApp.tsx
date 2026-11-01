@@ -46,6 +46,7 @@ import {
   findStage,
   findWeek,
   groupsForLevel,
+  isComponentAxisSubject,
   legacyDraftKey,
   lessonBreakMinutes,
   levelSessionCount,
@@ -260,6 +261,7 @@ function planForLevel(
 interface LessonContentSnapshot {
   topic: string;
   component: string;
+  axis?: string;
   kind: LessonKind;
   sourceLessonNumber: number | null;
   sourceDayKey?: string;
@@ -298,6 +300,7 @@ function buildSubjectOptions(catalog: Catalog): LessonSubjectOption[] {
       structuredComponents: levels.some(
         (item) => item.componentOptions.length > 0
       ),
+      axisSubtitle: isComponentAxisSubject(catalog.config, subject.code),
       levels,
     };
   });
@@ -307,6 +310,7 @@ function buildSubjectOptions(catalog: Catalog): LessonSubjectOption[] {
     code: subject.code,
     name: subject.name_ar,
     structuredComponents: false,
+    axisSubtitle: false,
     levels: [],
   }));
   return [...catalogOptions, ...extraOptions];
@@ -377,6 +381,7 @@ function lessonAutoContent(
     return {
       topic: "",
       component: subjectNameFor(catalog, subjectCode),
+      axis: undefined,
       kind: "lesson",
       sourceLessonNumber: null,
       sourceDayKey: undefined,
@@ -403,9 +408,14 @@ function lessonAutoContent(
     level?.subject ||
     subjectCode ||
     "";
+  /* النشاط العلمي: يبقى اسم المادة في خانة المكون، ويأتي المحور أسفله
+     بخط أصغر؛ أما الرياضيات وباقي المواد فتبقى كما هي. */
+  const axisSubject = isComponentAxisSubject(catalog.config, subjectCode);
+  const axis = source?.component || stage?.theme_ar || "";
   return {
     topic: source?.content.topic_ar ?? "",
-    component: source?.component || stage?.theme_ar || name,
+    component: axisSubject ? name : source?.component || stage?.theme_ar || name,
+    axis: axisSubject ? axis : undefined,
     kind: source?.kind ?? "lesson",
     sourceLessonNumber: source?.lessonNumber ?? null,
     sourceDayKey: source?.dayKey,
@@ -444,10 +454,19 @@ function refreshedLessonContent(
     !previous.topic.trim() || previous.topic === oldAuto.topic;
   const componentIsAuto =
     !previous.component.trim() || previous.component === oldAuto.component;
+  const axisIsAuto =
+    !(previous.componentAxis ?? "").trim() ||
+    previous.componentAxis === (oldAuto.axis ?? "");
   return {
     subjectCode: nextSubjectCode,
     topic: topicIsAuto ? newAuto.topic : previous.topic,
     component: componentIsAuto ? newAuto.component : previous.component,
+    componentAxis:
+      newAuto.axis === undefined
+        ? ""
+        : axisIsAuto
+          ? newAuto.axis
+          : previous.componentAxis ?? "",
     kind: newAuto.kind,
     sourceLessonNumber: newAuto.sourceLessonNumber,
     sourceDayKey: newAuto.sourceDayKey,
@@ -464,6 +483,12 @@ function combinedLesson(
   groupLabel: string
 ): MemoLesson {
   const sourceDay = plan.sourceDay;
+  const axisSubject = isComponentAxisSubject(catalog.config, selection.subjectCode);
+  const subjectName =
+    plan.level.subject_ar ||
+    plan.level.subject ||
+    catalog.template.subject_ar;
+  const axis = sourceDay?.component || plan.stage.theme_ar || "";
   return {
     id: uid(),
     block: selection.period,
@@ -471,12 +496,8 @@ function combinedLesson(
     timeTo: minutesToTime(startMinute + 60),
     section: profile.section,
     subjectCode: selection.subjectCode,
-    component:
-      sourceDay?.component ||
-      plan.stage.theme_ar ||
-      plan.level.subject_ar ||
-      plan.level.subject ||
-      catalog.template.subject_ar,
+    component: axisSubject ? subjectName : axis || subjectName,
+    componentAxis: axisSubject ? axis : undefined,
     topic: sourceDay?.content.topic_ar ?? "",
     objectives: "",
     stages: "",
@@ -639,16 +660,33 @@ function prepareDraft(
     ...withPeriod(memo, selection.period),
     day,
     sessionNumber: selection.sessionNumber,
-    lessons: memo.lessons.map((lesson) => ({
-      ...lesson,
-      subjectCode: lesson.subjectCode || selection.subjectCode,
-      ...(lesson.sessionNumber == null
-        ? {
-            sessionNumber: selection.sessionNumber,
-            session: sessionLabel(selection.sessionNumber),
-          }
-        : {}),
-    })),
+    lessons: memo.lessons.map((lesson) => {
+      const subjectCode = lesson.subjectCode || selection.subjectCode;
+      const next: MemoLesson = {
+        ...lesson,
+        subjectCode,
+        ...(lesson.sessionNumber == null
+          ? {
+              sessionNumber: selection.sessionNumber,
+              session: sessionLabel(selection.sessionNumber),
+            }
+          : {}),
+      };
+      /* مسودات النشاط العلمي القديمة كانت تخزّن المحور في خانة المكون؛
+         ننقله إلى المحور ونعيد اسم المادة إلى الخانة كما في العرض الجديد. */
+      if (isComponentAxisSubject(catalog.config, subjectCode)) {
+        const storedComponent = next.component.trim();
+        const name = subjectNameFor(catalog, subjectCode) || storedComponent;
+        const storedAxis = (lesson.componentAxis ?? "").trim();
+        next.component = name;
+        next.componentAxis =
+          storedAxis ||
+          (storedComponent && storedComponent !== name ? storedComponent : "");
+      } else if (lesson.componentAxis) {
+        next.componentAxis = "";
+      }
+      return next;
+    }),
   };
 }
 
@@ -1427,6 +1465,17 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
           lesson.stages.trim()
       );
       let working = base;
+      /* النشاط العلمي: اسم المادة في خانة المكون والمحور أسفله بخط أصغر. */
+      const axisSubject = isComponentAxisSubject(catalog.config, subjectCode);
+      const axis =
+        sourceDay.component ||
+        findStage(sourceLevel, selection.stageId)?.theme_ar ||
+        "";
+      const fixedSubjectName =
+        sourceLevel?.subject_ar ||
+        sourceLevel?.subject ||
+        subjectName ||
+        previous.subject;
       for (const groupLabel of missingGroups) {
         const slot = nextSlot(working, previous.period);
         const lesson: MemoLesson = {
@@ -1434,13 +1483,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
           ...slot,
           section: previous.section,
           subjectCode,
-          component:
-            sourceDay.component ||
-            findStage(sourceLevel, selection.stageId)?.theme_ar ||
-            sourceLevel?.subject_ar ||
-            sourceLevel?.subject ||
-            subjectName ||
-            previous.subject,
+          component: axisSubject ? fixedSubjectName : axis || fixedSubjectName,
+          componentAxis: axisSubject ? axis : undefined,
           topic: sourceDay.content.topic_ar,
           objectives: "",
           stages: "",

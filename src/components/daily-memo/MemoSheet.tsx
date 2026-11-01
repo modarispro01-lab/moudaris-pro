@@ -99,9 +99,19 @@ function lessonRow(lesson: MemoLesson, template: TemplateConfig, index: number) 
           );
         }
         if (column.key === "component") {
+          const axis = lesson.componentAxis?.trim() ?? "";
           return (
             <td key={column.key} className="ms-center">
-              {valueOrDash(lesson.component)}
+              {axis ? (
+                <span className="ms-component">
+                  <span className="ms-component-name">
+                    {valueOrDash(lesson.component)}
+                  </span>
+                  <span className="ms-component-axis">{axis}</span>
+                </span>
+              ) : (
+                valueOrDash(lesson.component)
+              )}
             </td>
           );
         }

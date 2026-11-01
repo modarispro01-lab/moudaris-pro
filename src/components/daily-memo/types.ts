@@ -79,6 +79,11 @@ export interface AppConfig {
     name_ar: string;
     name_fr?: string;
   }>;
+  /**
+   * مواد تُعرض في خانة المكون باسم المادة، ويظهر محور المرحلة أسفله بخط أصغر
+   * (مثل النشاط العلمي). المواد غير المذكورة تبقى على سلوكها الحالي.
+   */
+  componentAxisSubjects?: string[];
   weekDays?: Array<{ key: string; label_ar: string; label_fr: string }>;
   sourceFiles?: string[];
   notes?: string[];
@@ -151,6 +156,18 @@ export interface Catalog {
   subjects: SubjectGroup[];
 }
 
+/**
+ * هل تُعرض المادة في خانة المكون باسمها مع محور المرحلة أسفله بخط أصغر؟
+ * تُضبط عبر componentAxisSubjects في config.json (مثل النشاط العلمي).
+ */
+export function isComponentAxisSubject(
+  config: AppConfig,
+  code: string | undefined
+): boolean {
+  if (!code) return false;
+  return (config.componentAxisSubjects ?? []).includes(code);
+}
+
 /* ============================================================
    حالة المذكرة
    ============================================================ */
@@ -164,6 +181,11 @@ export interface MemoLesson {
   /** مادة الحصة: يمكن أن تختلف من حصة إلى أخرى داخل المذكرة نفسها. */
   subjectCode?: string;
   component: string;
+  /**
+   * محور المرحلة في المواد التي تُعرض باسم المادة (مثل النشاط العلمي)؛
+   * يظهر أسفل اسم المادة في خانة المكون بخط أصغر، ويبقى فارغًا في غيرها.
+   */
+  componentAxis?: string;
   topic: string;
   objectives: string;
   stages: string;
@@ -197,6 +219,8 @@ export interface LessonSubjectOption {
   name: string;
   /** هل تعتمد المادة مكونات محاور تُختار من قائمة؟ */
   structuredComponents: boolean;
+  /** هل يُعرض اسمها في خانة المكون ويأتي المحور أسفله بخط أصغر؟ */
+  axisSubtitle?: boolean;
   levels: LessonSubjectLevel[];
 }
 

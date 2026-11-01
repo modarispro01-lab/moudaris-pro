@@ -85,6 +85,17 @@ const SUBJECT_FIELD: TemplateField = {
   scope: "lesson",
 };
 
+/* حقل إضافي للمواد التي تُعرض باسمها في خانة المكون (النشاط العلمي):
+   يُختار المحور هنا، ويظهر أسفل اسم المادة بخط أصغر في المذكرة. */
+const AXIS_FIELD: TemplateField = {
+  key: "componentAxis",
+  label_ar: "المحور",
+  label_fr: "Axe",
+  order: 0,
+  type: "select",
+  scope: "lesson",
+};
+
 function Label({
   field,
   children,
@@ -204,12 +215,19 @@ function LessonCard({
   const subjectLevel =
     currentSubject?.levels.find((item) => item.level === lessonLevel) ??
     currentSubject?.levels[0];
+  /* مواد مثل النشاط العلمي: تُثبَّت خانة المكون على اسم المادة، ويُختار
+     المحور في حقل مستقل ليظهر أسفله بخط أصغر في المذكرة المطبوعة. */
+  const axisSubtitle = !!currentSubject?.axisSubtitle;
   /* في المواد ذات المحاور يُعرض المكون كقائمة اختيار، مع الحفاظ على أي قيمة
-     مكتوبة سابقًا حتى لا يضيع عمل الأستاذ(ة) عند تغيير المادة أو المستوى. */
+     مكتوبة سابقًا حتى لا يضيع عمل الأستاذ(ة) عند تغيير المادة أو المستوى.
+     في مواد المحور لا نضيف اسم المادة إلى قائمة المحاور. */
   const componentChoices = currentSubject
     ? Array.from(
         new Set(
-          [...(subjectLevel?.componentOptions ?? []), lesson.component]
+          [
+            ...(subjectLevel?.componentOptions ?? []),
+            axisSubtitle ? "" : lesson.component,
+          ]
             .map((value) => value.trim())
             .filter(Boolean)
         )
@@ -217,6 +235,11 @@ function LessonCard({
     : [];
   const hasComponentChoices =
     !!currentSubject?.structuredComponents && componentChoices.length > 0;
+  const currentAxis = (lesson.componentAxis ?? "").trim();
+  const axisChoices =
+    axisSubtitle && currentAxis && !componentChoices.includes(currentAxis)
+      ? [...componentChoices, currentAxis]
+      : componentChoices;
 
   return (
     <article className="memo-lesson-card">
@@ -390,13 +413,18 @@ function LessonCard({
         </Label>
         <Label
           field={component}
-          className="memo-field-component"
+          className={cx(
+            "memo-field-component",
+            axisSubtitle && "memo-field-component-fixed"
+          )}
           hint={
             !currentSubject
               ? "يتفعّل بعد اختيار المادة."
-              : hasComponentChoices
-                ? "اختر المكون من محاور المادة."
-                : "حقل حر: اكتب المكون كما تريده."
+              : axisSubtitle
+                ? "يظهر اسم المادة في خانة المكون، والمحور أسفله بخط أصغر."
+                : hasComponentChoices
+                  ? "اختر المكون من محاور المادة."
+                  : "حقل حر: اكتب المكون كما تريده."
           }
         >
           {!currentSubject ? (
@@ -405,6 +433,14 @@ function LessonCard({
               value=""
               disabled
               placeholder="اختر المادة أولًا"
+            />
+          ) : axisSubtitle ? (
+            <input
+              className="memo-input memo-component-fixed"
+              value={lesson.component || currentSubject.name}
+              readOnly
+              tabIndex={-1}
+              aria-label="المكون"
             />
           ) : hasComponentChoices ? (
             <select
@@ -425,6 +461,28 @@ function LessonCard({
             )
           )}
         </Label>
+        {axisSubtitle ? (
+          <Label
+            field={AXIS_FIELD}
+            className="memo-field-component memo-field-axis"
+            hint="يُرافق اسم المادة داخل خانة المكون."
+          >
+            <select
+              className="memo-input"
+              value={currentAxis}
+              onChange={(event) =>
+                update({ componentAxis: event.target.value })
+              }
+            >
+              <option value="">— اختر المحور —</option>
+              {axisChoices.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </Label>
+        ) : null}
         <Label
           field={section}
           className="memo-field-section"
