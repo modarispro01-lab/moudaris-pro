@@ -1,0 +1,2434 @@
+{
+  "subject": "اللغة العربية",
+  "subject_ar": "اللغة العربية",
+  "subjectCode": "arabic",
+  "level": 3,
+  "levelLabel_ar": "المستوى الثالث",
+  "levelLabel_fr": "Niveau 3",
+  "sessionCount": 5,
+  "source": "توزيع لغة عربية جميع المستويات الرائدة.pdf",
+  "source_note": "منسوخ من توزيع مادة اللغة العربية الرسمي - المستوى 3. لم تُضاف أهداف أو أنشطة أو وسائل غير واردة في الملف؛ تبقى الحقول التربوية فارغة للتعبئة من طرف الأستاذ(ة).",
+  "dayPlanNote": "أيام التدريس: الاثنين إلى السبت. الأحد عطلة أسبوعية. الحصص الأسبوعية موزعة على أيام التدريس حسب التوزيع؛ اليوم الفعلي يُختار في الشريط العلوي.",
+  "stages": [
+    {
+      "id": "stage-1",
+      "number": 1,
+      "title_ar": "المرحلة الأولى",
+      "title_fr": "Etape 1",
+      "theme_ar": "الجملة الاسمية والتواصل",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "title_ar": "الأسبوع 1",
+          "title_fr": "Semaine 1",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (1)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "title_ar": "الأسبوع 2",
+          "title_fr": "Semaine 2",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (2)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "title_ar": "الأسبوع 3",
+          "title_fr": "Semaine 3",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (3)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "title_ar": "الأسبوع 4",
+          "title_fr": "Semaine 4",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (4)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 5,
+          "title_ar": "الأسبوع 5",
+          "title_fr": "Semaine 5",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (5)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "title_ar": "الأسبوع 6",
+          "title_fr": "Semaine 6",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (6)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-2",
+      "number": 2,
+      "title_ar": "المرحلة الثانية",
+      "title_fr": "Etape 2",
+      "theme_ar": "الضمائر الشخصية",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "title_ar": "الأسبوع 1",
+          "title_fr": "Semaine 1",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (1)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "title_ar": "الأسبوع 2",
+          "title_fr": "Semaine 2",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (2)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "title_ar": "الأسبوع 3",
+          "title_fr": "Semaine 3",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (3)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "title_ar": "الأسبوع 4",
+          "title_fr": "Semaine 4",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (4)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 5,
+          "title_ar": "الأسبوع 5",
+          "title_fr": "Semaine 5",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (5)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "title_ar": "الأسبوع 6",
+          "title_fr": "Semaine 6",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (6)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-3",
+      "number": 3,
+      "title_ar": "المرحلة الثالثة",
+      "title_fr": "Etape 3",
+      "theme_ar": "النفس والزمان والمكان",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "title_ar": "الأسبوع 1",
+          "title_fr": "Semaine 1",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (1)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "title_ar": "الأسبوع 2",
+          "title_fr": "Semaine 2",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (2)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "title_ar": "الأسبوع 3",
+          "title_fr": "Semaine 3",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (3)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "title_ar": "الأسبوع 4",
+          "title_fr": "Semaine 4",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (4)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 5,
+          "title_ar": "الأسبوع 5",
+          "title_fr": "Semaine 5",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (5)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "title_ar": "الأسبوع 6",
+          "title_fr": "Semaine 6",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (6)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-4",
+      "number": 4,
+      "title_ar": "المرحلة الرابعة",
+      "title_fr": "Etape 4",
+      "theme_ar": "المعجم والحكايات",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "title_ar": "الأسبوع 1",
+          "title_fr": "Semaine 1",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (1)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "title_ar": "الأسبوع 2",
+          "title_fr": "Semaine 2",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (2)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "title_ar": "الأسبوع 3",
+          "title_fr": "Semaine 3",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (3)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "title_ar": "الأسبوع 4",
+          "title_fr": "Semaine 4",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (4)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 5,
+          "title_ar": "الأسبوع 5",
+          "title_fr": "Semaine 5",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (5)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "title_ar": "الأسبوع 6",
+          "title_fr": "Semaine 6",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (6)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-5",
+      "number": 5,
+      "title_ar": "المرحلة الخامسة",
+      "title_fr": "Etape 5",
+      "theme_ar": "الكتابة والإنتاج",
+      "theme_fr": "",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "title_ar": "الأسبوع 1",
+          "title_fr": "Semaine 1",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (1)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "title_ar": "الأسبوع 2",
+          "title_fr": "Semaine 2",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (2)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "title_ar": "الأسبوع 3",
+          "title_fr": "Semaine 3",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (3)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "title_ar": "الأسبوع 4",
+          "title_fr": "Semaine 4",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (4)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 5,
+          "title_ar": "الأسبوع 5",
+          "title_fr": "Semaine 5",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (5)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "title_ar": "الأسبوع 6",
+          "title_fr": "Semaine 6",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "ورشة الاستماع والتحدث",
+              "content": {
+                "topic_ar": "دمج المقاطع",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "ورشة القراءة",
+              "content": {
+                "topic_ar": "الزمان والمكان",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "component": null,
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "ورشة الكتابة",
+              "content": {
+                "topic_ar": "المعجم",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "إنتاج كتاب",
+              "content": {
+                "topic_ar": "التحية والشخصيات",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "weekly-review",
+              "component": null,
+              "content": {
+                "topic_ar": "مراجعة دروس الأسبوع (6)",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
