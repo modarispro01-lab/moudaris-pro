@@ -76,79 +76,147 @@ export default function TimetablePreview({ state }: Props) {
   });
   const hasVisiblePeriods = dayColumns.some((c) => c.periods.length > 0);
 
-  /* ---------- كشف الاستراحات المشتركة بين كل الأيام ---------- */
+  /* ---------- كشف الاستراحات المشتركة بين كل الأيام ----------
+     نعتمد على ترتيب الاستراحة داخل اليوم (الأولى، الثانية...) بدل
+     توقيتها الدقيق، لأن التوقيت قد يختلف قليلًا من يوم لآخر.
+     عند تكرارها في يومين على الأقل تُعرض مرّة واحدة في شريط وسطيّ،
+     وتبقى الاستراحات غير المشتركة داخل عمود يومها. */
   const activeColumns = dayColumns.filter((c) => c.periods.length > 0);
-  const breakMap = new Map<
-    string,
-    { start: string; end: string; label: string; dayIds: Set<string> }
-  >();
+
+  interface BreakAggregate {
+    start: string;
+    end: string;
+    label: string;
+    dayCount: number;
+    startCounts: Map<string, number>;
+    endCounts: Map<string, number>;
+    labelCounts: Map<string, number>;
+  }
+
+  const breakAggregates: Array<BreakAggregate | undefined> = [];
 
   for (const col of activeColumns) {
+    let ordinal = 0;
     for (const p of col.periods) {
-      if (!p.isBreak || !p.start || !p.end) continue;
-      const key = `${p.start}-${p.end}`;
-      const hit = breakMap.get(key);
-      if (hit) {
-        hit.dayIds.add(col.day.id);
-      } else {
-        breakMap.set(key, {
-          start: p.start,
-          end: p.end,
-          label: p.label || "استراحة",
-          dayIds: new Set([col.day.id]),
-        });
+      if (!p.isBreak) continue;
+      if (p.start && p.end) {
+        let agg = breakAggregates[ordinal];
+        if (!agg) {
+          agg = {
+            start: p.start,
+            end: p.end,
+            label: (p.label || "").trim() || "استراحة",
+            dayCount: 0,
+            startCounts: new Map(),
+            endCounts: new Map(),
+            labelCounts: new Map(),
+          };
+          breakAggregates[ordinal] = agg;
+        }
+        agg.dayCount += 1;
+        agg.startCounts.set(p.start, (agg.startCounts.get(p.start) ?? 0) + 1);
+        agg.endCounts.set(p.end, (agg.endCounts.get(p.end) ?? 0) + 1);
+        const lbl = (p.label || "").trim() || "استراحة";
+        agg.labelCounts.set(lbl, (agg.labelCounts.get(lbl) ?? 0) + 1);
       }
+      ordinal += 1;
     }
   }
 
-  /* الاستراحة المشتركة = موجودة في كل الأيام المبرمجة بنفس التوقيت */
-  const sharedBreaks: SharedBreak[] =
-    activeColumns.length > 0
-      ? [...breakMap.values()]
-          .filter((b) => b.dayIds.size === activeColumns.length)
-          .map((b) => ({
-            start: b.start,
-            end: b.end,
-            label: b.label,
-            duration:
-              Math.max(
-                0,
-                (timeToMin(b.end) ?? 0) - (timeToMin(b.start) ?? 0)
-              ) || 0,
-          }))
-          .sort(
-            (a, b) =>
-              (timeToMin(a.start) ?? 0) - (timeToMin(b.start) ?? 0)
-          )
-      : [];
+  const modeOf = (counts: Map<string, number>, fallback: string) => {
+    let best = fallback;
+    let bestCount = 0;
+    for (const [value, count] of counts) {
+      if (count > bestCount) {
+        best = value;
+        bestCount = count;
+      }
+    }
+    return best;
+  };
 
-  const sharedKeys = new Set(
-    sharedBreaks.map((b) => `${b.start}-${b.end}`)
-  );
+  /* فرق التوقيت المسموح بين استراحات الأيام قبل اعتبارها استراحة واحدة */
+  const spreadOf = (counts: Map<string, number>) => {
+    let min = Infinity;
+    let max = -Infinity;
+    for (const value of counts.keys()) {
+      const minutes = timeToMin(value);
+      if (minutes === null) continue;
+      min = Math.min(min, minutes);
+      max = Math.max(max, minutes);
+    }
+    return min === Infinity ? 0 : max - min;
+  };
 
-  /* ---------- تقسيم الجدول إلى حزم تفصل بينها الاستراحات ---------- */
+  /* الاستراحة تُخرج إلى الشريط الوسطيّ إن تكرّرت في يومين على الأقل */
+  const minDays = Math.min(2, activeColumns.length);
+  const unifiedBreaks: Array<{ ordinal: number; info: SharedBreak }> = [];
+
+  breakAggregates.forEach((agg, ordinal) => {
+    if (!agg || agg.dayCount < minDays) return;
+    /* لا ندمج استراحتين متباعدتين زمنيًا (مثل استراحة الصباح واستراحة الغداء) */
+    if (spreadOf(agg.startCounts) > 90 || spreadOf(agg.endCounts) > 90) return;
+    const start = modeOf(agg.startCounts, agg.start);
+    const end = modeOf(agg.endCounts, agg.end);
+    unifiedBreaks.push({
+      ordinal,
+      info: {
+        start,
+        end,
+        label: modeOf(agg.labelCounts, agg.label || "استراحة"),
+        duration:
+          Math.max(0, (timeToMin(end) ?? 0) - (timeToMin(start) ?? 0)) || 0,
+      },
+    });
+  });
+
+  /* ---------- تقسيم الأيام إلى حزم تفصل بينها الاستراحات المشتركة ----------
+     اليوم الذي لا يملك استراحة في هذا الترتيب يُقسَّم حسب توقيت الشريط
+     الوسطيّ حتى يبقى الارتفاع متوازنًا ولا يخرج الجدول عن صفحة واحدة. */
+  const dayBands = dayColumns.map(({ periods }) => {
+    const ownBreaks = periods.filter((p) => p.isBreak);
+    const cuts = unifiedBreaks.map(({ ordinal, info }) => {
+      const own = ownBreaks[ordinal];
+      return {
+        at: timeToMin(own?.start || info.start),
+        removeId: own?.id,
+      };
+    });
+
+    const segments: Period[][] = [[]];
+    let cutIndex = 0;
+    let cut = cuts[cutIndex];
+
+    for (const p of periods) {
+      if (p.isBreak) {
+        if (cut && cut.removeId === p.id) {
+          cutIndex += 1;
+          cut = cuts[cutIndex];
+          segments.push([]);
+        } else {
+          segments[segments.length - 1].push(p);
+        }
+        continue;
+      }
+
+      const start = timeToMin(p.start);
+      while (cut && cut.at !== null && start !== null && start >= cut.at) {
+        cutIndex += 1;
+        cut = cuts[cutIndex];
+        segments.push([]);
+      }
+
+      segments[segments.length - 1].push(p);
+    }
+
+    return segments;
+  });
+
   const bands: Band[] = [];
-  for (let i = 0; i <= sharedBreaks.length; i++) {
-    const from = i === 0 ? null : sharedBreaks[i - 1].end;
-    const to =
-      i === sharedBreaks.length ? null : sharedBreaks[i].start;
-    const fromMin = from ? timeToMin(from) : null;
-    const toMin = to ? timeToMin(to) : null;
-
-    const columns = dayColumns.map(({ periods }) =>
-      periods.filter((p) => {
-        if (p.isBreak && sharedKeys.has(`${p.start}-${p.end}`)) return false;
-        const start = timeToMin(p.start);
-        if (start === null) return false;
-        if (fromMin !== null && start < fromMin) return false;
-        if (toMin !== null && start >= toMin) return false;
-        return true;
-      })
-    );
-
+  for (let i = 0; i <= unifiedBreaks.length; i++) {
     bands.push({
-      breakInfo: i > 0 ? sharedBreaks[i - 1] : undefined,
-      columns,
+      breakInfo: i > 0 ? unifiedBreaks[i - 1].info : undefined,
+      columns: dayBands.map((segments) => segments[i] ?? []),
     });
   }
 
