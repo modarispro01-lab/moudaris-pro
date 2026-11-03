@@ -11,7 +11,7 @@
    أفقي وسط الجدول، داخل إطار واضح، بدل تكرارها في كل عمود.
    ============================================================ */
 import React from "react";
-import { Coffee } from "lucide-react";
+import { ArrowRight, Coffee } from "lucide-react";
 import { DAYS, DEFAULT_TIMING } from "./defaults";
 import { resolveTheme } from "./theme";
 import {
@@ -260,7 +260,7 @@ export default function TimetablePreview({ state }: Props) {
             >
               المملكة المغربية
             </div>
-            <div>وزارة التربية الوطنية والتعليم الأولي والرياضة</div>
+            <div>وزارة التربية الوطنية والتعليم الأولي والتكوين المهني والتأهيل</div>
           </div>
 
           {showLogo && (
@@ -839,7 +839,7 @@ export default function TimetablePreview({ state }: Props) {
                   );
                   })}
 
-                {/* شريط الانتقال بين الصباحية والمسائية */}
+                {/* شريط الانتقال بين الفترتين */}
                 {blockIndex === 0 && transitionGap > 0 && (
                   <div
                     style={{
@@ -847,23 +847,90 @@ export default function TimetablePreview({ state }: Props) {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: "2mm",
-                      padding: "0.3mm 2mm",
-                      background: hexToRgba(theme.headerBg, 0.03),
-                      borderBottom: `0.6pt solid ${hexToRgba(
-                        theme.headerBg,
-                        0.18
-                      )}`,
-                      color: "#64748B",
-                      fontSize: fsMeta(7.4),
-                      fontWeight: 700,
+                      padding: "0.5mm 2mm",
+                      background: hexToRgba(theme.headerBg, 0.035),
+                      borderTop: `0.8pt solid ${hexToRgba(theme.headerBg, 0.2)}`,
+                      borderBottom: `0.8pt solid ${hexToRgba(theme.headerBg, 0.2)}`,
                     }}
                   >
-                    <span>⬅️ انتقال بين الفترتين</span>
-                    <span dir="ltr">
-                      {timing.morningEnd} → {timing.afternoonStart}
-                    </span>
-                    <span>({transitionGap} د)</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "2.6mm",
+                        padding: "0.3mm 2.8mm",
+                        border: `1pt dashed ${hexToRgba(theme.headerBg, 0.35)}`,
+                        borderRadius: "2.8mm",
+                        background: theme.pageBg,
+                        boxShadow: `0 0 0 1mm ${hexToRgba(theme.headerBg, 0.06)}`,
+                      }}
+                    >
+                      <ArrowRight
+                        aria-hidden="true"
+                        style={{
+                          width: `${3 * fontScale}mm`,
+                          height: `${3 * fontScale}mm`,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: "0.5mm",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: fsMeta(7.6),
+                            fontWeight: 700,
+                            color: "#64748B",
+                            textAlign: "center",
+                          }}
+                        >
+                          انتقال واستراحة يومية
+                        </span>
+                        <span
+                          dir="ltr"
+                          style={{
+                            fontSize: fsTime(10),
+                            fontWeight: 800,
+                            color: theme.heading,
+                            lineHeight: 1.2,
+                            direction: "ltr",
+                            unicodeBidi: "isolate",
+                          }}
+                        >
+                          {timing.morningEnd} → {timing.afternoonStart}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: fsMeta(7.8),
+                            fontWeight: 700,
+                            color: "#64748B",
+                            textAlign: "center",
+                          }}
+                        >
+                          من نهاية الفترة الصباحية إلى بداية الفترة المسائية
+                        </span>
+                        {showDuration && transitionGap > 0 && (
+                          <span
+                            style={{
+                              fontSize: fsMeta(7.2),
+                              fontWeight: 800,
+                              color: theme.heading,
+                              padding: "0.2mm 1.4mm",
+                              borderRadius: "1.4mm",
+                              background: hexToRgba(theme.headerBg, 0.12),
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            استراحة {formatDuration(transitionGap)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 )}
               </React.Fragment>
