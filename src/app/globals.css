@@ -25,9 +25,28 @@ body {
    مولّد استعمال الزمن (التعليم الصريح) — نسخة الطباعة
    ============================================================ */
 @media screen {
+  /* تبقى الوثيقة مُصيَّرة خارج الشاشة (وليست display:none) حتى يمكن
+     قياس ارتفاعها الحقيقي قبل الطباعة وحساب نسبة الملاءمة */
   .tt-print-portal {
-    display: none !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: -1;
   }
+}
+
+/* الوثيقة داخل غلاف الطباعة تأخذ ارتفاعها الطبيعي ليُقاس ثم يُصغَّر */
+.tt-print-portal .tt-doc {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  break-inside: auto;
 }
 
 @media print {
@@ -52,25 +71,24 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
+    overflow: hidden !important;
   }
 
   .tt-print-portal {
     display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    z-index: auto !important;
   }
 
-  /* الوثيقة تحافظ على الحدّ الأدنى لمقاس الصفحة، لكنها تنمو
-     بحرّية إذا احتاج المحتوى مساحة أكبر بدل أن يُقطع */
-  .tt-print-portal .tt-doc {
-    height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-    break-inside: auto;
-  }
-  .tt-print-portal .tt-doc[data-orientation="landscape"] {
-    min-height: 185mm !important;
-  }
-  .tt-print-portal .tt-doc[data-orientation="portrait"] {
-    min-height: 272mm !important;
+  /* الصفحة الواحدة: لا تُقسَّم ولا تتسرّب إلى ورقة ثانية */
+  .tt-print-portal .tt-page,
+  .tt-print-portal .tt-sheet {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   /* خانة التواقيع لا تُقطع */

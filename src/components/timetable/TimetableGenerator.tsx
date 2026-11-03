@@ -9,7 +9,7 @@ import { ArrowLeft, ArrowRight, Check, Printer, Redo2, Sparkles, Undo2 } from "l
 import { TimetableProvider, useTimetable } from "./store";
 import { ConfirmProvider } from "./ConfirmDialog";
 import Stepper, { STEPS } from "./Stepper";
-import TimetablePreview from "./TimetablePreview";
+import PrintSheet from "./PrintSheet";
 import InfoStep from "./steps/InfoStep";
 import TimingStep from "./steps/TimingStep";
 import ScheduleStep from "./steps/ScheduleStep";
@@ -198,9 +198,9 @@ function Shell() {
       {/* ===== نسخة الطباعة ===== */}
       {mounted &&
         createPortal(
-          <div className="tt-print-portal">
-            <style>{`@page { size: A4 ${state.orientation}; margin: 10mm; }`}</style>
-            <TimetablePreview state={state} />
+          <div className="tt-print-portal" data-orientation={state.orientation}>
+            <style>{`@page { size: A4 ${state.orientation}; margin: 0; }`}</style>
+            <PrintSheet state={state} />
           </div>,
           document.body
         )}

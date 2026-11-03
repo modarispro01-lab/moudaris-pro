@@ -359,7 +359,6 @@ export default function TimetablePreview({ state }: Props) {
               border: `0.9pt solid ${theme.cellBorder}`,
               borderRadius: radius ? `${radius}px` : 0,
               overflow: "hidden",
-              breakInside: "avoid",
             }}
           >
             {/* رؤوس الأيام */}
