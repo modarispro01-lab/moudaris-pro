@@ -2,7 +2,7 @@
    محرك الجدول — تحويل جدول كل يوم إلى سطور موحّدة للطباعة
    ============================================================ */
 import { timeToMin } from "./utils";
-import type { DayId, Period, ScheduleRow, TimetableState } from "./types";
+import type { DayId, Period, ScheduleRow, TimetableState, Timing } from "./types";
 
 /** فترات يوم معيّنة (مصفوفة فارغة إن لم يُبرمج بعد) */
 export function dayPeriods(state: TimetableState, day: DayId): Period[] {
@@ -13,6 +13,93 @@ export function dayPeriods(state: TimetableState, day: DayId): Period[] {
     if (d !== 0) return d;
     return (timeToMin(a.end) ?? 9999) - (timeToMin(b.end) ?? 9999);
   });
+}
+
+/** نافذة زمنية صحيحة بالدقائق */
+function windowOf(start: string, end: string): { a: number; b: number } | null {
+  const a = timeToMin(start);
+  const b = timeToMin(end);
+  return a !== null && b !== null && b > a ? { a, b } : null;
+}
+
+/**
+ * إلى أيّ فترة تنتمي حصة/استراحة؟
+ *
+ * التصنيف يعتمد على أكبر تقاطع زمني مع الفترتين، لا على وقت البداية فقط؛
+ * فحصة 12:45–13:50 مع بداية مسائية 12:50 هي مسائية.
+ */
+export function periodBlock(
+  timing: Timing,
+  p: Period
+): "morning" | "afternoon" | "transition" {
+  const pStart = timeToMin(p.start);
+  const pEnd = timeToMin(p.end);
+  const morning = windowOf(timing.morningStart, timing.morningEnd);
+  const afternoon = windowOf(timing.afternoonStart, timing.afternoonEnd);
+
+  if (pStart === null || pEnd === null || pEnd <= pStart) {
+    return afternoon && pStart !== null && pStart >= afternoon.a
+      ? "afternoon"
+      : "morning";
+  }
+
+  /* استراحة واقعة بكاملها بين نهاية الصباحية وبداية المسائية.
+     الحصص لا تُصنَّف انتقالًا أبدًا حتى لا تختفي من الجدول. */
+  if (
+    p.isBreak &&
+    morning &&
+    afternoon &&
+    pStart >= morning.b &&
+    pEnd <= afternoon.a
+  ) {
+    return "transition";
+  }
+
+  const overlap = (w: { a: number; b: number } | null) =>
+    w ? Math.max(0, Math.min(pEnd, w.b) - Math.max(pStart, w.a)) : 0;
+
+  const morningOverlap = overlap(morning);
+  const afternoonOverlap = overlap(afternoon);
+
+  if (afternoonOverlap > morningOverlap) return "afternoon";
+  if (morningOverlap > afternoonOverlap) return "morning";
+  return afternoon && pStart >= afternoon.a ? "afternoon" : "morning";
+}
+
+/**
+ * إدراج استراحات عرضية عند كل فجوة ≥ minGap دقيقة بين حصتين متتاليتين.
+ * الاستراحات مُشتقّة للعرض فقط ولا تُحفظ في البيانات.
+ */
+export function withAutoBreaks(list: Period[], minGap = 10): Period[] {
+  if (minGap <= 0 || list.length < 2) return list;
+
+  const out: Period[] = [];
+  let prev: Period | null = null;
+
+  for (const p of list) {
+    if (prev && !prev.isBreak && !p.isBreak) {
+      const prevEnd = timeToMin(prev.end);
+      const nextStart = timeToMin(p.start);
+      if (
+        prevEnd !== null &&
+        nextStart !== null &&
+        nextStart - prevEnd >= minGap
+      ) {
+        out.push({
+          id: `auto-break-${prev.id}-${p.id}`,
+          start: prev.end,
+          end: p.start,
+          label: "استراحة",
+          isBreak: true,
+          subjectId: null,
+        });
+      }
+    }
+    out.push(p);
+    prev = p;
+  }
+
+  return out;
 }
 
 /** هل اليوم مبرمج؟ (له فترة واحدة على الأقل) */

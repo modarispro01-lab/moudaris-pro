@@ -19,6 +19,21 @@ export interface DayDef {
 }
 
 /**
+ * توقيت المؤسسة: يحدّد الفترتين الصباحية والمسائية.
+ * تُعرض الفترتان دائمًا في الجدول، حتى إن كانت إحداهما فارغة.
+ */
+export interface Timing {
+  /** بداية الفترة الصباحية "HH:MM" */
+  morningStart: string;
+  /** نهاية الفترة الصباحية "HH:MM" */
+  morningEnd: string;
+  /** بداية الفترة المسائية "HH:MM" */
+  afternoonStart: string;
+  /** نهاية الفترة المسائية "HH:MM" */
+  afternoonEnd: string;
+}
+
+/**
  * فترة زمنية داخل يوم واحد فقط.
  *
  * كل يوم يملك فتراته المستقلة (توقيت + مادة)، لذلك لا تؤثر حصة
@@ -77,6 +92,12 @@ export interface Design {
   fontId: string;
   /** معامل حجم خط الجدول (0.8 = 80%، 1 = 100%، 1.1 = 110%) */
   fontScale?: number;
+  /** حجم خط اسم المادة (0.8–1.5) */
+  subjectFontScale?: number;
+  /** حجم خط المستوى والفوج (0.8–1.5) */
+  metaFontScale?: number;
+  /** حجم خط التوقيت (0.8–1.5) */
+  timeFontScale?: number;
   headerShape: HeaderShape;
   periodDisplay: PeriodDisplay;
   cellFill?: CellFill;
@@ -112,6 +133,8 @@ export interface TimetableState {
   days: DayId[];
   /** جدول كل يوم على حدة: DayId -> فتراته */
   plans: Record<string, Period[]>;
+  /** توقيت المؤسسة: الفترة الصباحية والمسائية */
+  timing: Timing;
   subjects: Subject[];
   design: Design;
   orientation: Orientation;

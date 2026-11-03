@@ -12,9 +12,15 @@
    ============================================================ */
 import React from "react";
 import { Coffee } from "lucide-react";
-import { DAYS } from "./defaults";
+import { DAYS, DEFAULT_TIMING } from "./defaults";
 import { resolveTheme } from "./theme";
-import { dayPeriods, durationOf, weekTotals } from "./schedule";
+import {
+  dayPeriods,
+  durationOf,
+  periodBlock,
+  weekTotals,
+  withAutoBreaks,
+} from "./schedule";
 import {
   formatDuration,
   hexToRgba,
@@ -23,7 +29,7 @@ import {
   timeToMin,
 } from "./utils";
 import InstitutionLogo from "./InstitutionLogo";
-import type { Period, TimetableState } from "./types";
+import type { DayDef, Period, TimetableState } from "./types";
 
 interface Props {
   state: TimetableState;
@@ -43,6 +49,11 @@ interface Band {
   columns: Period[][];
 }
 
+interface DayColumn {
+  day: DayDef;
+  periods: Period[];
+}
+
 export default function TimetablePreview({ state }: Props) {
   const theme = resolveTheme(state.design);
   const isLandscape = state.orientation === "landscape";
@@ -56,18 +67,39 @@ export default function TimetablePreview({ state }: Props) {
   const cellFill = state.design.cellFill || theme.template.cellFill;
 
   /* حجم خط الجدول: يتحكّم فيه الأستاذ من خطوة التصميم */
-  const fontScale = Math.min(
-    1.1,
-    Math.max(0.8, state.design.fontScale ?? 1)
+  const fontScale = Math.min(1.1, Math.max(0.8, state.design.fontScale ?? 1));
+  const subjectFontScale = Math.min(
+    1.5,
+    Math.max(0.8, state.design.subjectFontScale ?? 1)
+  );
+  const metaFontScale = Math.min(
+    1.5,
+    Math.max(0.8, state.design.metaFontScale ?? 1)
+  );
+  const timeFontScale = Math.min(
+    1.5,
+    Math.max(0.8, state.design.timeFontScale ?? 1)
   );
   const fs = (pt: number) => `${(pt * fontScale).toFixed(2)}pt`;
+  const fsSubject = (pt: number) => fs(pt * subjectFontScale);
+  const fsMeta = (pt: number) => fs(pt * metaFontScale);
+  const fsTime = (pt: number) => fs(pt * timeFontScale);
   /** خطوط الترويسة والتذييل تبقى ثابتة حتى يبقى حجم الوثيقة مضبوطًا */
   const fsDoc = (pt: number) => `${pt}pt`;
+  /* ارتفاع أدنى يحمي النص من الفيض حين يكبر خط المادة أو المستوى أو التوقيت */
+  const rowBoost = Math.max(
+    1,
+    subjectFontScale,
+    metaFontScale,
+    timeFontScale
+  );
   const cellMin = (p: Period) =>
-    `${((p.isBreak ? 8.5 : 12) * fontScale).toFixed(2)}mm`;
+    `${((p.isBreak ? 8.5 : 12) * fontScale * rowBoost).toFixed(2)}mm`;
+
+  const timing = state.timing ?? DEFAULT_TIMING;
 
   /* كل يوم عمود مستقلّ: نُخفي الاستراحات إن اختار الأستاذ ذلك */
-  const dayColumns = dayList.map((day) => {
+  const dayColumns: DayColumn[] = dayList.map((day) => {
     const all = dayPeriods(state, day.id);
     const periods = state.design.showBreaks
       ? all
@@ -76,149 +108,46 @@ export default function TimetablePreview({ state }: Props) {
   });
   const hasVisiblePeriods = dayColumns.some((c) => c.periods.length > 0);
 
-  /* ---------- كشف الاستراحات المشتركة بين كل الأيام ----------
-     نعتمد على ترتيب الاستراحة داخل اليوم (الأولى، الثانية...) بدل
-     توقيتها الدقيق، لأن التوقيت قد يختلف قليلًا من يوم لآخر.
-     عند تكرارها في يومين على الأقل تُعرض مرّة واحدة في شريط وسطيّ،
-     وتبقى الاستراحات غير المشتركة داخل عمود يومها. */
-  const activeColumns = dayColumns.filter((c) => c.periods.length > 0);
+  /* الفترتان ثابتتان: تُعرضان دائمًا ولو كانت إحداهما بلا حصص */
+  const blockDefs = [
+    {
+      id: "morning" as const,
+      label: "الفترة الصباحية",
+      emoji: "☀️",
+      start: timing.morningStart,
+      end: timing.morningEnd,
+    },
+    {
+      id: "afternoon" as const,
+      label: "الفترة المسائية",
+      emoji: "🌙",
+      start: timing.afternoonStart,
+      end: timing.afternoonEnd,
+    },
+  ];
 
-  interface BreakAggregate {
-    start: string;
-    end: string;
-    label: string;
-    dayCount: number;
-    startCounts: Map<string, number>;
-    endCounts: Map<string, number>;
-    labelCounts: Map<string, number>;
-  }
-
-  const breakAggregates: Array<BreakAggregate | undefined> = [];
-
-  for (const col of activeColumns) {
-    let ordinal = 0;
-    for (const p of col.periods) {
-      if (!p.isBreak) continue;
-      if (p.start && p.end) {
-        let agg = breakAggregates[ordinal];
-        if (!agg) {
-          agg = {
-            start: p.start,
-            end: p.end,
-            label: (p.label || "").trim() || "استراحة",
-            dayCount: 0,
-            startCounts: new Map(),
-            endCounts: new Map(),
-            labelCounts: new Map(),
-          };
-          breakAggregates[ordinal] = agg;
-        }
-        agg.dayCount += 1;
-        agg.startCounts.set(p.start, (agg.startCounts.get(p.start) ?? 0) + 1);
-        agg.endCounts.set(p.end, (agg.endCounts.get(p.end) ?? 0) + 1);
-        const lbl = (p.label || "").trim() || "استراحة";
-        agg.labelCounts.set(lbl, (agg.labelCounts.get(lbl) ?? 0) + 1);
-      }
-      ordinal += 1;
-    }
-  }
-
-  const modeOf = (counts: Map<string, number>, fallback: string) => {
-    let best = fallback;
-    let bestCount = 0;
-    for (const [value, count] of counts) {
-      if (count > bestCount) {
-        best = value;
-        bestCount = count;
-      }
-    }
-    return best;
-  };
-
-  /* فرق التوقيت المسموح بين استراحات الأيام قبل اعتبارها استراحة واحدة */
-  const spreadOf = (counts: Map<string, number>) => {
-    let min = Infinity;
-    let max = -Infinity;
-    for (const value of counts.keys()) {
-      const minutes = timeToMin(value);
-      if (minutes === null) continue;
-      min = Math.min(min, minutes);
-      max = Math.max(max, minutes);
-    }
-    return min === Infinity ? 0 : max - min;
-  };
-
-  /* الاستراحة تُخرج إلى الشريط الوسطيّ إن تكرّرت في يومين على الأقل */
-  const minDays = Math.min(2, activeColumns.length);
-  const unifiedBreaks: Array<{ ordinal: number; info: SharedBreak }> = [];
-
-  breakAggregates.forEach((agg, ordinal) => {
-    if (!agg || agg.dayCount < minDays) return;
-    /* لا ندمج استراحتين متباعدتين زمنيًا (مثل استراحة الصباح واستراحة الغداء) */
-    if (spreadOf(agg.startCounts) > 90 || spreadOf(agg.endCounts) > 90) return;
-    const start = modeOf(agg.startCounts, agg.start);
-    const end = modeOf(agg.endCounts, agg.end);
-    unifiedBreaks.push({
-      ordinal,
-      info: {
-        start,
-        end,
-        label: modeOf(agg.labelCounts, agg.label || "استراحة"),
-        duration:
-          Math.max(0, (timeToMin(end) ?? 0) - (timeToMin(start) ?? 0)) || 0,
-      },
-    });
+  const blocks = blockDefs.map((block) => {
+    const columns: DayColumn[] = dayColumns.map(({ day, periods }) => ({
+      day,
+      periods: withAutoBreaks(
+        periods.filter((p) => periodBlock(timing, p) === block.id),
+        state.design.showBreaks ? 10 : 0
+      ),
+    }));
+    const hasSessions = columns.some((c) => c.periods.length > 0);
+    return {
+      ...block,
+      columns,
+      hasSessions,
+      bands: hasSessions ? computeBands(columns) : [],
+    };
   });
 
-  /* ---------- تقسيم الأيام إلى حزم تفصل بينها الاستراحات المشتركة ----------
-     اليوم الذي لا يملك استراحة في هذا الترتيب يُقسَّم حسب توقيت الشريط
-     الوسطيّ حتى يبقى الارتفاع متوازنًا ولا يخرج الجدول عن صفحة واحدة. */
-  const dayBands = dayColumns.map(({ periods }) => {
-    const ownBreaks = periods.filter((p) => p.isBreak);
-    const cuts = unifiedBreaks.map(({ ordinal, info }) => {
-      const own = ownBreaks[ordinal];
-      return {
-        at: timeToMin(own?.start || info.start),
-        removeId: own?.id,
-      };
-    });
-
-    const segments: Period[][] = [[]];
-    let cutIndex = 0;
-    let cut = cuts[cutIndex];
-
-    for (const p of periods) {
-      if (p.isBreak) {
-        if (cut && cut.removeId === p.id) {
-          cutIndex += 1;
-          cut = cuts[cutIndex];
-          segments.push([]);
-        } else {
-          segments[segments.length - 1].push(p);
-        }
-        continue;
-      }
-
-      const start = timeToMin(p.start);
-      while (cut && cut.at !== null && start !== null && start >= cut.at) {
-        cutIndex += 1;
-        cut = cuts[cutIndex];
-        segments.push([]);
-      }
-
-      segments[segments.length - 1].push(p);
-    }
-
-    return segments;
-  });
-
-  const bands: Band[] = [];
-  for (let i = 0; i <= unifiedBreaks.length; i++) {
-    bands.push({
-      breakInfo: i > 0 ? unifiedBreaks[i - 1].info : undefined,
-      columns: dayBands.map((segments) => segments[i] ?? []),
-    });
-  }
+  const transitionGap = Math.max(
+    0,
+    (timeToMin(timing.afternoonStart) ?? 0) -
+      (timeToMin(timing.morningEnd) ?? 0)
+  );
 
   const docStyle: React.CSSProperties = {
     width: docWidth,
@@ -267,7 +196,7 @@ export default function TimetablePreview({ state }: Props) {
     background: theme.headerBg,
     color: theme.headerText,
     border: `0.6pt solid ${hexToRgba(theme.headerText, 0.35)}`,
-    padding: "1.5mm 1.2mm",
+    padding: "1mm 1.2mm",
     fontSize: fs(10),
     fontWeight: 700,
     textAlign: "center",
@@ -453,7 +382,7 @@ export default function TimetablePreview({ state }: Props) {
                       i > 0
                         ? `0.6pt solid ${hexToRgba(theme.headerText, 0.35)}`
                         : undefined,
-                    padding: "1.8mm 1.2mm",
+                    padding: "1.1mm 1.2mm",
                     fontSize: fs(10.5),
                   }}
                 >
@@ -462,14 +391,75 @@ export default function TimetablePreview({ state }: Props) {
               ))}
             </div>
 
-            {/* حزم الأيام + الاستراحة الوسطى */}
-            {bands.map((band, bandIndex) => {
+            {/* ===== كتلتا الفترتين: صباحية ومسائية ===== */}
+            {blocks.map((block, blockIndex) => (
+              <React.Fragment key={block.id}>
+                {/* رأس الفترة */}
+                <div
+                  style={{
+                    flexShrink: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "2mm",
+                    padding: "0.6mm 2mm",
+                    background: hexToRgba(theme.headerBg, 0.08),
+                    color: theme.heading,
+                    borderTop: `0.7pt solid ${hexToRgba(theme.headerBg, 0.3)}`,
+                    borderBottom: `0.7pt solid ${hexToRgba(
+                      theme.headerBg,
+                      0.3
+                    )}`,
+                    fontSize: fs(8.8),
+                    fontWeight: 800,
+                    breakInside: "avoid",
+                  }}
+                >
+                  <span>
+                    {block.emoji} {block.label}
+                  </span>
+                  <span
+                    dir="ltr"
+                    style={{ fontSize: fsTime(8.4), fontWeight: 700 }}
+                  >
+                    {block.start} — {block.end}
+                  </span>
+                </div>
+
+                {/* فترة فارغة: تبقى مرئية حتى يمكن إضافة حصة لاحقًا */}
+                {!block.hasSessions && (
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      minHeight: "12mm",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "1.6mm",
+                      color: "#94A3B8",
+                      background: hexToRgba(theme.headerBg, 0.025),
+                      borderBottom: `0.6pt dashed ${hexToRgba(
+                        theme.headerBg,
+                        0.25
+                      )}`,
+                      fontSize: fsMeta(8),
+                      fontWeight: 600,
+                      textAlign: "center",
+                    }}
+                  >
+                    لا توجد حصص في هذه الفترة — يمكن إضافتها لاحقًا
+                  </div>
+                )}
+
+                {block.hasSessions &&
+                  block.bands.map((band, bandIndex) => {
               const maxMin = Math.max(
                 8 * fontScale,
                 ...band.columns.map((periods) =>
                   periods.reduce(
                     (sum, p) =>
-                      sum + (p.isBreak ? 8.5 : 12) * fontScale,
+                      sum +
+                      (p.isBreak ? 8.5 : 12) * fontScale * rowBoost,
                     0
                   )
                 )
@@ -480,7 +470,7 @@ export default function TimetablePreview({ state }: Props) {
               );
 
               return (
-                <React.Fragment key={`band-${bandIndex}`}>
+                <React.Fragment key={`band-${block.id}-${bandIndex}`}>
                   {/* ===== شريط الاستراحة: مرّة واحدة في الوسط ===== */}
                   {band.breakInfo && (
                     <div
@@ -489,7 +479,7 @@ export default function TimetablePreview({ state }: Props) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        padding: "1.4mm 2mm",
+                        padding: "0.7mm 2mm",
                         background: hexToRgba(theme.headerBg, 0.055),
                         borderTop: `0.8pt solid ${hexToRgba(
                           theme.headerBg,
@@ -509,7 +499,7 @@ export default function TimetablePreview({ state }: Props) {
                           justifyContent: "center",
                           gap: "2.4mm",
                           minWidth: "58mm",
-                          padding: `${1 * fontScale}mm 5mm`,
+                          padding: `${0.7 * fontScale}mm 5mm`,
                           background: theme.pageBg,
                           color: theme.heading,
                           border: `1.2pt solid ${theme.headerBg}`,
@@ -531,7 +521,7 @@ export default function TimetablePreview({ state }: Props) {
                         />
                         <span
                           style={{
-                            fontSize: fs(9.8),
+                            fontSize: fsMeta(9.8),
                             fontWeight: 800,
                             letterSpacing: "0.2pt",
                           }}
@@ -548,7 +538,7 @@ export default function TimetablePreview({ state }: Props) {
                         />
                         <span
                           style={{
-                            fontSize: fs(8.4),
+                            fontSize: fsTime(8.4),
                             fontWeight: 700,
                             direction: "ltr",
                             unicodeBidi: "isolate",
@@ -559,7 +549,7 @@ export default function TimetablePreview({ state }: Props) {
                         {showDuration && band.breakInfo.duration > 0 && (
                           <span
                             style={{
-                              fontSize: fs(7.4),
+                              fontSize: fsMeta(7.4),
                               fontWeight: 800,
                               padding: "0.25mm 1.6mm",
                               borderRadius: "1.6mm",
@@ -687,12 +677,12 @@ export default function TimetablePreview({ state }: Props) {
                                       minHeight: cellMin(p),
                                       background: bg,
                                       color: fg,
-                                      padding: `${0.9 * fontScale}mm 1.1mm`,
+                                      padding: `${0.6 * fontScale}mm 1.1mm`,
                                       display: "flex",
                                       flexDirection: "column",
                                       alignItems: "center",
                                       justifyContent: "center",
-                                      gap: "0.4mm",
+                                      gap: "0.3mm",
                                       textAlign: "center",
                                       lineHeight: 1.18,
                                       overflow: "visible",
@@ -717,7 +707,7 @@ export default function TimetablePreview({ state }: Props) {
                                       >
                                         <span
                                           style={{
-                                            fontSize: fs(8.5),
+                                            fontSize: fsMeta(8.5),
                                             fontWeight: 700,
                                           }}
                                         >
@@ -726,7 +716,7 @@ export default function TimetablePreview({ state }: Props) {
                                         {showDuration && dur > 0 && (
                                           <span
                                             style={{
-                                              fontSize: fs(7),
+                                              fontSize: fsMeta(7),
                                               fontWeight: 700,
                                               padding: "0.2mm 1.1mm",
                                               borderRadius: "2mm",
@@ -755,7 +745,7 @@ export default function TimetablePreview({ state }: Props) {
                                             showNames ? (
                                               <span
                                                 style={{
-                                                  fontSize: fs(10.5),
+                                                  fontSize: fsSubject(10.5),
                                                   fontWeight: 800,
                                                   lineHeight: 1.1,
                                                   overflowWrap: "anywhere",
@@ -767,7 +757,7 @@ export default function TimetablePreview({ state }: Props) {
                                           ) : (
                                             <span
                                               style={{
-                                                fontSize: fs(9.5),
+                                                fontSize: fsSubject(9.5),
                                                 fontWeight: 700,
                                               }}
                                             >
@@ -777,7 +767,7 @@ export default function TimetablePreview({ state }: Props) {
                                           {showDuration && dur > 0 && (
                                             <span
                                               style={{
-                                                fontSize: fs(7.4),
+                                                fontSize: fsMeta(7.4),
                                                 fontWeight: 700,
                                                 padding: "0.25mm 1.2mm",
                                                 borderRadius: "2mm",
@@ -793,7 +783,7 @@ export default function TimetablePreview({ state }: Props) {
                                         {audience && (
                                           <div
                                             style={{
-                                              fontSize: fs(7.5),
+                                              fontSize: fsMeta(7.5),
                                               fontWeight: 700,
                                               lineHeight: 1.12,
                                               color: badgeFg,
@@ -813,7 +803,7 @@ export default function TimetablePreview({ state }: Props) {
                                         ) && (
                                           <div
                                             style={{
-                                              fontSize: fs(8),
+                                              fontSize: fsTime(8),
                                               fontWeight: 600,
                                               opacity: 0.9,
                                               whiteSpace: "nowrap",
@@ -827,7 +817,7 @@ export default function TimetablePreview({ state }: Props) {
                                         {p.note && (
                                           <div
                                             style={{
-                                              fontSize: fs(7),
+                                              fontSize: fsMeta(7),
                                               opacity: 0.75,
                                               overflowWrap: "anywhere",
                                             }}
@@ -847,8 +837,38 @@ export default function TimetablePreview({ state }: Props) {
                     </div>
                   )}
                 </React.Fragment>
-              );
-            })}
+                  );
+                  })}
+
+                {/* شريط الانتقال بين الصباحية والمسائية */}
+                {blockIndex === 0 && transitionGap > 0 && (
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "2mm",
+                      padding: "0.3mm 2mm",
+                      background: hexToRgba(theme.headerBg, 0.03),
+                      borderBottom: `0.6pt solid ${hexToRgba(
+                        theme.headerBg,
+                        0.18
+                      )}`,
+                      color: "#64748B",
+                      fontSize: fsMeta(7.4),
+                      fontWeight: 700,
+                    }}
+                  >
+                    <span>⬅️ انتقال بين الفترتين</span>
+                    <span dir="ltr">
+                      {timing.morningEnd} → {timing.afternoonStart}
+                    </span>
+                    <span>({transitionGap} د)</span>
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
           </div>
         )}
       </div>
@@ -971,9 +991,156 @@ export default function TimetablePreview({ state }: Props) {
   );
 }
 
+/**
+ * بناء حزم يومية داخل فترة واحدة، تفصل بينها الاستراحات المشتركة.
+ * نعتمد على ترتيب الاستراحة داخل اليوم (الأولى، الثانية...) بدل توقيتها
+ * الدقيق، لأن التوقيت قد يختلف قليلًا من يوم لآخر.
+ */
+function computeBands(dayColumns: DayColumn[]): Band[] {
+  const activeColumns = dayColumns.filter((c) => c.periods.length > 0);
+  if (!activeColumns.length) return [];
+
+  interface BreakAggregate {
+    start: string;
+    end: string;
+    label: string;
+    dayCount: number;
+    startCounts: Map<string, number>;
+    endCounts: Map<string, number>;
+    labelCounts: Map<string, number>;
+  }
+
+  const breakAggregates: Array<BreakAggregate | undefined> = [];
+
+  for (const col of activeColumns) {
+    let ordinal = 0;
+    for (const p of col.periods) {
+      if (!p.isBreak) continue;
+      if (p.start && p.end) {
+        let agg = breakAggregates[ordinal];
+        if (!agg) {
+          agg = {
+            start: p.start,
+            end: p.end,
+            label: (p.label || "").trim() || "استراحة",
+            dayCount: 0,
+            startCounts: new Map(),
+            endCounts: new Map(),
+            labelCounts: new Map(),
+          };
+          breakAggregates[ordinal] = agg;
+        }
+        agg.dayCount += 1;
+        agg.startCounts.set(p.start, (agg.startCounts.get(p.start) ?? 0) + 1);
+        agg.endCounts.set(p.end, (agg.endCounts.get(p.end) ?? 0) + 1);
+        const lbl = (p.label || "").trim() || "استراحة";
+        agg.labelCounts.set(lbl, (agg.labelCounts.get(lbl) ?? 0) + 1);
+      }
+      ordinal += 1;
+    }
+  }
+
+  const modeOf = (counts: Map<string, number>, fallback: string) => {
+    let best = fallback;
+    let bestCount = 0;
+    for (const [value, count] of counts) {
+      if (count > bestCount) {
+        best = value;
+        bestCount = count;
+      }
+    }
+    return best;
+  };
+
+  /* فرق التوقيت المسموح بين استراحات الأيام قبل اعتبارها استراحة واحدة */
+  const spreadOf = (counts: Map<string, number>) => {
+    let min = Infinity;
+    let max = -Infinity;
+    for (const value of counts.keys()) {
+      const minutes = timeToMin(value);
+      if (minutes === null) continue;
+      min = Math.min(min, minutes);
+      max = Math.max(max, minutes);
+    }
+    return min === Infinity ? 0 : max - min;
+  };
+
+  /* الاستراحة تُخرج إلى الشريط الوسطيّ إن تكرّرت في يومين على الأقل */
+  const minDays = Math.min(2, activeColumns.length);
+  const unifiedBreaks: Array<{ ordinal: number; info: SharedBreak }> = [];
+
+  breakAggregates.forEach((agg, ordinal) => {
+    if (!agg || agg.dayCount < minDays) return;
+    /* لا ندمج استراحتين متباعدتين زمنيًا (مثل استراحة الصباح واستراحة الغداء) */
+    if (spreadOf(agg.startCounts) > 90 || spreadOf(agg.endCounts) > 90) return;
+    const start = modeOf(agg.startCounts, agg.start);
+    const end = modeOf(agg.endCounts, agg.end);
+    unifiedBreaks.push({
+      ordinal,
+      info: {
+        start,
+        end,
+        label: modeOf(agg.labelCounts, agg.label || "استراحة"),
+        duration:
+          Math.max(0, (timeToMin(end) ?? 0) - (timeToMin(start) ?? 0)) || 0,
+      },
+    });
+  });
+
+  /* تقسيم الأيام إلى حزم تفصل بينها الاستراحات المشتركة.
+     اليوم الذي لا يملك استراحة في هذا الترتيب يُقسَّم حسب توقيت الشريط
+     الوسطيّ حتى يبقى الارتفاع متوازنًا ولا يخرج الجدول عن صفحة واحدة. */
+  const dayBands = dayColumns.map(({ periods }) => {
+    const ownBreaks = periods.filter((p) => p.isBreak);
+    const cuts = unifiedBreaks.map(({ ordinal, info }) => {
+      const own = ownBreaks[ordinal];
+      return {
+        at: timeToMin(own?.start || info.start),
+        removeId: own?.id,
+      };
+    });
+
+    const segments: Period[][] = [[]];
+    let cutIndex = 0;
+    let cut = cuts[cutIndex];
+
+    for (const p of periods) {
+      if (p.isBreak) {
+        if (cut && cut.removeId === p.id) {
+          cutIndex += 1;
+          cut = cuts[cutIndex];
+          segments.push([]);
+        } else {
+          segments[segments.length - 1].push(p);
+        }
+        continue;
+      }
+
+      const start = timeToMin(p.start);
+      while (cut && cut.at !== null && start !== null && start >= cut.at) {
+        cutIndex += 1;
+        cut = cuts[cutIndex];
+        segments.push([]);
+      }
+
+      segments[segments.length - 1].push(p);
+    }
+
+    return segments;
+  });
+
+  const bands: Band[] = [];
+  for (let i = 0; i <= unifiedBreaks.length; i++) {
+    bands.push({
+      breakInfo: i > 0 ? unifiedBreaks[i - 1].info : undefined,
+      columns: dayBands.map((segments) => segments[i] ?? []),
+    });
+  }
+  return bands;
+}
+
 /** تسمية الوقت داخل الحصة */
-function timeLabel(state: TimetableState, src: Period): string {
-  const dur = formatDuration(durationOf(src));
+function timeLabel(state: TimetableState, src: Period): string {  const dur = formatDuration(durationOf(src));
   switch (state.design.periodDisplay) {
     case "start":
       return src.start;

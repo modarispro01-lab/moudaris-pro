@@ -158,26 +158,49 @@ export default function DesignStep({
               ))}
             </select>
           </Field>
-          <Field label="حجم خط الجدول">
-            <div className="flex items-center gap-3">
-              <input
-                type="range"
-                min={0.8}
-                max={1.1}
-                step={0.05}
-                value={state.design.fontScale ?? 1}
-                onChange={(e) => set({ fontScale: Number(e.target.value) })}
-                className="h-2 w-full cursor-pointer"
-                style={{ accentColor: theme.headerBg }}
-                aria-label="حجم خط الجدول"
-              />
-              <span className="w-12 shrink-0 rounded-md bg-background px-1 py-0.5 text-center text-xs font-extrabold text-primary">
-                {Math.round((state.design.fontScale ?? 1) * 100)}%
-              </span>
-            </div>
-            <span className="mt-1 block text-[11px] text-muted">
-              صغّر الخط إذا كانت الحصص كثيرة، أو كبّره لقراءة أوضح.
-            </span>
+          <Field label="حجم عام (كثافة الجدول)">
+            <ScaleSlider
+              value={state.design.fontScale ?? 1}
+              min={0.8}
+              max={1.1}
+              step={0.05}
+              onChange={(v) => set({ fontScale: v })}
+              accent={theme.headerBg}
+              label="حجم عام للجدول"
+            />
+          </Field>
+          <Field label="حجم خط اسم المادة">
+            <ScaleSlider
+              value={state.design.subjectFontScale ?? 1}
+              min={0.8}
+              max={1.5}
+              step={0.05}
+              onChange={(v) => set({ subjectFontScale: v })}
+              accent={theme.headerBg}
+              label="حجم خط اسم المادة"
+            />
+          </Field>
+          <Field label="حجم خط المستوى والفوج">
+            <ScaleSlider
+              value={state.design.metaFontScale ?? 1}
+              min={0.8}
+              max={1.5}
+              step={0.05}
+              onChange={(v) => set({ metaFontScale: v })}
+              accent={theme.headerBg}
+              label="حجم خط المستوى والفوج"
+            />
+          </Field>
+          <Field label="حجم خط التوقيت">
+            <ScaleSlider
+              value={state.design.timeFontScale ?? 1}
+              min={0.8}
+              max={1.5}
+              step={0.05}
+              onChange={(v) => set({ timeFontScale: v })}
+              accent={theme.headerBg}
+              label="حجم خط التوقيت"
+            />
           </Field>
           <Field label="شكل رؤوس الجدول">
             <select
@@ -220,6 +243,25 @@ export default function DesignStep({
             </select>
           </Field>
         </div>
+
+        <button
+          type="button"
+          onClick={() =>
+            set({
+              fontScale: 1,
+              subjectFontScale: 1,
+              metaFontScale: 1,
+              timeFontScale: 1,
+            })
+          }
+          className="edt-btn edt-btn-sm edt-btn-outline mt-4"
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> استعادة أحجام الخط الافتراضية
+        </button>
+        <p className="mt-2 text-[11px] leading-relaxed text-muted">
+          كبّر خط المادة أو المستوى لقراءة أوضح، أو صغّر الحجم العام إذا ازدحم الجدول
+          وتجاوز صفحة واحدة.
+        </p>
 
         <div className="mt-5 flex flex-wrap gap-2">
           <Toggle
@@ -491,6 +533,43 @@ export default function DesignStep({
 
 const selectCls = "edt-select";
 const inputCls = "edt-input";
+
+function ScaleSlider({
+  value,
+  min,
+  max,
+  step,
+  onChange,
+  accent,
+  label,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (value: number) => void;
+  accent: string;
+  label: string;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="h-2 w-full cursor-pointer"
+        style={{ accentColor: accent }}
+        aria-label={label}
+      />
+      <span className="w-12 shrink-0 rounded-md bg-background px-1 py-0.5 text-center text-xs font-extrabold text-primary">
+        {Math.round(value * 100)}%
+      </span>
+    </div>
+  );
+}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

@@ -10,6 +10,7 @@ import type {
   Subject,
   Template,
   TimetableState,
+  Timing,
 } from "./types";
 
 export const DAYS: DayDef[] = [
@@ -218,10 +219,21 @@ export const DEFAULT_INFO: Info = {
   docTitle: "استعمال الزمن الأسبوعي – فترة التعليم الصريح",
 };
 
+/** التوقيت الافتراضي: صباحية 08:00–12:40 ثم مسائية 12:45–17:30 */
+export const DEFAULT_TIMING: Timing = {
+  morningStart: "08:00",
+  morningEnd: "12:40",
+  afternoonStart: "12:45",
+  afternoonEnd: "17:30",
+};
+
 export const DEFAULT_DESIGN: Design = {
   templateId: "classic",
   fontId: "tajawal",
   fontScale: 1,
+  subjectFontScale: 1,
+  metaFontScale: 1,
+  timeFontScale: 1,
   headerShape: "flat",
   periodDisplay: "range",
   showBreaks: true,
@@ -247,6 +259,7 @@ export function makeInitialState(): TimetableState {
     info: { ...DEFAULT_INFO },
     days: ["mon", "tue", "wed", "thu", "fri"],
     plans: emptyPlans(),
+    timing: { ...DEFAULT_TIMING },
     subjects: DEFAULT_SUBJECTS.map((s) => ({ ...s })),
     design: { ...DEFAULT_DESIGN },
     orientation: "landscape",

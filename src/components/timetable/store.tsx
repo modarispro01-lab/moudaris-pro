@@ -23,6 +23,7 @@ import type {
   Period,
   Subject,
   TimetableState,
+  Timing,
 } from "./types";
 import {
   DEFAULT_INFO,
@@ -42,6 +43,7 @@ const MAX_HISTORY = 60;
 export type Action =
   | { type: "LOAD"; state: TimetableState }
   | { type: "SET_INFO"; patch: Partial<Info> }
+  | { type: "SET_TIMING"; patch: Partial<Timing> }
   | { type: "SET_DESIGN"; patch: Partial<Design> }
   | { type: "SET_SUBJECT"; id: string; patch: Partial<Subject> }
   | { type: "RESET_SUBJECT_COLORS" }
@@ -113,6 +115,9 @@ function applyAction(state: TimetableState, action: Action): TimetableState {
 
     case "SET_INFO":
       return { ...state, info: { ...state.info, ...action.patch } };
+
+    case "SET_TIMING":
+      return { ...state, timing: { ...state.timing, ...action.patch } };
 
     case "SET_DESIGN":
       return { ...state, design: { ...state.design, ...action.patch } };
@@ -375,6 +380,10 @@ function normalizeState(v: unknown): TimetableState | null {
     info: normalizeInfo(s.info),
     days: s.days,
     plans,
+    timing: {
+      ...base.timing,
+      ...(s.timing && typeof s.timing === "object" ? s.timing : {}),
+    },
     subjects: s.subjects.length ? s.subjects : base.subjects,
     design: { ...base.design, ...s.design },
     orientation: s.orientation === "portrait" ? "portrait" : "landscape",
