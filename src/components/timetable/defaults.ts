@@ -219,12 +219,12 @@ export const DEFAULT_INFO: Info = {
   docTitle: "استعمال الزمن الأسبوعي – فترة التعليم الصريح",
 };
 
-/** التوقيت الافتراضي: صباحية 08:00–12:40 ثم مسائية 12:45–17:30 */
+/** التوقيت الافتراضي: صباحية 08:00–12:40 ثم مسائية 12:45–17:25 */
 export const DEFAULT_TIMING: Timing = {
   morningStart: "08:00",
   morningEnd: "12:40",
   afternoonStart: "12:45",
-  afternoonEnd: "17:30",
+  afternoonEnd: "17:25",
 };
 
 export const DEFAULT_DESIGN: Design = {

@@ -36,6 +36,8 @@ import {
 
 const STORAGE_KEY = "mp_timetable_generator_v1";
 const PROFILE_KEY = "mp_teacher_profile_v1";
+/* تُستعمل مرّة واحدة لنقل التوقيت المحفوظ من 17:30 إلى 17:25 */
+const TIMING_1725_MIGRATION_KEY = "mp_timetable_timing_1725_migrated";
 const MAX_HISTORY = 60;
 
 /* ============================ الأحداث ============================ */
@@ -397,7 +399,18 @@ function loadInitial(): TimetableState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     const normalized = normalizeState(safeParse(raw));
-    if (normalized) return normalized;
+    if (normalized) {
+      /* ترحيل مرة واحدة: كانت نهاية المسائية الافتراضية 17:30 وأصبحت 17:25.
+         نحفظ الحالة فورًا حتى لا يعيد التحميل المزدوج (StrictMode) قراءة القيمة القديمة. */
+      if (!localStorage.getItem(TIMING_1725_MIGRATION_KEY)) {
+        if (normalized.timing.afternoonEnd === "17:30") {
+          normalized.timing = { ...normalized.timing, afternoonEnd: "17:25" };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+        }
+        localStorage.setItem(TIMING_1725_MIGRATION_KEY, "1");
+      }
+      return normalized;
+    }
   } catch {
     /* تجاهل */
   }
