@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   BookOpenCheck,
+  CalendarClock,
   Check,
   CheckCircle2,
   FileText,
@@ -18,7 +19,15 @@ import {
 import MemoEditor from "./MemoEditor";
 import MemoSheet from "./MemoSheet";
 import SheetPreview from "./SheetPreview";
+import TimetablePicker, {
+  buildMemoFromTimetable,
+  compareMemoDrafts,
+} from "./TimetablePicker";
+import type { SavedTtDraft } from "./TimetablePicker";
 import WeekMap from "./WeekMap";
+import type { BridgeSession } from "@/lib/timetable-memo-bridge";
+import { readTimetableState } from "@/lib/timetable-memo-bridge";
+import type { TimetableState } from "@/components/timetable/types";
 import type {
   Catalog,
   LevelData,
@@ -733,6 +742,14 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
   const [groupEditor, setGroupEditor] = useState<number | null>(null);
   const [groupDraft, setGroupDraft] = useState<Record<number, string>>({});
+  /* وضع المصدر: المذكرة الحالية مولّدة من استعمال الزمن (مفتاحها ttm:…) */
+  const [ttSource, setTtSource] = useState<{ dayKey: string; dateIso: string } | null>(
+    null
+  );
+  const [ttPickerOpen, setTtPickerOpen] = useState(false);
+  /* بيانات اللوحة: تُقرأ عند الفتح فقط (لا refs أثناء الرسم) */
+  const [ttData, setTtData] = useState<TimetableState | null>(null);
+  const [savedTtDrafts, setSavedTtDrafts] = useState<SavedTtDraft[]>([]);
   const draftsRef = useRef<Record<string, MemoState>>({});
   const hydratedRef = useRef(false);
 
@@ -741,6 +758,17 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
   const draftsKey = catalog.config.storage?.draftsKey || "mp_daily_memo_drafts_v1";
   const prefsKey =
     catalog.config.storage?.preferencesKey || "mp_daily_memo_preferences_v1";
+
+  /**
+   * مفتاح المسودة النشط: وضع المصدر (مولّدة من استعمال الزمن) له مساحة
+   * مفاتيحه الخاصة ttm:<dayKey>:<dateIso> داخل كائن المسودات نفسه —
+   * لا تصادم مع مفاتيح الاختيار اليدوي التي تبدأ برمز المادة.
+   */
+  function activeDraftKey(): string {
+    return ttSource
+      ? `ttm:${ttSource.dayKey}:${ttSource.dateIso}`
+      : draftKey(selection);
+  }
 
   const level = useMemo(
     () => findLevel(catalog, selection),
@@ -969,16 +997,18 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     return () => window.clearTimeout(timer);
   }, [profile, mounted, profileKey]);
 
-  /* حفظ المسودة الحالية */
+  /* حفظ المسودة الحالية — المفتاح النشط (يدوي أو ttm:) يُحسم لحظة الكتابة */
   useEffect(() => {
     if (!mounted || !memo) return;
-    const key = draftKey(selection);
+    const key = ttSource
+      ? `ttm:${ttSource.dayKey}:${ttSource.dateIso}`
+      : draftKey(selection);
     const timer = window.setTimeout(() => {
       draftsRef.current[key] = memo;
       writeStorage(draftsKey, draftsRef.current);
     }, 400);
     return () => window.clearTimeout(timer);
-  }, [memo, selection, mounted, draftsKey]);
+  }, [memo, selection, mounted, draftsKey, ttSource]);
 
   /* إخفاء عنوان الصفحة من رؤوس الطباعة */
   useEffect(() => {
@@ -1008,7 +1038,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
 
   function persistCurrent() {
     if (!memo) return;
-    draftsRef.current[draftKey(selection)] = memo;
+    draftsRef.current[activeDraftKey()] = memo;
     writeStorage(draftsKey, draftsRef.current);
     writeStorage(profileKey, profile);
   }
@@ -1038,10 +1068,14 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     ) {
       return;
     }
+    /* أي تنقّل يدوي يخرج من وضع المصدر: تُكتب المذكرة الحالية أولاً تحت
+       مفتاحها النشط (ttm: إن كانت مولّدة) قبل تبديل الوضع — لا ضياع آخر تعديل. */
+    const currentKey = activeDraftKey();
     if (memo) {
-      draftsRef.current[draftKey(selection)] = memo;
+      draftsRef.current[currentKey] = memo;
       writeStorage(draftsKey, draftsRef.current);
     }
+    setTtSource(null);
     const stored = storedDraftFor(catalog, draftsRef.current, next);
     setSelection(next);
     setMemo(stored ?? buildMemo(catalog, next, profile));
@@ -1220,7 +1254,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     const updated = memo ? { ...memo, day: dayLabel } : null;
     if (updated) {
       setMemo(updated);
-      draftsRef.current[draftKey(selection)] = updated;
+      draftsRef.current[activeDraftKey()] = updated;
       writeStorage(draftsKey, draftsRef.current);
     }
     setToast({
@@ -1561,14 +1595,119 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     const hasContent = memo.lessons.some(
       (lesson) => lesson.topic.trim() || lesson.objectives.trim() || lesson.stages.trim()
     );
+    /* التأكيد أولًا: الإلغاء يترك وضع المصدر والمفتاح والمحتوى كما هي —
+       وإلا لتبدّل setTtSource(null) الوضع قبل الإلغاء وأعاد W1 الحفظ
+       تحت المفتاح اليدوي بمحتوى مولّد. */
     if (
       hasContent &&
       !window.confirm("سيتم استبدال محتوى المذكرة الحالية بالنسخة المستخرجة من التوزيع. هل تريد المتابعة؟")
     ) {
       return;
     }
+    /* إعادة التوليد من التوزيع فعل يدوي: تُحفظ المذكرة المولّدة الحالية
+       تحت مفتاح ttm: ثم يخرج الوضع للاختيار اليدوي قبل البناء */
+    if (ttSource) {
+      draftsRef.current[activeDraftKey()] = memo;
+      writeStorage(draftsKey, draftsRef.current);
+      setTtSource(null);
+    }
     setMemo(buildMemo(catalog, selection, profile));
     setToast({ msg: "أُعيد توليد المذكرة من التوزيع.", kind: "ok" });
+  }
+
+  /* ==================== التوليد من استعمال الزمن ==================== */
+
+  /** مسودات ttm: المحفوظة — تُقرأ في المعالجات فقط (لا refs أثناء الرسم). */
+  function listSavedTtDrafts(): SavedTtDraft[] {
+    return Object.keys(draftsRef.current)
+      .filter((key) => key.startsWith("ttm:"))
+      .map((key) => {
+        const [, dayKey, dateIso] = key.split(":");
+        return { dayKey: dayKey ?? "", dateIso: dateIso ?? "" };
+      })
+      .filter((draft) => draft.dayKey && draft.dateIso);
+  }
+
+  /** فتح اللوحة: مسح أي شيء مكتوب أولاً ثم قراءة الجدول والمسودات المحفوظة. */
+  function openTtPicker() {
+    persistCurrent();
+    setTtData(readTimetableState());
+    setSavedTtDrafts(listSavedTtDrafts());
+    setTtPickerOpen(true);
+  }
+
+  /**
+   * توليد مذكرة من الحصص المختارة في اللوحة.
+   * • تُغلق المسودة الحالية أولًا تحت مفتاحها النشط (يغلق سباق الحفظ 400ms).
+   * • إن وُجدت مسودة ttm: لنفس اليوم/التاريخ: مقارنة صريحة، ولا استبدال
+   *   إلا بتأكيد — والإلغاء يترك المسودة القديمة دون أي كتابة.
+   * • المذكرات اليدوية خارج المسار بنيويًا (مفاتيحها لا تبدأ بـ ttm:).
+   */
+  function handleTtGenerate(
+    chosen: BridgeSession[],
+    dayKey: string,
+    dateIso: string
+  ) {
+    if (memo) {
+      draftsRef.current[activeDraftKey()] = memo;
+      writeStorage(draftsKey, draftsRef.current);
+    }
+    const key = `ttm:${dayKey}:${dateIso}`;
+    const built = buildMemoFromTimetable(
+      catalog,
+      selection,
+      profile,
+      chosen,
+      dayKey,
+      dateIso
+    );
+    const existing = draftsRef.current[key];
+    if (existing) {
+      const diffs = compareMemoDrafts(existing, built);
+      if (diffs.length) {
+        const ok = window.confirm(
+          "توجد مذكرة مولّدة محفوظة لهذا اليوم والتاريخ. سيتم استبدالها بالنتيجة الحالية:\n\n" +
+            diffs.join("\n") +
+            "\n\nهل تريد المتابعة؟"
+        );
+        if (!ok) return; /* الإلغاء: المسودة القديمة لم تُمس إطلاقًا */
+      }
+    }
+    draftsRef.current[key] = built;
+    writeStorage(draftsKey, draftsRef.current);
+    setTtSource({ dayKey, dateIso });
+    setMemo(built);
+    setTtPickerOpen(false);
+    setToast({ msg: "تم توليد المذكرة من استعمال الزمن.", kind: "ok" });
+  }
+
+  /** فتح مسودة مولّدة محفوظة (من قائمة اللوحة) دون إعادة توليد.
+   *  المسح أولًا ثم القراءة: عند إعادة فتح المفتاح النشط نفسه بعد تعديل
+   *  لم يُمسَّح بعد (<400ms) تكون النسخة المقروءة هي الأحدث — لا ضياع. */
+  function handleTtOpenDraft(dayKey: string, dateIso: string) {
+    const key = `ttm:${dayKey}:${dateIso}`;
+    if (memo) {
+      draftsRef.current[activeDraftKey()] = memo;
+      writeStorage(draftsKey, draftsRef.current);
+    }
+    const stored = draftsRef.current[key];
+    if (!stored) return;
+    setTtSource({ dayKey, dateIso });
+    setMemo(stored);
+    setTtPickerOpen(false);
+    setToast({ msg: "فُتحت المذكرة المولّدة المحفوظة.", kind: "ok" });
+  }
+
+  /** الخروج اليدوي من وضع المصدر: حفظ المولّدة ثم تحميل مسودة الاختيار الحالي. */
+  function exitTtMode() {
+    if (memo) {
+      draftsRef.current[activeDraftKey()] = memo;
+      writeStorage(draftsKey, draftsRef.current);
+    }
+    setTtSource(null);
+    const stored = storedDraftFor(catalog, draftsRef.current, selection, true);
+    setMemo(stored ?? buildMemo(catalog, selection, profile));
+    setToast({ msg: "عادت الأداة إلى الاختيار اليدوي.", kind: "ok" });
   }
 
   function saveNow() {
@@ -1971,6 +2110,14 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
           </div>
 
           <div className="memo-toolbar-actions">
+            <button
+              type="button"
+              className="memo-btn memo-btn-ghost"
+              onClick={openTtPicker}
+            >
+              <CalendarClock className="h-4 w-4" />
+              من استعمال الزمن
+            </button>
             <button type="button" className="memo-btn memo-btn-ghost" onClick={saveNow}>
               <Save className="h-4 w-4" />
               حفظ
@@ -2088,6 +2235,33 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
           {toast.msg}
         </div>
       ) : null}
+
+      {/* شارة وضع المصدر + لوحة التوليد من استعمال الزمن */}
+      {ttSource && (
+        <div className="memo-tt-badge" role="status">
+          <CalendarClock className="h-4 w-4" />
+          <span>
+            مولّدة من استعمال الزمن —{" "}
+            {(catalog.config.weekDays ?? []).find((day) => day.key === ttSource.dayKey)
+              ?.label_ar ?? ttSource.dayKey}{" "}
+            · {ttSource.dateIso}
+          </span>
+          <button type="button" className="memo-tt-badge-exit" onClick={exitTtMode}>
+            عودة للاختيار اليدوي
+          </button>
+        </div>
+      )}
+      {ttPickerOpen && (
+        <TimetablePicker
+          catalog={catalog}
+          selection={selection}
+          ttState={ttData}
+          savedTtDrafts={savedTtDrafts}
+          onGenerate={handleTtGenerate}
+          onOpenDraft={handleTtOpenDraft}
+          onClose={() => setTtPickerOpen(false)}
+        />
+      )}
 
       {mounted && memo
         ? createPortal(
