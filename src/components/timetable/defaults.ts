@@ -208,6 +208,103 @@ export const LEVEL_SUGGESTIONS = [
 
 export const GROUP_SUGGESTIONS = ["أ", "ب", "ج", "د", "هـ", "و"];
 
+/* ===================== رقم المستوى (لمطابقة التوزيعات) ===================== */
+
+/** المدى المسموح لرقم المستوى في توزيعات التعليم الصريح. */
+export const LEVEL_NUMBER_MIN = 1;
+export const LEVEL_NUMBER_MAX = 6;
+
+/** هل القيمة رقم مستوى صحيح ضمن المدى المسموح؟ */
+export function isValidLevelNumber(value: unknown): value is number {
+  return (
+    typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= LEVEL_NUMBER_MIN &&
+    value <= LEVEL_NUMBER_MAX
+  );
+}
+
+/** كلمات الترتيب العربية لكل مستوى، بالترتيب: الأول = 1 … السادس = 6. */
+const ORDINAL_WORDS = [
+  "الأول",
+  "الأولى",
+  "الثاني",
+  "الثانية",
+  "الثالث",
+  "الثالثة",
+  "الرابع",
+  "الرابعة",
+  "الخامس",
+  "الخامسة",
+  "السادس",
+  "السادسة",
+] as const;
+
+const ORDINAL_VALUE: Record<string, number> = Object.fromEntries(
+  ORDINAL_WORDS.map((word, index) => [word, Math.floor(index / 2) + 1])
+);
+
+/** الأرقام الهندية المستعملة في الأسماء، مرتّبة للاستبدال بمقابلها اللاتيني. */
+const ARABIC_INDIC_DIGITS = /[\u0660-\u0669]/g;
+const EASTERN_ARABIC_INDIC_DIGITS = /[\u06F0-\u06F9]/g;
+
+function toLatinDigits(text: string): string {
+  return text
+    .replace(ARABIC_INDIC_DIGITS, (d) => String(d.charCodeAt(0) - 0x0660))
+    .replace(EASTERN_ARABIC_INDIC_DIGITS, (d) => String(d.charCodeAt(0) - 0x06f0));
+}
+
+/**
+ * نمط كلمات المستوى المدعومة كاملةً بحدّي كلمة (بداية ونهاية):
+ * المستوى، مستوى، مستواي — مع أداة التعريف الاختيارية.
+ * الحدّ بعد الكلمة يمنع اعتبار مشتقات «مستو» مثل «مستودع الرابع»
+ * أو «المستودعات» أسماء مستويات.
+ * وجود كلمة المستوى شرط لاعتبار الاسم مستوى دراسيًا — كلمة الترتيب أو
+ * الرقم وحده لا يكفي، وإلا حُسب «الفوج الأول» و«القسم الثاني» مستويين،
+ * و«قاعة 5» مستوى خامسًا.
+ */
+const LEVEL_WORD_PATTERN =
+  /(?:^|[^\p{L}\p{N}])(?:ال)?(?:مستوى|مستواي)(?=$|[^\p{L}\p{N}])/u;
+
+/**
+ * يستخرج رقم المستوى (1–6) من اسم حر، بحدود دقيقة تمنع التقاط رقم عرضي:
+ * 1) مطابقة حرفية لاقتراحات المستويات («المستوى الرابع» → 4).
+ * 2) بشرط احتواء الاسم على كلمة «مستوى»: كلمة ترتيب معزولة
+ *    («مستواي الرابع» → 4) — لا تطابق داخل كلمة أطول.
+ * 3) بشرط الاحتواء نفسه: رقم معزول 1–6 («مستوى 4»، «المستوى ٤») —
+ *    لا يلتقط أرقامًا أطول أو ملتصقة بأحرف.
+ * أسماء الأفواج والأسماء الحرة («الفوج الأول»، «القسم الثاني»، «قاعة 5»)
+ * تبقى بلا رقم — الاسم يبقى حرًّا دون ربط بتوزيع.
+ */
+export function parseLevelNumber(name: string): number | undefined {
+  const text = (name ?? "").trim();
+  if (!text) return undefined;
+
+  /* 1) مطابقة حرفية للاقتراحات القياسية */
+  const exactIndex = LEVEL_SUGGESTIONS.indexOf(text);
+  if (exactIndex >= 0) return exactIndex + 1;
+
+  /* ليس مستوى دراسيًا إلا بوجود كلمة «مستوى» في الاسم */
+  if (!LEVEL_WORD_PATTERN.test(text)) return undefined;
+
+  /* 2) كلمة ترتيب معزولة (حدود كلمات: بداية/نهاية النص أو حرف غير حرفي/رقمي) */
+  for (const word of ORDINAL_WORDS) {
+    const pattern = new RegExp(
+      `(^|[^\\p{L}\\p{N}])${word}($|[^\\p{L}\\p{N}])`,
+      "u"
+    );
+    if (pattern.test(text)) return ORDINAL_VALUE[word];
+  }
+
+  /* 3) رقم معزول 1–6: يتطلب فصلًا عن الأحرف لتجنب أسماء مثل «م4ت» أو «السنة2025» */
+  const latin = toLatinDigits(text);
+  const numberPattern = /(?:^|[\s\-\u0640_\/()])0*([1-6])(?:$|[\s\-\u0640_\/()])/;
+  const match = numberPattern.exec(latin);
+  if (match) return Number(match[1]);
+
+  return undefined;
+}
+
 export const DEFAULT_INFO: Info = {
   academy: "",
   direction: "",

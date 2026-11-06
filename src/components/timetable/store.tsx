@@ -30,11 +30,14 @@ import {
   DEFAULT_SUBJECTS,
   defaultPeriods,
   emptyPlans,
+  isValidLevelNumber,
   makeInitialState,
+  parseLevelNumber,
   uid,
 } from "./defaults";
 
-const STORAGE_KEY = "mp_timetable_generator_v1";
+/** مفتاح حفظ مشروع استعمال الزمن في localStorage — تقرؤه طبقة الجسر للقراءة فقط */
+export const STORAGE_KEY = "mp_timetable_generator_v1";
 const PROFILE_KEY = "mp_teacher_profile_v1";
 /* تُستعمل مرّة واحدة لنقل التوقيت المحفوظ من 17:30 إلى 17:25 */
 const TIMING_1725_MIGRATION_KEY = "mp_timetable_timing_1725_migrated";
@@ -313,10 +316,24 @@ export function normalizeInfo(raw: RawInfo | undefined | null): Info {
         groups: Array.isArray(l.groups)
           ? l.groups.filter((g): g is string => typeof g === "string")
           : [],
+        /* رقم المستوى: نحافظ على الرقم الصحيح الموجود، وإلا نشتقه من الاسم
+           عند الترحيل (حقل اختياري — التوافق الرجعي لا يتأثر). */
+        ...(isValidLevelNumber(l.levelNumber)
+          ? { levelNumber: l.levelNumber }
+          : parseLevelNumber(l.name) != null
+            ? { levelNumber: parseLevelNumber(l.name) }
+            : {}),
       }));
   }
   if (!levels.length && (legacyLevel || legacySection)) {
-    levels = [{ id: uid(), name: legacyLevel, groups: legacySection ? [legacySection] : [] }];
+    const legacyEntry: LevelEntry = {
+      id: uid(),
+      name: legacyLevel,
+      groups: legacySection ? [legacySection] : [],
+    };
+    const derived = parseLevelNumber(legacyLevel);
+    if (derived != null) legacyEntry.levelNumber = derived;
+    levels = [legacyEntry];
   }
 
   return { ...base, ...raw, levels };

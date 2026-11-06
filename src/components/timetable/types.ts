@@ -65,6 +65,12 @@ export interface LevelEntry {
   name: string;
   /** أسماء الأفواج، مثال: ["فوج أ", "فوج ب"] */
   groups: string[];
+  /**
+   * رقم المستوى (1–6) لمطابقة توزيعات التعليم الصريح.
+   * يُشتق تلقائيًا من الاسم عند الترحيل (normalizeInfo) ولا يُدخل يدويًا؛
+   * undefined = اسم حر لم يُتعرف عليه (لا يُربط بتوزيع).
+   */
+  levelNumber?: number;
 }
 
 export interface Info {
