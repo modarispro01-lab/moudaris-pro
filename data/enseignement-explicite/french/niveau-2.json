@@ -1,0 +1,2323 @@
+{
+  "subject": "الفرنسية",
+  "subject_ar": "الفرنسية",
+  "subjectCode": "french",
+  "level": 2,
+  "levelLabel_ar": "المستوى الثاني",
+  "levelLabel_fr": "Niveau 2",
+  "source": "التوزيع_السنوي_الفرنسية_-_الرياضيات_-_النشاط_العلمي_المستوى الثاني.pdf",
+  "source_note": "عبارات المحاور الثلاثة (Vocabulaire / Oral / Lecture et écriture) وشريط الموضوع المائل لكل أسبوع (theme_fr) ومنصفتا المراجعة والتقييم منقولة حرفيًا من جدول الفرنسية في توزيع المستوى الثاني. القراءة والكتابة مدمجتان في محور واحد (Lecture et écriture) كما وردت في المصدر. لم تُضف أهداف أو أنشطة أو وسائل غير واردة في الملف. النص الفرنسي الأصلي محفوظ في topic_fr ومكرر في topic_ar لأن الواجهة تعرض topic_ar؛ أي تعريب للعبارات قرار لاحق منفصل. توزيع المحاور على أيام الأسبوع اقتراح تربوي وليس واردًا في المصدر.",
+  "dayPlanNote": "أيام التدريس: الاثنين إلى السبت (الأحد عطلة). المحاور الثلاثة موزعة: الاثنين Vocabulaire، الثلاثاء Oral، الأربعاء Lecture et écriture؛ الخميس والجمعة والسبت بدون محتوى في المصدر. الأسبوع 5 من كل فترة: Révision et rebrassage de la période، والأسبوع 6: Évaluation écrite, correction et soutien. التوزيع قابل للتعديل داخل الأداة.",
+  "stages": [
+    {
+      "id": "stage-1",
+      "number": 1,
+      "title_ar": "الفترة الأولى",
+      "title_fr": "PÉRIODE 1 · Je me présente",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "title_ar": "الأسبوع الأول",
+          "title_fr": "Semaine 1",
+          "theme_fr": "Comment tu t’appelles ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "S’appeler – le nom – le prénom – un ami\n– un cadeau – jaune – un bateau – l’eau –\nun chameau – un autobus – une moto –\nune olive",
+                "topic_fr": "S’appeler – le nom – le prénom – un ami\n– un cadeau – jaune – un bateau – l’eau –\nun chameau – un autobus – une moto –\nune olive"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Comment tu t’appelles ?",
+                "topic_fr": "• Comment tu t’appelles ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "o – au – eau",
+                "topic_fr": "o – au – eau"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "title_ar": "الأسبوع الثاني",
+          "title_fr": "Semaine 2",
+          "theme_fr": "Tu habites où ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Habiter – la ville – la campagne – le\nvillage – une poire – une voiture – une\nétoile – un tiroir – une boîte – un\nmoineau – boire – voir",
+                "topic_fr": "Habiter – la ville – la campagne – le\nvillage – une poire – une voiture – une\nétoile – un tiroir – une boîte – un\nmoineau – boire – voir"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Tu habites où ?",
+                "topic_fr": "• Tu habites où ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "oi",
+                "topic_fr": "oi"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "title_ar": "الأسبوع الثالث",
+          "title_fr": "Semaine 3",
+          "theme_fr": "Tu es dans quelle école ? Tu es en quelle classe ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Une école – une élève – première année\n– deuxième année – un ongle – le\npoisson – le balcon – le savon – la\nmontre – le mouton – le pont – la pompe",
+                "topic_fr": "Une école – une élève – première année\n– deuxième année – un ongle – le\npoisson – le balcon – le savon – la\nmontre – le mouton – le pont – la pompe"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Tu es dans quelle école ?\n• Tu es en quelle classe ?",
+                "topic_fr": "• Tu es dans quelle école ?\n• Tu es en quelle classe ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 9,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "on – om",
+                "topic_fr": "on – om"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "title_ar": "الأسبوع الرابع",
+          "title_fr": "Semaine 4",
+          "theme_fr": "Comment tu vas à l’école ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 10,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Le bus – un pied – le vélo – le taxi – un\nserpent – une tente – un tambour – un\npanda – un manteau – un pantalon – une\ndent – une jambe",
+                "topic_fr": "Le bus – un pied – le vélo – le taxi – un\nserpent – une tente – un tambour – un\npanda – un manteau – un pantalon – une\ndent – une jambe"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Comment tu vas à l’école ?",
+                "topic_fr": "• Comment tu vas à l’école ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "an – en – am – em",
+                "topic_fr": "an – en – am – em"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 5,
+          "title_ar": "الأسبوع الخامس",
+          "title_fr": "Semaine 5",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "content": {
+                "topic_ar": "Révision et rebrassage de la période 1",
+                "topic_fr": "Révision et rebrassage de la période 1"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "title_ar": "الأسبوع السادس",
+          "title_fr": "Semaine 6",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "content": {
+                "topic_ar": "Évaluation écrite, correction et soutien",
+                "topic_fr": "Évaluation écrite, correction et soutien"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-2",
+      "number": 2,
+      "title_ar": "الفترة الثانية",
+      "title_fr": "PÉRIODE 2 · Mon école",
+      "weeks": [
+        {
+          "weekNumber": 7,
+          "title_ar": "الأسبوع السابع",
+          "title_fr": "Semaine 7",
+          "theme_fr": "Où sont les élèves ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "La cour – le couloir – la cantine – une\nclasse – la clé – une cloche – une glace –\nune plante – une plume – la plage – une\nflûte – le blé",
+                "topic_fr": "La cour – le couloir – la cantine – une\nclasse – la clé – une cloche – une glace –\nune plante – une plume – la plage – une\nflûte – le blé"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Où sont les élèves?",
+                "topic_fr": "• Où sont les élèves?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "bl – cl – fl – gl – pl",
+                "topic_fr": "bl – cl – fl – gl – pl"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 8,
+          "title_ar": "الأسبوع الثامن",
+          "title_fr": "Semaine 8",
+          "theme_fr": "Qu’est-ce que tu fais à l’école ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Dessiner – lire – écrire – une histoire –\ncolorier – un tricot – un bras – le drapeau\n– une prune – drôle – gris – des frites",
+                "topic_fr": "Dessiner – lire – écrire – une histoire –\ncolorier – un tricot – un bras – le drapeau\n– une prune – drôle – gris – des frites"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Qu’est-ce que tu fais à l’école ?",
+                "topic_fr": "• Qu’est-ce que tu fais à l’école ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "br – cr – fr – gr – pr –\ndr – tr",
+                "topic_fr": "br – cr – fr – gr – pr –\ndr – tr"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 9,
+          "title_ar": "الأسبوع التاسع",
+          "title_fr": "Semaine 9",
+          "theme_fr": "Qu’est-ce que tu aimes faire à l’école ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "La lecture – l’écriture – le dessin – le\ncoloriage – un jouet – des lacets – le\nboulanger – le nez – un bonnet – violet –\nle dîner – le goûter",
+                "topic_fr": "La lecture – l’écriture – le dessin – le\ncoloriage – un jouet – des lacets – le\nboulanger – le nez – un bonnet – violet –\nle dîner – le goûter"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Qu’est-ce que tu aimes faire à\nl’école ?",
+                "topic_fr": "• Qu’est-ce que tu aimes faire à\nl’école ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 9,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "er – et – ez – es",
+                "topic_fr": "er – et – ez – es"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 10,
+          "title_ar": "الأسبوع العاشر",
+          "title_fr": "Semaine 10",
+          "theme_fr": "Qu’est-ce que tu dois faire à l’école ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 10,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Lever le doigt – écouter – courir – crier –\nle lait – une baleine – la laine – la neige –\nune reine – un dromadaire – beige – la\nfontaine",
+                "topic_fr": "Lever le doigt – écouter – courir – crier –\nle lait – une baleine – la laine – la neige –\nune reine – un dromadaire – beige – la\nfontaine"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Qu’est-ce que tu dois faire à\nl’école?",
+                "topic_fr": "• Qu’est-ce que tu dois faire à\nl’école?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "ai – ei",
+                "topic_fr": "ai – ei"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 11,
+          "title_ar": "الأسبوع الحادي عشر",
+          "title_fr": "Semaine 11",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "content": {
+                "topic_ar": "Révision et rebrassage de la période 2",
+                "topic_fr": "Révision et rebrassage de la période 2"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 12,
+          "title_ar": "الأسبوع الثاني عشر",
+          "title_fr": "Semaine 12",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "content": {
+                "topic_ar": "Évaluation écrite, correction et soutien",
+                "topic_fr": "Évaluation écrite, correction et soutien"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-3",
+      "number": 3,
+      "title_ar": "الفترة الثالثة",
+      "title_fr": "PÉRIODE 3 · Ma famille et ma maison",
+      "weeks": [
+        {
+          "weekNumber": 13,
+          "title_ar": "الأسبوع الثالث عشر",
+          "title_fr": "Semaine 13",
+          "theme_fr": "Tu fais quoi en famille ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Voyager – se promener – regarder la télé\n– un parc de jeux – une maison – une\nchaise – un oiseau – une chemise – un\narrosoir – une rose – le gazon – une\nvalise",
+                "topic_fr": "Voyager – se promener – regarder la télé\n– un parc de jeux – une maison – une\nchaise – un oiseau – une chemise – un\narrosoir – une rose – le gazon – une\nvalise"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Tu fais quoi en famille ?",
+                "topic_fr": "• Tu fais quoi en famille ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "s = z",
+                "topic_fr": "s = z"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 14,
+          "title_ar": "الأسبوع الرابع عشر",
+          "title_fr": "Semaine 14",
+          "theme_fr": "Qui va venir à la maison ce soir ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Les grands-parents – l’oncle – la cousine\n– la tante – des cheveux – un nœud –\nune fleur – venir – un œuf – un cœur –\nune sœur – bleu",
+                "topic_fr": "Les grands-parents – l’oncle – la cousine\n– la tante – des cheveux – un nœud –\nune fleur – venir – un œuf – un cœur –\nune sœur – bleu"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Qui va venir à la maison ce soir ?",
+                "topic_fr": "• Qui va venir à la maison ce soir ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "eu = œu",
+                "topic_fr": "eu = œu"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 15,
+          "title_ar": "الأسبوع الخامس عشر",
+          "title_fr": "Semaine 15",
+          "theme_fr": "Est-ce que tu peux venir chez moi ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "S’amuser – ensemble – des jeux vidéo –\nfaire ses devoirs – un moustique – un\npaquet – le perroquet – un coquelicot –\nun coq – un casque – un masque – un\npique-nique",
+                "topic_fr": "S’amuser – ensemble – des jeux vidéo –\nfaire ses devoirs – un moustique – un\npaquet – le perroquet – un coquelicot –\nun coq – un casque – un masque – un\npique-nique"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Est-ce que tu peux venir chez moi\n?",
+                "topic_fr": "• Est-ce que tu peux venir chez moi\n?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 9,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "qu – q",
+                "topic_fr": "qu – q"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 16,
+          "title_ar": "الأسبوع السادس عشر",
+          "title_fr": "Semaine 16",
+          "theme_fr": "Nous allons jouer où ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 10,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "La chambre – le salon – en bas – en haut\n– un hôpital – un homme – un hérisson –\nune hache – un hibou – un éléphant –\nune photo – le goûter",
+                "topic_fr": "La chambre – le salon – en bas – en haut\n– un hôpital – un homme – un hérisson –\nune hache – un hibou – un éléphant –\nune photo – le goûter"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Nous allons jouer où ?",
+                "topic_fr": "• Nous allons jouer où ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "h – ph",
+                "topic_fr": "h – ph"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 17,
+          "title_ar": "الأسبوع السابع عشر",
+          "title_fr": "Semaine 17",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "content": {
+                "topic_ar": "Révision et rebrassage de la période 3",
+                "topic_fr": "Révision et rebrassage de la période 3"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 18,
+          "title_ar": "الأسبوع الثامن عشر",
+          "title_fr": "Semaine 18",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "content": {
+                "topic_ar": "Évaluation écrite, correction et soutien",
+                "topic_fr": "Évaluation écrite, correction et soutien"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-4",
+      "number": 4,
+      "title_ar": "الفترة الرابعة",
+      "title_fr": "PÉRIODE 4 · Ma journée",
+      "weeks": [
+        {
+          "weekNumber": 19,
+          "title_ar": "الأسبوع التاسع عشر",
+          "title_fr": "Semaine 19",
+          "theme_fr": "Qu’est-ce que tu fais le matin ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Se réveiller – se laver – s’habiller – se\nbrosser les cheveux – préparer le\ncartable – un agneau – une araignée – la\ncampagne – un beignet – un champignon\n– un oignon – un peigne",
+                "topic_fr": "Se réveiller – se laver – s’habiller – se\nbrosser les cheveux – préparer le\ncartable – un agneau – une araignée – la\ncampagne – un beignet – un champignon\n– un oignon – un peigne"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Qu’est-ce que tu fais le matin ?",
+                "topic_fr": "• Qu’est-ce que tu fais le matin ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "gn",
+                "topic_fr": "gn"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 20,
+          "title_ar": "الأسبوع العشرون",
+          "title_fr": "Semaine 20",
+          "theme_fr": "À quelle heure tu vas à l’école ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Huit heures – neuf heures – sept heures\n– dix heures – un lapin – un singe – la\npeinture – arriver – le pain – un train –\nun chemin – un dauphin",
+                "topic_fr": "Huit heures – neuf heures – sept heures\n– dix heures – un lapin – un singe – la\npeinture – arriver – le pain – un train –\nun chemin – un dauphin"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• À quelle heure tu vas à l’école ?",
+                "topic_fr": "• À quelle heure tu vas à l’école ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "in – im – ain – ein –\naim",
+                "topic_fr": "in – im – ain – ein –\naim"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 21,
+          "title_ar": "الأسبوع الحادي والعشرون",
+          "title_fr": "Semaine 21",
+          "theme_fr": "Tu fais quoi après l’école ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Cache-cache – sauter – la corde à sauter\n– des dessins animés – un camion – un\navion – un mécanicien – la viande – un\nchien – un panier – un lion – un vieux",
+                "topic_fr": "Cache-cache – sauter – la corde à sauter\n– des dessins animés – un camion – un\navion – un mécanicien – la viande – un\nchien – un panier – un lion – un vieux"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Tu fais quoi après l’école ?",
+                "topic_fr": "• Tu fais quoi après l’école ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 9,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "ian – ion – ien – ieu\n– ier",
+                "topic_fr": "ian – ion – ien – ieu\n– ier"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 22,
+          "title_ar": "الأسبوع الثاني والعشرون",
+          "title_fr": "Semaine 22",
+          "theme_fr": "Qu’est-ce que tu fais dimanche ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 10,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "La forêt – un arbre – la rivière – une\nsortie – une casquette – la marelle – une\ntresse – un verre – une sucette – une\ncoccinelle – une princesse – la terre",
+                "topic_fr": "La forêt – un arbre – la rivière – une\nsortie – une casquette – la marelle – une\ntresse – un verre – une sucette – une\ncoccinelle – une princesse – la terre"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Qu’est-ce que tu fais dimanche ?",
+                "topic_fr": "• Qu’est-ce que tu fais dimanche ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "elle – erre – esse –\nêtre",
+                "topic_fr": "elle – erre – esse –\nêtre"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 23,
+          "title_ar": "الأسبوع الثالث والعشرون",
+          "title_fr": "Semaine 23",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "content": {
+                "topic_ar": "Révision et rebrassage de la période 4",
+                "topic_fr": "Révision et rebrassage de la période 4"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 24,
+          "title_ar": "الأسبوع الرابع والعشرون",
+          "title_fr": "Semaine 24",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "content": {
+                "topic_ar": "Évaluation écrite, correction et soutien",
+                "topic_fr": "Évaluation écrite, correction et soutien"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-5",
+      "number": 5,
+      "title_ar": "الفترة الخامسة",
+      "title_fr": "PÉRIODE 5 · Mon corps et ma santé",
+      "weeks": [
+        {
+          "weekNumber": 25,
+          "title_ar": "الأسبوع الخامس والعشرون",
+          "title_fr": "Semaine 25",
+          "theme_fr": "Quel sport tu fais ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 1,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Le football – la course à pied – le karaté\n– la gymnastique – le tennis – une abeille\n– la paille – un écureuil – une feuille – un\ngorille – un fenouil – une grenouille",
+                "topic_fr": "Le football – la course à pied – le karaté\n– la gymnastique – le tennis – une abeille\n– la paille – un écureuil – une feuille – un\ngorille – un fenouil – une grenouille"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 2,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Quel sport tu fais ?",
+                "topic_fr": "• Quel sport tu fais ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 3,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "il – ail – eil – euil –\nouil",
+                "topic_fr": "il – ail – eil – euil –\nouil"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 26,
+          "title_ar": "الأسبوع السادس والعشرون",
+          "title_fr": "Semaine 26",
+          "theme_fr": "Qu’est-ce que tu mets pour le sport ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 4,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Un kimono – un tee-shirt – un\nsurvêtement – des baskets – le foin – un\nshampoing – un babouin – un short – un\ncoin – un point – un pingouin – loin",
+                "topic_fr": "Un kimono – un tee-shirt – un\nsurvêtement – des baskets – le foin – un\nshampoing – un babouin – un short – un\ncoin – un point – un pingouin – loin"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 5,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Qu’est-ce que tu mets pour le\nsport ?",
+                "topic_fr": "• Qu’est-ce que tu mets pour le\nsport ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 6,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "oin – ouin",
+                "topic_fr": "oin – ouin"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 27,
+          "title_ar": "الأسبوع السابع والعشرون",
+          "title_fr": "Semaine 27",
+          "theme_fr": "Est-ce que tu as mal au genou après le sport ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 7,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "La tête – le ventre – la main – les yeux –\nle genou – un crayon – un tuyau – joyeux\n– nettoyer – payer – essuyer – un voyage",
+                "topic_fr": "La tête – le ventre – la main – les yeux –\nle genou – un crayon – un tuyau – joyeux\n– nettoyer – payer – essuyer – un voyage"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 8,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Est-ce que tu as mal au genou\naprès le sport ?",
+                "topic_fr": "• Est-ce que tu as mal au genou\naprès le sport ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 9,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "ay – oy – uy",
+                "topic_fr": "ay – oy – uy"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 28,
+          "title_ar": "الأسبوع الثامن والعشرون",
+          "title_fr": "Semaine 28",
+          "theme_fr": "Qu’est-ce que tu aimes manger ?",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": 10,
+              "kind": "lesson",
+              "component": "Vocabulaire",
+              "content": {
+                "topic_ar": "Des fruits – des légumes – la salade – la\nconfiture – un taxi – dix – soixante – le\nfromage – un boxeur – un klaxon – un\nxylophone – examiner",
+                "topic_fr": "Des fruits – des légumes – la salade – la\nconfiture – un taxi – dix – soixante – le\nfromage – un boxeur – un klaxon – un\nxylophone – examiner"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": 11,
+              "kind": "lesson",
+              "component": "Oral",
+              "content": {
+                "topic_ar": "• Qu’est-ce que tu aimes manger ?",
+                "topic_fr": "• Qu’est-ce que tu aimes manger ?"
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": 12,
+              "kind": "lesson",
+              "component": "Lecture et écriture",
+              "content": {
+                "topic_ar": "x – x",
+                "topic_fr": "x – x"
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 29,
+          "title_ar": "الأسبوع التاسع والعشرون",
+          "title_fr": "Semaine 29",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-review",
+              "content": {
+                "topic_ar": "Révision et rebrassage de la période 5",
+                "topic_fr": "Révision et rebrassage de la période 5"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 30,
+          "title_ar": "الأسبوع الثلاثون",
+          "title_fr": "Semaine 30",
+          "days": [
+            {
+              "dayKey": "lundi",
+              "label_ar": "الاثنين",
+              "label_fr": "Lundi",
+              "lessonNumber": null,
+              "kind": "stage-evaluation",
+              "content": {
+                "topic_ar": "Évaluation écrite, correction et soutien",
+                "topic_fr": "Évaluation écrite, correction et soutien"
+              }
+            },
+            {
+              "dayKey": "mardi",
+              "label_ar": "الثلاثاء",
+              "label_fr": "Mardi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "mercredi",
+              "label_ar": "الأربعاء",
+              "label_fr": "Mercredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "jeudi",
+              "label_ar": "الخميس",
+              "label_fr": "Jeudi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "vendredi",
+              "label_ar": "الجمعة",
+              "label_fr": "Vendredi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            },
+            {
+              "dayKey": "samedi",
+              "label_ar": "السبت",
+              "label_fr": "Samedi",
+              "lessonNumber": null,
+              "kind": "empty",
+              "content": {
+                "topic_ar": "",
+                "topic_fr": ""
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
