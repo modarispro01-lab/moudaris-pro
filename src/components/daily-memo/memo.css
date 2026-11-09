@@ -8,6 +8,7 @@
   --memo-navy: #123b5d;
   --memo-navy-dark: #0a2942;
   --memo-navy-light: #1b567c;
+  --memo-navy-text: #123b5d;
   --memo-teal: #0f766e;
   --memo-teal-text: #0f766e;
   --memo-teal-border: #bfe3dd;
@@ -26,7 +27,7 @@
   --memo-ink: #142b3f;
   --memo-text-2: #475569;
   --memo-muted: #64748b;
-  --memo-muted-text: #9aabb9;
+  --memo-muted-text: #5c6b7a; /* ≥4.5:1 خارج الوثيقة (كانت #9aabb9 = 2.4:1) */
   --memo-line: #dce5ee;
   --memo-line-strong: #bfd3e2;
   --memo-danger: #b91c1c;
@@ -36,10 +37,15 @@
   --memo-danger-strong: #7f1d1d;
   --memo-on-brand: #ffffff;
   --memo-on-gold: #24303b;
+  --memo-toolbar-bg: rgba(255, 255, 255, 0.94);
+  --memo-toolbar-border: rgba(220, 229, 238, 0.9);
+  --memo-note-bg: rgba(255, 255, 255, 0.7);
+  --memo-glow-gold: rgba(217, 164, 65, 0.08);
+  --memo-glow-navy: rgba(18, 59, 93, 0.06);
   --memo-shadow: 0 12px 36px rgba(18, 59, 93, 0.08);
   background:
-    radial-gradient(circle at 8% 3%, rgba(217, 164, 65, 0.08), transparent 26rem),
-    radial-gradient(circle at 94% 12%, rgba(18, 59, 93, 0.06), transparent 30rem),
+    radial-gradient(circle at 8% 3%, var(--memo-glow-gold), transparent 26rem),
+    radial-gradient(circle at 94% 12%, var(--memo-glow-navy), transparent 30rem),
     var(--memo-bg);
   color: var(--memo-ink);
   min-height: 100vh;
@@ -52,6 +58,7 @@
   --memo-navy: #2e5e86;
   --memo-navy-dark: #1c4262;
   --memo-navy-light: #3f7bab;
+  --memo-navy-text: #8ec2ea;
   --memo-teal: #1f7a6d;
   --memo-teal-text: #5eead4;
   --memo-teal-border: #245a52;
@@ -80,6 +87,11 @@
   --memo-danger-strong: #7f1d1d;
   --memo-on-brand: #ffffff;
   --memo-on-gold: #24303b;
+  --memo-toolbar-bg: rgba(22, 26, 34, 0.94);
+  --memo-toolbar-border: rgba(42, 48, 64, 0.9);
+  --memo-note-bg: rgba(22, 26, 34, 0.7);
+  --memo-glow-gold: rgba(217, 164, 65, 0.06);
+  --memo-glow-navy: rgba(142, 194, 234, 0.04);
   --memo-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
   color-scheme: dark;
 }
@@ -91,6 +103,7 @@
   --memo-navy: #123b5d;
   --memo-navy-dark: #0a2942;
   --memo-navy-light: #1b567c;
+  --memo-navy-text: #123b5d;
   --memo-teal: #0f766e;
   --memo-teal-text: #0f766e;
   --memo-teal-border: #bfe3dd;
@@ -303,7 +316,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 8px;
   font-weight: 800;
 }
@@ -402,8 +415,8 @@
   position: sticky;
   top: 0;
   z-index: 60;
-  background: rgba(255, 255, 255, 0.94);
-  border-bottom: 1px solid rgba(220, 229, 238, 0.9);
+  background: var(--memo-toolbar-bg);
+  border-bottom: 1px solid var(--memo-toolbar-border);
   box-shadow: 0 10px 30px rgba(18, 59, 93, 0.08);
   backdrop-filter: blur(14px);
 }
@@ -423,7 +436,7 @@
   align-items: center;
   gap: 7px;
   padding-bottom: 9px;
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
@@ -540,11 +553,11 @@
 .memo-session-chip:hover {
   border-color: var(--memo-line-strong);
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-session-chip.is-active {
-  border-color: var(--memo-navy);
+  border-color: var(--memo-navy-text);
   background: var(--memo-navy);
   color: var(--memo-on-brand);
   box-shadow: 0 5px 12px rgba(18, 59, 93, 0.18);
@@ -612,7 +625,7 @@
 .memo-level-chip.is-selected {
   border-color: var(--memo-line-strong);
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-level-chip.is-selected .memo-level-chip-mark {
@@ -621,7 +634,7 @@
 }
 
 .memo-level-chip.is-active {
-  border-color: var(--memo-navy);
+  border-color: var(--memo-navy-text);
   background: var(--memo-navy);
   color: var(--memo-on-brand);
   box-shadow: 0 5px 12px rgba(18, 59, 93, 0.18);
@@ -667,7 +680,7 @@
 
 .memo-group-level-name {
   min-width: 74px;
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 10px;
   font-weight: 800;
   white-space: nowrap;
@@ -701,7 +714,7 @@
 .memo-group-chip:hover {
   border-color: var(--memo-line-strong);
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-group-chip-mark {
@@ -719,7 +732,7 @@
 .memo-group-chip.is-selected {
   border-color: var(--memo-line-strong);
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-group-chip.is-selected .memo-group-chip-mark {
@@ -747,7 +760,7 @@
 .memo-group-add:hover {
   border-color: var(--memo-navy-light);
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-group-add-form {
@@ -788,7 +801,7 @@
 .memo-group-add-confirm {
   border-color: var(--memo-line-strong);
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-group-add-cancel {
@@ -856,7 +869,7 @@
 .memo-btn-ghost {
   background: var(--memo-card);
   border-color: var(--memo-line);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-btn-ghost:hover {
@@ -880,7 +893,7 @@
 
 .memo-icon-btn:hover:not(:disabled) {
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   border-color: var(--memo-line-strong);
 }
 
@@ -974,13 +987,13 @@
   border-radius: 10px;
   background: linear-gradient(145deg, var(--memo-soft), var(--memo-line));
   border: 1px solid var(--memo-line);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   flex-shrink: 0;
 }
 
 .memo-panel-title h2 {
   margin: 1px 0 3px;
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 16px;
   font-weight: 800;
   line-height: 1.3;
@@ -1167,7 +1180,7 @@
 
 .memo-lesson-title h3 {
   margin: 0;
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 13px;
   font-weight: 800;
   line-height: 1.3;
@@ -1236,7 +1249,7 @@
 }
 
 .memo-lesson-grid > .memo-field.memo-field-subject .memo-field-label {
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
 }
 
 .memo-lesson-grid > .memo-field.memo-field-subject select {
@@ -1346,7 +1359,7 @@
 }
 
 .memo-lesson-level-pill svg {
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
   flex-shrink: 0;
 }
 
@@ -1366,7 +1379,7 @@
   border: 1px solid var(--memo-teal-border);
   border-radius: 999px;
   background: var(--memo-teal-soft);
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
   font-size: 10px;
   font-weight: 800;
   white-space: nowrap;
@@ -1393,7 +1406,7 @@
   flex-shrink: 0;
   border-radius: 9px;
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-combined-note > div {
@@ -1403,7 +1416,7 @@
 .memo-combined-note b {
   display: block;
   margin-bottom: 2px;
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 11px;
   font-weight: 800;
 }
@@ -1442,13 +1455,13 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 11px;
   font-weight: 800;
 }
 
 .memo-exit-label svg {
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
 }
 
 .memo-exit-info strong {
@@ -1648,7 +1661,7 @@
   border: 1.5px dashed var(--memo-line);
   border-radius: 13px;
   background: var(--memo-card-2);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-family: inherit;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
@@ -1814,11 +1827,11 @@
 .memo-level-tab:hover {
   border-color: var(--memo-line-strong);
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-level-tab.is-active {
-  border-color: var(--memo-navy);
+  border-color: var(--memo-navy-text);
   background: var(--memo-navy);
   color: var(--memo-on-brand);
   box-shadow: 0 4px 10px rgba(18, 59, 93, 0.18);
@@ -1844,11 +1857,11 @@
 .memo-subject-tab:hover {
   border-color: var(--memo-teal-border);
   background: var(--memo-teal-soft);
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
 }
 
 .memo-subject-tab.is-active {
-  border-color: var(--memo-teal);
+  border-color: var(--memo-teal-text);
   background: var(--memo-teal);
   color: var(--memo-on-brand);
   box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
@@ -1882,7 +1895,7 @@
 }
 
 .memo-stage-current strong {
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 13px;
   font-weight: 800;
 }
@@ -1910,12 +1923,12 @@
 .memo-stage-pill:hover {
   background: var(--memo-soft);
   border-color: var(--memo-line);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
 }
 
 .memo-stage-pill.is-active {
   background: var(--memo-navy);
-  border-color: var(--memo-navy);
+  border-color: var(--memo-navy-text);
   color: var(--memo-on-brand);
   box-shadow: 0 5px 12px rgba(18, 59, 93, 0.2);
 }
@@ -1990,7 +2003,7 @@
 }
 
 .memo-day-row.is-active {
-  border-color: var(--memo-navy);
+  border-color: var(--memo-navy-text);
   background: var(--memo-soft);
   box-shadow: 0 0 0 2px rgba(18, 59, 93, 0.07);
 }
@@ -2021,7 +2034,7 @@
   height: 24px;
   border-radius: 7px;
   background: var(--memo-soft);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 10px;
   font-weight: 800;
   flex-shrink: 0;
@@ -2085,7 +2098,7 @@
   border: 0;
   border-inline-start: 1px solid var(--memo-line);
   background: var(--memo-card-2);
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   flex-shrink: 0;
@@ -2097,7 +2110,7 @@
 }
 
 .memo-day-add.is-added {
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
   background: var(--memo-teal-soft);
   cursor: default;
 }
@@ -2146,7 +2159,7 @@
 
 .memo-source-head h3 {
   margin: 1px 0 2px;
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 13px;
   font-weight: 800;
 }
@@ -2177,7 +2190,7 @@
 }
 
 .memo-source-stats b {
-  color: var(--memo-navy);
+  color: var(--memo-navy-text);
   font-size: 15px;
   line-height: 1.2;
 }
@@ -2271,7 +2284,7 @@
   padding: 13px 16px;
   border-radius: 13px;
   border: 1px solid var(--memo-line);
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--memo-note-bg);
   color: var(--memo-muted-text);
   font-size: 10.5px;
   line-height: 1.65;
@@ -2286,7 +2299,7 @@
 .memo-bottom-note svg {
   flex-shrink: 0;
   margin-top: 1px;
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
 }
 
 .memo-bottom-note p {
@@ -3488,9 +3501,9 @@
 }
 
 .memo-picker-day.is-active {
-  border-color: var(--memo-teal);
+  border-color: var(--memo-teal-text);
   background: var(--memo-teal-soft);
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
 }
 
 .memo-picker-date {
@@ -3520,8 +3533,8 @@
 }
 
 .memo-picker-saved-chip:hover {
-  border-color: var(--memo-teal);
-  color: var(--memo-teal);
+  border-color: var(--memo-teal-text);
+  color: var(--memo-teal-text);
 }
 
 .memo-picker-list {
@@ -3546,19 +3559,19 @@
 }
 
 .memo-picker-session.is-checked {
-  border-color: var(--memo-teal);
+  border-color: var(--memo-teal-text);
   background: var(--memo-teal-soft);
 }
 
 .memo-picker-session input[type="checkbox"] {
   margin-top: 3px;
-  accent-color: var(--memo-teal);
+  accent-color: var(--memo-teal-text);
 }
 
 .memo-picker-session-time {
   font-size: 12px;
   font-weight: 800;
-  color: var(--memo-teal);
+  color: var(--memo-teal-text);
   white-space: nowrap;
   direction: ltr;
 }

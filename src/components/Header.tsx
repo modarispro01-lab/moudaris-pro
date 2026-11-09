@@ -27,7 +27,7 @@ export default function Header() {
           <div className="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center font-extrabold text-lg">
             م
           </div>
-          <span className="text-lg sm:text-xl font-extrabold text-primary">
+          <span className="text-lg sm:text-xl font-extrabold text-primary-text">
             Modaris<span className="text-accent-text"> Pro</span>
           </span>
         </Link>

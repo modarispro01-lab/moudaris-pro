@@ -273,8 +273,39 @@ def scan():
     return rows
 
 
+def scan_with_context():
+    """مثل scan لكن يرفق أقرب محدد CSS لكل ورود."""
+    rows = []
+    selector = "(root)"
+    with open(PATH, encoding="utf-8") as f:
+        for i, line in enumerate(f, 1):
+            stripped = line.strip()
+            if "{" in stripped and not stripped.startswith("/*") and not DEF_RE.match(line):
+                sel = stripped.split("{")[0].strip()
+                if sel:
+                    selector = sel
+            if DEF_RE.match(line):
+                continue
+            for m in COLOR_RE.finditer(line):
+                raw = m.group(0)
+                before_prop = re.findall(r"([a-z-]+)\s*:", line[: m.start()])
+                prop = before_prop[-1] if before_prop else "?"
+                var, why = classify(raw, prop)
+                rows.append((i, prop, raw, var, why, selector[:70]))
+    return rows
+
+
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "report"
+    if mode == "context":
+        rows = scan_with_context()
+        exc = [r for r in rows if not r[3]]
+        with io.open("scripts/audit-memo-exceptions.md", "w", encoding="utf-8") as out:
+            out.write("# الاستثناءات الـ61 — مراجعة بالسياق\n\n| السطر | المحدد | الخاصية | القيمة | الحكم |\n|---|---|---|---|---|\n")
+            for i, prop, raw, var, why, sel in exc:
+                out.write(f"| {i} | `{sel}` | {prop} | `{raw}` | {why} |\n")
+        print(f"استثناءات: {len(exc)} — الجدول في scripts/audit-memo-exceptions.md")
+        return
     rows = scan()
     mapped = [r for r in rows if r[3]]
     unmapped = [r for r in rows if not r[3]]

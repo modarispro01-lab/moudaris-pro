@@ -4,7 +4,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary text-white py-10 mt-auto">
+    <footer className="bg-[#123b5d] text-white py-10 mt-auto">
       <div className="mx-auto max-w-7xl px-4 grid gap-8 md:grid-cols-4 text-center md:text-right">
         {/* العمود 1: الشعار والوصف */}
         <div>
