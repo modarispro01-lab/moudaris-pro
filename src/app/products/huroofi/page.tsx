@@ -89,7 +89,7 @@ export default function HuroofiProductPage() {
               <span className="text-white/90">{HUROOFI.name}</span>
             </nav>
             <h1 className="text-3xl font-extrabold text-white md:text-5xl">{HUROOFI.name}</h1>
-            <p className="mt-2 text-lg font-bold text-accent">{HUROOFI.latinName}</p>
+            <p className="mt-2 text-lg font-bold text-accent-text">{HUROOFI.latinName}</p>
             <p className="mt-4 max-w-xl leading-relaxed text-white/80">{HUROOFI.summary}</p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm font-bold text-white">
               <span className="rounded-full bg-white/10 px-4 py-1.5">{HUROOFI.ageLabel}</span>
@@ -123,7 +123,7 @@ export default function HuroofiProductPage() {
               <div className="rounded-2xl border border-border bg-surface p-6">
                 <p className="leading-relaxed text-text">{HUROOFI.teacherNote}</p>
                 <div className="mt-4 flex gap-3 rounded-xl border border-accent/30 bg-accent/5 p-4">
-                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-accent-text" />
                   <p className="text-sm font-bold leading-relaxed text-text">{HUROOFI.notAnApp}</p>
                 </div>
               </div>

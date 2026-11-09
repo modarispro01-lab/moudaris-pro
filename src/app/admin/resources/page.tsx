@@ -25,7 +25,7 @@ export default async function AdminResourcesPage() {
       {/* ===== قسم إضافة مورد جديد ===== */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <h2 className="text-lg font-bold text-text mb-4 flex items-center gap-2">
-          <Plus className="w-5 h-5 text-accent" />
+          <Plus className="w-5 h-5 text-accent-text" />
           إضافة مورد جديد
         </h2>
         

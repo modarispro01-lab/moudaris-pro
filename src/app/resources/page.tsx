@@ -174,7 +174,7 @@ export default async function ResourcesPage({
                   <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full">
                     {resource.level.name}
                   </span>
-                  <span className="bg-accent/10 text-accent text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                  <span className="bg-accent/10 text-accent-text text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                     <Download className="w-3 h-3" /> {resource.downloads}
                   </span>
                 </div>

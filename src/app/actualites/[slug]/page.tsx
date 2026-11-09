@@ -108,7 +108,7 @@ export default async function ArticlePage({
         {relatedArticles.length > 0 && (
           <section className="mt-12">
             <h2 className="text-xl font-extrabold text-text mb-6 flex items-center gap-2">
-              <Tag className="w-5 h-5 text-accent" />
+              <Tag className="w-5 h-5 text-accent-text" />
               أخبار أخرى في نفس التصنيف
             </h2>
             <div className="grid gap-5 md:grid-cols-3">

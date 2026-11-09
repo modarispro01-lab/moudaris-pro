@@ -18,7 +18,7 @@ export default function Header() {
             م
           </div>
           <span className="text-xl font-extrabold text-primary">
-            Moudaris<span className="text-accent">Pro</span>
+            Moudaris<span className="text-accent-text">Pro</span>
           </span>
         </Link>
 

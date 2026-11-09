@@ -72,14 +72,28 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  other: {
+    "color-scheme": "light dark",
+  },
 };
+
+/* سكربت الثيم المانع للوميض: يُنفَّذ قبل أول رسم ويضع data-theme على
+   <html> (اختيار محفوظ في localStorage، وإلا يتبع prefers-color-scheme).
+   يوضع في <head> يدويًا: قياسًا فعليًا، قبلInteractive في Next 16/Turbopack
+   يؤجل التنفيذ إلى طابور __next_s بعد أول رسم (وميض)، بينما السكربت
+   المضمّن في <head> حاجب ويُنفَّذ قبل أول رسم. */
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem("theme")}catch(e){}if(t!=="dark"&&t!=="light"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.dataset.theme=t})();`;
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="min-h-screen flex flex-col antialiased">
+        {/* سكربت منع الوميض انتقل إلى <head> أعلاه */}
         {/* ===== البيانات المنظمة JSON-LD (تُقرأ في كل الصفحات) ===== */}
         <JsonLd />
 

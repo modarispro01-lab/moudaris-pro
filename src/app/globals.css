@@ -1,24 +1,164 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --color-background: #F8FAFC;
-  --color-surface: #FFFFFF;
-  --color-primary: #123B5D;
-  --color-secondary: #0F766E;
-  --color-accent: #F59E0B;
-  --color-text: #172033;
-  --color-muted: #64748B;
-  --color-border: #E2E8F0;
+/* ============================================================
+   نظام الثيم — متغيرات وقت التشغيل (فاتح على :root / داكن على
+   [data-theme="dark"]). رموز Tailwind في @theme inline تشير إليها
+   فتنقلب الألوان فور تغيّر السمة دون إعادة تحميل.
+   ============================================================ */
+:root {
+  --bg: #f8fafc;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f0f4f8;
+  --text: #172033;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  /* --primary للخلفيات والأزرار؛ --primary-text للنصوص والروابط
+     (قيمة أفتح في الداكن)؛ --on-primary نص ثابت فوق primary */
+  --primary: #123b5d;
+  --primary-text: #123b5d;
+  --on-primary: #ffffff;
+  /* نص داكن ثابت فوق الكهرماني (accent) — يعمل بالوضعين */
+  --on-accent: #172033;
+  /* accent كنص/أيقونة: أغمق في الفاتح لتباين ≥4.5:1، والفاتح نفسه في الداكن */
+  --accent-text: #b45309;
+  --secondary: #0f766e;
+  --accent: #f59e0b;
+  --success: #27ae60;
+  --warning: #f39c12;
+  --danger: #c0392b;
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --input-bg: #fafbfc;
+  --table-header-bg: #eaf2f8;
+  --table-row-alt: #f8fafc;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0f1115;
+  --bg-elevated: #151824;
+  --surface: #161a22;
+  --surface-2: #1c2130;
+  --text: #e6e8ec;
+  --text-muted: #9aa3b2;
+  --border: #2a3040;
+  --primary: #2e5e86;
+  --primary-text: #8ec2ea;
+  --on-primary: #ffffff;
+  --on-accent: #172033;
+  --accent-text: #fbbf24;
+  --secondary: #2aa198;
+  --accent: #fbbf24;
+  --success: #2ecc71;
+  --warning: #fbbf24;
+  --danger: #e74c3c;
+  /* في الداكن تُستبدل الظلال القاتمة بحدود خفيفة */
+  --shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --input-bg: #141822;
+  --table-header-bg: #1a1f2a;
+  --table-row-alt: #14181f;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-surface: var(--surface);
+  --color-primary: var(--primary);
+  --color-primary-text: var(--primary-text);
+  --color-on-primary: var(--on-primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-border: var(--border);
 
   --font-sans: "Tajawal", sans-serif;
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-text);
+  background-color: var(--bg);
+  color: var(--text);
   font-family: var(--font-sans);
   direction: rtl;
+}
+
+/* line-height ≥1.7 للعربي — على الشاشة فقط؛ مناطق الوثائق المطبوعة
+   تستثنى صراحة كي لا يتغير ترقيم صفحات A4 */
+@media screen {
+  body {
+    line-height: 1.7;
+  }
+}
+
+/* انتقال قصير بين الثيمين — يُعطَّل لمن يفضّل تقليل الحركة.
+   العناصر ذات انتقالات أعلى خصوصية (مثل .edt-tab) تحتفظ بقواعدها */
+@media screen and (prefers-reduced-motion: no-preference) {
+  *,
+  ::before,
+  ::after {
+    transition-property: background-color, color, border-color, fill, stroke;
+    transition-duration: 180ms;
+    transition-timing-function: ease;
+  }
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+[data-theme="dark"] ::selection {
+  background: var(--primary-text);
+  color: var(--bg);
+}
+
+/* شريط التمرير */
+@media screen {
+  * {
+    scrollbar-color: var(--border) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+}
+
+/* مؤشر تركيز موحّد للوحة المفاتيح */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* زر تبديل الثيم */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--primary-text);
+  cursor: pointer;
+}
+.theme-toggle:hover {
+  background: var(--surface-2);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ============================================================
@@ -96,18 +236,52 @@ body {
     break-inside: avoid;
     page-break-inside: avoid;
   }
+
+  /* الطباعة فاتحة دائمًا بغض النظر عن الثيم: إعادة تثبيت متغيرات
+     الثيم على قيمها الفاتحة داخل السياق المطبوع (ألوان فقط، بلا
+     أي خصائص تخطيط) */
+  :root,
+  [data-theme="dark"] {
+    --bg: #ffffff;
+    --bg-elevated: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f0f4f8;
+    --text: #172033;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --primary: #123b5d;
+    --primary-text: #123b5d;
+    --on-primary: #ffffff;
+    --on-accent: #172033;
+    --accent-text: #b45309;
+    --secondary: #0f766e;
+    --accent: #f59e0b;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #c0392b;
+    --shadow: none;
+    --input-bg: #ffffff;
+    --table-header-bg: #eaf2f8;
+    --table-row-alt: #f8fafc;
+  }
+  [data-theme="dark"],
+  [data-theme="light"] {
+    color-scheme: light;
+  }
 }
 
 /* ============================================================
    محرّر استعمال الزمن — نظام بصري موحّد (كباقي أدوات الموقع)
    ============================================================ */
 .tt-editor {
-  --edt-primary: #123B5D;
+  --edt-primary: #123b5d;
   --edt-primary-light: #1a5576;
   --edt-primary-dark: #0a2a44;
-  --edt-secondary: #0F766E;
+  --edt-primary-text: #123b5d;
+  --edt-on-primary: #ffffff;
+  --edt-secondary: #0f766e;
   --edt-secondary-light: #148f77;
-  --edt-accent: #F59E0B;
+  --edt-accent: #f59e0b;
   --edt-accent-light: #fbbf24;
   --edt-gold: #f39c12;
   --edt-bg: #f0f4f8;
@@ -115,8 +289,55 @@ body {
   --edt-border: #dce1e8;
   --edt-text: #2c3e50;
   --edt-muted: #7f8c8d;
+  --edt-soft: #eaf2f8;
+  --edt-input-bg: #fafbfc;
+  --edt-secondary-soft: #e6f4f1;
+  --edt-secondary-softer: #d3ebe6;
+  --edt-danger: #c0392b;
+  --edt-danger-soft: #f5b7b1;
+  --edt-danger-softer: #fdedec;
+  --edt-warn-soft: #fef9e7;
+  --edt-warn-bg: #fdebd0;
+  --edt-warn-border: #f5cba7;
+  --edt-ring: rgba(18, 59, 93, 0.15);
+  --edt-focus-ring: rgba(41, 128, 185, 0.1);
   --edt-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   --edt-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* الوضع الداكن: قلب لوحة المحرّر بقلب متغيراته المحلية فقط.
+   ملاحظة: التدرجات في .edt-hero تقلب معها (ظلال ألوان زخرفية
+   أُبفكت كما هي لأنها تظهر بلا ضرر على الداكن) */
+[data-theme="dark"] .tt-editor {
+  --edt-primary: #2e5e86;
+  --edt-primary-light: #3f7bab;
+  --edt-primary-dark: #1c4262;
+  --edt-primary-text: #8ec2ea;
+  --edt-on-primary: #ffffff;
+  --edt-secondary: #2aa198;
+  --edt-secondary-light: #35b5a7;
+  --edt-accent: #fbbf24;
+  --edt-accent-light: #fcd34d;
+  --edt-gold: #fbbf24;
+  --edt-bg: #10141c;
+  --edt-card: #161a22;
+  --edt-border: #2a3040;
+  --edt-text: #e6e8ec;
+  --edt-muted: #9aa3b2;
+  --edt-soft: #1c2735;
+  --edt-input-bg: #10141c;
+  --edt-secondary-soft: #122b28;
+  --edt-secondary-softer: #17403b;
+  --edt-danger: #e74c3c;
+  --edt-danger-soft: #5a2a28;
+  --edt-danger-softer: #2a1517;
+  --edt-warn-soft: #2a2413;
+  --edt-warn-bg: #332a16;
+  --edt-warn-border: #5a4a28;
+  --edt-ring: rgba(142, 194, 234, 0.25);
+  --edt-focus-ring: rgba(142, 194, 234, 0.2);
+  --edt-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --edt-shadow-lg: 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 /* ===== ترويسة التطبيق ===== */
@@ -129,7 +350,7 @@ body {
     var(--edt-primary) 50%,
     var(--edt-primary-light) 100%
   );
-  color: #fff;
+  color: var(--edt-on-primary);
   text-align: center;
   padding: 25px 20px;
   box-shadow: 0 4px 30px rgba(18, 59, 93, 0.3);
@@ -194,7 +415,7 @@ body {
   justify-content: center;
   gap: 5px;
   padding: 12px 20px;
-  background: #fff;
+  background: var(--bg-elevated);
   box-shadow: var(--edt-shadow);
 }
 .tt-editor .edt-tab {
@@ -204,7 +425,7 @@ body {
   padding: 10px 24px;
   border: 2px solid var(--edt-border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--edt-card);
   color: var(--edt-text);
   font-weight: 600;
   font-size: 0.95em;
@@ -213,8 +434,8 @@ body {
 }
 .tt-editor .edt-tab:hover {
   border-color: var(--edt-primary-light);
-  color: var(--edt-primary);
-  background: #eaf2f8;
+  color: var(--edt-primary-text);
+  background: var(--edt-soft);
 }
 .tt-editor .edt-tab .tab-icon {
   display: inline-flex;
@@ -222,7 +443,7 @@ body {
 }
 .tt-editor .edt-tab.is-active {
   background: var(--edt-primary);
-  color: #fff;
+  color: var(--edt-on-primary);
   border-color: var(--edt-primary);
   box-shadow: 0 4px 15px rgba(18, 59, 93, 0.3);
 }
@@ -251,7 +472,7 @@ body {
   margin-bottom: 20px;
   padding-bottom: 12px;
   border-bottom: 3px solid var(--edt-primary-light);
-  color: var(--edt-primary);
+  color: var(--edt-primary-text);
   font-size: 1.2em;
   font-weight: 700;
 }
@@ -270,27 +491,28 @@ body {
   padding: 12px 16px;
   border: 2px solid var(--edt-border);
   border-radius: 10px;
-  background: #fafbfc;
+  background: var(--edt-input-bg);
   color: var(--edt-text);
   font-size: 0.95em;
   outline: none;
   transition: all 0.3s ease;
 }
 .tt-editor .edt-input::placeholder {
-  color: #bdc3c7;
+  color: var(--edt-muted);
+  opacity: 0.75;
 }
 .tt-editor .edt-input:focus,
 .tt-editor .edt-select:focus {
   border-color: var(--edt-primary-light);
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.1);
+  background: var(--edt-card);
+  box-shadow: 0 0 0 4px var(--edt-focus-ring);
 }
 .tt-editor .edt-input.edt-time {
   font-size: 1.1em;
   font-weight: 700;
   text-align: center;
   letter-spacing: 1px;
-  color: var(--edt-primary-dark);
+  color: var(--edt-primary-text);
 }
 .tt-editor .edt-input.edt-w-auto {
   width: auto;
@@ -302,26 +524,26 @@ body {
   padding: 7px;
   border: 2px solid var(--edt-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--edt-card);
   color: var(--edt-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .tt-editor .edt-icon-btn:not(:disabled):hover {
   border-color: var(--edt-primary-light);
-  color: var(--edt-primary);
-  background: #eaf2f8;
+  color: var(--edt-primary-text);
+  background: var(--edt-soft);
 }
 .tt-editor .edt-icon-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
 .tt-editor .edt-icon-btn.is-danger {
-  border-color: #f5b7b1;
-  color: #c0392b;
+  border-color: var(--edt-danger-soft);
+  color: var(--edt-danger);
 }
 .tt-editor .edt-icon-btn.is-danger:not(:disabled):hover {
-  background: #fdedec;
+  background: var(--edt-danger-softer);
 }
 
 /* ===== الأزرار ===== */
@@ -343,7 +565,7 @@ body {
 }
 .tt-editor .edt-btn-primary {
   background: linear-gradient(135deg, var(--edt-primary), var(--edt-primary-light));
-  color: #fff;
+  color: var(--edt-on-primary);
   box-shadow: 0 4px 15px rgba(18, 59, 93, 0.3);
 }
 .tt-editor .edt-btn-primary:not(:disabled):hover {
@@ -351,8 +573,8 @@ body {
   box-shadow: 0 6px 25px rgba(18, 59, 93, 0.4);
 }
 .tt-editor .edt-btn-success {
-  background: linear-gradient(135deg, #27ae60, #2ecc71);
-  color: #fff;
+  background: linear-gradient(135deg, #1e8e5a, #27ae60);
+  color: var(--edt-on-primary);
   box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
 }
 .tt-editor .edt-btn-success:not(:disabled):hover {
@@ -361,29 +583,29 @@ body {
 }
 .tt-editor .edt-btn-danger {
   background: linear-gradient(135deg, var(--edt-accent), var(--edt-accent-light));
-  color: #fff;
+  color: var(--on-accent);
 }
 .tt-editor .edt-btn-danger:not(:disabled):hover {
   transform: translateY(-2px);
 }
 .tt-editor .edt-btn-danger-outline {
   background: transparent;
-  border: 2px solid #e74c3c;
-  color: #c0392b;
+  border: 2px solid var(--edt-danger);
+  color: var(--edt-danger);
 }
 .tt-editor .edt-btn-danger-outline:not(:disabled):hover {
-  background: #fdedec;
+  background: var(--edt-danger-softer);
 }
 .tt-editor .edt-btn-soft {
-  background: #e6f4f1;
+  background: var(--edt-secondary-soft);
   border: 2px solid transparent;
   color: var(--edt-secondary);
 }
 .tt-editor .edt-btn-soft:not(:disabled):hover {
-  background: #d3ebe6;
+  background: var(--edt-secondary-softer);
 }
 .tt-editor .edt-tpl {
-  background: #fff;
+  background: var(--edt-card);
   border: 2px solid var(--edt-border);
   border-radius: 14px;
   padding: 12px;
@@ -398,16 +620,16 @@ body {
 }
 .tt-editor .edt-tpl.is-on {
   border-color: var(--edt-primary);
-  box-shadow: 0 0 0 3px rgba(18, 59, 93, 0.15);
+  box-shadow: 0 0 0 3px var(--edt-ring);
 }
 .tt-editor .edt-btn-outline {
   background: transparent;
   border: 2px solid var(--edt-primary);
-  color: var(--edt-primary);
+  color: var(--edt-primary-text);
 }
 .tt-editor .edt-btn-outline:not(:disabled):hover {
   background: var(--edt-primary);
-  color: #fff;
+  color: var(--edt-on-primary);
 }
 .tt-editor .edt-btn-sm {
   padding: 6px 14px;
@@ -424,7 +646,7 @@ body {
   padding: 10px 14px;
   border: 2px solid var(--edt-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--edt-card);
   color: var(--edt-text);
   font-size: 0.9em;
   font-weight: 600;
@@ -434,12 +656,12 @@ body {
 }
 .tt-editor .edt-chip:hover {
   border-color: var(--edt-primary-light);
-  background: #eaf2f8;
+  background: var(--edt-soft);
   transform: translateY(-1px);
 }
 .tt-editor .edt-chip.is-on {
   background: linear-gradient(135deg, var(--edt-primary), var(--edt-primary-light));
-  color: #fff;
+  color: var(--edt-on-primary);
   border-color: var(--edt-primary);
   box-shadow: 0 3px 10px rgba(18, 59, 93, 0.25);
 }
@@ -457,18 +679,18 @@ body {
 }
 .tt-editor .edt-pill-lesson {
   background: linear-gradient(135deg, var(--edt-secondary), var(--edt-secondary-light));
-  color: #fff;
+  color: var(--edt-on-primary);
 }
 .tt-editor .edt-pill-break {
   background: linear-gradient(135deg, var(--edt-accent), var(--edt-accent-light));
-  color: #fff;
+  color: var(--on-accent);
 }
 
 /* ===== صفوف الجدول داخل المحرّر ===== */
 .tt-editor .edt-period {
   border: 1px solid var(--edt-border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--edt-card);
   padding: 12px;
   transition: all 0.2s ease;
 }
@@ -476,12 +698,12 @@ body {
   box-shadow: var(--edt-shadow);
 }
 .tt-editor .edt-period.is-break {
-  background: linear-gradient(135deg, #fef9e7, #fdebd0);
-  border-color: #f5cba7;
+  background: linear-gradient(135deg, var(--edt-warn-soft), var(--edt-warn-bg));
+  border-color: var(--edt-warn-border);
 }
 .tt-editor .edt-period.is-warn {
   border-color: var(--edt-accent);
-  background: #fef9e7;
+  background: var(--edt-warn-soft);
 }
 
 /* ===== حركة ظهور الخطوة ===== */

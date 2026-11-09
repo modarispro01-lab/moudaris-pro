@@ -111,7 +111,7 @@ export default async function ResourcePage({
               <BookOpen className="w-3 h-3" />
               {resource.subject.name}
             </span>
-            <span className="bg-accent/10 text-accent text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+            <span className="bg-accent/10 text-accent-text text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
               <FileText className="w-3 h-3" />
               .{resource.fileType.toLowerCase()}
             </span>
@@ -199,7 +199,7 @@ export default async function ResourcePage({
         {/* ===== قسم "موارد مشابهة" ===== */}
         <div className="bg-surface rounded-2xl border border-border p-6">
           <h2 className="text-lg font-extrabold text-text mb-4 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-accent" />
+            <BookOpen className="w-5 h-5 text-accent-text" />
             موارد أخرى في نفس المستوى
           </h2>
           <SimilarResources

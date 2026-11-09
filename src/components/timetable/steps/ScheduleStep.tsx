@@ -169,7 +169,7 @@ export default function ScheduleStep() {
                     )}
                     style={{
                       backgroundImage: `conic-gradient(${
-                        active ? "#fff" : "var(--color-primary)"
+                        active ? "#fff" : "var(--primary)"
                       } ${dayFillRatio(state, d) * 360}deg, transparent 0)`,
                     }}
                   />

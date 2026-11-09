@@ -6,14 +6,14 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 grid gap-8 md:grid-cols-3 text-center md:text-right">
         <div>
           <h3 className="text-xl font-extrabold mb-3">
-            Moudaris<span className="text-accent">Pro</span>
+            Moudaris<span className="text-accent-text">Pro</span>
           </h3>
           <p className="text-sm leading-relaxed text-white/70">
             كل أدوات الأستاذ في مكان واحد: موارد تعليمية، أدوات رقمية، وثائق جاهزة ومستجدات تربوية.
           </p>
         </div>
         <div>
-          <h4 className="font-bold mb-3 text-accent">روابط سريعة</h4>
+          <h4 className="font-bold mb-3 text-accent-text">روابط سريعة</h4>
           <ul className="space-y-2 text-sm text-white/70">
             <li><Link href="/resources" className="hover:text-white transition-colors">الموارد التعليمية</Link></li>
             <li><Link href="/tools" className="hover:text-white transition-colors">أدوات الأستاذ</Link></li>
@@ -21,7 +21,7 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="font-bold mb-3 text-accent">تواصل معنا</h4>
+          <h4 className="font-bold mb-3 text-accent-text">تواصل معنا</h4>
           <p className="text-sm text-white/70">support@moudarispro.ma</p>
         </div>
       </div>

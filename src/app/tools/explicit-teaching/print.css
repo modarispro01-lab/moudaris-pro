@@ -12,7 +12,7 @@
 
   html,
   body {
-    background: var(--color-surface, #fff) !important;
+    background: var(--surface, #fff) !important;
   }
 
   body {

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Search, Menu, X, User } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const links = [
   { href: "/", label: "الرئيسية" },
@@ -23,11 +24,11 @@ export default function Header() {
           className="flex items-center gap-2 shrink-0"
           onClick={() => setOpen(false)}
         >
-          <div className="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center font-extrabold text-lg">
+          <div className="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center font-extrabold text-lg">
             م
           </div>
           <span className="text-lg sm:text-xl font-extrabold text-primary">
-            Modaris<span className="text-accent"> Pro</span>
+            Modaris<span className="text-accent-text"> Pro</span>
           </span>
         </Link>
 
@@ -52,9 +53,11 @@ export default function Header() {
             <Search className="w-5 h-5 text-muted" />
           </Link>
 
+          <ThemeToggle />
+
           <Link
             href="/login"
-            className="hidden sm:flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-secondary"
+            className="hidden sm:flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-on-primary hover:bg-secondary"
           >
             <User className="w-4 h-4" />
             دخول الأستاذ
@@ -93,7 +96,7 @@ export default function Header() {
             <Link
               href="/login"
               onClick={() => setOpen(false)}
-              className="my-3 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white"
+              className="my-3 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-on-primary"
             >
               <User className="w-4 h-4" />
               دخول الأستاذ

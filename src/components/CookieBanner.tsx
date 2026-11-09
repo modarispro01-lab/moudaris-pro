@@ -48,7 +48,7 @@ export default function CookieBanner() {
           وعرض الإعلانات (Google AdSense) وتحسين تجربتك. بمتابعتك التصفح فأنت توافق على{" "}
           <Link
             href="/privacy-policy"
-            className="underline font-bold text-accent hover:text-white"
+            className="underline font-bold text-accent-text hover:text-white"
           >
             سياسة الخصوصية
           </Link>

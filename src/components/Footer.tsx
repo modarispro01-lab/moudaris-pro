@@ -9,7 +9,7 @@ export default function Footer() {
         {/* العمود 1: الشعار والوصف */}
         <div>
           <h3 className="text-xl font-extrabold mb-3">
-            Modaris<span className="text-accent"> Pro</span>
+            Modaris<span className="text-accent-text"> Pro</span>
           </h3>
           <p className="text-sm leading-relaxed text-white/70">
             كل أدوات الأستاذ المغربي في مكان واحد — موارد، مذكرات، وأدوات الدعم المكثف.
@@ -18,7 +18,7 @@ export default function Footer() {
 
         {/* العمود 2: روابط سريعة */}
         <div>
-          <h4 className="font-bold mb-3 text-accent">روابط سريعة</h4>
+          <h4 className="font-bold mb-3 text-accent-text">روابط سريعة</h4>
           <ul className="space-y-2 text-sm text-white/70">
             <li>
               <Link href="/tools/daily-lesson-plan" className="hover:text-white transition-colors">
@@ -50,7 +50,7 @@ export default function Footer() {
 
         {/* العمود 3: روابط قانونية (شرط أدسنس) */}
         <div>
-          <h4 className="font-bold mb-3 text-accent">معلومات قانونية</h4>
+          <h4 className="font-bold mb-3 text-accent-text">معلومات قانونية</h4>
           <ul className="space-y-2 text-sm text-white/70">
             <li>
               <Link href="/about" className="hover:text-white transition-colors">
@@ -77,7 +77,7 @@ export default function Footer() {
 
         {/* العمود 4: تواصل */}
         <div>
-          <h4 className="font-bold mb-3 text-accent">تواصل معنا</h4>
+          <h4 className="font-bold mb-3 text-accent-text">تواصل معنا</h4>
           <ul className="space-y-2 text-sm text-white/70">
             <li dir="ltr" className="text-right">
               <a href="mailto:contact@modarispro.com" className="hover:text-white transition-colors">

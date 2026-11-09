@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className="w-64 bg-primary text-white flex-col shadow-xl flex">
         <div className="p-6 border-b border-white/10">
           <h2 className="text-xl font-extrabold flex items-center gap-2">
-            <span className="text-accent">Moudaris</span>Pro
+            <span className="text-accent-text">Moudaris</span>Pro
             <span className="text-xs bg-accent text-primary px-2 py-0.5 rounded-full">Admin</span>
           </h2>
         </div>
