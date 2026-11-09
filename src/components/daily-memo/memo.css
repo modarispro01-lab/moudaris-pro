@@ -99,7 +99,8 @@
 /* عزل الوثيقة: ورقة A4 (المعاينة المرئية وبوابة الطباعة) تبقى فاتحة
    دائمًا في الشاشة والطباعة بإعادة تثبيت المتغيرات على عنصر الوثيقة نفسه */
 .memo-print-portal,
-.memo-sheet {
+.memo-sheet,
+.memo-art-sheet {
   --memo-navy: #123b5d;
   --memo-navy-dark: #0a2942;
   --memo-navy-light: #1b567c;

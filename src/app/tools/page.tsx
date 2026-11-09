@@ -148,7 +148,7 @@ export default function ToolsPage() {
       {/* ===== الهيدر ===== */}
       <section className="bg-primary py-12">
         <div className="mx-auto max-w-7xl px-4 text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-on-primary mb-3">
             أدوات الأستاذ الرقمية
           </h1>
           <p className="text-white/80 text-base">
@@ -197,7 +197,7 @@ export default function ToolsPage() {
                 <Link href={`/tools/${tool.id}`} className="absolute inset-0 z-10" />
               ) : null}
               
-              <div className={`w-12 h-12 rounded-xl ${tool.color} text-white flex items-center justify-center mb-4`}>
+              <div className={`w-12 h-12 rounded-xl ${tool.color} text-on-primary flex items-center justify-center mb-4`}>
                 <tool.icon className="w-6 h-6" />
               </div>
               
@@ -215,7 +215,7 @@ export default function ToolsPage() {
               <p className="text-sm text-muted mb-4">{tool.description}</p>
               
               {tool.status === 'متاح الآن' && (
-                <div className="flex items-center gap-1 text-sm font-bold text-primary group-hover:gap-2 transition-all">
+                <div className="flex items-center gap-1 text-sm font-bold text-primary-text group-hover:gap-2 transition-all">
                   استخدم الأداة <ArrowRight className="w-4 h-4 rotate-180" />
                 </div>
               )}

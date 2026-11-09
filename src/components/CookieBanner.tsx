@@ -40,15 +40,15 @@ export default function CookieBanner() {
       dir="rtl"
       role="dialog"
       aria-label="إشعار ملفات تعريف الارتباط"
-      className="fixed bottom-0 inset-x-0 z-50 bg-primary/95 backdrop-blur text-white border-t-4 border-accent shadow-2xl"
+      className="fixed bottom-0 inset-x-0 z-50 bg-primary/95 backdrop-blur text-on-primary border-t-4 border-accent shadow-2xl"
     >
       <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center gap-3 md:gap-6">
-        <p className="text-sm leading-relaxed flex-1 text-white/90">
+        <p className="text-sm leading-relaxed flex-1 text-on-primary/90">
           🍪 نستخدم ملفات تعريف الارتباط وتقنيات مشابهة لأغراض التحليل (Google Analytics)
           وعرض الإعلانات (Google AdSense) وتحسين تجربتك. بمتابعتك التصفح فأنت توافق على{" "}
           <Link
             href="/privacy-policy"
-            className="underline font-bold text-accent-text hover:text-white"
+            className="underline font-bold text-accent-text hover:text-on-primary"
           >
             سياسة الخصوصية
           </Link>
@@ -56,7 +56,7 @@ export default function CookieBanner() {
         </p>
         <button
           onClick={accept}
-          className="shrink-0 bg-accent text-primary font-extrabold px-6 py-2.5 rounded-xl hover:brightness-110 transition"
+          className="shrink-0 bg-accent text-primary-text font-extrabold px-6 py-2.5 rounded-xl hover:brightness-110 transition"
         >
           موافق ✓
         </button>

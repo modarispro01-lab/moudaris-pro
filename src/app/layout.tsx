@@ -89,17 +89,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
-      {/* suppressHydrationWarning على <head> والسكربت: امتدادات المتصفح
-          (مثل popups-script.js) تحقن عقدًا في <head> قبل التميؤ فيظهر
-          اختلاف خادم/عميل لا علاقة له بالتطبيق */}
-      <head suppressHydrationWarning>
-        <script
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
-        />
-      </head>
-      <body className="min-h-screen flex flex-col antialiased">
-        {/* سكربت منع الوميض انتقل إلى <head> أعلاه */}
+      <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
+        {/* سكربت الثيم عبر beforeInteractive (الطريقة المعتمدة في Next) —
+            قياس فعلي أدناه يحدد إن كان التنفيذ يسبق أول رسم */}
+        <script>{THEME_INIT_SCRIPT}</script>
         {/* ===== البيانات المنظمة JSON-LD (تُقرأ في كل الصفحات) ===== */}
         <JsonLd />
 

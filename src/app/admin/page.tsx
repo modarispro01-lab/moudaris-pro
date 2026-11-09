@@ -34,12 +34,12 @@ export default async function AdminDashboard() {
       {/* شبكة الإحصائيات */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat) => (
-          <div key={stat.title} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-xl ${stat.color} text-white flex items-center justify-center`}>
+          <div key={stat.title} className="bg-surface p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl ${stat.color} text-on-primary flex items-center justify-center`}>
               <stat.icon className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm text-slate-500 font-bold">{stat.title}</p>
+              <p className="text-sm text-muted font-bold">{stat.title}</p>
               <p className="text-2xl font-extrabold text-text">{stat.value}</p>
             </div>
           </div>
@@ -47,13 +47,13 @@ export default async function AdminDashboard() {
       </div>
 
       {/* قسم سريع للإجراءات */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="bg-surface p-6 rounded-2xl border border-slate-200 shadow-sm">
         <h2 className="text-lg font-extrabold text-text mb-4">إجراءات سريعة</h2>
         <div className="flex gap-4">
-          <a href="/admin/resources" className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
+          <a href="/admin/resources" className="px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
             + إضافة مورد جديد
           </a>
-          <a href="/admin/articles" className="px-4 py-2 bg-surface border border-border text-text rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors">
+          <a href="/admin/articles" className="px-4 py-2 bg-surface border border-border text-text rounded-lg text-sm font-bold hover:bg-surface-2 transition-colors">
             + نشر خبر جديد
           </a>
         </div>

@@ -81,7 +81,7 @@ export default function InfoStep() {
       {/* ===== معلومات الأستاذ ===== */}
       <section className="edt-card">
         <h2 className="edt-card-title">
-          <User className="h-4 w-4 text-primary" /> معلومات الأستاذ(ة)
+          <User className="h-4 w-4 text-primary-text" /> معلومات الأستاذ(ة)
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="اسم الأستاذ(ة)">
@@ -110,7 +110,7 @@ export default function InfoStep() {
             <Layers className="h-4 w-4" /> المستويات الدراسية والأفواج
           </h2>
           {levels.length > 0 && (
-            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary">
+            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary-text">
               {levels.length} مستوى ·{" "}
               {levels.reduce((n, l) => n + l.groups.length, 0)} فوج
             </span>
@@ -157,7 +157,7 @@ export default function InfoStep() {
                 className="rounded-xl border border-border bg-background p-3.5"
               >
                 <div className="flex items-start gap-2">
-                  <span className="mt-2.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-extrabold text-primary">
+                  <span className="mt-2.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-extrabold text-primary-text">
                     {i + 1}
                   </span>
                   <input
@@ -218,7 +218,7 @@ export default function InfoStep() {
                       type="button"
                       onClick={() => addGroup(lv.id, g)}
                       title={`إضافة فوج ${g}`}
-                      className="rounded-lg border border-border px-2 py-1.5 text-[11px] font-bold text-muted transition-colors hover:border-primary hover:text-primary"
+                      className="rounded-lg border border-border px-2 py-1.5 text-[11px] font-bold text-muted transition-colors hover:border-primary hover:text-primary-text"
                     >
                       {g}
                     </button>
@@ -247,7 +247,7 @@ export default function InfoStep() {
       {/* ===== المؤسسة والموسم ===== */}
       <section className="edt-card">
         <h2 className="edt-card-title">
-          <Building2 className="h-4 w-4 text-primary" /> المؤسسة والموسم
+          <Building2 className="h-4 w-4 text-primary-text" /> المؤسسة والموسم
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="الأكاديمية الجهوية للتربية والتكوين">

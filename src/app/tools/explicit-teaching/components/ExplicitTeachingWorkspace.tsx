@@ -121,7 +121,7 @@ const FUTURE_SUBJECTS: Array<{ ar: string; fr: string; icon: LucideIcon }> = [
 ];
 
 const btnPrimary =
-  'inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-extrabold text-white transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-40';
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-extrabold text-on-primary transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-40';
 
 const btnSecondary =
   'inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-extrabold text-text transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-40';
@@ -192,7 +192,7 @@ function ChoiceCard({
 function Badge({ children, tone = 'muted' }: { children: ReactNode; tone?: 'primary' | 'secondary' | 'muted' }) {
   const styles =
     tone === 'primary'
-      ? 'bg-primary/10 text-primary'
+      ? 'bg-primary/10 text-primary-text'
       : tone === 'secondary'
         ? 'bg-secondary/10 text-secondary'
         : 'bg-background text-muted';
@@ -298,7 +298,7 @@ function SectionCard({
   return (
     <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
       <div className="mb-4 flex items-start gap-3">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary-text">
           <Icon className="h-4.5 w-4.5" />
         </span>
         <div>
@@ -573,7 +573,7 @@ export default function ExplicitTeachingWorkspace() {
   return (
     <div dir="rtl" className="min-h-screen bg-background">
       {screen !== 'result' ? (
-        <section className="relative overflow-hidden bg-primary text-white">
+        <section className="relative overflow-hidden bg-primary text-on-primary">
           <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-secondary/30 blur-3xl" />
           <div aria-hidden className="pointer-events-none absolute -bottom-32 right-0 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
           <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -588,7 +588,7 @@ export default function ExplicitTeachingWorkspace() {
             <h1 className="mt-4 max-w-3xl text-2xl font-extrabold leading-tight sm:text-4xl">
               المذكرة اليومية الاحترافية — التعليم الصريح
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-white/85 sm:text-base">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-on-primary/85 sm:text-base">
               ولّد مذكرة يومية كاملة وفق مراحل التعليم الصريح الخمس، انطلاقاً من التوازيع المرحلية
               الرسمية للمدرسة الرائدة. اختر المستوى والمرحلة والأسبوع واليوم، ثم عدّل واطبع بصيغة A4.
             </p>
@@ -764,7 +764,7 @@ export default function ExplicitTeachingWorkspace() {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="flex items-center gap-2 text-base font-extrabold text-text">
                   <FolderOpen className="h-4.5 w-4.5 text-secondary" /> المسودات المحفوظة
-                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-extrabold text-primary">
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-extrabold text-primary-text">
                     {drafts.length}
                   </span>
                 </h2>
@@ -841,7 +841,7 @@ export default function ExplicitTeachingWorkspace() {
                       aria-current={active ? 'step' : undefined}
                       className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-extrabold transition ${
                         active
-                          ? 'bg-primary text-white'
+                          ? 'bg-primary text-on-primary'
                           : done
                             ? 'bg-secondary/10 text-secondary'
                             : open
@@ -851,7 +851,7 @@ export default function ExplicitTeachingWorkspace() {
                     >
                       <span
                         className={`grid h-5 w-5 place-items-center rounded-full text-[10px] ${
-                          active ? 'bg-white/20' : done ? 'bg-secondary text-white' : 'bg-background'
+                          active ? 'bg-white/20' : done ? 'bg-secondary text-on-primary' : 'bg-background'
                         }`}
                       >
                         {done ? <Check className="h-3 w-3" /> : index + 1}
@@ -878,7 +878,7 @@ export default function ExplicitTeachingWorkspace() {
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   <ChoiceCard active={choice.subject === 'math'} onClick={selectSubject}>
                     <div className="flex items-start justify-between gap-2">
-                      <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-white">
+                      <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-on-primary">
                         <Calculator className="h-5 w-5" />
                       </span>
                       <Badge tone="secondary">متاح الآن</Badge>
@@ -930,7 +930,7 @@ export default function ExplicitTeachingWorkspace() {
                         onClick={() => selectLevel(level.id)}
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
+                          <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary-text">
                             <GraduationCap className="h-5 w-5" />
                           </span>
                           <span dir="ltr" className="text-[10px] font-extrabold text-muted">{level.fr}</span>
@@ -964,7 +964,7 @@ export default function ExplicitTeachingWorkspace() {
                         onClick={() => selectEtape(etape.n)}
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
+                          <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary-text">
                             <Layers className="h-5 w-5" />
                           </span>
                           <Badge tone="muted">{etape.weeks.length} أسابيع</Badge>
@@ -1013,7 +1013,7 @@ export default function ExplicitTeachingWorkspace() {
                             <ul className="mt-2 space-y-1">
                               {week.lessons.map((lesson) => (
                                 <li key={`${week.n}-${lesson.n}`} className="flex gap-1.5 text-[11px] leading-5 text-muted">
-                                  <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-primary/10 text-[9px] font-extrabold text-primary">
+                                  <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-primary/10 text-[9px] font-extrabold text-primary-text">
                                     {lesson.n}
                                   </span>
                                   <span className="line-clamp-2">{lesson.title}</span>
@@ -1068,7 +1068,7 @@ export default function ExplicitTeachingWorkspace() {
                             <p className="text-sm font-extrabold text-text">{day.ar}</p>
                             <p dir="ltr" className="text-[10px] font-bold text-muted">{day.fr}</p>
                           </div>
-                          <span className="grid h-7 w-7 place-items-center rounded-full bg-primary/10 text-[11px] font-extrabold text-primary">
+                          <span className="grid h-7 w-7 place-items-center rounded-full bg-primary/10 text-[11px] font-extrabold text-primary-text">
                             {day.n}
                           </span>
                         </div>

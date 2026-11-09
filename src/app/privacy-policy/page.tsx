@@ -11,11 +11,11 @@ export default function PrivacyPolicyPage() {
   return (
     <main dir="rtl" className="max-w-3xl mx-auto px-4 py-10 space-y-6">
       <h1 className="text-3xl font-extrabold text-text">سياسة الخصوصية</h1>
-      <p className="text-sm text-slate-500">آخر تحديث: 13 أكتوبر 2026</p>
+      <p className="text-sm text-muted">آخر تحديث: 13 أكتوبر 2026</p>
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">1. مقدمة</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           مرحباً بك في منصة <b>Modaris Pro</b> (modarispro.com). نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية.
           تشرح هذه السياسة نوع البيانات التي نجمعها، وكيف نستخدمها، ومع مَن قد نشاركها، وحقوقك تجاهها، وذلك وفق
           القانون المغربي <b>09-08</b> المتعلق بحماية الأشخاص الذاتيين تجاه معالجة المعطيات ذات الطابع الشخصي.
@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">2. المسؤول عن المعالجة</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           المسؤول عن معالجة البيانات هو فريق <b>Modaris Pro</b>. لأي سؤال أو طلب متعلق ببياناتك، راسلنا على:{' '}
           <b>contact@modarispro.com</b>.
         </p>
@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">3. البيانات التي نجمعها</h2>
-        <ul className="list-disc pr-6 space-y-2 leading-7 text-slate-600">
+        <ul className="list-disc pr-6 space-y-2 leading-7 text-muted">
           <li>
             <b>بيانات تُخزَّن على جهازك فقط:</b> كل ما تدخله في الأدوات (الإعدادات، الأسماء، الملاحظات، التعديلات،
             التوقيتات) يُحفظ محلياً في متصفحك عبر التخزين المحلي (localStorage)، ولا يُرسَل إلى خوادمنا إطلاقاً.
@@ -54,7 +54,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">4. ملفات تعريف الارتباط (Cookies)</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           ملف ملف تعريف الارتباط هو ملف صغير يُخزَّن في متصفحك. نستخدم الأنواع التالية:
         </p>
         <div className="overflow-x-auto">
@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
                 <th className="text-right p-3 font-bold border-b border-border">من يضعها</th>
               </tr>
             </thead>
-            <tbody className="text-slate-600">
+            <tbody className="text-muted">
               <tr>
                 <td className="p-3 border-b border-border">ضرورية</td>
                 <td className="p-3 border-b border-border">تشغيل الموقع وحفظ تفضيلاتك محلياً.</td>
@@ -85,7 +85,7 @@ export default function PrivacyPolicyPage() {
             </tbody>
           </table>
         </div>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           يمكنك في أي وقت حذف ملفات تعريف الارتباط أو تعطيلها من إعدادات متصفحك، مع العلم أن ذلك قد يؤثر على بعض
           وظائف الموقع.
         </p>
@@ -93,7 +93,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">5. الإعلانات والأطراف الثالثة (Google AdSense)</h2>
-        <ul className="list-disc pr-6 space-y-2 leading-7 text-slate-600">
+        <ul className="list-disc pr-6 space-y-2 leading-7 text-muted">
           <li>
             نعرض الإعلانات عبر خدمة <b>Google AdSense</b>. وتستعمل Google، بصفتها مورّداً خارجياً، ملفات تعريف
             الارتباط لعرض إعلانات بناءً على زياراتك السابقة لموقعنا أو لمواقع أخرى.
@@ -111,25 +111,25 @@ export default function PrivacyPolicyPage() {
             <ul className="list-disc pr-6 mt-2 space-y-1">
               <li>
                 إعدادات إعلانات Google:{' '}
-                <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="text-primary-text underline">
                   adssettings.google.com
                 </a>
               </li>
               <li>
                 إلغاء الاشتراك لدى مبادرة الإعلانات الرقمية:{' '}
-                <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer" className="text-primary-text underline">
                   www.aboutads.info/choices
                 </a>
               </li>
               <li>
                 للمستخدمين في أوروبا:{' '}
-                <a href="https://www.youronlinechoices.com" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                <a href="https://www.youronlinechoices.com" target="_blank" rel="noopener noreferrer" className="text-primary-text underline">
                   www.youronlinechoices.com
                 </a>
               </li>
               <li>
                 تعطيل قياس Google Analytics:{' '}
-                <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-primary-text underline">
                   إضافة المتصفح الرسمية
                 </a>
               </li>
@@ -137,7 +137,7 @@ export default function PrivacyPolicyPage() {
           </li>
           <li>
             مزيد من التفاصيل حول كيفية استعمال Google للبيانات في المواقع الشريكة:{' '}
-            <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+            <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer" className="text-primary-text underline">
               policies.google.com/technologies/partner-sites
             </a>
           </li>
@@ -146,7 +146,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">6. كيف نستخدم البيانات</h2>
-        <ul className="list-disc pr-6 space-y-2 leading-7 text-slate-600">
+        <ul className="list-disc pr-6 space-y-2 leading-7 text-muted">
           <li>تحسين أداء المنصة وتطوير أدواتها التعليمية.</li>
           <li>فهم احتياجات الأساتذة وتقديم محتوى أكثر ملاءمة.</li>
           <li>قياس مدى استخدام الأدوات والميزات المختلفة.</li>
@@ -156,7 +156,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">7. مشاركة البيانات</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           لا نبيع ولا نؤجر بياناتك الشخصية. قد تُشارك بيانات مجهولة الهوية فقط مع مزوّدي الخدمات (مثل Google
           Analytics وGoogle AdSense) لتشغيل الموقع، أو عند وجود التزام قانوني يفرض ذلك.
         </p>
@@ -164,7 +164,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">8. مدة الاحتفاظ بالبيانات</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           بيانات الأدوات تبقى على جهازك وحدك إلى أن تحذفها. أما بيانات التواصل (الرسائل) فتُحفظ للمدة اللازمة للرد
           ومعالجة الطلب، ثم تُحذف.
         </p>
@@ -172,11 +172,11 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">9. حقوقك</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           وفق القانون 09-08، لك الحق في الوصول إلى بياناتك وتصحيحها وحذفها والاعتراض على معالجتها. لممارسة هذه
           الحقوق راسلنا على <b>contact@modarispro.com</b>. كما يمكنك تقديم شكاية إلى اللجنة الوطنية لمراقبة حماية
           المعطيات ذات الطابع الشخصي (CNDP) عبر موقعها:{' '}
-          <a href="https://www.cndp.ma" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+          <a href="https://www.cndp.ma" target="_blank" rel="noopener noreferrer" className="text-primary-text underline">
             www.cndp.ma
           </a>
           .
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">10. حماية بيانات الأطفال</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           خدماتنا موجهة للأساتذة والمهنيين في قطاع التعليم، وليست موجهة للأطفال دون 18 سنة. لا نجمع عن علم أي بيانات
           تخص الأطفال.
         </p>
@@ -193,7 +193,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">11. أمن البيانات</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           نعتمد بروتوكول HTTPS لتشفير الاتصال بين متصفحك وخوادمنا، ونراجع ممارساتنا الأمنية باستمرار لحماية بياناتك
           من الوصول غير المصرح به.
         </p>
@@ -201,7 +201,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">12. التعديلات على هذه السياسة</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           قد نُحدِّث هذه السياسة من حين لآخر. سيُنشر أي تعديل في هذه الصفحة مع تحديث تاريخ «آخر تحديث». استمرارك في
           استخدام الموقع يعني قبولك بالنسخة المحدَّثة.
         </p>
@@ -209,7 +209,7 @@ export default function PrivacyPolicyPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">13. اتصل بنا</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           لأي سؤال حول هذه السياسة أو ممارسة حقوقك، راسلنا على: <b>contact@modarispro.com</b>
         </p>
       </section>

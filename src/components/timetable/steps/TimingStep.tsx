@@ -60,7 +60,7 @@ export default function TimingStep() {
       {/* ===== توقيت الفترتين ===== */}
       <section className="edt-card">
         <h2 className="edt-card-title mb-2">
-          <Clock className="h-4 w-4 text-primary" /> توقيت الفترتين
+          <Clock className="h-4 w-4 text-primary-text" /> توقيت الفترتين
         </h2>
         <p className="mb-4 text-xs text-muted">
           تُعرض الفترتان الصباحية والمسائية دائمًا في الجدول، حتى إن كانت إحداهما
@@ -113,7 +113,7 @@ export default function TimingStep() {
       {/* ===== أيام العمل ===== */}
       <section className="edt-card">
         <h2 className="edt-card-title mb-2">
-          <CalendarDays className="h-4 w-4 text-primary" /> أيام العمل
+          <CalendarDays className="h-4 w-4 text-primary-text" /> أيام العمل
         </h2>
         <p className="mb-4 text-xs text-muted">
           اختر الأيام التي تعمل بها فعليًا — من 1 إلى 6 أيام. ستظهر هذه الأيام فقط في

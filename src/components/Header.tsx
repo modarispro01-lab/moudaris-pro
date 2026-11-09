@@ -37,7 +37,7 @@ export default function Header() {
             <Link
               key={l.href}
               href={l.href}
-              className="text-sm font-bold text-muted hover:text-primary"
+              className="text-sm font-bold text-muted hover:text-primary-text"
             >
               {l.label}
             </Link>
@@ -71,9 +71,9 @@ export default function Header() {
             className="md:hidden p-2 rounded-full hover:bg-background"
           >
             {open ? (
-              <X className="w-6 h-6 text-primary" />
+              <X className="w-6 h-6 text-primary-text" />
             ) : (
-              <Menu className="w-6 h-6 text-primary" />
+              <Menu className="w-6 h-6 text-primary-text" />
             )}
           </button>
         </div>

@@ -82,16 +82,16 @@ export default function HuroofiProductPage() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 lg:grid-cols-2">
           <div>
             <nav className="mb-4 text-xs font-bold text-white/60" aria-label="مسار التنقل">
-              <Link href="/products" className="hover:text-white">
+              <Link href="/products" className="hover:text-on-accent">
                 المنتجات الرقمية
               </Link>
               <span className="mx-2">/</span>
-              <span className="text-white/90">{HUROOFI.name}</span>
+              <span className="text-on-primary/90">{HUROOFI.name}</span>
             </nav>
-            <h1 className="text-3xl font-extrabold text-white md:text-5xl">{HUROOFI.name}</h1>
+            <h1 className="text-3xl font-extrabold text-on-accent md:text-5xl">{HUROOFI.name}</h1>
             <p className="mt-2 text-lg font-bold text-accent-text">{HUROOFI.latinName}</p>
             <p className="mt-4 max-w-xl leading-relaxed text-white/80">{HUROOFI.summary}</p>
-            <div className="mt-6 flex flex-wrap gap-3 text-sm font-bold text-white">
+            <div className="mt-6 flex flex-wrap gap-3 text-sm font-bold text-on-accent">
               <span className="rounded-full bg-white/10 px-4 py-1.5">{HUROOFI.ageLabel}</span>
               <span className="rounded-full bg-white/10 px-4 py-1.5">
                 {HUROOFI_TOTAL_PAGES} صفحة لكل مقاس
@@ -119,7 +119,7 @@ export default function HuroofiProductPage() {
           <div className="space-y-10">
             {/* ما هو؟ */}
             <section>
-              <h2 className="mb-4 text-2xl font-extrabold text-primary">ما هي هذه الحزمة؟</h2>
+              <h2 className="mb-4 text-2xl font-extrabold text-primary-text">ما هي هذه الحزمة؟</h2>
               <div className="rounded-2xl border border-border bg-surface p-6">
                 <p className="leading-relaxed text-text">{HUROOFI.teacherNote}</p>
                 <div className="mt-4 flex gap-3 rounded-xl border border-accent/30 bg-accent/5 p-4">
@@ -131,7 +131,7 @@ export default function HuroofiProductPage() {
 
             {/* المحتوى */}
             <section>
-              <h2 className="mb-4 text-2xl font-extrabold text-primary">
+              <h2 className="mb-4 text-2xl font-extrabold text-primary-text">
                 ماذا يوجد داخل الحزمة؟
                 <span className="ms-2 text-base font-bold text-muted">
                   ({HUROOFI_TOTAL_PAGES} صفحة لكل مقاس)
@@ -159,7 +159,7 @@ export default function HuroofiProductPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-muted">{doc.detail}</td>
-                        <td className="px-4 py-3 font-bold text-primary">{doc.pages}</td>
+                        <td className="px-4 py-3 font-bold text-primary-text">{doc.pages}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -169,7 +169,7 @@ export default function HuroofiProductPage() {
 
             {/* الصور */}
             <section>
-              <h2 className="mb-2 text-2xl font-extrabold text-primary">صور حقيقية من الملفّات</h2>
+              <h2 className="mb-2 text-2xl font-extrabold text-primary-text">صور حقيقية من الملفّات</h2>
               <p className="mb-4 text-sm text-muted">
                 ليست صورًا تجارية — هذه صفحات فعلية من الحزمة النهائية.
               </p>
@@ -194,7 +194,7 @@ export default function HuroofiProductPage() {
 
             {/* المقاسان */}
             <section>
-              <h2 className="mb-4 text-2xl font-extrabold text-primary">مقاسان: A4 و US Letter</h2>
+              <h2 className="mb-4 text-2xl font-extrabold text-primary-text">مقاسان: A4 و US Letter</h2>
               <div className="overflow-hidden rounded-2xl border border-border bg-surface p-4">
                 <Image
                   src={HUROOFI.sizesImage.src}
@@ -208,7 +208,7 @@ export default function HuroofiProductPage() {
 
             {/* الأسئلة */}
             <section>
-              <h2 className="mb-4 text-2xl font-extrabold text-primary">أسئلة شائعة</h2>
+              <h2 className="mb-4 text-2xl font-extrabold text-primary-text">أسئلة شائعة</h2>
               <div className="space-y-3">
                 {HUROOFI.faq.map((item) => (
                   <details key={item.q} className="group rounded-2xl border border-border bg-surface p-5 open:bg-background">
@@ -224,7 +224,7 @@ export default function HuroofiProductPage() {
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-primary">{HUROOFI.price.mad}</span>
+                <span className="text-3xl font-extrabold text-primary-text">{HUROOFI.price.mad}</span>
                 <span className="text-lg font-bold text-text">درهم</span>
                 <span className="text-sm text-muted">≈ {HUROOFI.price.eur} يورو</span>
               </div>
@@ -235,7 +235,7 @@ export default function HuroofiProductPage() {
                   href={HUROOFI.purchase.checkoutUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 font-bold text-white transition-colors hover:bg-accent/90"
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 font-bold text-on-accent transition-colors hover:bg-accent/90"
                 >
                   اشترِ الآن{HUROOFI.purchase.providerLabel ? ` عبر ${HUROOFI.purchase.providerLabel}` : ""}
                 </a>
@@ -279,7 +279,7 @@ export default function HuroofiProductPage() {
 
             <Link
               href="/products"
-              className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-bold text-primary hover:bg-background"
+              className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-bold text-primary-text hover:bg-background"
             >
               <ArrowRight className="h-4 w-4" />
               كل المنتجات

@@ -12,7 +12,8 @@
   --surface: #ffffff;
   --surface-2: #f0f4f8;
   --text: #172033;
-  --text-muted: #64748b;
+  --text-2: #475569;
+  --text-muted: #5b6b7e;
   --border: #e2e8f0;
   /* --primary للخلفيات والأزرار؛ --primary-text للنصوص والروابط
      (قيمة أفتح في الداكن)؛ --on-primary نص ثابت فوق primary */
@@ -41,6 +42,7 @@
   --surface: #161a22;
   --surface-2: #1c2130;
   --text: #e6e8ec;
+  --text-2: #c6cdd9;
   --text-muted: #9aa3b2;
   --border: #2a3040;
   --primary: #2e5e86;
@@ -48,7 +50,7 @@
   --on-primary: #ffffff;
   --on-accent: #172033;
   --accent-text: #fbbf24;
-  --secondary: #2aa198;
+  --secondary: #15756b;
   --accent: #fbbf24;
   --success: #2ecc71;
   --warning: #fbbf24;
@@ -64,15 +66,33 @@
 @theme inline {
   --color-background: var(--bg);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-elevated: var(--bg-elevated);
   --color-primary: var(--primary);
   --color-primary-text: var(--primary-text);
   --color-on-primary: var(--on-primary);
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
+  --color-on-accent: var(--on-accent);
   --color-text: var(--text);
+  --color-text-2: var(--text-2);
   --color-muted: var(--text-muted);
   --color-border: var(--border);
+
+  /* تدرج الرمادي الافتراضي في Tailwind يقلب مع الثيم — بدل تعديل
+     كل صنف gray-* في الملفات يدويًا */
+  --color-gray-50: var(--surface-2);
+  --color-gray-100: var(--surface-2);
+  --color-gray-200: var(--border);
+  --color-gray-300: var(--border);
+  --color-gray-400: var(--text-muted);
+  --color-gray-500: var(--text-muted);
+  --color-gray-600: var(--text-2);
+  --color-gray-700: var(--text-2);
+  --color-gray-800: var(--text);
+  --color-gray-900: var(--text);
+  --color-gray-950: var(--text);
 
   --font-sans: "Tajawal", sans-serif;
 }
@@ -161,6 +181,34 @@ body {
   outline-offset: 2px;
 }
 
+/* عزل معاينة وثيقة التعليم الصريح: الورقة فاتحة دائمًا في الشاشة
+   والطباعة (الرموز الدلالية داخلها تُثبَّت على قيمها الفاتحة) */
+.print-sheet {
+  --bg: #ffffff;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f0f4f8;
+  --text: #172033;
+  --text-2: #475569;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #123b5d;
+  --primary-text: #123b5d;
+  --on-primary: #ffffff;
+  --on-accent: #172033;
+  --accent-text: #b45309;
+  --secondary: #0f766e;
+  --accent: #f59e0b;
+  --success: #27ae60;
+  --warning: #f39c12;
+  --danger: #c0392b;
+  --input-bg: #ffffff;
+  --table-header-bg: #eaf2f8;
+  --table-row-alt: #f8fafc;
+  --shadow: none;
+  color-scheme: light;
+}
+
 /* ============================================================
    مولّد استعمال الزمن (التعليم الصريح) — نسخة الطباعة
    ============================================================ */
@@ -247,6 +295,7 @@ body {
     --surface: #ffffff;
     --surface-2: #f0f4f8;
     --text: #172033;
+    --text-2: #475569;
     --text-muted: #64748b;
     --border: #e2e8f0;
     --primary: #123b5d;

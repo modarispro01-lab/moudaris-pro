@@ -34,7 +34,7 @@ export default async function ActualitesPage() {
       {/* ===== الهيدر ===== */}
       <section className="bg-primary py-12">
         <div className="mx-auto max-w-7xl px-4 text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-on-primary mb-3">
             المستجدات التربوية
           </h1>
           <p className="text-white/80 text-base">
@@ -58,14 +58,14 @@ export default async function ActualitesPage() {
               >
                 {/* شريط التصنيف الملون */}
                 <div className="bg-gradient-to-l from-primary to-secondary px-4 py-2">
-                  <span className="text-white text-xs font-bold flex items-center gap-1">
+                  <span className="text-on-primary text-xs font-bold flex items-center gap-1">
                     <Tag className="w-3 h-3" />
                     {article.category}
                   </span>
                 </div>
 
                 <div className="p-6">
-                  <h2 className="text-lg font-extrabold text-text mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                  <h2 className="text-lg font-extrabold text-text mb-3 group-hover:text-primary-text transition-colors line-clamp-2">
                     {article.title}
                   </h2>
 
@@ -80,7 +80,7 @@ export default async function ActualitesPage() {
                     </span>
                     <Link
                       href={`/actualites/${article.slug}`}
-                      className="text-xs font-bold text-primary flex items-center gap-1 hover:gap-2 transition-all"
+                      className="text-xs font-bold text-primary-text flex items-center gap-1 hover:gap-2 transition-all"
                     >
                       اقرأ المزيد <ArrowLeft className="w-3 h-3" />
                     </Link>

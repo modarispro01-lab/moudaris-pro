@@ -78,7 +78,7 @@ export default function ProductsPage() {
                     <span className="text-sm font-bold text-secondary">
                       {product.pagesPerSize} صفحة لكل مقاس
                     </span>
-                    <span className="text-sm font-extrabold text-primary group-hover:underline">
+                    <span className="text-sm font-extrabold text-primary-text group-hover:underline">
                       التفاصيل ←
                     </span>
                   </div>
@@ -100,7 +100,7 @@ export default function ProductsPage() {
           <div className="mt-12 grid gap-5 sm:grid-cols-3">
             {ASSURANCES.map((a) => (
               <div key={a.title} className="rounded-2xl border border-border bg-surface p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary-text">
                   <a.icon className="h-6 w-6" />
                 </div>
                 <h3 className="text-lg font-extrabold text-text">{a.title}</h3>

@@ -11,9 +11,9 @@ export default function AboutPage() {
     <main dir="rtl" className="max-w-3xl mx-auto px-4 py-10 space-y-6">
       <h1 className="text-3xl font-extrabold text-text">من نحن</h1>
 
-      <section className="space-y-3 leading-8 text-slate-600">
+      <section className="space-y-3 leading-8 text-muted">
         <p>
-          <b className="text-primary">Modaris Pro</b> منصة رقمية مغربية وُلدت من قلب القسم، ومن معاينة يومية لحجم الجهد الذي يبذله
+          <b className="text-primary-text">Modaris Pro</b> منصة رقمية مغربية وُلدت من قلب القسم، ومن معاينة يومية لحجم الجهد الذي يبذله
           أساتذة التعليم الابتدائي في إعداد المذكرات اليومية، خصوصاً خلال فترة <b>الدعم المكثف</b> التي تتطلب تخطيطاً دقيقاً
           ومتابعة فردية لكل متعلم.
         </p>
@@ -25,7 +25,7 @@ export default function AboutPage() {
 
       <section className="space-y-3">
         <h2 className="text-xl font-extrabold text-text">ماذا نقدم؟</h2>
-        <ul className="list-disc pr-6 space-y-2 leading-7 text-slate-600">
+        <ul className="list-disc pr-6 space-y-2 leading-7 text-muted">
           <li><b>المذكرة اليومية:</b> توليد تلقائي لمذكرة أي مادة (العربية، الفرنسية، الرياضيات) لأي مستوى من الأول إلى السادس، مع مراحل سير الدرس الرسمية.</li>
           <li><b>المذكرة الأسبوعية:</b> طباعة ستة أيام كاملة دفعة واحدة، كل حصة في ورقة مستقلة، مع توقيت بداية مخصص لكل يوم.</li>
           <li><b>إدارة الأفواج والمسارات:</b> دعم كامل للتنظيم الرسمي (فوجان أو أربعة أفواج حسب المادة والمستوى) مع إمكانية الجمع بين مستويات مختلفة في نفس اليوم.</li>
@@ -35,7 +35,7 @@ export default function AboutPage() {
 
       <section className="space-y-3">
         <h2 className="text-xl font-extrabold text-text">لماذا نحن؟</h2>
-        <ul className="list-disc pr-6 space-y-2 leading-7 text-slate-600">
+        <ul className="list-disc pr-6 space-y-2 leading-7 text-muted">
           <li>محتوى مبني على <b>المصفوفات الرسمية</b> للدعم المكثف 2026/2027، لا على اجتهادات شخصية.</li>
           <li>أداة تعمل بخصوصية تامة: بياناتك تُحفظ على جهازك وحدك.</li>
           <li>واجهة عربية بسيطة تعمل على الحاسوب والهاتف دون تثبيت أي برنامج.</li>
@@ -44,9 +44,9 @@ export default function AboutPage() {
 
       <section className="space-y-2">
         <h2 className="text-xl font-extrabold text-text">تواصل معنا</h2>
-        <p className="leading-7 text-slate-600">
+        <p className="leading-7 text-muted">
           نحن نستمع لكل اقتراح من أساتذتنا الكرام. راسلنا على <b>contact@modarispro.com</b> أو عبر صفحة{' '}
-          <a href="/contact" className="text-primary font-bold underline">اتصل بنا</a>.
+          <a href="/contact" className="text-primary-text font-bold underline">اتصل بنا</a>.
         </p>
       </section>
     </main>

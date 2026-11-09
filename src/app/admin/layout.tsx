@@ -14,13 +14,13 @@ const menuItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-50 flex" dir="rtl">
+    <div className="min-h-screen bg-surface-2 flex" dir="rtl">
       {/* القائمة الجانبية */}
-      <aside className="w-64 bg-primary text-white flex-col shadow-xl flex">
+      <aside className="w-64 bg-primary text-on-primary flex-col shadow-xl flex">
         <div className="p-6 border-b border-white/10">
           <h2 className="text-xl font-extrabold flex items-center gap-2">
             <span className="text-accent-text">Moudaris</span>Pro
-            <span className="text-xs bg-accent text-primary px-2 py-0.5 rounded-full">Admin</span>
+            <span className="text-xs bg-accent text-primary-text px-2 py-0.5 rounded-full">Admin</span>
           </h2>
         </div>
         
@@ -29,7 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-white/80 hover:bg-white/10 hover:text-white transition-all"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-on-primary/80 hover:bg-white/10 hover:text-on-primary transition-all"
             >
               <item.icon className="w-5 h-5" />
               {item.name}
@@ -38,7 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="p-4 border-t border-white/10">
-          <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-white/80 hover:bg-white/10 transition-all">
+          <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-on-primary/80 hover:bg-white/10 transition-all">
             <Home className="w-5 h-5" />
             العودة للموقع
           </Link>

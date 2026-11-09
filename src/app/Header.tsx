@@ -17,7 +17,7 @@ export default function Header() {
           <div className="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center font-extrabold text-lg">
             م
           </div>
-          <span className="text-xl font-extrabold text-primary">
+          <span className="text-xl font-extrabold text-primary-text">
             Moudaris<span className="text-accent-text">Pro</span>
           </span>
         </Link>
@@ -27,7 +27,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-bold text-muted hover:text-primary transition-colors"
+              className="text-sm font-bold text-muted hover:text-primary-text transition-colors"
             >
               {link.name}
             </Link>

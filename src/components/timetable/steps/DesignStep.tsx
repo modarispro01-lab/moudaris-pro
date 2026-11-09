@@ -83,7 +83,7 @@ export default function DesignStep({
       {/* ===== القوالب ===== */}
       <section className="edt-card">
         <h2 className="edt-card-title mb-2">
-          <LayoutTemplate className="h-4 w-4 text-primary" /> القوالب البصرية
+          <LayoutTemplate className="h-4 w-4 text-primary-text" /> القوالب البصرية
         </h2>
         <p className="mb-4 text-xs text-muted">
           اختر قالبًا جاهزًا ثم خصّصه كما تشاء. المعاينة تتحدّث فورًا.
@@ -110,7 +110,7 @@ export default function DesignStep({
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-sm font-extrabold text-text">{t.name}</span>
                   {active && (
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary">
                       <Check className="h-3 w-3" />
                     </span>
                   )}
@@ -315,7 +315,7 @@ export default function DesignStep({
       {/* ===== ألوان المواد ===== */}
       <section className="edt-card">
         <h2 className="edt-card-title mb-2">
-          <Palette className="h-4 w-4 text-primary" /> ألوان المواد
+          <Palette className="h-4 w-4 text-primary-text" /> ألوان المواد
         </h2>
         <p className="mb-4 text-xs text-muted">
           لكل مادة لون خاص بها يظهر في الجدول والملخّص. اضغط على اللون لتغييره،
@@ -373,7 +373,7 @@ export default function DesignStep({
       {/* ===== الشعار والتوقيعات ===== */}
       <section className="edt-card">
         <h2 className="edt-card-title mb-2">
-          <ImageIcon className="h-4 w-4 text-primary" /> الشعار والتوقيعات
+          <ImageIcon className="h-4 w-4 text-primary-text" /> الشعار والتوقيعات
         </h2>
         <p className="mb-4 text-xs text-muted">
           يظهر الشعار أعلى وسط الورقة، والتوقيعات أسفلها (الأستاذ، المفتش، المدير).
@@ -565,7 +565,7 @@ function ScaleSlider({
         style={{ accentColor: accent }}
         aria-label={label}
       />
-      <span className="w-12 shrink-0 rounded-md bg-background px-1 py-0.5 text-center text-xs font-extrabold text-primary">
+      <span className="w-12 shrink-0 rounded-md bg-background px-1 py-0.5 text-center text-xs font-extrabold text-primary-text">
         {Math.round(value * 100)}%
       </span>
     </div>
