@@ -41,7 +41,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# بيانات محلية ومجلدات عمل مؤقتة ؜ لا تُرفع أبداً
+# بيانات محلية ومجلدات عمل مؤقتة — لا تُرفع أبداً
 /data/entry/
 /data/pilot/
 /.wt-main/
