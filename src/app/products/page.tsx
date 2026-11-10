@@ -31,7 +31,7 @@ export default function ProductsPage() {
       <section className="relative overflow-hidden bg-primary py-14 md:py-20">
         <div className="absolute inset-0 bg-gradient-to-bl from-primary via-primary to-secondary" />
         <div className="relative mx-auto max-w-4xl px-4 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-bold text-accent">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-bold text-accent-text">
             <Gem className="w-4 h-4" />
             المنتجات الرقمية
           </span>
@@ -69,7 +69,7 @@ export default function ProductsPage() {
                     <h2 className="text-xl font-extrabold text-text">
                       {product.name} <span className="text-sm font-bold text-muted">| {product.latinName}</span>
                     </h2>
-                    <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-bold text-accent">
+                    <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-bold text-accent-text">
                       {product.ageLabel}
                     </span>
                   </div>
@@ -78,7 +78,7 @@ export default function ProductsPage() {
                     <span className="text-sm font-bold text-secondary">
                       {product.pagesPerSize} صفحة لكل مقاس
                     </span>
-                    <span className="text-sm font-extrabold text-primary group-hover:underline">
+                    <span className="text-sm font-extrabold text-primary-text group-hover:underline">
                       التفاصيل ←
                     </span>
                   </div>
@@ -100,7 +100,7 @@ export default function ProductsPage() {
           <div className="mt-12 grid gap-5 sm:grid-cols-3">
             {ASSURANCES.map((a) => (
               <div key={a.title} className="rounded-2xl border border-border bg-surface p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary-text">
                   <a.icon className="h-6 w-6" />
                 </div>
                 <h3 className="text-lg font-extrabold text-text">{a.title}</h3>

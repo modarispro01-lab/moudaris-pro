@@ -84,11 +84,11 @@ export default async function ResourcePage({
       {/* ===== شريط التنقل (Breadcrumbs) ===== */}
       <div className="bg-surface border-b border-border">
         <div className="mx-auto max-w-5xl px-4 py-4 flex items-center gap-2 text-sm text-muted">
-          <Link href="/" className="hover:text-primary transition-colors">
+          <Link href="/" className="hover:text-primary-text transition-colors">
             الرئيسية
           </Link>
           <ArrowRight className="w-3 h-3 rotate-180" />
-          <Link href="/resources" className="hover:text-primary transition-colors">
+          <Link href="/resources" className="hover:text-primary-text transition-colors">
             الموارد
           </Link>
           <ArrowRight className="w-3 h-3 rotate-180" />
@@ -103,7 +103,7 @@ export default async function ResourcePage({
         {/* العنوان والمعلومات الأساسية */}
         <div className="bg-surface rounded-2xl border border-border p-8 mb-6">
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+            <span className="bg-primary/10 text-primary-text text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
               <GraduationCap className="w-3 h-3" />
               {resource.level.name}
             </span>
@@ -111,7 +111,7 @@ export default async function ResourcePage({
               <BookOpen className="w-3 h-3" />
               {resource.subject.name}
             </span>
-            <span className="bg-accent/10 text-accent text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+            <span className="bg-accent/10 text-accent-text text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
               <FileText className="w-3 h-3" />
               .{resource.fileType.toLowerCase()}
             </span>
@@ -133,7 +133,7 @@ export default async function ResourcePage({
           {/* معلومات إضافية */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-border">
             <div className="flex items-center gap-2 text-sm text-muted">
-              <Calendar className="w-4 h-4 text-primary" />
+              <Calendar className="w-4 h-4 text-primary-text" />
               <div>
                 <div className="text-xs">تاريخ الإضافة</div>
                 <div className="font-bold text-text">
@@ -142,21 +142,21 @@ export default async function ResourcePage({
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted">
-              <Download className="w-4 h-4 text-primary" />
+              <Download className="w-4 h-4 text-primary-text" />
               <div>
                 <div className="text-xs">التحميلات</div>
                 <div className="font-bold text-text">{resource.downloads}</div>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted">
-              <Eye className="w-4 h-4 text-primary" />
+              <Eye className="w-4 h-4 text-primary-text" />
               <div>
                 <div className="text-xs">المشاهدات</div>
                 <div className="font-bold text-text">{resource.views}</div>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted">
-              <FileText className="w-4 h-4 text-primary" />
+              <FileText className="w-4 h-4 text-primary-text" />
               <div>
                 <div className="text-xs">الصيغة</div>
                 <div className="font-bold text-text">{resource.fileType}</div>
@@ -174,7 +174,7 @@ export default async function ResourcePage({
               href={resource.fileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 font-bold text-white transition-all hover:bg-primary/90 hover:shadow-lg text-center"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 font-bold text-on-primary transition-all hover:bg-primary/90 hover:shadow-lg text-center"
             >
               <Download className="w-5 h-5" />
               فتح / تحميل الملف ({resource.fileType})
@@ -190,7 +190,7 @@ export default async function ResourcePage({
           )}
 
           {/* زر المعاينة */}
-          <button className="w-full flex items-center justify-center gap-2 rounded-xl bg-surface border-2 border-primary px-6 py-4 font-bold text-primary transition-all hover:bg-primary/5">
+          <button className="w-full flex items-center justify-center gap-2 rounded-xl bg-surface border-2 border-primary px-6 py-4 font-bold text-primary-text transition-all hover:bg-primary/5">
             <Eye className="w-5 h-5" />
             معاينة المورد
           </button>
@@ -199,7 +199,7 @@ export default async function ResourcePage({
         {/* ===== قسم "موارد مشابهة" ===== */}
         <div className="bg-surface rounded-2xl border border-border p-6">
           <h2 className="text-lg font-extrabold text-text mb-4 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-accent" />
+            <BookOpen className="w-5 h-5 text-accent-text" />
             موارد أخرى في نفس المستوى
           </h2>
           <SimilarResources
@@ -243,7 +243,7 @@ async function SimilarResources({
           className="group rounded-xl border border-border p-4 hover:border-primary/30 hover:shadow-md transition-all"
         >
           <div className="text-xs text-muted mb-1">{res.subject.name}</div>
-          <div className="text-sm font-bold text-text group-hover:text-primary line-clamp-2">
+          <div className="text-sm font-bold text-text group-hover:text-primary-text line-clamp-2">
             {res.title}
           </div>
         </Link>

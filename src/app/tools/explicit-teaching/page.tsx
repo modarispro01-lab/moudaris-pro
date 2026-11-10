@@ -81,7 +81,7 @@ export default function ExplicitTeachingPage() {
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {steps.map((step) => (
               <div key={step.title} className="rounded-2xl border border-border bg-background p-5">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary-text">
                   <step.icon className="h-5 w-5" />
                 </span>
                 <h3 className="mt-3 text-sm font-extrabold text-text">{step.title}</h3>

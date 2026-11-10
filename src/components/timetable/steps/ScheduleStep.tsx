@@ -127,7 +127,7 @@ export default function ScheduleStep() {
               "rounded-full px-2.5 py-1 text-[11px] font-bold",
               progress.done === progress.total
                 ? "bg-secondary/15 text-secondary"
-                : "bg-primary/10 text-primary"
+                : "bg-primary/10 text-primary-text"
             )}
           >
             أنهيت {progress.done} من {progress.total} يوم
@@ -151,14 +151,14 @@ export default function ScheduleStep() {
                   <CheckCircle2
                     className={cx(
                       "h-4 w-4",
-                      active ? "text-white" : "text-secondary"
+                      active ? "text-on-primary" : "text-secondary"
                     )}
                   />
                 ) : empty ? (
                   <Circle
                     className={cx(
                       "h-4 w-4",
-                      active ? "text-white/70" : "text-border"
+                      active ? "text-on-primary/70" : "text-border"
                     )}
                   />
                 ) : (
@@ -169,7 +169,7 @@ export default function ScheduleStep() {
                     )}
                     style={{
                       backgroundImage: `conic-gradient(${
-                        active ? "#fff" : "var(--color-primary)"
+                        active ? "#fff" : "var(--primary)"
                       } ${dayFillRatio(state, d) * 360}deg, transparent 0)`,
                     }}
                   />
@@ -202,7 +202,7 @@ export default function ScheduleStep() {
             >
               <ArrowRight className="h-4 w-4" />
             </button>
-            <h3 className="min-w-32 text-center text-base font-extrabold text-primary">
+            <h3 className="min-w-32 text-center text-base font-extrabold text-primary-text">
               {activeDef?.name}
             </h3>
             <button

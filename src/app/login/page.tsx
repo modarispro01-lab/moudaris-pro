@@ -13,11 +13,11 @@ export default function LoginPage() {
     <main dir="rtl" className="max-w-2xl mx-auto px-4 py-16 text-center space-y-6">
       <div className="text-6xl">🔐</div>
       <h1 className="text-3xl font-extrabold text-text">دخول الأستاذ</h1>
-      <p className="text-lg leading-8 text-slate-600">
+      <p className="text-lg leading-8 text-muted">
         نعمل حالياً على نظام حسابات الأساتذة، وسيمكنك قريباً من:
       </p>
 
-      <ul className="space-y-3 text-slate-600 leading-7 bg-surface border border-border rounded-2xl p-6 text-right">
+      <ul className="space-y-3 text-muted leading-7 bg-surface border border-border rounded-2xl p-6 text-right">
         <li>☁️ حفظ مذكراتك وإعداداتك في السحابة بدل المتصفح فقط.</li>
         <li>🔄 مزامنة تلقائية بين هاتفك وحاسوبك.</li>
         <li>📚 مكتبة خاصة بمواردك وملاحظاتك المفضلة.</li>
@@ -29,7 +29,7 @@ export default function LoginPage() {
         <h2 className="text-xl font-extrabold text-text">
           🔔 تريد دعوة الافتتاح قبل الجميع؟
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-muted">
           اترك بريدك الآن — سنراسلك رسالة واحدة فقط فور جاهزية الخدمة.
         </p>
         <form
@@ -45,16 +45,16 @@ export default function LoginPage() {
             name="email"
             required
             placeholder="بريدك الإلكتروني"
-            className="flex-1 px-4 py-3 rounded-xl border border-border bg-white text-text focus:outline-none focus:ring-2 focus:ring-primary"
+            className="flex-1 px-4 py-3 rounded-xl border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <button
             type="submit"
-            className="bg-primary text-white font-bold px-6 py-3 rounded-xl hover:opacity-90 transition whitespace-nowrap"
+            className="bg-primary text-on-primary font-bold px-6 py-3 rounded-xl hover:opacity-90 transition whitespace-nowrap"
           >
             أعلمني عند الافتتاح
           </button>
         </form>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-muted">
           🔒 لن نشارك بريدك مع أي طرف ثالث — رسالة واحدة عند الافتتاح فقط.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function LoginPage() {
       <div className="flex flex-wrap gap-3 justify-center pt-2">
         <Link
           href="/tools/daily-lesson-plan"
-          className="bg-primary text-white font-bold px-6 py-3 rounded-xl hover:opacity-90 transition"
+          className="bg-primary text-on-primary font-bold px-6 py-3 rounded-xl hover:opacity-90 transition"
         >
           📘 العودة إلى الأداة
         </Link>

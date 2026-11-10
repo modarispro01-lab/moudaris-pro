@@ -19,14 +19,14 @@ export default function ToolFrame({
       className="flex w-full flex-col"
       style={{ height: "calc(100dvh - 4rem)", minHeight: "70vh" }}
     >
-      <div className="shrink-0 border-b border-border bg-white shadow-sm">
+      <div className="shrink-0 border-b border-border bg-surface shadow-sm">
         <ShareButtons />
       </div>
       <iframe
         src={src}
         title={title}
         allow={allow}
-        className="block w-full flex-1 border-0 bg-white"
+        className="block w-full flex-1 border-0 bg-surface"
       />
     </div>
   );

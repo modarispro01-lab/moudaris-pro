@@ -39,7 +39,7 @@ export default function AdSlot({
   return (
     <div className={className}>
       {/* الوسم مطلوب من سياسات أدسنس لتمييز الإعلان عن المحتوى */}
-      <div className="text-center text-[10px] tracking-wide text-slate-400 mb-1">إعلان</div>
+      <div className="text-center text-[10px] tracking-wide text-muted mb-1">إعلان</div>
       <ins
         className="adsbygoogle block"
         style={{ display: "block" }}

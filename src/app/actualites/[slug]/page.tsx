@@ -44,11 +44,11 @@ export default async function ArticlePage({
       {/* ===== شريط التنقل (Breadcrumbs) ===== */}
       <div className="bg-surface border-b border-border">
         <div className="mx-auto max-w-5xl px-4 py-4 flex items-center gap-2 text-sm text-muted">
-          <Link href="/" className="hover:text-primary transition-colors">
+          <Link href="/" className="hover:text-primary-text transition-colors">
             الرئيسية
           </Link>
           <ArrowRight className="w-3 h-3 rotate-180" />
-          <Link href="/actualites" className="hover:text-primary transition-colors">
+          <Link href="/actualites" className="hover:text-primary-text transition-colors">
             المستجدات
           </Link>
           <ArrowRight className="w-3 h-3 rotate-180" />
@@ -64,7 +64,7 @@ export default async function ArticlePage({
         <article className="bg-surface rounded-2xl border border-border p-8 md:p-12">
           {/* التصنيف والتاريخ */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
-            <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
+            <span className="bg-primary/10 text-primary-text text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
               <Tag className="w-3 h-3" />
               {article.category}
             </span>
@@ -92,7 +92,7 @@ export default async function ArticlePage({
           <div className="mt-12 pt-6 border-t border-border flex items-center justify-between">
             <Link
               href="/actualites"
-              className="flex items-center gap-2 text-sm font-bold text-primary hover:underline"
+              className="flex items-center gap-2 text-sm font-bold text-primary-text hover:underline"
             >
               <ArrowRight className="w-4 h-4 rotate-180" />
               العودة للمستجدات
@@ -108,7 +108,7 @@ export default async function ArticlePage({
         {relatedArticles.length > 0 && (
           <section className="mt-12">
             <h2 className="text-xl font-extrabold text-text mb-6 flex items-center gap-2">
-              <Tag className="w-5 h-5 text-accent" />
+              <Tag className="w-5 h-5 text-accent-text" />
               أخبار أخرى في نفس التصنيف
             </h2>
             <div className="grid gap-5 md:grid-cols-3">
@@ -118,10 +118,10 @@ export default async function ArticlePage({
                   href={`/actualites/${related.slug}`}
                   className="group bg-surface rounded-xl border border-border p-5 transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/30"
                 >
-                  <span className="text-xs font-bold text-primary mb-2 block">
+                  <span className="text-xs font-bold text-primary-text mb-2 block">
                     {related.category}
                   </span>
-                  <h3 className="text-sm font-bold text-text group-hover:text-primary line-clamp-2 leading-relaxed">
+                  <h3 className="text-sm font-bold text-text group-hover:text-primary-text line-clamp-2 leading-relaxed">
                     {related.title}
                   </h3>
                   <div className="text-xs text-muted mt-3 flex items-center gap-1">

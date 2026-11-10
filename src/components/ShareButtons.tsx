@@ -27,7 +27,7 @@ export default function ShareButtons() {
       dir="rtl"
       className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 my-2 sm:my-3"
     >
-      <span className="hidden sm:inline text-sm font-bold text-slate-500">
+      <span className="hidden sm:inline text-sm font-bold text-muted">
         شارك الأداة مع زملائك:
       </span>
 

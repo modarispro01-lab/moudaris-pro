@@ -62,7 +62,7 @@ export default async function ResourcesPage({
       {/* ===== الهيدر ===== */}
       <section className="bg-primary py-12">
         <div className="mx-auto max-w-7xl px-4 text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-on-primary mb-3">
             مكتبة الموارد التعليمية
           </h1>
           <p className="text-white/80 text-base">
@@ -76,7 +76,7 @@ export default async function ResourcesPage({
         {/* ===== نموذج الفلاتر والبحث ===== */}
         <form method="GET" action="/resources" className="bg-surface rounded-2xl border border-border p-6 mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-5 h-5 text-primary" />
+            <Filter className="w-5 h-5 text-primary-text" />
             <h2 className="font-bold text-text">تصفية والبحث</h2>
           </div>
           
@@ -134,7 +134,7 @@ export default async function ResourcesPage({
             <div className="flex items-end gap-2">
               <button
                 type="submit"
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 font-bold text-white hover:bg-primary/90 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 font-bold text-on-primary hover:bg-primary/90 transition-colors"
               >
                 <Search className="w-4 h-4" />
                 تطبيق الفلتر
@@ -158,7 +158,7 @@ export default async function ResourcesPage({
         {resources.length === 0 ? (
           <div className="text-center py-20 bg-surface rounded-2xl border border-border">
             <p className="text-muted text-lg mb-2">لا توجد موارد تطابق بحثك.</p>
-            <Link href="/resources" className="text-primary font-bold hover:underline">
+            <Link href="/resources" className="text-primary-text font-bold hover:underline">
               عرض جميع الموارد
             </Link>
           </div>
@@ -171,15 +171,15 @@ export default async function ResourcesPage({
                 className="group rounded-2xl border border-border bg-surface p-6 transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/30"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full">
+                  <span className="bg-primary/10 text-primary-text text-xs font-bold px-3 py-1 rounded-full">
                     {resource.level.name}
                   </span>
-                  <span className="bg-accent/10 text-accent text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                  <span className="bg-accent/10 text-accent-text text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                     <Download className="w-3 h-3" /> {resource.downloads}
                   </span>
                 </div>
 
-                <h3 className="text-lg font-extrabold text-text mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="text-lg font-extrabold text-text mb-2 group-hover:text-primary-text transition-colors line-clamp-2">
                   {resource.title}
                 </h3>
 
