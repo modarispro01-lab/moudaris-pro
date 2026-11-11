@@ -68,6 +68,14 @@ const tools = [
     status: 'متاح الآن',
   },
   {
+    id: 'week-memo',
+    title: 'مذكرة الأسبوع الكاملة',
+    description: 'مذكرة أسبوعية كاملة مولّدة من استعمال الزمن: كل الأيام في شاشة واحدة قابلة للتعديل، مع طباعة A4 رسمية.',
+    icon: CalendarClock,
+    color: 'bg-primary',
+    status: 'متاح الآن',
+  },
+  {
     id: 'cover-generator',
     title: 'واجهات وأغلفة الملفات',
     description: 'صمّم واجهة ملفّك التربوي بألوان متعددة، جاهزة للطباعة A4.',

@@ -213,6 +213,12 @@
   }
 
   /* القاعدة العامة تحبس التمرير على html/body — نعيده لطباعة متعددة الصفحات */
+  html {
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
   html body {
     width: auto !important;
     height: auto !important;
