@@ -187,6 +187,7 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
               profile={wm.profile}
               stageIndex={wm.stageIndex}
               subjectNames={subjectNames}
+              template={catalog.template}
             />,
             document.body,
           )

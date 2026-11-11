@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "@/components/daily-memo/memo.css";
 import "@/components/week-memo/week-memo.css";
 import { loadCatalog } from "@/lib/enseignement-explicite";
 import WeekMemoApp from "@/components/week-memo/WeekMemoApp";
