@@ -1,0 +1,276 @@
+/* ============================================================
+   مذكرة الأسبوع — التنسيقات (كل الأصناف ببادئة wm- لتجنب التعارض)
+   الشاشة: تخطيط عمودي RTL + شريط أدوات لاصق.
+   الطباعة: A4 عمودي — صفحة لكل يوم، نص أسود على أبيض.
+   ============================================================ */
+
+/* ============================ الشاشة ============================ */
+.wm-app {
+  direction: rtl;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 12px 48px;
+  font-family: inherit;
+}
+
+/* شريط الأدوات اللاصق */
+.wm-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+}
+.wm-toolbar button,
+.wm-toolbar select,
+.wm-toolbar input[type="date"] {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--surface, #fff);
+  color: var(--text, #172033);
+  cursor: pointer;
+}
+.wm-toolbar button.wm-primary {
+  background: var(--primary, #123b5d);
+  color: var(--on-primary, #fff);
+  font-weight: 800;
+}
+.wm-toolbar .wm-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted, #64748b);
+  margin-inline-start: auto;
+}
+
+/* شريط التحذيرات القابل للطي */
+.wm-warnings {
+  border: 1px solid #f0c36d;
+  background: #fff8e6;
+  color: #7a5c12;
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin-block: 10px;
+  font-size: 13px;
+}
+.wm-warnings summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+.wm-warnings ul { margin: 6px 18px 0 0; padding: 0; }
+
+/* حالة عدم وجود مذكرة / جدول زمن */
+.wm-empty {
+  border: 1.6px dashed var(--border, #cbd5e1);
+  border-radius: 12px;
+  padding: 26px 18px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text-2, #475569);
+  margin-block: 14px;
+}
+.wm-empty a { color: var(--primary, #123b5d); font-weight: 800; }
+
+/* أقسام الأيام */
+.wm-day { margin-block: 22px; }
+.wm-day-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  border-bottom: 2px solid var(--primary, #123b5d);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+.wm-day-head h2 { font-size: 18px; margin: 0; color: var(--text, #172033); }
+.wm-day-head .wm-date { font-weight: 700; color: var(--text-2, #475569); }
+.wm-day-head button {
+  margin-inline-start: auto;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--surface, #fff);
+  cursor: pointer;
+  color: var(--text-2, #475569);
+}
+.wm-day-skipped {
+  border: 1.4px dashed var(--border, #cbd5e1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--text-muted, #64748b);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* بطاقة الحصة */
+.wm-card {
+  border: 1px solid var(--border, #d7e0ea);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  background: var(--surface, #fff);
+}
+.wm-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.wm-card-head .wm-subject { font-size: 16px; font-weight: 800; color: var(--text, #172033); }
+.wm-card-head .wm-component { font-size: 12px; font-weight: 700; color: var(--text-2, #475569); }
+.wm-badge {
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 3px 10px;
+  background: var(--primary, #123b5d);
+  color: var(--on-primary, #fff);
+}
+.wm-badge.wm-soft {
+  background: var(--surface-2, #eef2f7);
+  color: var(--text-2, #475569);
+}
+.wm-break {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7a5c12;
+  margin-top: 4px;
+}
+
+/* شبكة حقول الحصة */
+.wm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+.wm-grid .wm-wide { grid-column: 1 / -1; }
+.wm-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted, #64748b);
+  margin-bottom: 3px;
+}
+.wm-field input,
+.wm-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 6px 9px;
+  border: 1px solid var(--border, #cbd5e1);
+  border-radius: 8px;
+  background: var(--surface, #fff);
+  color: var(--text, #172033);
+}
+.wm-field textarea { resize: vertical; min-height: 44px; }
+
+/* ============================ الطباعة ============================ */
+@media screen {
+  .wm-print { display: none; }
+}
+
+@media print {
+  /* إخفاء ترويسة الموقع وتذييله وواجهة التطبيق — ورقة الطباعة تقع داخل .wm-app فلا يُخفى */
+  header,
+  footer,
+  .wm-toolbar,
+  .wm-day,
+  .wm-empty,
+  .wm-warnings {
+    display: none !important;
+  }
+
+  /* الورقة تمتلئ بعرض A4 */
+  .wm-app {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .wm-print { display: block !important; }
+
+  /* يتقدّم على القاعدة العامة في globals.css: body > *:not(.tt-print-portal) { display:none } */
+  html body > .wm-print {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    visibility: visible !important;
+  }
+
+  /* القاعدة العامة تحبس التمرير على html/body — نعيده لطباعة متعددة الصفحات */
+  html body {
+    overflow: visible !important;
+  }
+
+  /* الوضع الداكن لا يجب أن يصل إلى الورق */
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  @page { size: A4 portrait; margin: 12mm; }
+
+  /* نص أسود على أبيض — بلا ظلال ولا خلفيات ملوّنة */
+  .wm-print,
+  .wm-print * {
+    color: #000 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  .wm-print-day { page-break-after: always; }
+  .wm-print-day:last-child { page-break-after: auto; }
+  tr,
+  .wm-print-row { page-break-inside: avoid; }
+
+  .wm-print-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    font-weight: 700;
+    border-bottom: 1.6px solid #000;
+    padding-bottom: 5px;
+  }
+  .wm-print-titlebar { text-align: center; margin: 8px 0 4px; }
+  .wm-print-titlebar h1 {
+    font-size: 15pt;
+    margin: 0;
+  }
+  .wm-print-titlebar p { font-size: 10px; margin: 3px 0 0; font-weight: 700; }
+
+  .wm-print-day h2 {
+    font-size: 12.5pt;
+    margin: 10px 0 6px;
+  }
+  .wm-print-day .wm-print-date { font-size: 10.5px; font-weight: 700; }
+
+  .wm-print table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5px;
+  }
+  .wm-print th,
+  .wm-print td {
+    border: 0.8px solid #000;
+    padding: 4px 6px;
+    text-align: right;
+    vertical-align: top;
+  }
+  .wm-print th { font-weight: 800; }
+}
