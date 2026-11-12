@@ -182,6 +182,91 @@
   .wm-print { display: none; }
 }
 
+/* ============================ لائحة العطل ============================ */
+.wm-holidays {
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  padding: 8px 14px;
+  margin-block: 10px;
+  font-size: 13px;
+}
+.wm-holidays > summary { cursor: pointer; font-weight: 800; color: var(--text, #172033); }
+.wm-holiday-form { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-block: 10px; }
+.wm-holiday-form input,
+.wm-holiday-form select {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--surface, #fff);
+  color: var(--text, #172033);
+}
+.wm-holiday-form button.wm-primary {
+  background: var(--primary, #123b5d);
+  color: var(--on-primary, #fff);
+  font-weight: 800;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+.wm-holiday-form button.wm-primary:disabled { opacity: .5; cursor: not-allowed; }
+.wm-confirm { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.wm-hint { margin: 6px 0; font-size: 12px; color: var(--text-muted, #64748b); font-weight: 700; }
+.wm-holiday-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.wm-holiday-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border, #e2e8f0);
+}
+.wm-holiday-list .wm-h-date { font-weight: 800; color: var(--text, #172033); }
+.wm-holiday-list .wm-h-kind {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #475569;
+}
+.wm-ok { font-size: 11px; font-weight: 800; color: #166534; }
+.wm-pending { font-size: 11px; font-weight: 800; color: #b45309; }
+.wm-holiday-list button {
+  margin-inline-start: auto;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--surface, #fff);
+  cursor: pointer;
+  color: #b91c1c;
+}
+.wm-fixed { margin-top: 8px; }
+.wm-fixed summary { cursor: pointer; font-weight: 800; color: var(--text-2, #475569); font-size: 12px; }
+.wm-fixed ul { margin: 6px 18px 0 0; padding: 0; font-size: 12px; color: var(--text-2, #475569); }
+
+/* أزرار حالة اليوم */
+.wm-day-head .wm-day-actions { margin-inline-start: auto; display: flex; gap: 6px; }
+.wm-day-head .wm-day-actions button {
+  margin-inline-start: 0;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--surface, #fff);
+  cursor: pointer;
+  color: var(--text-2, #475569);
+}
+.wm-day-head .wm-day-actions button.wm-active {
+  background: var(--primary, #123b5d);
+  color: var(--on-primary, #fff);
+  border-color: var(--primary, #123b5d);
+  font-weight: 800;
+}
+
 @media print {
   /* إخفاء واجهة التطبيق فقط — ترويسة الموقع وتذييله يُخفيان أصلاً بقاعدة globals.css:234 (body > *)،
      ولا يجوز إخفاء header هنا لأن ترويسة MemoSheet الرسمية عنصر <header className="ms-head"> */

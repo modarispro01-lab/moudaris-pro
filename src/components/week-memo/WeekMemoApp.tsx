@@ -11,7 +11,7 @@ import type { Catalog } from "@/components/daily-memo/types";
 import { useWeekMemo } from "./useWeekMemo";
 import WeekLessonCard from "./WeekLessonCard";
 import WeekPrintSheet from "./WeekPrintSheet";
-import type { SkipReason } from "@/components/workspace/types";
+import HolidayPanel from "./HolidayPanel";
 import { createPortal } from "react-dom";
 
 /** ترتيب أيام العمل — لاشتقاق الرقم الترتيبي لليوم الدراسي */
@@ -49,14 +49,12 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
   const prevWeek = () => wm.shiftWeek(-7);
   const nextWeek = () => wm.shiftWeek(7);
 
-  /* تخطي يوم: سبب من المستخدم ثم حفظه */
-  const askSkip = (date: string) => {
-    const label = window.prompt("سبب تخطي هذا اليوم:", "ظرف خاص");
-    if (label == null) return; /* أُلغي */
-    const skip: SkipReason = { kind: "manual-skip", label: label || "ظرف خاص" };
-    wm.setDaySkip(date, skip);
-  };
-  const unskip = (date: string) => wm.setDaySkip(date, undefined);
+  /* حالة اليوم: دراسي / عطلة / غياب — بدل window.prompt */
+  const markSchool = (date: string) => wm.setDaySkip(date, undefined);
+  const markHoliday = (date: string) =>
+    wm.setDaySkip(date, { kind: "manual-skip", label: "عطلة" });
+  const markAbsence = (date: string) =>
+    wm.setDaySkip(date, { kind: "teacher-absence", label: "غياب الأستاذ" });
 
   return (
     <div className="wm-app">
@@ -110,6 +108,15 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
         <span className="wm-count">الأسابيع المحفوظة: {wm.savedWeeks}</span>
       </div>
 
+      {/* ===== لائحة العطل ===== */}
+      <HolidayPanel
+        calendar={wm.calendar}
+        nonSchoolDays={wm.nonSchoolDays}
+        weekStart={wm.weekStart}
+        onAdd={wm.addHoliday}
+        onRemove={wm.removeHoliday}
+      />
+
       {/* ===== شريط التحذيرات القابل للطي ===== */}
       {wm.warnings.length > 0 ? (
         <details className="wm-warnings" open={warningsOpen} onToggle={(e) => setWarningsOpen((e.target as HTMLDetailsElement).open)}>
@@ -149,17 +156,35 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
                 <div className="wm-day-head">
                   <h2>{ordinal}</h2>
                   <span className="wm-date">{toDisplayDate(day.date)}</span>
-                  {day.skip ? null : (
-                    <button type="button" onClick={() => askSkip(day.date)}>
-                      تخطّي هذا اليوم
+                  <div className="wm-day-actions">
+                    <button
+                      type="button"
+                      className={day.skip ? "" : "wm-active"}
+                      onClick={() => markSchool(day.date)}
+                    >
+                      دراسي
                     </button>
-                  )}
+                    <button
+                      type="button"
+                      className={day.skip?.kind === "manual-skip" ? "wm-active" : ""}
+                      onClick={() => markHoliday(day.date)}
+                    >
+                      عطلة
+                    </button>
+                    <button
+                      type="button"
+                      className={day.skip?.kind === "teacher-absence" ? "wm-active" : ""}
+                      onClick={() => markAbsence(day.date)}
+                    >
+                      غياب
+                    </button>
+                  </div>
                 </div>
 
                 {day.skip ? (
                   <div className="wm-day-skipped">
                     <span>يوم متخطّى: {day.skip.kind === "weekend" ? "عطلة نهاية الأسبوع" : day.skip.label}</span>
-                    <button type="button" onClick={() => unskip(day.date)}>إلغاء التخطي</button>
+                    <button type="button" onClick={() => markSchool(day.date)}>إلغاء التخطي</button>
                   </div>
                 ) : day.lessons.length === 0 ? (
                   <div className="wm-day-skipped">لا حصص في هذا اليوم.</div>
