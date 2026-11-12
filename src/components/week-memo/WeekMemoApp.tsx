@@ -246,6 +246,7 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
               stageIndex={wm.stageIndex}
               subjectNames={subjectNames}
               template={catalog.template}
+              mindMaps={wm.mindMaps}
             />,
             document.body,
           )

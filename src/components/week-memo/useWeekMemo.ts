@@ -48,6 +48,8 @@ export interface UseWeekMemoResult {
   mindMapFor: (key: string) => MindMapDoc | undefined;
   /** حفظ فروع خريطة حصة فوراً */
   setMindMap: (key: string, branches: MindMapBranch[]) => void;
+  /** كل خرائط الحصص — لورقة الطباعة */
+  mindMaps: Record<string, MindMapDoc>;
   setDaySkip: (date: string, skip: SkipReason | undefined) => void;
   savedWeeks: number;
   /** الرزمة الدراسية: العطل المضافة والمستثناة */
@@ -305,6 +307,7 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     updateLesson,
     mindMapFor,
     setMindMap,
+    mindMaps: workspace.mindMaps ?? {},
     setDaySkip,
     shiftWeek,
     savedWeeks: workspace.weeks.length,
