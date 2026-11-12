@@ -123,7 +123,30 @@ export default function HolidayPanel({ calendar, nonSchoolDays, weekStart, onAdd
       )}
 
       {active.length > 0 ? (
-        <p className="wm-hint">أيام غير دراسية هذا الأسبوع: {active.join(" · ")}</p>
+        <div className="wm-week-holidays">
+          <p className="wm-hint">
+            عطل هذا الأسبوع — اضغط «استثنِ» لإجراء الحصص فيها:
+          </p>
+          <ul className="wm-holiday-list">
+            {active.map((d) => {
+              const reason = nonSchoolDays[d];
+              const label = "label" in reason ? reason.label : "عطلة";
+              return (
+                <li key={d}>
+                  <span className="wm-h-date">{d}</span>
+                  <span className="wm-h-label">{label}</span>
+                  <button
+                    type="button"
+                    className="wm-exempt-btn"
+                    onClick={() => onRemove(d)}
+                  >
+                    استثنِ
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       ) : null}
 
       <details className="wm-fixed">

@@ -314,6 +314,15 @@
   cursor: pointer;
 }
 
+/* عطل هذا الأسبوع + زر الاستثناء */
+.wm-week-holidays { margin-top: 10px; }
+.wm-holiday-list button.wm-exempt-btn {
+  margin-inline-start: 0;
+  color: #166534;
+  border-color: #86efac;
+  font-weight: 800;
+}
+
 @media print {
   /* إخفاء واجهة التطبيق فقط — ترويسة الموقع وتذييله يُخفيان أصلاً بقاعدة globals.css:234 (body > *)،
      ولا يجوز إخفاء header هنا لأن ترويسة MemoSheet الرسمية عنصر <header className="ms-head"> */
