@@ -5,7 +5,8 @@
    بلا زر حفظ، وبلا زر تخطٍ (التخطي على مستوى اليوم).
    ============================================================ */
 
-import type { LessonDoc } from "@/components/workspace/types";
+import type { LessonDoc, MindMapBranch, MindMapDoc } from "@/components/workspace/types";
+import { defaultBranches } from "@/lib/mind-map";
 
 export interface WeekLessonCardProps {
   lesson: LessonDoc;
@@ -13,6 +14,10 @@ export interface WeekLessonCardProps {
   subjectName: string;
   /** إرسال التعديل للأعلى — يُحفظ فوراً في مساحة العمل */
   onChange: (patch: Partial<LessonDoc>) => void;
+  /** خريطة الحصة المحفوظة (مستقلة عن الأسبوع) */
+  mindMap?: MindMapDoc;
+  /** حفظ فروع الخريطة فوراً */
+  onMindMapChange: (branches: MindMapBranch[]) => void;
 }
 
 /** حقل نصي مضبوط موحّد */
@@ -43,7 +48,12 @@ export default function WeekLessonCard({
   lesson,
   subjectName,
   onChange,
+  mindMap,
+  onMindMapChange,
 }: WeekLessonCardProps) {
+  /* الفروع: المحفوظة إن وُجدت، وإلا مشتقة من حقول الحصة */
+  const branches = mindMap?.branches?.length ? mindMap.branches : defaultBranches(lesson);
+
   return (
     <article className="wm-card">
       <div className="wm-card-head">
@@ -135,6 +145,30 @@ export default function WeekLessonCard({
           />
         </div>
       </div>
+
+      {/* ===== الخريطة الذهنية للحصة ===== */}
+      <details className="wm-mm">
+        <summary>الخريطة الذهنية ({branches.length} فروع)</summary>
+        <div className="wm-mm-center">{lesson.topic || "بدون موضوع"}</div>
+        <div className="wm-mm-grid">
+          {branches.map((b) => (
+            <div className="wm-mm-node" key={b.id}>
+              <span className="wm-mm-label">{b.label}</span>
+              <textarea
+                value={b.text}
+                rows={3}
+                onChange={(e) =>
+                  onMindMapChange(
+                    branches.map((x) =>
+                      x.id === b.id ? { ...x, text: e.target.value } : x
+                    )
+                  )
+                }
+              />
+            </div>
+          ))}
+        </div>
+      </details>
     </article>
   );
 }

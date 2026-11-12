@@ -12,6 +12,7 @@ import { useWeekMemo } from "./useWeekMemo";
 import WeekLessonCard from "./WeekLessonCard";
 import WeekPrintSheet from "./WeekPrintSheet";
 import HolidayPanel from "./HolidayPanel";
+import { mindMapKey } from "@/lib/mind-map";
 import { createPortal } from "react-dom";
 
 /** ترتيب أيام العمل — لاشتقاق الرقم الترتيبي لليوم الدراسي */
@@ -222,6 +223,10 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
                       key={lesson.id}
                       lesson={lesson}
                       subjectName={subjectNames[lesson.subjectId] || ""}
+                      mindMap={wm.mindMapFor(mindMapKey(day.date, lesson))}
+                      onMindMapChange={(branches) =>
+                        wm.setMindMap(mindMapKey(day.date, lesson), branches)
+                      }
                       onChange={(patch) => wm.updateLesson(lesson.id, patch)}
                     />
                   ))
