@@ -61,9 +61,13 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
     if (!wm.week) return false;
     return wm.week.days.some((day) => {
       const want = wm.nonSchoolDays[day.date];
-      const isHolidaySkip = day.skip?.kind !== "teacher-absence" && day.skip?.kind !== "weekend";
+      /* لا تُعتبر «قديمة» إلا تخطيات المولّد (عطل حقيقية) — لا التخطي اليدوي اليومي */
+      const isCalendarSkip =
+        day.skip?.kind === "official-holiday" ||
+        day.skip?.kind === "religious-holiday" ||
+        day.skip?.kind === "school-vacation";
       if (want) return !day.skip || day.skip.kind !== want.kind;
-      return Boolean(day.skip && isHolidaySkip);
+      return Boolean(day.skip && isCalendarSkip);
     });
   }, [wm.week, wm.nonSchoolDays]);
 
@@ -176,7 +180,7 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
                   <h2>{ordinal}</h2>
                   <span className="wm-date">{toDisplayDate(day.date)}</span>
                   {day.skip ? (
-                    <span className="wm-badge">
+                    <span className="wm-day-badge">
                       {day.skip.kind === "weekend" ? "عطلة نهاية الأسبوع" : day.skip.label}
                     </span>
                   ) : null}
