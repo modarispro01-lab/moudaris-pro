@@ -26,6 +26,7 @@ import type {
   LessonDoc,
   SkipReason,
 } from "@/components/workspace/types";
+import { mondayOfIso } from "@/lib/moroccan-calendar";
 
 /** ترتيب أيام العمل من الاثنين — يحدد إزاحة التاريخ عن weekStart */
 const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat"] as const;
@@ -71,6 +72,8 @@ export function truncateTopic(text: string, max = 60): string {
 export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
   const { state, catalog, stageIndex, weekNumber, weekStart } = input;
   const nonSchoolDays = input.nonSchoolDays ?? {};
+  /* بداية الأسبوع تُطبَّع إلى الاثنين: أي يوم يُختار يعطي نفس الأسبوع */
+  const start = mondayOfIso(weekStart);
   const warnings: string[] = [];
 
   try {
@@ -97,7 +100,7 @@ export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
 
     for (const plan of plans) {
       const offset = DAY_ORDER.indexOf(plan.day.dayId);
-      const date = addDays(weekStart, offset < 0 ? 0 : offset);
+      const date = addDays(start, offset < 0 ? 0 : offset);
 
       /* (ج) يوم غير دراسي → DayDoc بتخطي وبلا حصص */
       const skip = nonSchoolDays[date];
@@ -129,8 +132,8 @@ export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
 
     /* (هـ) وثيقة الأسبوع */
     const week: WeekDoc = {
-      id: weekStart,
-      isoWeekStart: weekStart,
+      id: start,
+      isoWeekStart: start,
       weekNumber,
       stageId: "stage-" + (stageIndex + 1),
       generatedFrom: "timetable",
@@ -142,8 +145,8 @@ export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
     /* الدالة لا ترمي أبدًا: أسبوع فارغ صالح + تحذير بنص الاستثناء */
     return {
       week: {
-        id: weekStart,
-        isoWeekStart: weekStart,
+        id: start,
+        isoWeekStart: start,
         weekNumber,
         stageId: "stage-" + (stageIndex + 1),
         generatedFrom: "timetable",
