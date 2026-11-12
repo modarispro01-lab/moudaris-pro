@@ -18,7 +18,7 @@ export interface Workspace {
   timetable: TimetableState;
   calendar: CalendarOverrides;
   weeks: WeekDoc[];
-  mindMaps: Record<string, MindMapRef>;
+  mindMaps: Record<string, MindMapDoc>;
 }
 
 /** ملف الأستاذ الموحّد (يُملأ من الترحيل ويُحرَّر لاحقًا) */
@@ -92,10 +92,17 @@ export interface LessonDoc {
   edited: boolean;
 }
 
-/** مرجع خطاطة ذهنية محفوظة (المعرّف يربطها بحصة) */
-export interface MindMapRef {
-  docId: string;
-  subject: "arabic" | "french" | "math";
+/** فرع واحد في خريطة الحصة */
+export interface MindMapBranch {
+  id: string;
+  label: string;
+  text: string;
+}
+
+/** خريطة حصة محفوظة — المفتاح: التاريخ|الحصة|الفوج */
+export interface MindMapDoc {
+  key: string;
+  branches: MindMapBranch[];
   updatedAt: string;
 }
 

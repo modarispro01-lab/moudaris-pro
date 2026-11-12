@@ -17,6 +17,8 @@ import { buildNonSchoolDays, mondayOfIso } from "@/lib/moroccan-calendar";
 import type {
   CalendarDay,
   CalendarOverrides,
+  MindMapBranch,
+  MindMapDoc,
   SkipReason,
   WeekDoc,
   TeacherProfile,
@@ -42,6 +44,10 @@ export interface UseWeekMemoResult {
   generate: () => void;
   regenerate: () => void;
   updateLesson: (lessonId: string, patch: Partial<LessonDocPatch>) => void;
+  /** خريطة حصة محفوظة — مستقلة عن الأسبوع المحفوظ */
+  mindMapFor: (key: string) => MindMapDoc | undefined;
+  /** حفظ فروع خريطة حصة فوراً */
+  setMindMap: (key: string, branches: MindMapBranch[]) => void;
   setDaySkip: (date: string, skip: SkipReason | undefined) => void;
   savedWeeks: number;
   /** الرزمة الدراسية: العطل المضافة والمستثناة */
@@ -258,6 +264,26 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     [update]
   );
 
+  /** قراءة خريطة حصة من المخزن (حاجز لمساحات قديمة بلا mindMaps) */
+  const mindMapFor = useCallback(
+    (key: string) => (workspace.mindMaps ?? {})[key],
+    [workspace.mindMaps]
+  );
+
+  /** حفظ فروع الخريطة فوراً في مساحة العمل */
+  const setMindMap = useCallback(
+    (key: string, branches: MindMapBranch[]) => {
+      update((ws) => ({
+        ...ws,
+        mindMaps: {
+          ...(ws.mindMaps ?? {}),
+          [key]: { key, branches, updatedAt: new Date().toISOString() },
+        },
+      }));
+    },
+    [update]
+  );
+
   const shiftWeek = useCallback((days: number) => {
     setWeekStart((prev) => shiftIso(prev || currentMondayIso(), days));
   }, []);
@@ -277,6 +303,8 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     generate,
     regenerate,
     updateLesson,
+    mindMapFor,
+    setMindMap,
     setDaySkip,
     shiftWeek,
     savedWeeks: workspace.weeks.length,
