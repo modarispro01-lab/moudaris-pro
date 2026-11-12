@@ -56,6 +56,17 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
   const markAbsence = (date: string) =>
     wm.setDaySkip(date, { kind: "teacher-absence", label: "غياب الأستاذ" });
 
+  /* هل العطلة الحالية تختلف عن المذكرة المعروضة؟ (المذكرة المحفوظة مجمّدة) */
+  const staleHolidays = useMemo(() => {
+    if (!wm.week) return false;
+    return wm.week.days.some((day) => {
+      const want = wm.nonSchoolDays[day.date];
+      const isHolidaySkip = day.skip?.kind !== "teacher-absence" && day.skip?.kind !== "weekend";
+      if (want) return !day.skip || day.skip.kind !== want.kind;
+      return Boolean(day.skip && isHolidaySkip);
+    });
+  }, [wm.week, wm.nonSchoolDays]);
+
   return (
     <div className="wm-app">
       {/* ===== شريط الأدوات اللاصق ===== */}
@@ -117,6 +128,14 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
         onRemove={wm.removeHoliday}
       />
 
+      {/* ===== تنبيه: المذكرة المحفوظة لا تعكس العطل الحالية ===== */}
+      {staleHolidays ? (
+        <div className="wm-stale">
+          <span>العطل تغيّرت — المذكرة المعروضة لا تعكسها.</span>
+          <button type="button" onClick={() => wm.regenerate()}>أعد التوليد لتطبيقها</button>
+        </div>
+      ) : null}
+
       {/* ===== شريط التحذيرات القابل للطي ===== */}
       {wm.warnings.length > 0 ? (
         <details className="wm-warnings" open={warningsOpen} onToggle={(e) => setWarningsOpen((e.target as HTMLDetailsElement).open)}>
@@ -156,6 +175,11 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
                 <div className="wm-day-head">
                   <h2>{ordinal}</h2>
                   <span className="wm-date">{toDisplayDate(day.date)}</span>
+                  {day.skip ? (
+                    <span className="wm-badge">
+                      {day.skip.kind === "weekend" ? "عطلة نهاية الأسبوع" : day.skip.label}
+                    </span>
+                  ) : null}
                   <div className="wm-day-actions">
                     <button
                       type="button"

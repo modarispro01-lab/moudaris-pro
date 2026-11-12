@@ -107,6 +107,15 @@ export default function HolidayPanel({ calendar, nonSchoolDays, weekStart, onAdd
                   {h.confirmed ? "مؤكَّدة" : "بانتظار التأكيد"}
                 </span>
               ) : null}
+              {h.kind === "religious-holiday" && !h.confirmed ? (
+                <button
+                  type="button"
+                  className="wm-confirm-btn"
+                  onClick={() => onAdd({ ...h, confirmed: true })}
+                >
+                  أكّد الرؤية
+                </button>
+              ) : null}
               <button type="button" onClick={() => onRemove(h.date)}>حذف</button>
             </li>
           ))}
