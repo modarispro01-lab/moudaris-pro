@@ -7,7 +7,6 @@ import {
   cx,
   durationLabel,
   fieldLabel,
-  formatDuration,
   formatLongDate,
   lessonBreakMinutes,
   lessonsCountLabel,
@@ -145,6 +144,14 @@ function blankRow(template: TemplateConfig, rowKey: string) {
   );
 }
 
+/** صياغة عربية سليمة لمدة الانتقال: 1 → دقيقة واحدة، 2 → دقيقتان، 3–10 → دقائق، 11+ → دقيقة */
+function transitionMinutesLabel(minutes: number): string {
+  if (minutes === 1) return "دقيقة واحدة";
+  if (minutes === 2) return "دقيقتان";
+  if (minutes >= 3 && minutes <= 10) return `${minutes} دقائق`;
+  return `${minutes} دقيقة`;
+}
+
 function breakRow(lesson: MemoLesson, template: TemplateConfig) {
   const minutes = lessonBreakMinutes(lesson);
   if (!minutes) return null;
@@ -152,9 +159,9 @@ function breakRow(lesson: MemoLesson, template: TemplateConfig) {
     <tr key={`${lesson.id}-break`} className="ms-break-row">
       <td colSpan={template.tableColumns.length}>
         <span className="ms-break-inner">
-          <b>استراحة</b>
+          <b>الانتقال بين الحصتين</b>
           <i aria-hidden="true" />
-          <em>{formatDuration(minutes)}</em>
+          <em>{transitionMinutesLabel(minutes)}</em>
         </span>
       </td>
     </tr>

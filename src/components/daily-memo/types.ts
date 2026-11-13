@@ -364,11 +364,12 @@ export function lessonBreakMinutes(lesson: MemoLesson): number {
   return Math.min(180, Math.round(value));
 }
 
+/** صياغة عربية سليمة لعدد مرات الانتقال بين الحصتين (نفس صف الجدول) */
 export function breaksCountLabel(count: number): string {
-  if (count === 1) return "استراحة واحدة";
-  if (count === 2) return "استراحتان";
-  if (count >= 3 && count <= 10) return `${count} استراحات`;
-  return `${count} استراحة`;
+  if (count === 1) return "انتقال واحد";
+  if (count === 2) return "انتقالان";
+  if (count >= 3 && count <= 10) return `${count} انتقالات`;
+  return `${count} انتقالاً`;
 }
 
 export function todayIso(): string {
