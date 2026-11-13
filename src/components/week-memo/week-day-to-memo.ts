@@ -73,7 +73,7 @@ export function dayToMemoSheets(day: DayDoc, opts: Options): WeekSheet[] {
         section: "",
         notes,
         period: block,
-        showNotes: notes.length > 0,
+        showNotes: true,
         showSignatures: true,
         showDismissal: false,
         lessons: memoLessons,
