@@ -43,6 +43,10 @@ export interface GenerateWeekInput {
   weekStart: string;
   /** أيام غير دراسية: تاريخ ISO ← سبب التخطي. فارغة في هذه المرحلة (المرحلة ٤ تملأها) */
   nonSchoolDays?: Record<string, SkipReason>;
+  /** رقم اليوم داخل الدورة لكل يوم في الأسبوع (1..6) */
+  cycleDayByDay?: Record<string, number>;
+  /** حمل تسلسل الحصص قبل بداية الأسبوع داخل الدورة */
+  sessionCarry?: Map<string, number>;
 }
 
 /** ناتج المولّد */
@@ -78,7 +82,18 @@ export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
 
   try {
     /* (أ) خطة الأسبوع من الجسر — مرة واحدة */
-    const plans: BridgeDayPlan[] = buildWeekPlans(state);
+    /* حدود الدورة: أيام العطلة لا تُحتسب، وأيام «اليوم الأول» تُصفّر العدّاد */
+    const skipDays = new Set(
+      DAY_ORDER.filter((_, i) => !!nonSchoolDays[addDays(start, i)])
+    );
+    const resetDays = new Set(
+      DAY_ORDER.filter((dayId) => input.cycleDayByDay?.[dayId] === 1)
+    );
+    const plans: BridgeDayPlan[] = buildWeekPlans(state, {
+      carry: input.sessionCarry,
+      skipDays,
+      resetDays,
+    });
 
     /* عدّاد حصص كل ثلاثية (مادة+مستوى+فوج) لتحذير التجاوز (القاعدة و) */
     const tripleCount = new Map<string, { n: number; name: string; level: LevelData | null }>();

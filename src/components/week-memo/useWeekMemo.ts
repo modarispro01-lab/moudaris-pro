@@ -176,7 +176,7 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     });
     setWeekStart(start);
     saveWeek(newWeek, ws);
-  }, [timetable, catalog, stageIndex, weekNumber, weekStart, workspace.weeks, saveWeek, nonSchoolDays]);
+  }, [timetable, catalog, stageIndex, weekNumber, weekStart, workspace.weeks, saveWeek, nonSchoolDays, calendar]);
 
   /** إعادة التوليد بلا سؤال — الزر في الواجهة يطلب التأكيد الصريح قبل ندائها */
   const regenerate = useCallback(() => {
@@ -193,7 +193,7 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     });
     setWeekStart(start);
     saveWeek(newWeek, ws);
-  }, [timetable, catalog, stageIndex, weekNumber, weekStart, saveWeek, nonSchoolDays]);
+  }, [timetable, catalog, stageIndex, weekNumber, weekStart, saveWeek, nonSchoolDays, calendar]);
 
   /** تعديل حصة داخل الأسبوع المحفوظ + وسم edited=true */
   const updateLesson = useCallback(

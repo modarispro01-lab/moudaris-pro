@@ -191,9 +191,10 @@ function ordinalKey(period: Period, knownLevelIds: Set<string>): string | null {
  */
 function sessionOrdinalsForDay(
   state: TimetableState,
-  dayId: DayId
+  dayId: DayId,
+  opts: SessionOrdinalOptions = {}
 ): Map<Period, number> {
-  const counters = new Map<string, number>();
+  const counters = new Map<string, number>(opts.carry ?? []);
   const result = new Map<Period, number>();
   const days = LEGAL_DAY_ORDER.filter((d) => state.days?.includes(d));
   const stopIndex = days.indexOf(dayId);
@@ -205,6 +206,10 @@ function sessionOrdinalsForDay(
       .filter((id): id is string => !!id)
   );
   for (const day of days.slice(0, stopIndex + 1)) {
+    /* يوم عطلة: لا يُحتسب في التسلسل */
+    if (opts.skipDays?.has(day)) continue;
+    /* بداية دورة جديدة: تصفير العدّادات */
+    if (opts.resetDays?.has(day)) counters.clear();
     for (const period of dayPeriods(state, day)) {
       if (period.isBreak) continue;
       const key = ordinalKey(period, knownLevelIds);
@@ -215,6 +220,30 @@ function sessionOrdinalsForDay(
     }
   }
   return result;
+}
+
+/** خيارات تسلسل الحصص: حمل من الأسابيع السابقة + حدود الدورة */
+export interface SessionOrdinalOptions {
+  /** عدد حصص كل ثلاثية قبل بداية الأسبوع الحالي داخل الدورة */
+  carry?: Map<string, number>;
+  /** أيام تبدأ دورة جديدة (يُصفَّر عندها العدّاد) */
+  resetDays?: Set<DayId>;
+  /** أيام عطلة لا تُحتسب */
+  skipDays?: Set<DayId>;
+}
+
+/** مفاتيح الثلاثيات لحصص يوم واحد — تُستعمل لحساب الحمل بين الأسابيع */
+export function sessionTripleKeys(state: TimetableState, dayId: DayId): string[] {
+  const knownLevelIds = new Set(
+    (state.info?.levels ?? []).map((level) => level.id).filter((id): id is string => !!id)
+  );
+  const out: string[] = [];
+  for (const period of dayPeriods(state, dayId)) {
+    if (period.isBreak) continue;
+    const key = ordinalKey(period, knownLevelIds);
+    if (key) out.push(key);
+  }
+  return out;
 }
 
 /** الاستراحة بعد الحصة: الفجوة إلى بداية أول حصة تالية (بسقف 180 د مثل المذكرة). */
@@ -250,7 +279,8 @@ export function listBridgeDays(state: TimetableState): BridgeDay[] {
  */
 export function buildDayPlan(
   state: TimetableState,
-  dayId: DayId
+  dayId: DayId,
+  opts: SessionOrdinalOptions = {}
 ): BridgeDayPlan | null {
   if (!state || !DAY_KEY_BY_ID[dayId]) return null;
   if (!state.days?.includes(dayId)) return null;
@@ -267,7 +297,7 @@ export function buildDayPlan(
   const levelsById = new Map(
     (state.info?.levels ?? []).map((level) => [level.id, level])
   );
-  const ordinals = sessionOrdinalsForDay(state, dayId);
+  const ordinals = sessionOrdinalsForDay(state, dayId, opts);
 
   const sessions: BridgeSession[] = lessonEntries.map(({ period, index }) => {
     const level = period.levelId ? levelsById.get(period.levelId) : undefined;
@@ -306,9 +336,12 @@ export function buildDayPlan(
 }
 
 /** خطاطة الأسبوع كاملة: خطة كل يوم مبرمج (له حصص) بالترتيب القانوني. */
-export function buildWeekPlans(state: TimetableState): BridgeDayPlan[] {
+export function buildWeekPlans(
+  state: TimetableState,
+  opts: SessionOrdinalOptions = {}
+): BridgeDayPlan[] {
   return listBridgeDays(state)
     .filter((day) => day.lessonCount > 0)
-    .map((day) => buildDayPlan(state, day.dayId))
+    .map((day) => buildDayPlan(state, day.dayId, opts))
     .filter((plan): plan is BridgeDayPlan => plan !== null);
 }

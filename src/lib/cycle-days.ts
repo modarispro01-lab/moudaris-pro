@@ -47,3 +47,38 @@ export function cycleDayNumbers(
   }
   return out;
 }
+
+/**
+ * حمل تسلسل الحصص: عدد حصص كل ثلاثية قبل بداية الأسبوع الهدف داخل الدورة.
+ * العطلة لا تُحتسب، والعدّاد يُصفَّر عند إتمام الدورة.
+ */
+export function sessionCarryFor(opts: {
+  targetWeekStart: string;
+  weekNumber: number;
+  calendar: CalendarOverrides;
+  dayOrder?: readonly string[];
+  keysForDay: (dayId: string) => string[];
+}): Map<string, number> {
+  const dayOrder = opts.dayOrder ?? DEFAULT_DAY_ORDER;
+  const len = dayOrder.length;
+  const carry = new Map<string, number>();
+  if (!len) return carry;
+  const target = mondayOfIso(opts.targetWeekStart);
+  let week = cycleAnchorIso(target, opts.weekNumber);
+  let n = 0;
+  /* سقف أمان: 12 أسبوعًا */
+  for (let guard = 0; guard < 12 && week < target; guard++) {
+    const nonSchool = buildNonSchoolDays(opts.calendar, week);
+    for (let i = 0; i < len; i++) {
+      const date = addDaysIso(week, i);
+      if (nonSchool[date]) continue;
+      n += 1;
+      for (const key of opts.keysForDay(dayOrder[i])) {
+        carry.set(key, (carry.get(key) ?? 0) + 1);
+      }
+      if (n % len === 0) carry.clear();
+    }
+    week = addDaysIso(week, 7);
+  }
+  return carry;
+}
