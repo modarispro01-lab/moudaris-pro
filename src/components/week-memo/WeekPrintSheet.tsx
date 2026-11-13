@@ -34,7 +34,7 @@ export default function WeekPrintSheet({ week, profile, stageIndex, subjectNames
         weekNumber: week.weekNumber,
         stageIndex,
         subjectNames,
-        dayOrdinal: DAY_ORDER.indexOf(day.dayId),
+        dayOrdinal: (day.cycleDay ?? DAY_ORDER.indexOf(day.dayId) + 1) - 1,
       })
     );
 

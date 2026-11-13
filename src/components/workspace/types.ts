@@ -55,6 +55,8 @@ export interface DayDoc {
   date: string;
   dayId: "mon" | "tue" | "wed" | "thu" | "fri" | "sat";
   skip?: SkipReason;
+  /** رقم اليوم داخل الدورة التربوية (1..6) — يُحسب عند التوليد */
+  cycleDay?: number;
   lessons: LessonDoc[];
 }
 

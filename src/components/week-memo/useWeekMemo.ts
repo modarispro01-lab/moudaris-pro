@@ -14,6 +14,7 @@ import type { TimetableState } from "@/components/timetable/types";
 import type { Catalog } from "@/components/daily-memo/types";
 import { generateWeek } from "@/lib/week-memo-generator";
 import { buildNonSchoolDays, mondayOfIso } from "@/lib/moroccan-calendar";
+import { cycleDayNumbers } from "@/lib/cycle-days";
 import type {
   CalendarDay,
   CalendarOverrides,
@@ -138,13 +139,21 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
   /* الحفظ المشترك: يستبدل الأسبوع بنفس المعرّف داخل workspace.weeks */
   const saveWeek = useCallback(
     (newWeek: WeekDoc, wsWarnings: string[]) => {
+      /* ترقيم اليوم التربوي: دورة متصلة داخل المرحلة (العطلة لا تحجز رقمًا) */
+      const numbers = cycleDayNumbers(newWeek.isoWeekStart, newWeek.weekNumber, calendar);
+      const decorated: WeekDoc = {
+        ...newWeek,
+        days: newWeek.days.map((day) =>
+          numbers[day.dayId] ? { ...day, cycleDay: numbers[day.dayId] } : day
+        ),
+      };
       update((ws) => ({
         ...ws,
-        weeks: [newWeek, ...ws.weeks.filter((w) => w.id !== newWeek.id)],
+        weeks: [decorated, ...ws.weeks.filter((w) => w.id !== decorated.id)],
       }));
       setWarnings(wsWarnings);
     },
-    [update]
+    [update, calendar]
   );
 
   /** التوليد الأول: إن وُجد أسبوع محفوظ يُسأل المستخدم قبل الاستبدال */

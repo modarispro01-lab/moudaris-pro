@@ -174,7 +174,8 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
         <>
           {wm.week.days.map((day) => {
             const orderIndex = DAY_ORDER.indexOf(day.dayId);
-            const ordinal = ORDINALS[orderIndex] ?? `اليوم ${orderIndex + 1}`;
+            const ordinalIndex = (day.cycleDay ?? orderIndex + 1) - 1;
+            const ordinal = ORDINALS[ordinalIndex] ?? `اليوم ${ordinalIndex + 1}`;
             return (
               <section className="wm-day" key={day.date}>
                 <div className="wm-day-head">
