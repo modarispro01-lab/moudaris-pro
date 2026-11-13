@@ -16,14 +16,37 @@ export interface FixedHoliday {
 export const FIXED_HOLIDAYS: FixedHoliday[] = [
   { month: 1, day: 1, label_ar: "رأس السنة الميلادية" },
   { month: 1, day: 11, label_ar: "تقديم وثيقة الاستقلال" },
+  { month: 1, day: 14, label_ar: "رأس السنة الأمازيغية" },
   { month: 5, day: 1, label_ar: "عيد الشغل" },
   { month: 7, day: 30, label_ar: "عيد العرش" },
   { month: 8, day: 14, label_ar: "ذكرى استرجاع وادي الذهب" },
   { month: 8, day: 20, label_ar: "ذكرى ثورة الملك والشعب" },
   { month: 8, day: 21, label_ar: "عيد الشباب" },
+  { month: 10, day: 31, label_ar: "عيد الوحدة" },
   { month: 11, day: 6, label_ar: "ذكرى المسيرة الخضراء" },
   { month: 11, day: 18, label_ar: "عيد الاستقلال" },
 ];
+
+/** عطلة مدرسية محدّدة النطاق (تُحدَّث كل سنة دراسية — من المذكرة الوزارية) */
+export interface SchoolVacation {
+  from: string; // أول يوم ISO
+  to: string;   // آخر يوم ISO (شامل)
+  label_ar: string;
+}
+
+/** العطل المدرسية للسنة الدراسية 2026-2027 */
+export const SCHOOL_VACATIONS: SchoolVacation[] = [
+  { from: "2026-10-18", to: "2026-10-25", label_ar: "العطلة البينية الأولى" },
+  { from: "2026-12-06", to: "2026-12-13", label_ar: "العطلة البينية الثانية" },
+  { from: "2027-01-24", to: "2027-01-31", label_ar: "عطلة منتصف السنة الدراسية" },
+  { from: "2027-03-21", to: "2027-03-28", label_ar: "العطلة البينية الثالثة" },
+  { from: "2027-05-09", to: "2027-05-16", label_ar: "العطلة البينية الرابعة" },
+];
+
+/** العطلة المدرسية الموافقة لتاريخ ISO — أو undefined */
+function vacationFor(iso: string): SchoolVacation | undefined {
+  return SCHOOL_VACATIONS.find((v) => iso >= v.from && iso <= v.to);
+}
 
 /** أسماء العطل الدينية — تُضاف بتواريخها يدوياً لأنها تُعلَن بالرؤية لا بالحساب */
 export const RELIGIOUS_LABELS = ["عيد الفطر", "عيد الأضحى", "فاتح محرم", "المولد النبوي"] as const;
@@ -83,6 +106,11 @@ export function buildNonSchoolDays(
     const fixed = fixedFor(date);
     if (fixed) {
       out[date] = { kind: "official-holiday", id: "fixed-" + date.slice(5), label: fixed.label_ar };
+    }
+
+    const vacation = vacationFor(date);
+    if (vacation) {
+      out[date] = { kind: "school-vacation", id: "vac-" + date, label: vacation.label_ar };
     }
 
     const addedList = calendar?.added ?? [];
