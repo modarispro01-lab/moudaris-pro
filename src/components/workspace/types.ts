@@ -17,6 +17,8 @@ export interface Workspace {
   classes: ClassRef[];
   timetable: TimetableState;
   calendar: CalendarOverrides;
+  /** بداية كل مرحلة: معرّف المرحلة ← تاريخ الاثنين ISO */
+  stageStart?: Record<string, string>;
   weeks: WeekDoc[];
   mindMaps: Record<string, MindMapDoc>;
 }
@@ -57,6 +59,8 @@ export interface DayDoc {
   skip?: SkipReason;
   /** رقم اليوم داخل الدورة التربوية (1..6) — يُحسب عند التوليد */
   cycleDay?: number;
+  /** الأسبوع التربوي لهذا اليوم داخل المرحلة (1..6) */
+  weekNumber?: number;
   lessons: LessonDoc[];
 }
 

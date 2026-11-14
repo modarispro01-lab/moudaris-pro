@@ -37,8 +37,8 @@ export interface GenerateWeekInput {
   catalog: Catalog;
   /** ترتيب المرحلة داخل كل مادة: 0 = المرحلة الأولى */
   stageIndex: number;
-  /** رقم الأسبوع داخل المرحلة: 1..5 */
-  weekNumber: number;
+  /** رقم الأسبوع التربوي — احتياطي فقط إن لم تُمرَّر cyclePosByDay */
+  weekNumber?: number;
   /** تاريخ الاثنين ISO: "2026-11-09" */
   weekStart: string;
   /** أيام غير دراسية: تاريخ ISO ← سبب التخطي. فارغة في هذه المرحلة (المرحلة ٤ تملأها) */
@@ -47,6 +47,8 @@ export interface GenerateWeekInput {
   cycleDayByDay?: Record<string, number>;
   /** حمل تسلسل الحصص قبل بداية الأسبوع داخل الدورة */
   sessionCarry?: Map<string, number>;
+  /** موضع كل يوم في المرحلة: الأسبوع التربوي + اليوم (يغلب weekNumber) */
+  cyclePosByDay?: Record<string, { week: number; day: number }>;
 }
 
 /** ناتج المولّد */
@@ -74,7 +76,8 @@ export function truncateTopic(text: string, max = 60): string {
  * أيام بلا حصص لا تُنتج يومًا (buildWeekPlans يرشحها مسبقًا).
  */
 export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
-  const { state, catalog, stageIndex, weekNumber, weekStart } = input;
+  const { state, catalog, stageIndex, weekStart } = input;
+  const weekNumber = input.weekNumber ?? 1;
   const nonSchoolDays = input.nonSchoolDays ?? {};
   /* بداية الأسبوع تُطبَّع إلى الاثنين: أي يوم يُختار يعطي نفس الأسبوع */
   const start = mondayOfIso(weekStart);
@@ -124,13 +127,15 @@ export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
         continue;
       }
 
+      /* الأسبوع التربوي لهذا اليوم: من الموضع المحسوب، وإلا الاحتياطي */
+      const dayWeek = input.cyclePosByDay?.[plan.day.dayId]?.week ?? weekNumber;
       const lessons: LessonDoc[] = [];
       for (let i = 0; i < plan.sessions.length; i++) {
         lessons.push(
-          buildLesson(plan.sessions[i], i, catalog, stageIndex, weekNumber, date, warnings)
+          buildLesson(plan.sessions[i], i, catalog, stageIndex, dayWeek, date, warnings)
         );
       }
-      days.push({ date, dayId: plan.day.dayId, lessons });
+      days.push({ date, dayId: plan.day.dayId, weekNumber: dayWeek, lessons });
     }
 
     /* (و) تحذير تجاوز العدد لكل ثلاثية */

@@ -54,7 +54,9 @@ export function cycleDayNumbers(
  */
 export function sessionCarryFor(opts: {
   targetWeekStart: string;
-  weekNumber: number;
+  /** بداية المرحلة: إن وُجدت فهي الأصل، وإلا يُستعمل weekNumber */
+  stageStartIso?: string;
+  weekNumber?: number;
   calendar: CalendarOverrides;
   dayOrder?: readonly string[];
   keysForDay: (dayId: string) => string[];
@@ -64,7 +66,9 @@ export function sessionCarryFor(opts: {
   const carry = new Map<string, number>();
   if (!len) return carry;
   const target = mondayOfIso(opts.targetWeekStart);
-  let week = cycleAnchorIso(target, opts.weekNumber);
+  let week = opts.stageStartIso
+    ? mondayOfIso(opts.stageStartIso)
+    : cycleAnchorIso(target, opts.weekNumber ?? 1);
   let n = 0;
   /* سقف أمان: 12 أسبوعًا */
   for (let guard = 0; guard < 12 && week < target; guard++) {
@@ -81,4 +85,53 @@ export function sessionCarryFor(opts: {
     week = addDaysIso(week, 7);
   }
   return carry;
+}
+
+/** موضع يوم داخل المرحلة: الأسبوع التربوي واليوم داخله */
+export interface CyclePosition {
+  /** رقم الأسبوع التربوي داخل المرحلة (1، 2، 3 ...) */
+  week: number;
+  /** رقم اليوم داخل الأسبوع التربوي (1..طول الدورة) */
+  day: number;
+  /** العدد التراكمي للأيام الدراسية من بداية المرحلة */
+  n: number;
+}
+
+/**
+ * مواضع أيام أسبوع واحد داخل المرحلة.
+ * الأسبوع التربوي = طول الدورة (6 أيام دراسية عادة)، والعطلة لا تُحتسب.
+ * إذا كانت بداية المرحلة بعد الأسبوع الهدف تُعاد خريطة فارغة.
+ */
+export function cyclePositions(opts: {
+  stageStartIso: string;
+  targetWeekStart: string;
+  calendar: CalendarOverrides;
+  dayOrder?: readonly string[];
+}): Record<string, CyclePosition> {
+  const dayOrder = opts.dayOrder ?? DEFAULT_DAY_ORDER;
+  const len = dayOrder.length;
+  const out: Record<string, CyclePosition> = {};
+  if (!len) return out;
+  const target = mondayOfIso(opts.targetWeekStart);
+  let week = mondayOfIso(opts.stageStartIso);
+  if (!week || week > target) return out;
+  let n = 0;
+  /* سقف أمان: 60 أسبوعًا */
+  for (let guard = 0; guard < 60 && week <= target; guard++) {
+    const nonSchool = buildNonSchoolDays(opts.calendar, week);
+    for (let i = 0; i < len; i++) {
+      const date = addDaysIso(week, i);
+      if (nonSchool[date]) continue;
+      n += 1;
+      if (week === target) {
+        out[dayOrder[i]] = {
+          week: Math.floor((n - 1) / len) + 1,
+          day: ((n - 1) % len) + 1,
+          n,
+        };
+      }
+    }
+    week = addDaysIso(week, 7);
+  }
+  return out;
 }
