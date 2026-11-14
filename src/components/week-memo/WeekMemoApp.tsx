@@ -89,16 +89,16 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
           onChange={(e) => wm.setStageIndex(Number(e.target.value))}
           aria-label="ترتيب المرحلة"
         >
-          <option value={0}>المرحلة 1</option>
-          <option value={1}>المرحلة 2</option>
-          <option value={2}>المرحلة 3</option>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <option key={i} value={i}>المرحلة {i + 1}</option>
+          ))}
         </select>
         <select
           value={wm.weekNumber}
           onChange={(e) => wm.setWeekNumber(Number(e.target.value))}
           aria-label="رقم الأسبوع"
         >
-          {[1, 2, 3, 4, 5].map((n) => (
+          {[1, 2, 3, 4, 5, 6].map((n) => (
             <option key={n} value={n}>الأسبوع {n}</option>
           ))}
         </select>
