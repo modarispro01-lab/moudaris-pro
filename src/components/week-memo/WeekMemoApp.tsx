@@ -13,6 +13,7 @@ import WeekLessonCard from "./WeekLessonCard";
 import WeekPrintSheet from "./WeekPrintSheet";
 import HolidayPanel from "./HolidayPanel";
 import { mindMapKey } from "@/lib/mind-map";
+import type { WeekDoc } from "@/components/workspace/types";
 import { createPortal } from "react-dom";
 
 /** ترتيب أيام العمل — لاشتقاق الرقم الترتيبي لليوم الدراسي */
@@ -33,6 +34,9 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
   const [warningsOpen, setWarningsOpen] = useState(false);
   const [regenAsk, setRegenAsk] = useState(false);
 
+  /* طباعة المرحلة كاملة: الأسابيع المعروضة للطباعة (null = الأسبوع الحالي) */
+  const [printWeeks, setPrintWeeks] = useState<WeekDoc[] | null>(null);
+
   /* بوابة الطباعة: تُصيَّر الورقة داخل body مباشرة — القاعدة العامة تُخفي كل body > * */
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
@@ -45,6 +49,34 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
     }
     return map;
   }, [wm.timetable]);
+
+  /* طباعة المرحلة كاملة: تُبنى الأسابيع ثم تُطبع بعد رسمها */
+  const printStage = () => {
+    const res = wm.stageWeeks();
+    if (!res || res.weeks.length === 0) {
+      window.alert("لا توجد أسابيع للطباعة — تأكد من «بداية المرحلة».");
+      return;
+    }
+    if (res.generated > 0) {
+      const ok = window.confirm(
+        `${res.generated} أسابيع غير محفوظة ستُطبع من التوزيع بدون حفظ. متابعة؟`
+      );
+      if (!ok) return;
+    }
+    setPrintWeeks(res.weeks);
+  };
+
+  /* بعد رسم الأسابيع نفتح نافذة الطباعة، ثم نرجع لطباعة الأسبوع */
+  useEffect(() => {
+    if (!printWeeks) return;
+    const done = () => setPrintWeeks(null);
+    window.addEventListener("afterprint", done);
+    const timer = window.setTimeout(() => window.print(), 200);
+    return () => {
+      window.removeEventListener("afterprint", done);
+      window.clearTimeout(timer);
+    };
+  }, [printWeeks]);
 
   /* التنقل ±7 أيام على تاريخ الاثنين */
   const prevWeek = () => wm.shiftWeek(-7);
@@ -121,6 +153,9 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
         )}
 
         <button type="button" onClick={() => window.print()}>طباعة الأسبوع</button>
+        <button type="button" disabled={!wm.timetable} onClick={printStage}>
+          طباعة المرحلة كاملة
+        </button>
         <span className="wm-count">الأسابيع المحفوظة: {wm.savedWeeks}</span>
       </div>
 
@@ -240,10 +275,11 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
       )}
 
       {/* ===== ورقة الطباعة — تُنقل إلى body لأن القاعدة العامة تُخفي كل body > * ===== */}
-      {mounted && wm.week
+      {mounted && (printWeeks || wm.week)
         ? createPortal(
             <WeekPrintSheet
-              week={wm.week}
+              weeks={printWeeks ?? (wm.week ? [wm.week] : [])}
+              includeMindMaps={!printWeeks}
               profile={wm.profile}
               stageIndex={wm.stageIndex}
               subjectNames={subjectNames}

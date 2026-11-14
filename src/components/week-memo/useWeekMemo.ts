@@ -16,6 +16,8 @@ import { generateWeek } from "@/lib/week-memo-generator";
 import { buildNonSchoolDays, mondayOfIso } from "@/lib/moroccan-calendar";
 import { cyclePositions, sessionCarryFor } from "@/lib/cycle-days";
 import { sessionTripleKeys } from "@/lib/timetable-memo-bridge";
+import { buildStageWeeks } from "@/lib/stage-weeks";
+import type { StageWeeksResult } from "@/lib/stage-weeks";
 import type {
   CalendarDay,
   CalendarOverrides,
@@ -58,6 +60,8 @@ export interface UseWeekMemoResult {
   mindMaps: Record<string, MindMapDoc>;
   setDaySkip: (date: string, skip: SkipReason | undefined) => void;
   savedWeeks: number;
+  /** أسابيع المرحلة كاملة للطباعة: المحفوظ كما هو والباقي يُولَّد في الذاكرة */
+  stageWeeks: () => StageWeeksResult | null;
   /** الرزمة الدراسية: العطل المضافة والمستثناة */
   calendar: CalendarOverrides;
   /** أيام الأسبوع المعروض غير الدراسية (تاريخ ← سبب) */
@@ -390,6 +394,19 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     setWeekStart((prev) => shiftIso(prev || currentMondayIso(), days));
   }, []);
 
+  /** أسابيع المرحلة كاملة للطباعة — لا تحفظ شيئًا */
+  const stageWeeks = useCallback((): StageWeeksResult | null => {
+    if (!timetable) return null;
+    return buildStageWeeks({
+      state: timetable,
+      catalog,
+      stageIndex,
+      stageStartIso: stageStart,
+      calendar,
+      savedWeeks: workspace.weeks,
+    });
+  }, [timetable, catalog, stageIndex, stageStart, calendar, workspace.weeks]);
+
   return {
     timetable,
     ready,
@@ -411,6 +428,7 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     setDaySkip,
     shiftWeek,
     savedWeeks: workspace.weeks.length,
+    stageWeeks,
     calendar,
     nonSchoolDays,
     addHoliday,

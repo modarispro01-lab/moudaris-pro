@@ -7,7 +7,9 @@ import { dayToMemoSheets } from "./week-day-to-memo";
 const DAY_ORDER = ["mon","tue","wed","thu","fri","sat"];
 
 export interface WeekPrintSheetProps {
-  week: WeekDoc;
+  weeks: WeekDoc[];
+  /** طباعة المرحلة كاملة: بلا خرائط ذهنية */
+  includeMindMaps?: boolean;
   profile: TeacherProfile;
   stageIndex: number;
   subjectNames: Record<string, string>;
@@ -25,24 +27,29 @@ interface MindMapPage {
   branches: MindMapBranch[];
 }
 
-export default function WeekPrintSheet({ week, profile, stageIndex, subjectNames, template, mindMaps }: WeekPrintSheetProps) {
-  const sheets = week.days
-    .filter((d) => !d.skip)
-    .flatMap((day) =>
-      dayToMemoSheets(day, {
-        profile,
-        weekNumber: day.weekNumber ?? week.weekNumber,
-        stageIndex,
-        subjectNames,
-        dayOrdinal: (day.cycleDay ?? DAY_ORDER.indexOf(day.dayId) + 1) - 1,
-      })
-    );
+export default function WeekPrintSheet({ weeks, profile, stageIndex, subjectNames, template, mindMaps, includeMindMaps = true }: WeekPrintSheetProps) {
+  const sheets = weeks.flatMap((week) =>
+    week.days
+      .filter((d) => !d.skip)
+      .flatMap((day) =>
+        dayToMemoSheets(day, {
+          profile,
+          weekNumber: day.weekNumber ?? week.weekNumber,
+          stageIndex,
+          subjectNames,
+          dayOrdinal: (day.cycleDay ?? DAY_ORDER.indexOf(day.dayId) + 1) - 1,
+        })
+      )
+  );
 
   /* صفحات الخريطة: حصة واحدة = صفحة واحدة.
      لا تُطبع إلا الخرائط المحفوظة فعلاً وفيها نص — الحصة بلا خريطة = بلا صفحة. */
   const mindMapPages: MindMapPage[] = [];
-  for (const day of week.days) {
-    if (day.skip) continue;
+  /* الخرائط في طباعة الأسبوع فقط — لا تُطبع في طباعة المرحلة كاملة */
+  const mmDays = includeMindMaps
+    ? weeks.flatMap((w) => w.days).filter((day) => !day.skip)
+    : [];
+  for (const day of mmDays) {
     for (const lesson of day.lessons) {
       const doc = mindMaps[mindMapKey(day.date, lesson)];
       if (!doc) continue;
