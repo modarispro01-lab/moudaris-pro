@@ -10,11 +10,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { parseImported, STORAGE_KEY } from "@/components/timetable/store";
-import type { TimetableState } from "@/components/timetable/types";
+import type { DayId, TimetableState } from "@/components/timetable/types";
 import type { Catalog } from "@/components/daily-memo/types";
 import { generateWeek } from "@/lib/week-memo-generator";
 import { buildNonSchoolDays, mondayOfIso } from "@/lib/moroccan-calendar";
-import { cycleDayNumbers } from "@/lib/cycle-days";
+import { cycleDayNumbers, sessionCarryFor } from "@/lib/cycle-days";
+import { sessionTripleKeys } from "@/lib/timetable-memo-bridge";
 import type {
   CalendarDay,
   CalendarOverrides,
@@ -25,6 +26,9 @@ import type {
   TeacherProfile,
 } from "@/components/workspace/types";
 import { readWorkspace, useWorkspace } from "@/components/workspace/useWorkspace";
+
+     /** ترتيب أيام العمل — يطابق ترتيب cycle-days.ts */
+     const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat"] as const;
 
 export interface UseWeekMemoResult {
   timetable: TimetableState | null;
@@ -166,6 +170,15 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
         return;
       }
     }
+    /* سياق الدورة: أرقام الأيام + حمل تسلسل الحصص قبل هذا الأسبوع */
+    const cycleDayByDay = cycleDayNumbers(start, weekNumber, calendar);
+    const sessionCarry = sessionCarryFor({
+      targetWeekStart: start,
+      weekNumber,
+      calendar,
+      dayOrder: DAY_ORDER,
+      keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
+    });
     const { week: newWeek, warnings: ws } = generateWeek({
       state: timetable,
       catalog,
@@ -173,6 +186,8 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       weekNumber,
       weekStart: start,
       nonSchoolDays,
+      cycleDayByDay,
+      sessionCarry,
     });
     setWeekStart(start);
     saveWeek(newWeek, ws);
@@ -183,6 +198,15 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     if (!timetable) return;
     const start = mondayOfIso(weekStart || currentMondayIso());
     if (!start) return;
+    /* سياق الدورة: أرقام الأيام + حمل تسلسل الحصص قبل هذا الأسبوع */
+    const cycleDayByDay = cycleDayNumbers(start, weekNumber, calendar);
+    const sessionCarry = sessionCarryFor({
+      targetWeekStart: start,
+      weekNumber,
+      calendar,
+      dayOrder: DAY_ORDER,
+      keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
+    });
     const { week: newWeek, warnings: ws } = generateWeek({
       state: timetable,
       catalog,
@@ -190,6 +214,8 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       weekNumber,
       weekStart: start,
       nonSchoolDays,
+      cycleDayByDay,
+      sessionCarry,
     });
     setWeekStart(start);
     saveWeek(newWeek, ws);
