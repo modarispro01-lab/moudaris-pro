@@ -236,6 +236,10 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       cyclePosByDay,
       sessionCarry,
     });
+    /* نهاية المرحلة: 6 أسابيع × 6 أيام = 36 يومًا دراسيًا */
+    if (Object.values(positions).some((p) => p.n > 36)) {
+      ws.push("انتهت المرحلة: تجاوزت 36 يومًا دراسيًا — بدّل المرحلة من القائمة أعلى الصفحة.");
+    }
     setWeekStart(start);
     saveWeek(newWeek, ws);
   }, [timetable, catalog, stageIndex, stageStart, weekStart, workspace.weeks, saveWeek, nonSchoolDays, calendar]);
@@ -274,6 +278,10 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       cyclePosByDay,
       sessionCarry,
     });
+    /* نهاية المرحلة: 6 أسابيع × 6 أيام = 36 يومًا دراسيًا */
+    if (Object.values(positions).some((p) => p.n > 36)) {
+      ws.push("انتهت المرحلة: تجاوزت 36 يومًا دراسيًا — بدّل المرحلة من القائمة أعلى الصفحة.");
+    }
     setWeekStart(start);
     saveWeek(newWeek, ws);
   }, [timetable, catalog, stageIndex, stageStart, weekStart, saveWeek, nonSchoolDays, calendar]);

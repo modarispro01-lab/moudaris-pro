@@ -100,6 +100,7 @@ export interface CyclePosition {
 /**
  * مواضع أيام أسبوع واحد داخل المرحلة.
  * الأسبوع التربوي = طول الدورة (6 أيام دراسية عادة)، والعطلة لا تُحتسب.
+ * بعد آخر أسبوع (maxWeek) يبقى الأسبوع مثبّتًا على الأخير واليوم يكمل دورته.
  * إذا كانت بداية المرحلة بعد الأسبوع الهدف تُعاد خريطة فارغة.
  */
 export function cyclePositions(opts: {
@@ -107,9 +108,12 @@ export function cyclePositions(opts: {
   targetWeekStart: string;
   calendar: CalendarOverrides;
   dayOrder?: readonly string[];
+  /** أقصى أسبوع تربوي داخل المرحلة (عدد أسابيع التوزيع) — افتراضي 6 */
+  maxWeek?: number;
 }): Record<string, CyclePosition> {
   const dayOrder = opts.dayOrder ?? DEFAULT_DAY_ORDER;
   const len = dayOrder.length;
+  const maxWeek = Math.max(1, opts.maxWeek ?? 6);
   const out: Record<string, CyclePosition> = {};
   if (!len) return out;
   const target = mondayOfIso(opts.targetWeekStart);
@@ -124,8 +128,9 @@ export function cyclePositions(opts: {
       if (nonSchool[date]) continue;
       n += 1;
       if (week === target) {
+        /* بعد آخر أسبوع في التوزيع يبقى الأسبوع على الأخير (تحذير فقط) */
         out[dayOrder[i]] = {
-          week: Math.floor((n - 1) / len) + 1,
+          week: Math.min(Math.floor((n - 1) / len) + 1, maxWeek),
           day: ((n - 1) % len) + 1,
           n,
         };
