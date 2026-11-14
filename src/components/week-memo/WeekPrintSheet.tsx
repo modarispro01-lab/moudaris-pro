@@ -31,7 +31,7 @@ export default function WeekPrintSheet({ week, profile, stageIndex, subjectNames
     .flatMap((day) =>
       dayToMemoSheets(day, {
         profile,
-        weekNumber: week.weekNumber,
+        weekNumber: day.weekNumber ?? week.weekNumber,
         stageIndex,
         subjectNames,
         dayOrdinal: (day.cycleDay ?? DAY_ORDER.indexOf(day.dayId) + 1) - 1,

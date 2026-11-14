@@ -14,7 +14,7 @@ import type { DayId, TimetableState } from "@/components/timetable/types";
 import type { Catalog } from "@/components/daily-memo/types";
 import { generateWeek } from "@/lib/week-memo-generator";
 import { buildNonSchoolDays, mondayOfIso } from "@/lib/moroccan-calendar";
-import { cycleDayNumbers, sessionCarryFor } from "@/lib/cycle-days";
+import { cyclePositions, sessionCarryFor } from "@/lib/cycle-days";
 import { sessionTripleKeys } from "@/lib/timetable-memo-bridge";
 import type {
   CalendarDay,
@@ -27,8 +27,8 @@ import type {
 } from "@/components/workspace/types";
 import { readWorkspace, useWorkspace } from "@/components/workspace/useWorkspace";
 
-     /** ترتيب أيام العمل — يطابق ترتيب cycle-days.ts */
-     const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat"] as const;
+/** ترتيب أيام العمل — يطابق ترتيب cycle-days.ts */
+const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat"] as const;
 
 export interface UseWeekMemoResult {
   timetable: TimetableState | null;
@@ -44,8 +44,9 @@ export interface UseWeekMemoResult {
   setWeekStart: (v: string) => void;
   stageIndex: number;
   setStageIndex: (v: number) => void;
-  weekNumber: number;
-  setWeekNumber: (v: number) => void;
+  /** بداية المرحلة (تاريخ الاثنين ISO) — نقطة الصفر لحساب الأسبوع التربوي */
+  stageStart: string;
+  setStageStart: (v: string) => void;
   generate: () => void;
   regenerate: () => void;
   updateLesson: (lessonId: string, patch: Partial<LessonDocPatch>) => void;
@@ -108,7 +109,7 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
   /* مدخلات المولّد */
   const [weekStart, setWeekStart] = useState("");
   const [stageIndex, setStageIndex] = useState(0);
-  const [weekNumber, setWeekNumber] = useState(1);
+  const [stageStartState, setStageStartState] = useState("");
 
   /* تحذيرات آخر توليد (تُعرض في الشريط الأعلى) */
   const [warnings, setWarnings] = useState<string[]>([]);
@@ -140,16 +141,52 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     [workspace.weeks, weekStart]
   );
 
+  /* المرحلة الحالية وبدايتها: نقطة الصفر لحساب الأسبوع التربوي */
+  const stageId = "stage-" + (stageIndex + 1);
+  const stageStart =
+    stageStartState || workspace.stageStart?.[stageId] || weekStart || currentMondayIso();
+
+  /* القيمة الافتراضية: المخزّنة، وإلا أقدم أسبوع محفوظ في المرحلة، وإلا الاثنين الحالي */
+  useEffect(() => {
+    if (!ready) return;
+    const stored = workspace.stageStart?.[stageId];
+    if (stored) {
+      setStageStartState(stored);
+      return;
+    }
+    const earliest = workspace.weeks
+      .filter((w) => w.stageId === stageId)
+      .map((w) => w.isoWeekStart)
+      .sort()[0];
+    setStageStartState(earliest ?? currentMondayIso());
+  }, [ready, stageId, workspace.stageStart, workspace.weeks]);
+
+  const setStageStart = useCallback(
+    (value: string) => {
+      setStageStartState(value);
+      update((ws) => ({
+        ...ws,
+        stageStart: { ...(ws.stageStart ?? {}), [stageId]: value },
+      }));
+    },
+    [update, stageId]
+  );
+
   /* الحفظ المشترك: يستبدل الأسبوع بنفس المعرّف داخل workspace.weeks */
   const saveWeek = useCallback(
     (newWeek: WeekDoc, wsWarnings: string[]) => {
-      /* ترقيم اليوم التربوي: دورة متصلة داخل المرحلة (العطلة لا تحجز رقمًا) */
-      const numbers = cycleDayNumbers(newWeek.isoWeekStart, newWeek.weekNumber, calendar);
+      /* ترقيم اليوم والأسبوع التربوي: العطلة لا تحجز رقمًا */
+      const positions = cyclePositions({
+        stageStartIso: stageStart,
+        targetWeekStart: newWeek.isoWeekStart,
+        calendar,
+      });
       const decorated: WeekDoc = {
         ...newWeek,
-        days: newWeek.days.map((day) =>
-          numbers[day.dayId] ? { ...day, cycleDay: numbers[day.dayId] } : day
-        ),
+        days: newWeek.days.map((day) => {
+          const pos = positions[day.dayId];
+          return pos ? { ...day, cycleDay: pos.day, weekNumber: pos.week } : day;
+        }),
       };
       update((ws) => ({
         ...ws,
@@ -157,7 +194,7 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       }));
       setWarnings(wsWarnings);
     },
-    [update, calendar]
+    [update, calendar, stageStart]
   );
 
   /** التوليد الأول: إن وُجد أسبوع محفوظ يُسأل المستخدم قبل الاستبدال */
@@ -170,11 +207,21 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
         return;
       }
     }
-    /* سياق الدورة: أرقام الأيام + حمل تسلسل الحصص قبل هذا الأسبوع */
-    const cycleDayByDay = cycleDayNumbers(start, weekNumber, calendar);
+    /* سياق المرحلة: موضع كل يوم + حمل تسلسل الحصص قبل هذا الأسبوع */
+    const positions = cyclePositions({
+      stageStartIso: stageStart,
+      targetWeekStart: start,
+      calendar,
+    });
+    const cyclePosByDay: Record<string, { week: number; day: number }> = {};
+    const cycleDayByDay: Record<string, number> = {};
+    for (const [dayId, pos] of Object.entries(positions)) {
+      cyclePosByDay[dayId] = { week: pos.week, day: pos.day };
+      cycleDayByDay[dayId] = pos.day;
+    }
     const sessionCarry = sessionCarryFor({
       targetWeekStart: start,
-      weekNumber,
+      stageStartIso: stageStart,
       calendar,
       dayOrder: DAY_ORDER,
       keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
@@ -183,26 +230,36 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       state: timetable,
       catalog,
       stageIndex,
-      weekNumber,
       weekStart: start,
       nonSchoolDays,
       cycleDayByDay,
+      cyclePosByDay,
       sessionCarry,
     });
     setWeekStart(start);
     saveWeek(newWeek, ws);
-  }, [timetable, catalog, stageIndex, weekNumber, weekStart, workspace.weeks, saveWeek, nonSchoolDays, calendar]);
+  }, [timetable, catalog, stageIndex, stageStart, weekStart, workspace.weeks, saveWeek, nonSchoolDays, calendar]);
 
   /** إعادة التوليد بلا سؤال — الزر في الواجهة يطلب التأكيد الصريح قبل ندائها */
   const regenerate = useCallback(() => {
     if (!timetable) return;
     const start = mondayOfIso(weekStart || currentMondayIso());
     if (!start) return;
-    /* سياق الدورة: أرقام الأيام + حمل تسلسل الحصص قبل هذا الأسبوع */
-    const cycleDayByDay = cycleDayNumbers(start, weekNumber, calendar);
+    /* سياق المرحلة: موضع كل يوم + حمل تسلسل الحصص قبل هذا الأسبوع */
+    const positions = cyclePositions({
+      stageStartIso: stageStart,
+      targetWeekStart: start,
+      calendar,
+    });
+    const cyclePosByDay: Record<string, { week: number; day: number }> = {};
+    const cycleDayByDay: Record<string, number> = {};
+    for (const [dayId, pos] of Object.entries(positions)) {
+      cyclePosByDay[dayId] = { week: pos.week, day: pos.day };
+      cycleDayByDay[dayId] = pos.day;
+    }
     const sessionCarry = sessionCarryFor({
       targetWeekStart: start,
-      weekNumber,
+      stageStartIso: stageStart,
       calendar,
       dayOrder: DAY_ORDER,
       keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
@@ -211,15 +268,15 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       state: timetable,
       catalog,
       stageIndex,
-      weekNumber,
       weekStart: start,
       nonSchoolDays,
       cycleDayByDay,
+      cyclePosByDay,
       sessionCarry,
     });
     setWeekStart(start);
     saveWeek(newWeek, ws);
-  }, [timetable, catalog, stageIndex, weekNumber, weekStart, saveWeek, nonSchoolDays, calendar]);
+  }, [timetable, catalog, stageIndex, stageStart, weekStart, saveWeek, nonSchoolDays, calendar]);
 
   /** تعديل حصة داخل الأسبوع المحفوظ + وسم edited=true */
   const updateLesson = useCallback(
@@ -335,8 +392,8 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
     setWeekStart: setWeekStartSafe,
     stageIndex,
     setStageIndex,
-    weekNumber,
-    setWeekNumber,
+    stageStart,
+    setStageStart,
     generate,
     regenerate,
     updateLesson,

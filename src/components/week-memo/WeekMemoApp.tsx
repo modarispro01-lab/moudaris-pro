@@ -93,15 +93,15 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
             <option key={i} value={i}>المرحلة {i + 1}</option>
           ))}
         </select>
-        <select
-          value={wm.weekNumber}
-          onChange={(e) => wm.setWeekNumber(Number(e.target.value))}
-          aria-label="رقم الأسبوع"
-        >
-          {[1, 2, 3, 4, 5, 6].map((n) => (
-            <option key={n} value={n}>الأسبوع {n}</option>
-          ))}
-        </select>
+        <label>
+          بداية المرحلة{" "}
+          <input
+            type="date"
+            value={wm.stageStart}
+            onChange={(e) => wm.setStageStart(e.target.value)}
+            aria-label="بداية المرحلة"
+          />
+        </label>
 
         {wm.week ? (
           regenAsk ? (
@@ -176,10 +176,11 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
             const orderIndex = DAY_ORDER.indexOf(day.dayId);
             const ordinalIndex = (day.cycleDay ?? orderIndex + 1) - 1;
             const ordinal = ORDINALS[ordinalIndex] ?? `اليوم ${ordinalIndex + 1}`;
+            const weekNo = day.weekNumber ?? wm.week?.weekNumber ?? 1;
             return (
               <section className="wm-day" key={day.date}>
                 <div className="wm-day-head">
-                  <h2>{ordinal}</h2>
+                  <h2>الأسبوع {weekNo} — {ordinal}</h2>
                   <span className="wm-date">{toDisplayDate(day.date)}</span>
                   {day.skip ? (
                     <span className="wm-day-badge">
