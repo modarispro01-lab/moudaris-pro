@@ -4,6 +4,7 @@
    ============================================================ */
 
 import type { CalendarDay, CalendarOverrides, SkipReason } from "@/components/workspace/types";
+import type { HolidayNotice } from "@/components/daily-memo/types";
 
 /** عطلة رسمية ثابتة التاريخ في كل سنة ميلادية */
 export interface FixedHoliday {
@@ -88,6 +89,58 @@ export function skipReasonFor(day: CalendarDay): SkipReason | null {
   if (day.kind === "school-vacation")
     return { kind: "school-vacation", id: day.date, label: day.label_ar };
   return { kind: "manual-skip", label: day.label_ar };
+}
+
+/**
+ * سبب عدم الدراسة لتاريخ واحد (أي يوم، بما فيه الأحد) — نفس أولويات buildNonSchoolDays:
+ * removed يلغي، ثم added، ثم العطلة المدرسية، ثم العطلة الثابتة.
+ */
+function nonSchoolReasonFor(date: string, calendar: CalendarOverrides): SkipReason | null {
+  const removed = calendar?.removed ?? [];
+  if (removed.includes(date)) return null;
+
+  const added = (calendar?.added ?? []).find((a) => a.date === date);
+  if (added) return skipReasonFor(added);
+
+  const vacation = vacationFor(date);
+  if (vacation) return { kind: "school-vacation", id: "vac-" + date, label: vacation.label_ar };
+
+  const fixed = fixedFor(date);
+  if (fixed) return { kind: "official-holiday", id: "fixed-" + date.slice(5), label: fixed.label_ar };
+
+  return null;
+}
+
+/**
+ * أول عطلة تلي تاريخاً معطى، بشرط ألا يفصل بينهما يوم دراسي.
+ * يُرجع null إذا سبق أولُ يوم دراسي بعد التاريخ أيَّ عطلة.
+ */
+export function nextHolidayAfter(
+  iso: string,
+  calendar: CalendarOverrides,
+  lookahead = 7
+): HolidayNotice | null {
+  for (let i = 1; i <= lookahead; i++) {
+    const date = addDaysIso(iso, i);
+    const reason = nonSchoolReasonFor(date, calendar);
+
+    if (reason) {
+      if (
+        reason.kind === "official-holiday" ||
+        reason.kind === "religious-holiday" ||
+        reason.kind === "school-vacation"
+      ) {
+        return { date, label: reason.label, kind: reason.kind, tomorrow: i === 1 };
+      }
+      /* تخطٍّ يدوي أو غياب أستاذ: ليس عطلة معلنة → نكمل البحث */
+      continue;
+    }
+
+    /* لا سبب تخطٍّ: الأحد ليس يوم دراسياً، وأي يوم آخر (اثنين..سبت) دراسي فيفصل */
+    const dow = new Date(`${date}T00:00:00Z`).getUTCDay();
+    if (dow !== 0) return null;
+  }
+  return null;
 }
 
 /**

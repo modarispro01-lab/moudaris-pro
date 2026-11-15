@@ -2862,6 +2862,97 @@
   background-position: 0 1.5mm;
 }
 
+/* ===== إشعار العطلة داخل خانة الملاحظات (طباعة A4) ===== */
+.ms-holiday {
+  display: flex;
+  align-items: center;
+  gap: 1.8mm;
+  margin-bottom: 1.4mm;
+  padding: 1.4mm 2mm;
+  border: 0.4mm solid #e0a44a;
+  border-right-width: 1.4mm;
+  border-radius: 1.6mm;
+  background: #fff8ec;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.ms-holiday-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.4mm;
+  height: 5.4mm;
+  border-radius: 50%;
+  background: #e0a44a;
+  color: #fff;
+}
+
+.ms-holiday-text {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4mm 1.6mm;
+  min-width: 0;
+  color: #7a4a08;
+  font-size: 6.3pt;
+  line-height: 1.5;
+}
+
+.ms-holiday-lead {
+  font-size: 6.7pt;
+  font-weight: 800;
+}
+
+.ms-holiday-label {
+  font-weight: 800;
+  color: #8a2f0b;
+}
+
+.ms-holiday-date {
+  font-size: 6pt;
+  font-weight: 600;
+  color: #9a7a4a;
+}
+
+/* تقليل ارتفاع صندوق الملاحظات عند وجود الشارة حتى لا تتجاوز الورقة A4 */
+.ms-holiday + .ms-notes-text,
+.ms-holiday + .ms-notes-lines {
+  min-height: 11.5mm;
+}
+
+/* تلوين حسب نوع العطلة */
+.ms-holiday-religious-holiday {
+  border-color: #4c9a6a;
+  background: #f2fbf5;
+}
+.ms-holiday-religious-holiday .ms-holiday-icon {
+  background: #4c9a6a;
+}
+.ms-holiday-religious-holiday .ms-holiday-text,
+.ms-holiday-religious-holiday .ms-holiday-label {
+  color: #1f6b41;
+}
+.ms-holiday-religious-holiday .ms-holiday-date {
+  color: #5c8f74;
+}
+
+.ms-holiday-school-vacation {
+  border-color: #4a86c8;
+  background: #f2f7fd;
+}
+.ms-holiday-school-vacation .ms-holiday-icon {
+  background: #4a86c8;
+}
+.ms-holiday-school-vacation .ms-holiday-text,
+.ms-holiday-school-vacation .ms-holiday-label {
+  color: #1d4f86;
+}
+.ms-holiday-school-vacation .ms-holiday-date {
+  color: #5b7fa6;
+}
+
 .ms-footer {
   margin-top: 2.4mm;
   flex-shrink: 0;

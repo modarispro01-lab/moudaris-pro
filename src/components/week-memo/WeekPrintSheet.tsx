@@ -1,7 +1,8 @@
-import type { WeekDoc, TeacherProfile, MindMapBranch, MindMapDoc } from "@/components/workspace/types";
+import type { CalendarOverrides, WeekDoc, TeacherProfile, MindMapBranch, MindMapDoc } from "@/components/workspace/types";
 import { mindMapKey } from "@/lib/mind-map";
 import type { TemplateConfig } from "@/components/daily-memo/types";
 import MemoSheet from "@/components/daily-memo/MemoSheet";
+import { nextHolidayAfter } from "@/lib/moroccan-calendar";
 import { dayToMemoSheets } from "./week-day-to-memo";
 
 const DAY_ORDER = ["mon","tue","wed","thu","fri","sat"];
@@ -15,6 +16,8 @@ export interface WeekPrintSheetProps {
   subjectNames: Record<string, string>;
   template: TemplateConfig;
   mindMaps: Record<string, MindMapDoc>;
+  /** الرزمة الدراسية — لحساب إشعار العطلة وقت الطباعة */
+  calendar: CalendarOverrides;
 }
 
 interface MindMapPage {
@@ -27,7 +30,7 @@ interface MindMapPage {
   branches: MindMapBranch[];
 }
 
-export default function WeekPrintSheet({ weeks, profile, stageIndex, subjectNames, template, mindMaps, includeMindMaps = true }: WeekPrintSheetProps) {
+export default function WeekPrintSheet({ weeks, profile, stageIndex, subjectNames, template, mindMaps, calendar, includeMindMaps = true }: WeekPrintSheetProps) {
   const sheets = weeks.flatMap((week) =>
     week.days
       .filter((d) => !d.skip)
@@ -38,6 +41,7 @@ export default function WeekPrintSheet({ weeks, profile, stageIndex, subjectName
           stageIndex,
           subjectNames,
           dayOrdinal: (day.cycleDay ?? DAY_ORDER.indexOf(day.dayId) + 1) - 1,
+          nextHoliday: nextHolidayAfter(day.date, calendar) ?? undefined,
         })
       )
   );

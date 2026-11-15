@@ -285,6 +285,7 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
               subjectNames={subjectNames}
               template={catalog.template}
               mindMaps={wm.mindMaps}
+              calendar={wm.calendar}
             />,
             document.body,
           )

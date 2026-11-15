@@ -1,5 +1,5 @@
 import type { DayDoc, TeacherProfile } from "@/components/workspace/types";
-import type { MemoLesson, MemoState } from "@/components/daily-memo/types";
+import type { HolidayNotice, MemoLesson, MemoState } from "@/components/daily-memo/types";
 
 /** الأسماء الترتيبية لأيام الدراسة */
 const ORDINALS = ["اليوم الأول","اليوم الثاني","اليوم الثالث","اليوم الرابع","اليوم الخامس","اليوم السادس"];
@@ -15,6 +15,8 @@ interface Options {
   stageIndex: number;
   subjectNames: Record<string, string>;
   dayOrdinal: number;
+  /** إشعار العطلة التالية إن وُجد */
+  nextHoliday?: HolidayNotice;
 }
 
 /** يحوّل يوماً واحداً إلى ورقة رسمية لكل فترة (صباحية/مسائية) فيه */
@@ -76,6 +78,7 @@ export function dayToMemoSheets(day: DayDoc, opts: Options): WeekSheet[] {
         showNotes: true,
         showSignatures: true,
         showDismissal: false,
+        nextHoliday: opts.nextHoliday,
         lessons: memoLessons,
       },
     });

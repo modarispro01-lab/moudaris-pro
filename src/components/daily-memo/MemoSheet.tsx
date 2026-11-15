@@ -1,7 +1,8 @@
 "use client";
 
 import { Fragment } from "react";
-import type { MemoLesson, MemoState, TemplateConfig } from "./types";
+import type { HolidayNotice, MemoLesson, MemoState, TemplateConfig } from "./types";
+import { CalendarOff, Flag, MoonStar } from "lucide-react";
 import {
   breaksCountLabel,
   cx,
@@ -20,6 +21,28 @@ interface Props {
 
 function valueOrDash(value: string): string {
   return value.trim() ? value : "—";
+}
+
+/** شارة العطلة التالية داخل خانة الملاحظات — أيقونة حسب نوع العطلة */
+function HolidayBadge({ notice }: { notice: HolidayNotice }) {
+  const Icon =
+    notice.kind === "religious-holiday"
+      ? MoonStar
+      : notice.kind === "school-vacation"
+        ? CalendarOff
+        : Flag;
+  return (
+    <div className={cx("ms-holiday", "ms-holiday-" + notice.kind)}>
+      <span className="ms-holiday-icon" aria-hidden="true">
+        <Icon size={11} strokeWidth={2.4} />
+      </span>
+      <span className="ms-holiday-text">
+        <b className="ms-holiday-lead">{notice.tomorrow ? "غداً عطلة" : "عطلة قادمة"}</b>
+        <span className="ms-holiday-label">{notice.label}</span>
+        <span className="ms-holiday-date">{formatLongDate(notice.date)}</span>
+      </span>
+    </div>
+  );
 }
 
 function ContentCell({
@@ -332,6 +355,7 @@ export default function MemoSheet({ memo, template }: Props) {
             <span>{fieldLabel(template, "notes", "ملاحظات")}</span>
             <i aria-hidden="true" />
           </div>
+          {memo.nextHoliday ? <HolidayBadge notice={memo.nextHoliday} /> : null}
           <div className={memo.notes.trim() ? "ms-notes-text" : "ms-notes-lines"}>
             {memo.notes.trim() || "\u00a0"}
           </div>
