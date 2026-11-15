@@ -8,7 +8,7 @@
    ============================================================ */
 
 import { addDaysIso, buildNonSchoolDays, mondayOfIso } from "@/lib/moroccan-calendar";
-import { cyclePositions, sessionCarryFor } from "@/lib/cycle-days";
+import { cyclePositions, sessionCarryFor, sessionWeekBaseFor } from "@/lib/cycle-days";
 import { generateWeek } from "@/lib/week-memo-generator";
 import { sessionTripleKeys } from "@/lib/timetable-memo-bridge";
 import type { DayId, TimetableState } from "@/components/timetable/types";
@@ -95,6 +95,13 @@ export function buildStageWeeks(input: StageWeeksInput): StageWeeksResult {
             dayOrder: DAY_ORDER,
             keysForDay: (dayId) => sessionTripleKeys(input.state, dayId as DayId),
           });
+          const sessionWeekBase = sessionWeekBaseFor({
+            targetWeekStart: cursor,
+            stageStartIso: start,
+            calendar: input.calendar,
+            dayOrder: DAY_ORDER,
+            keysForDay: (dayId) => sessionTripleKeys(input.state, dayId as DayId),
+          });
           const { week } = generateWeek({
             state: input.state,
             catalog: input.catalog,
@@ -104,6 +111,7 @@ export function buildStageWeeks(input: StageWeeksInput): StageWeeksResult {
             cycleDayByDay,
             cyclePosByDay,
             sessionCarry,
+            sessionWeekBase,
           });
           weeks.push({
             ...week,

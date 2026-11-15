@@ -86,6 +86,53 @@ export function sessionCarryFor(opts: {
   return carry;
 }
 
+/**
+ * حمل التسلسل لكل أسبوع تربوي: عدد حصص كل ثلاثية قبل بداية كل أسبوع تربوي.
+ * المفتاح: `${مفتاح الثلاثية}|${رقم الأسبوع التربوي}`.
+ * ضروري لأن الأسبوع التربوي (6 أيام دراسية) قد يمتد على أسبوعين تقويميين
+ * بسبب العطل، فحمل الأسبوع التقويمي وحده لا يكفي لمعرفة موضع الحصة داخله.
+ */
+export function sessionWeekBaseFor(opts: {
+  stageStartIso: string;
+  targetWeekStart: string;
+  calendar: CalendarOverrides;
+  dayOrder?: readonly string[];
+  keysForDay: (dayId: string) => string[];
+  maxWeek?: number;
+}): Map<string, number> {
+  const dayOrder = opts.dayOrder ?? DEFAULT_DAY_ORDER;
+  const len = dayOrder.length;
+  const out = new Map<string, number>();
+  if (!len) return out;
+  const target = mondayOfIso(opts.targetWeekStart);
+  let week = mondayOfIso(opts.stageStartIso);
+  if (!week || week > target) return out;
+  const maxWeek = Math.max(1, opts.maxWeek ?? 6);
+  const counts = new Map<string, number>();
+  let n = 0;
+  let lastWeek = 0;
+  /* سقف أمان: 60 أسبوعًا — مطابق لـ cyclePositions */
+  for (let guard = 0; guard < 60 && week <= target; guard++) {
+    const nonSchool = buildNonSchoolDays(opts.calendar, week);
+    for (let i = 0; i < len; i++) {
+      const date = addDaysIso(week, i);
+      if (nonSchool[date]) continue;
+      const w = Math.min(Math.floor(n / len) + 1, maxWeek);
+      /* أول يوم دراسي في هذا الأسبوع التربوي: لقطة للحمل الحالي */
+      if (w !== lastWeek) {
+        for (const [key, value] of counts) out.set(`${key}|${w}`, value);
+        lastWeek = w;
+      }
+      n += 1;
+      for (const key of opts.keysForDay(dayOrder[i])) {
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      }
+    }
+    week = addDaysIso(week, 7);
+  }
+  return out;
+}
+
 /** موضع يوم داخل المرحلة: الأسبوع التربوي واليوم داخله */
 export interface CyclePosition {
   /** رقم الأسبوع التربوي داخل المرحلة (1، 2، 3 ...) */

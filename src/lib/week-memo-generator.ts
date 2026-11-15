@@ -47,6 +47,8 @@ export interface GenerateWeekInput {
   cycleDayByDay?: Record<string, number>;
   /** حمل تسلسل الحصص قبل بداية الأسبوع داخل الدورة */
   sessionCarry?: Map<string, number>;
+  /** حمل حصص كل ثلاثية قبل بداية كل أسبوع تربوي (المفتاح: `${key}|${week}`) */
+  sessionWeekBase?: Map<string, number>;
   /** موضع كل يوم في المرحلة: الأسبوع التربوي + اليوم (يغلب weekNumber) */
   cyclePosByDay?: Record<string, { week: number; day: number }>;
 }
@@ -127,8 +129,14 @@ export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
       const dayWeek = input.cyclePosByDay?.[plan.day.dayId]?.week ?? weekNumber;
       const lessons: LessonDoc[] = [];
       for (let i = 0; i < plan.sessions.length; i++) {
+        const session = plan.sessions[i];
+        const key = sessionTripleKeyOf(session);
+        /* حصص نفس الثلاثية قبل بداية أسبوع هذا اليوم التربوي */
+        const base = key
+          ? (input.sessionWeekBase?.get(`${key}|${dayWeek}`) ?? 0)
+          : 0;
         lessons.push(
-          buildLesson(state, plan.sessions[i], i, catalog, stageIndex, dayWeek, date, warnings)
+          buildLesson(state, session, i, catalog, stageIndex, dayWeek, date, warnings, base)
         );
       }
       days.push({ date, dayId: plan.day.dayId, weekNumber: dayWeek, lessons });
@@ -187,14 +195,15 @@ function findLevelData(catalog: Catalog, session: BridgeSession): LevelData | nu
   return group.levels.find((l) => l.level === session.levelNumber) ?? null;
 }
 
-/** عدد حصص الثلاثية (مادة+مستوى+فوج) في نمط الأسبوع من استعمال الزمن */
+/** مفتاح الثلاثية (مادة+مستوى+فوج) لحصة جسر */
+function sessionTripleKeyOf(session: BridgeSession): string | null {
+  if (!session.subjectId || !session.levelId) return null;
+  return [session.subjectId, session.levelId.trim(), session.group?.trim() || "-"].join("|");
+}
+
 function sessionsPerWeekFor(state: TimetableState, session: BridgeSession): number {
-  if (!session.subjectId || !session.levelId) return 0;
-  const key = [
-    session.subjectId,
-    session.levelId.trim(),
-    session.group?.trim() || "-",
-  ].join("|");
+  const key = sessionTripleKeyOf(session);
+  if (!key) return 0;
   let n = 0;
   for (const day of state.days ?? []) {
     for (const k of sessionTripleKeys(state, day)) if (k === key) n += 1;
@@ -211,7 +220,8 @@ function buildLesson(
   stageIndex: number,
   weekNumber: number,
   date: string,
-  warnings: string[]
+  warnings: string[],
+  weekBase: number
 ): LessonDoc {
   const group = catalog.subjects.find((sg) => sg.code === session.subjectCode);
   let level: LevelData | null = null;
@@ -247,17 +257,21 @@ function buildLesson(
     }
   }
 
-  /* الوتيرة: أسبوع المحتوى ورقم الدرس من ترتيب الحصة المتصل وعدد حصص الأسبوع */
-  const perWeek = sessionsPerWeekFor(state, session);
+  /* الوتيرة:
+     - الأسبوع التربوي هو وحدة المحتوى: كل أسبوع يعرض دروسه هو، والحصة الزائدة
+       عن عدد الدروس تتكرر على الدرس الأخير (دعم) بدل تكرار عشوائي أو قفز درس.
+     - وإلا (حصص الأسبوع ≤ الدروس): يتقدم الدرس مع كل حصة حتى لا يُفقد درس. */
   const lessons = level ? levelSessionCount(level) : 0;
+  const lessonCount = Math.max(1, lessons || 1);
+  const perWeek = sessionsPerWeekFor(state, session);
   const ord = session.sessionOrdinal || 1;
-  const contentWeek =
-    perWeek > 0 ? Math.floor((ord - 1) / perWeek) + 1 : weekNumber;
-  const slot = perWeek > 0 ? ((ord - 1) % perWeek) + 1 : 1;
-  const sessionNumber =
-    perWeek > lessons
-      ? Math.floor(((slot - 1) * lessons) / perWeek) + 1
-      : Math.min(slot, Math.max(1, lessons || 1));
+  const moreSessionsThanLessons = perWeek > lessonCount;
+  const contentWeek = moreSessionsThanLessons
+    ? weekNumber
+    : Math.floor((ord - 1) / lessonCount) + 1;
+  const sessionNumber = moreSessionsThanLessons
+    ? Math.min(Math.max(1, ord - weekBase), lessonCount)
+    : ((ord - 1) % lessonCount) + 1;
 
   /* الأسبوع: بالمطابقة — وإلا أول أسبوع + تحذير عند الاختلاف */
   let week: LevelWeek | null = null;

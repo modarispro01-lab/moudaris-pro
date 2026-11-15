@@ -14,7 +14,7 @@ import type { DayId, TimetableState } from "@/components/timetable/types";
 import type { Catalog } from "@/components/daily-memo/types";
 import { generateWeek } from "@/lib/week-memo-generator";
 import { buildNonSchoolDays, mondayOfIso } from "@/lib/moroccan-calendar";
-import { cyclePositions, sessionCarryFor } from "@/lib/cycle-days";
+import { cyclePositions, sessionCarryFor, sessionWeekBaseFor } from "@/lib/cycle-days";
 import { sessionTripleKeys } from "@/lib/timetable-memo-bridge";
 import { buildStageWeeks } from "@/lib/stage-weeks";
 import type { StageWeeksResult } from "@/lib/stage-weeks";
@@ -230,6 +230,13 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       dayOrder: DAY_ORDER,
       keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
     });
+    const sessionWeekBase = sessionWeekBaseFor({
+      targetWeekStart: start,
+      stageStartIso: stageStart,
+      calendar,
+      dayOrder: DAY_ORDER,
+      keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
+    });
     const { week: newWeek, warnings: ws } = generateWeek({
       state: timetable,
       catalog,
@@ -239,6 +246,7 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       cycleDayByDay,
       cyclePosByDay,
       sessionCarry,
+      sessionWeekBase,
     });
     /* نهاية المرحلة: 6 أسابيع × 6 أيام = 36 يومًا دراسيًا */
     if (Object.values(positions).some((p) => p.n > 36)) {
@@ -272,6 +280,13 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       dayOrder: DAY_ORDER,
       keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
     });
+    const sessionWeekBase = sessionWeekBaseFor({
+      targetWeekStart: start,
+      stageStartIso: stageStart,
+      calendar,
+      dayOrder: DAY_ORDER,
+      keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
+    });
     const { week: newWeek, warnings: ws } = generateWeek({
       state: timetable,
       catalog,
@@ -281,6 +296,7 @@ export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
       cycleDayByDay,
       cyclePosByDay,
       sessionCarry,
+      sessionWeekBase,
     });
     /* نهاية المرحلة: 6 أسابيع × 6 أيام = 36 يومًا دراسيًا */
     if (Object.values(positions).some((p) => p.n > 36)) {
