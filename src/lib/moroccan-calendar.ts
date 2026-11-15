@@ -112,35 +112,39 @@ function nonSchoolReasonFor(date: string, calendar: CalendarOverrides): SkipReas
 }
 
 /**
- * أول عطلة تلي تاريخاً معطى، بشرط ألا يفصل بينهما يوم دراسي.
- * يُرجع null إذا سبق أولُ يوم دراسي بعد التاريخ أيَّ عطلة.
+ * كل الأيام غير الدراسية المتتالية بعد تاريخ معطى، حتى أول يوم دراسي.
+ * الأيام المتتالية بنفس النوع والاسم تُجمَّع في إشعار واحد بنطاق تاريخي.
+ * knownSkips: أسباب التخطي المعروفة من الأسابيع المطبوعة (تسبق الرزمة).
  */
-export function nextHolidayAfter(
+export function nextHolidaysAfter(
   iso: string,
   calendar: CalendarOverrides,
-  lookahead = 7
-): HolidayNotice | null {
+  knownSkips?: Record<string, SkipReason>,
+  lookahead = 21
+): HolidayNotice[] {
+  const out: HolidayNotice[] = [];
   for (let i = 1; i <= lookahead; i++) {
     const date = addDaysIso(iso, i);
-    const reason = nonSchoolReasonFor(date, calendar);
+    const reason = knownSkips?.[date] ?? nonSchoolReasonFor(date, calendar);
 
     if (reason) {
-      if (
-        reason.kind === "official-holiday" ||
-        reason.kind === "religious-holiday" ||
-        reason.kind === "school-vacation"
-      ) {
-        return { date, label: reason.label, kind: reason.kind, tomorrow: i === 1 };
+      /* نهاية الأسبوع ما كتظهرش فـ المذكرة */
+      if (reason.kind === "weekend") continue;
+
+      const last = out[out.length - 1];
+      if (last && last.kind === reason.kind && last.label === reason.label) {
+        last.endDate = date;
+      } else {
+        out.push({ date, label: reason.label, kind: reason.kind, tomorrow: i === 1 });
       }
-      /* تخطٍّ يدوي أو غياب أستاذ: ليس عطلة معلنة → نكمل البحث */
       continue;
     }
 
-    /* لا سبب تخطٍّ: الأحد ليس يوم دراسياً، وأي يوم آخر (اثنين..سبت) دراسي فيفصل */
+    /* يوم دراسي فعلي كيفصل السلسلة */
     const dow = new Date(`${date}T00:00:00Z`).getUTCDay();
-    if (dow !== 0) return null;
+    if (dow !== 0) return out;
   }
-  return null;
+  return out;
 }
 
 /**

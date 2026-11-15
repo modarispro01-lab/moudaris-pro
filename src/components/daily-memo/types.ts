@@ -230,15 +230,17 @@ export interface LessonSubjectOption {
   levels: LessonSubjectLevel[];
 }
 
-/** إشعار عطلة تلي اليوم الحالي — يُحسب وقت الطباعة من الرزمة الدراسية */
+/** إشعار يوم غير دراسي — يُحسب وقت الطباعة من الرزمة الدراسية */
 export interface HolidayNotice {
-  /** تاريخ العطلة بصيغة ISO */
+  /** أول يوم غير دراسي بصيغة ISO */
   date: string;
-  /** اسم العطلة كما هو في الرزمة */
+  /** آخر يوم إن كان النطاق أكثر من يوم */
+  endDate?: string;
+  /** الاسم كما هو في الرزمة أو في اليوم */
   label: string;
-  /** نوع العطلة */
-  kind: "official-holiday" | "religious-holiday" | "school-vacation";
-  /** هل العطلة هي يوم الغد المباشر؟ */
+  /** نوع التوقف */
+  kind: "official-holiday" | "religious-holiday" | "school-vacation" | "manual-skip" | "teacher-absence";
+  /** هل يبدأ غداً؟ */
   tomorrow: boolean;
 }
 
@@ -262,8 +264,8 @@ export interface MemoState {
   showSignatures: boolean;
   /** صف الخروج أسفل جدول الحصص؛ يُفعّل تلقائيًا عند دمج المستويات. */
   showDismissal?: boolean;
-  /** إشعار العطلة التالية — يُملأ في مسار طباعة الأسبوع فقط */
-  nextHoliday?: HolidayNotice;
+  /** إشعارات الأيام غير الدراسية المتتالية — تُملأ في مسار طباعة الأسبوع فقط */
+  nextHolidays?: HolidayNotice[];
   /** الحصة الأسبوعية المختارة من 1 إلى 5 (مستقلة عن اليوم). */
   sessionNumber?: number;
   lessons: MemoLesson[];

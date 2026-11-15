@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import type { HolidayNotice, MemoLesson, MemoState, TemplateConfig } from "./types";
-import { CalendarOff, Flag, MoonStar } from "lucide-react";
+import { CalendarOff, Flag, Info, MoonStar } from "lucide-react";
 import {
   breaksCountLabel,
   cx,
@@ -23,24 +23,45 @@ function valueOrDash(value: string): string {
   return value.trim() ? value : "—";
 }
 
-/** شارة العطلة التالية داخل خانة الملاحظات — أيقونة حسب نوع العطلة */
-function HolidayBadge({ notice }: { notice: HolidayNotice }) {
-  const Icon =
-    notice.kind === "religious-holiday"
-      ? MoonStar
-      : notice.kind === "school-vacation"
-        ? CalendarOff
-        : Flag;
+/** الأيقونة حسب نوع التوقف */
+function holidayIcon(kind: HolidayNotice["kind"]) {
+  if (kind === "religious-holiday") return MoonStar;
+  if (kind === "school-vacation") return CalendarOff;
+  if (kind === "official-holiday") return Flag;
+  return Info;
+}
+
+/** الكلمة التمهيدية للسطر الأول */
+function holidayLead(kind: HolidayNotice["kind"], tomorrow: boolean): string {
+  if (kind === "manual-skip") return tomorrow ? "غداً توقف" : "توقف قادم";
+  if (kind === "teacher-absence") return tomorrow ? "غداً غياب" : "غياب قادم";
+  return tomorrow ? "غداً عطلة" : "عطلة قادمة";
+}
+
+/** شارات الأيام غير الدراسية المتتالية داخل خانة الملاحظات */
+function HolidayBadges({ notices }: { notices: HolidayNotice[] }) {
+  const shown = notices.slice(0, 4);
   return (
-    <div className={cx("ms-holiday", "ms-holiday-" + notice.kind)}>
-      <span className="ms-holiday-icon" aria-hidden="true">
-        <Icon size={11} strokeWidth={2.4} />
-      </span>
-      <span className="ms-holiday-text">
-        <b className="ms-holiday-lead">{notice.tomorrow ? "غداً عطلة" : "عطلة قادمة"}</b>
-        <span className="ms-holiday-label">{notice.label}</span>
-        <span className="ms-holiday-date">{formatLongDate(notice.date)}</span>
-      </span>
+    <div className={cx("ms-holiday", "ms-holiday-n" + Math.min(shown.length, 3))}>
+      {shown.map((notice, index) => {
+        const Icon = holidayIcon(notice.kind);
+        return (
+          <div key={notice.date} className={cx("ms-holiday-row", "ms-holiday-" + notice.kind)}>
+            <span className="ms-holiday-icon" aria-hidden="true">
+              <Icon size={10} strokeWidth={2.4} />
+            </span>
+            <b className="ms-holiday-lead">
+              {index === 0 ? holidayLead(notice.kind, notice.tomorrow) : "ثم"}
+            </b>
+            <span className="ms-holiday-label">{notice.label}</span>
+            <span className="ms-holiday-date">
+              {notice.endDate
+                ? `من ${formatLongDate(notice.date)} إلى ${formatLongDate(notice.endDate)}`
+                : formatLongDate(notice.date)}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -355,7 +376,7 @@ export default function MemoSheet({ memo, template }: Props) {
             <span>{fieldLabel(template, "notes", "ملاحظات")}</span>
             <i aria-hidden="true" />
           </div>
-          {memo.nextHoliday ? <HolidayBadge notice={memo.nextHoliday} /> : null}
+          {memo.nextHolidays?.length ? <HolidayBadges notices={memo.nextHolidays} /> : null}
           <div className={memo.notes.trim() ? "ms-notes-text" : "ms-notes-lines"}>
             {memo.notes.trim() || "\u00a0"}
           </div>

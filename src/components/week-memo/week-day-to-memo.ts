@@ -15,8 +15,8 @@ interface Options {
   stageIndex: number;
   subjectNames: Record<string, string>;
   dayOrdinal: number;
-  /** إشعار العطلة التالية إن وُجد */
-  nextHoliday?: HolidayNotice;
+  /** إشعارات الأيام غير الدراسية المتتالية إن وُجدت */
+  nextHolidays?: HolidayNotice[];
 }
 
 /** يحوّل يوماً واحداً إلى ورقة رسمية لكل فترة (صباحية/مسائية) فيه */
@@ -78,7 +78,7 @@ export function dayToMemoSheets(day: DayDoc, opts: Options): WeekSheet[] {
         showNotes: true,
         showSignatures: true,
         showDismissal: false,
-        nextHoliday: opts.nextHoliday,
+        nextHolidays: opts.nextHolidays,
         lessons: memoLessons,
       },
     });
