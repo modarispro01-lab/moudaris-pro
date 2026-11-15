@@ -6,7 +6,7 @@
    الدالة لا ترمي أبدًا على مدخلات ناقصة: تُرجع أسبوعًا صالحًا + تحذيرات.
    ============================================================ */
 
-import { buildWeekPlans } from "@/lib/timetable-memo-bridge";
+import { buildWeekPlans, sessionTripleKeys } from "@/lib/timetable-memo-bridge";
 import type { BridgeSession, BridgeDayPlan } from "@/lib/timetable-memo-bridge";
 import {
   clampSessionNumber,
@@ -89,13 +89,9 @@ export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
     const skipDays = new Set(
       DAY_ORDER.filter((_, i) => !!nonSchoolDays[addDays(start, i)])
     );
-    const resetDays = new Set(
-      DAY_ORDER.filter((dayId) => input.cycleDayByDay?.[dayId] === 1)
-    );
     const plans: BridgeDayPlan[] = buildWeekPlans(state, {
       carry: input.sessionCarry,
       skipDays,
-      resetDays,
     });
 
     /* عدّاد حصص كل ثلاثية (مادة+مستوى+فوج) لتحذير التجاوز (القاعدة و) */
@@ -132,7 +128,7 @@ export function generateWeek(input: GenerateWeekInput): GenerateWeekResult {
       const lessons: LessonDoc[] = [];
       for (let i = 0; i < plan.sessions.length; i++) {
         lessons.push(
-          buildLesson(plan.sessions[i], i, catalog, stageIndex, dayWeek, date, warnings)
+          buildLesson(state, plan.sessions[i], i, catalog, stageIndex, dayWeek, date, warnings)
         );
       }
       days.push({ date, dayId: plan.day.dayId, weekNumber: dayWeek, lessons });
@@ -191,8 +187,24 @@ function findLevelData(catalog: Catalog, session: BridgeSession): LevelData | nu
   return group.levels.find((l) => l.level === session.levelNumber) ?? null;
 }
 
+/** عدد حصص الثلاثية (مادة+مستوى+فوج) في نمط الأسبوع من استعمال الزمن */
+function sessionsPerWeekFor(state: TimetableState, session: BridgeSession): number {
+  if (!session.subjectId || !session.levelId) return 0;
+  const key = [
+    session.subjectId,
+    session.levelId.trim(),
+    session.group?.trim() || "-",
+  ].join("|");
+  let n = 0;
+  for (const day of state.days ?? []) {
+    for (const k of sessionTripleKeys(state, day)) if (k === key) n += 1;
+  }
+  return n;
+}
+
 /** بناء حصة واحدة من جلسة الجسر + الفهرس */
 function buildLesson(
+  state: TimetableState,
   session: BridgeSession,
   lessonIndex: number,
   catalog: Catalog,
@@ -235,24 +247,31 @@ function buildLesson(
     }
   }
 
+  /* الوتيرة: أسبوع المحتوى ورقم الدرس من ترتيب الحصة المتصل وعدد حصص الأسبوع */
+  const perWeek = sessionsPerWeekFor(state, session);
+  const lessons = level ? levelSessionCount(level) : 0;
+  const ord = session.sessionOrdinal || 1;
+  const contentWeek =
+    perWeek > 0 ? Math.floor((ord - 1) / perWeek) + 1 : weekNumber;
+  const slot = perWeek > 0 ? ((ord - 1) % perWeek) + 1 : 1;
+  const sessionNumber =
+    perWeek > lessons
+      ? Math.floor(((slot - 1) * lessons) / perWeek) + 1
+      : Math.min(slot, Math.max(1, lessons || 1));
+
   /* الأسبوع: بالمطابقة — وإلا أول أسبوع + تحذير عند الاختلاف */
   let week: LevelWeek | null = null;
   if (stage) {
-    week = stage.weeks.find((w) => w.weekNumber === weekNumber) ?? stage.weeks[0] ?? null;
-    if (week && week.weekNumber !== weekNumber) {
+    week = stage.weeks.find((w) => w.weekNumber === contentWeek) ?? stage.weeks[0] ?? null;
+    if (week && week.weekNumber !== contentWeek) {
       warnings.push(
-        `الأسبوع المطلوب (${weekNumber}) غير متوفر في ${session.subjectName} — ` +
+        `الأسبوع المطلوب (${contentWeek}) غير متوفر في ${session.subjectName} — ` +
           `استُعمل الأسبوع (${week.weekNumber})`
       );
     } else if (!week) {
       warnings.push(`لا توجد أسابيع في توزيع المادة: (${session.subjectName})`);
     }
   }
-
-  /* رقم الحصة: مقصوص على نطاق التوزيع */
-  const sessionNumber = level
-    ? clampSessionNumber(session.sessionOrdinal || 1, 1, levelSessionCount(level))
-    : session.sessionOrdinal || 1;
 
   /* المصدر: يوم التوزيع الموافق لرقم الحصة */
   const sourceDay = level && week ? sessionSourceDay(week, sessionNumber) : undefined;

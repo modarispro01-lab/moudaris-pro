@@ -50,7 +50,7 @@ export function cycleDayNumbers(
 
 /**
  * حمل تسلسل الحصص: عدد حصص كل ثلاثية قبل بداية الأسبوع الهدف داخل الدورة.
- * العطلة لا تُحتسب، والعدّاد يُصفَّر عند إتمام الدورة.
+ * العطلة لا تُحتسب، والعدّاد متصل من بداية المرحلة ولا يُصفَّر عند إتمام الدورة.
  */
 export function sessionCarryFor(opts: {
   targetWeekStart: string;
@@ -80,7 +80,6 @@ export function sessionCarryFor(opts: {
       for (const key of opts.keysForDay(dayOrder[i])) {
         carry.set(key, (carry.get(key) ?? 0) + 1);
       }
-      if (n % len === 0) carry.clear();
     }
     week = addDaysIso(week, 7);
   }
