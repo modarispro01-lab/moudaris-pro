@@ -276,8 +276,9 @@ function buildLesson(
     sessionOrdinal: session.sessionOrdinal,
     component,
     topic: sourceDay?.content.topic_ar ?? "",
-    objectives: "",
-    stages: "",
+    objectives: sourceDay?.content.objectives_ar ?? "",
+    stages: sourceDay?.content.stages_ar ?? "",
+    materials: sourceDay?.content.materials_ar,
     edited: false,
   };
 }

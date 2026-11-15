@@ -108,6 +108,12 @@ export interface LevelDay {
   content: {
     topic_ar: string;
     topic_fr?: string;
+    /** أهداف الدرس — اختيارية، تُملأ من عروض التعليم الصريح */
+    objectives_ar?: string;
+    /** مراحل سير الدرس — اختيارية */
+    stages_ar?: string;
+    /** الوسائل والوسائط — اختيارية */
+    materials_ar?: string;
   };
 }
 
