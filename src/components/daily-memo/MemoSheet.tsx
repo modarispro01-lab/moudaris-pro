@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import type { HolidayNotice, MemoLesson, MemoState, TemplateConfig } from "./types";
-import { CalendarOff, Flag, Info, MoonStar } from "lucide-react";
+import { ArrowLeftRight, CalendarOff, Coffee, Flag, Info, MoonStar } from "lucide-react";
 import {
   breaksCountLabel,
   cx,
@@ -196,14 +196,25 @@ function transitionMinutesLabel(minutes: number): string {
   return `${minutes} دقيقة`;
 }
 
+/** عتبة اعتبار الفجوة استراحة حقيقية بدل انتقال قصير (بالدقائق)
+    الانتقال دايماً 5 دقائق، والاستراحة 10 فأكثر → 10 > 9 = استراحة */
+const BREAK_MINUTES_THRESHOLD = 9;
+
 function breakRow(lesson: MemoLesson, template: TemplateConfig) {
   const minutes = lessonBreakMinutes(lesson);
   if (!minutes) return null;
+  /* فجوة 10 دقائق فأكثر = استراحة، فجوة 5 دقائق = انتقال بين الحصتين */
+  const isBreak = minutes > BREAK_MINUTES_THRESHOLD;
+  const Icon = isBreak ? Coffee : ArrowLeftRight;
   return (
-    <tr key={`${lesson.id}-break`} className="ms-break-row">
+    <tr
+      key={`${lesson.id}-break`}
+      className={cx("ms-break-row", isBreak ? "ms-break-row-long" : "ms-break-row-short")}
+    >
       <td colSpan={template.tableColumns.length}>
         <span className="ms-break-inner">
-          <b>الانتقال بين الحصتين</b>
+          <Icon className="ms-break-icon" size={9} strokeWidth={2.4} aria-hidden="true" />
+          <b>{isBreak ? "استراحة" : "الانتقال بين الحصتين"}</b>
           <i aria-hidden="true" />
           <em>{transitionMinutesLabel(minutes)}</em>
         </span>

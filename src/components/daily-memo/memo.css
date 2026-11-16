@@ -20,6 +20,11 @@
   --memo-gold-softer: #fffdf8;
   --memo-gold-border: #efdcb6;
   --memo-bg: #f3f6fa;
+  --memo-sky: #38bdf8;
+  --memo-sky-text: #0b6f96;
+  --memo-sky-soft: #e8f7fe;
+  --memo-sky-softer: #f7fcff;
+  --memo-sky-border: #b6e5f8;
   --memo-card: #ffffff;
   --memo-card-2: #fbfdfe;
   --memo-soft: #f2f7fa;
@@ -70,6 +75,11 @@
   --memo-gold-softer: #191407;
   --memo-gold-border: #4a3d1e;
   --memo-bg: #0f1115;
+  --memo-sky: #38bdf8;
+  --memo-sky-text: #7dd3fc;
+  --memo-sky-soft: #0c2531;
+  --memo-sky-softer: #081a23;
+  --memo-sky-border: #1d4a5e;
   --memo-card: #161a22;
   --memo-card-2: #18202b;
   --memo-soft: #1b212c;
@@ -116,6 +126,11 @@
   --memo-gold-softer: #fffdf8;
   --memo-gold-border: #efdcb6;
   --memo-bg: #ffffff;
+  --memo-sky: #38bdf8;
+  --memo-sky-text: #0b6f96;
+  --memo-sky-soft: #e8f7fe;
+  --memo-sky-softer: #f7fcff;
+  --memo-sky-border: #b6e5f8;
   --memo-card: #ffffff;
   --memo-card-2: #fbfdfe;
   --memo-soft: #f2f7fa;
@@ -2651,6 +2666,31 @@
   font-style: normal;
   font-size: 5.8pt;
   font-weight: 800;
+}
+
+/* ===== تمييز الانتقال القصير (أزرق سماوي) عن الاستراحة (ذهبي) ===== */
+.ms-table tbody tr.ms-break-row-short td {
+  background: linear-gradient(90deg, var(--memo-sky-soft), var(--memo-sky-soft) 50%, var(--memo-sky-soft)) !important;
+  border-top: 0.3mm dashed var(--memo-sky);
+  border-bottom: 0.3mm dashed var(--memo-sky);
+}
+
+.ms-break-row-short .ms-break-inner {
+  color: var(--memo-sky-text);
+}
+
+.ms-break-row-short .ms-break-inner i {
+  background: var(--memo-sky);
+}
+
+.ms-break-row-short .ms-break-inner em {
+  border-color: var(--memo-sky-border);
+  background: var(--memo-sky-softer);
+}
+
+/* أيقونة السطر: سهم للانتقال، فنجان قهوة للاستراحة */
+.ms-break-icon {
+  flex-shrink: 0;
 }
 
 .ms-level-cell {
