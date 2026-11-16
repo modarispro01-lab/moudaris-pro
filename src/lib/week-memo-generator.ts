@@ -294,7 +294,7 @@ function buildLesson(
   /* المكوّن والمحور: مادة تحمل محورًا (مثل النشاط العلمي) تُعرض باسمها والمحور أسفلها */
   const axisSubject = isComponentAxisSubject(catalog.config, session.subjectCode ?? undefined);
   const subjectName =
-    level?.subject_ar || group?.name_ar || session.subjectId || "";
+    level?.subject_ar || group?.name_ar || session.subjectName || session.subjectId || "";
   const axis = sourceDay?.component || (stage?.theme_ar ?? "") || "";
   const component = axisSubject ? subjectName : axis || subjectName;
 
