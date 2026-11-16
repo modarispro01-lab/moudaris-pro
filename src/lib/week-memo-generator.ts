@@ -274,17 +274,24 @@ function buildLesson(
     ? Math.min(Math.max(1, ord - weekBase), lessonCount)
     : ((ord - 1) % lessonCount) + 1;
 
-  /* الأسبوع: بالمطابقة — وإلا أول أسبوع + تحذير عند الاختلاف */
+  /* الأسبوع: بالمطابقة أولًا (العربية والرياضيات تعيد الترقيم 1..6 في كل مرحلة)،
+     وإلا بالترتيب داخل المرحلة (الفرنسية والعلوم ترقّم بشكل متصل 7..12 في المرحلة 2)،
+     وإلا أول أسبوع + تحذير */
   let week: LevelWeek | null = null;
   if (stage) {
-    week = stage.weeks.find((w) => w.weekNumber === contentWeek) ?? stage.weeks[0] ?? null;
-    if (week && week.weekNumber !== contentWeek) {
-      warnings.push(
-        `الأسبوع المطلوب (${contentWeek}) غير متوفر في ${session.subjectName} — ` +
-          `استُعمل الأسبوع (${week.weekNumber})`
-      );
-    } else if (!week) {
-      warnings.push(`لا توجد أسابيع في توزيع المادة: (${session.subjectName})`);
+    const byNumber = stage.weeks.find((w) => w.weekNumber === contentWeek) ?? null;
+    const byIndex = stage.weeks[contentWeek - 1] ?? null;
+    week = byNumber ?? byIndex;
+    if (!week) {
+      week = stage.weeks[0] ?? null;
+      if (week) {
+        warnings.push(
+          `الأسبوع المطلوب (${contentWeek}) غير متوفر في ${session.subjectName} — ` +
+            `استُعمل الأسبوع (${week.weekNumber})`
+        );
+      } else {
+        warnings.push(`لا توجد أسابيع في توزيع المادة: (${session.subjectName})`);
+      }
     }
   }
 
