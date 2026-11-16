@@ -89,6 +89,8 @@ export interface LessonDoc {
   sessionNumber: number;
   sessionOrdinal: number;
   component: string;
+  /** محور المكوّن (مثل «الإنسان والصحة والتغذية») للمواد التي تُعرض باسمها ثم محورها */
+  componentAxis?: string;
   topic: string;
   objectives: string;
   stages: string;

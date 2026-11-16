@@ -1,4 +1,4 @@
-import type { DayDoc, TeacherProfile } from "@/components/workspace/types";
+import type { DayDoc, LessonDoc, TeacherProfile } from "@/components/workspace/types";
 import type { HolidayNotice, MemoLesson, MemoState } from "@/components/daily-memo/types";
 
 /** الأسماء الترتيبية لأيام الدراسة */
@@ -14,9 +14,35 @@ interface Options {
   weekNumber: number;
   stageIndex: number;
   subjectNames: Record<string, string>;
+  /** أكواد المواد التي تُعرض باسمها + محورها (من config.componentAxisSubjects) */
+  axisSubjectCodes?: string[];
   dayOrdinal: number;
   /** إشعارات الأيام غير الدراسية المتتالية إن وُجدت */
   nextHolidays?: HolidayNotice[];
+}
+
+/** خانتا المكوّن والمحور: مادة ذات محور تُعرض باسمها والمحور أسفلها.
+    تدعم أيضًا الأسابيع المحفوظة قبل الإصلاح حيث كان المحور موضوعًا في خانة المكوّن. */
+function componentCells(
+  lesson: LessonDoc,
+  opts: Options
+): { component: string; componentAxis: string } {
+  const isAxisSubject =
+    !!lesson.subjectCode && (opts.axisSubjectCodes ?? []).includes(lesson.subjectCode);
+  if (!isAxisSubject) {
+    return { component: lesson.component, componentAxis: "" };
+  }
+  const storedAxis = (lesson.componentAxis ?? "").trim();
+  /* سجل قديم: الحقل غير موجود إطلاقًا → المحور كان في خانة المكوّن */
+  const legacyAxis =
+    lesson.componentAxis === undefined ? (lesson.component ?? "").trim() : "";
+  const axis = storedAxis || legacyAxis;
+  const name =
+    opts.subjectNames[lesson.subjectId] ||
+    (lesson.component && lesson.component !== axis ? lesson.component : "") ||
+    lesson.subjectCode ||
+    "";
+  return { component: name, componentAxis: axis };
 }
 
 /** يحوّل يوماً واحداً إلى ورقة رسمية لكل فترة (صباحية/مسائية) فيه */
@@ -41,8 +67,7 @@ export function dayToMemoSheets(day: DayDoc, opts: Options): WeekSheet[] {
       timeTo: l.timeTo,
       section: "",
       subjectCode: l.subjectCode ?? undefined,
-      component: l.component,
-      componentAxis: "",
+      ...componentCells(l, opts),
       topic: l.topic,
       objectives: l.objectives,
       stages: l.stages,

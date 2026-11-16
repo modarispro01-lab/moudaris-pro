@@ -50,6 +50,12 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
     return map;
   }, [wm.timetable]);
 
+  /* أكواد المواد التي تُعرض باسمها + محورها (النشاط العلمي مثلًا) */
+  const axisSubjectCodes = useMemo(
+    () => catalog.config.componentAxisSubjects ?? [],
+    [catalog]
+  );
+
   /* طباعة المرحلة كاملة: تُبنى الأسابيع ثم تُطبع بعد رسمها */
   const printStage = () => {
     const res = wm.stageWeeks();
@@ -283,6 +289,7 @@ export default function WeekMemoApp({ catalog }: { catalog: Catalog }) {
               profile={wm.profile}
               stageIndex={wm.stageIndex}
               subjectNames={subjectNames}
+              axisSubjectCodes={axisSubjectCodes}
               template={catalog.template}
               mindMaps={wm.mindMaps}
               calendar={wm.calendar}

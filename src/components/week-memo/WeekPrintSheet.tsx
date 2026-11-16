@@ -14,6 +14,8 @@ export interface WeekPrintSheetProps {
   profile: TeacherProfile;
   stageIndex: number;
   subjectNames: Record<string, string>;
+  /** أكواد المواد التي تُعرض باسمها + محورها */
+  axisSubjectCodes?: string[];
   template: TemplateConfig;
   mindMaps: Record<string, MindMapDoc>;
   /** الرزمة الدراسية — لحساب إشعار العطلة وقت الطباعة */
@@ -30,7 +32,7 @@ interface MindMapPage {
   branches: MindMapBranch[];
 }
 
-export default function WeekPrintSheet({ weeks, profile, stageIndex, subjectNames, template, mindMaps, calendar, includeMindMaps = true }: WeekPrintSheetProps) {
+export default function WeekPrintSheet({ weeks, profile, stageIndex, subjectNames, axisSubjectCodes = [], template, mindMaps, calendar, includeMindMaps = true }: WeekPrintSheetProps) {
   /* أسباب التخطي الفعلية من الأسابيع المطبوعة — أدق من الرزمة */
   const knownSkips: Record<string, SkipReason> = {};
   for (const week of weeks) {
@@ -48,6 +50,7 @@ export default function WeekPrintSheet({ weeks, profile, stageIndex, subjectName
           weekNumber: day.weekNumber ?? week.weekNumber,
           stageIndex,
           subjectNames,
+          axisSubjectCodes,
           dayOrdinal: (day.cycleDay ?? DAY_ORDER.indexOf(day.dayId) + 1) - 1,
           nextHolidays: nextHolidaysAfter(day.date, calendar, knownSkips),
         })

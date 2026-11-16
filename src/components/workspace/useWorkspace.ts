@@ -80,6 +80,38 @@ function buildProfile(tt: TimetableState, legacy: LegacyProfile | null): Teacher
   };
 }
 
+/**
+ * دمج بيانات الأستاذ الحيّة من استعمال الزمن مع الملف المحفوظ.
+ * الملف المحفوظ يسبق، وبيانات استعمال الزمن تكمّل الفراغ فقط — بلا مسح أي قيمة موجودة.
+ */
+function mergeLiveProfile(ws: Workspace): Workspace {
+  let live: TeacherProfile | null = null;
+  try {
+    const raw = safeRead(STORAGE_KEY);
+    if (raw) {
+      const tt = parseImported(raw);
+      if (tt) live = buildProfile(tt, null);
+    }
+  } catch {
+    /* تعذّرت القراءة — نُبقي الملف كما هو */
+  }
+  if (!live) return ws;
+  const pick = (current: string | undefined, incoming: string) => {
+    const a = (current || "").trim();
+    return a || (incoming || "").trim();
+  };
+  return {
+    ...ws,
+    profile: {
+      institution: pick(ws.profile?.institution, live.institution),
+      teacher: pick(ws.profile?.teacher, live.teacher),
+      director: pick(ws.profile?.director, live.director),
+      inspector: pick(ws.profile?.inspector, live.inspector),
+      academicYear: pick(ws.profile?.academicYear, live.academicYear),
+    },
+  };
+}
+
 /* المفاتيح القديمة المعروفة التي يبحث عنها الترحيل */
 function findLegacyKeys(): string[] {
   const known = [
@@ -162,7 +194,7 @@ export function readWorkspace(): { workspace: Workspace; migration: MigrationRes
       const parsed: unknown = JSON.parse(raw);
       if (isWorkspaceV1(parsed)) {
         return {
-          workspace: parsed,
+          workspace: mergeLiveProfile(parsed),
           migration: { ok: true, legacyKeysFound: findLegacyKeys() },
         };
       }

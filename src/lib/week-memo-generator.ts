@@ -10,6 +10,7 @@ import { buildWeekPlans, sessionTripleKeys } from "@/lib/timetable-memo-bridge";
 import type { BridgeSession, BridgeDayPlan } from "@/lib/timetable-memo-bridge";
 import {
   clampSessionNumber,
+  isComponentAxisSubject,
   levelSessionCount,
   sessionSourceDay,
 } from "@/components/daily-memo/types";
@@ -290,8 +291,12 @@ function buildLesson(
   /* المصدر: يوم التوزيع الموافق لرقم الحصة */
   const sourceDay = level && week ? sessionSourceDay(week, sessionNumber) : undefined;
 
-  const subjectName = session.subjectName || session.subjectId || "";
-  const component = sourceDay?.component || (stage?.theme_ar ?? "") || subjectName;
+  /* المكوّن والمحور: مادة تحمل محورًا (مثل النشاط العلمي) تُعرض باسمها والمحور أسفلها */
+  const axisSubject = isComponentAxisSubject(catalog.config, session.subjectCode ?? undefined);
+  const subjectName =
+    level?.subject_ar || group?.name_ar || session.subjectId || "";
+  const axis = sourceDay?.component || (stage?.theme_ar ?? "") || "";
+  const component = axisSubject ? subjectName : axis || subjectName;
 
   return {
     id: "L-" + date + "-" + session.periodId + "-" + lessonIndex,
@@ -308,6 +313,7 @@ function buildLesson(
     sessionNumber,
     sessionOrdinal: session.sessionOrdinal,
     component,
+    componentAxis: axisSubject ? axis : "",
     topic: sourceDay?.content.topic_ar ?? "",
     objectives: sourceDay?.content.objectives_ar ?? "",
     stages: sourceDay?.content.stages_ar ?? "",
