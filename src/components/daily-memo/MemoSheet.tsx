@@ -143,18 +143,16 @@ function lessonRow(lesson: MemoLesson, template: TemplateConfig, index: number) 
         }
         if (column.key === "component") {
           const axis = lesson.componentAxis?.trim() ?? "";
+          /* اسم المادة بنفس الخط لكل المواد (عريض 800 عبر ms-component-name)،
+             والمحور سطر ذهبي أصغر تحته إن وُجد */
           return (
             <td key={column.key} className="ms-center">
-              {axis ? (
-                <span className="ms-component">
-                  <span className="ms-component-name">
-                    {valueOrDash(lesson.component)}
-                  </span>
-                  <span className="ms-component-axis">{axis}</span>
+              <span className="ms-component">
+                <span className="ms-component-name">
+                  {valueOrDash(lesson.component)}
                 </span>
-              ) : (
-                valueOrDash(lesson.component)
-              )}
+                {axis ? <span className="ms-component-axis">{axis}</span> : null}
+              </span>
             </td>
           );
         }
