@@ -71,11 +71,13 @@ function buildProfile(tt: TimetableState, legacy: LegacyProfile | null): Teacher
     if (a) return a;
     return (infoValue || "").trim();
   };
+  /* المدير والمفتش يبقيان فارغين: info.direction هي المديرية الإقليمية (وليست اسم المدير)
+     و info.employeeId هو رقم تأجير الأستاذ (وليس اسم المفتش). يُملآن يدويًا فقط. */
   return {
     institution: from(legacy?.establishment, info?.school),
     teacher: from(legacy?.fullName, info?.teacher),
-    director: from(legacy?.direction, info?.direction),
-    inspector: from("", info?.employeeId),
+    director: "",
+    inspector: "",
     academicYear: from(legacy?.schoolYear, info?.year),
   };
 }
@@ -86,11 +88,18 @@ function buildProfile(tt: TimetableState, legacy: LegacyProfile | null): Teacher
  */
 function mergeLiveProfile(ws: Workspace): Workspace {
   let live: TeacherProfile | null = null;
+  /* القيم التي تسرّبت سابقًا إلى المدير/المفتش — تُستعمل للمسح فقط */
+  let liveDirection = "";
+  let liveEmployeeId = "";
   try {
     const raw = safeRead(STORAGE_KEY);
     if (raw) {
       const tt = parseImported(raw);
-      if (tt) live = buildProfile(tt, null);
+      if (tt) {
+        live = buildProfile(tt, null);
+        liveDirection = (tt.info?.direction || "").trim();
+        liveEmployeeId = (tt.info?.employeeId || "").trim();
+      }
     }
   } catch {
     /* تعذّرت القراءة — نُبقي الملف كما هو */
@@ -100,13 +109,20 @@ function mergeLiveProfile(ws: Workspace): Workspace {
     const a = (current || "").trim();
     return a || (incoming || "").trim();
   };
+  /* مسح ما سُجّل بالخطأ سابقًا: مدير = المديرية الإقليمية، مفتش = رقم التأجير.
+     الاسم المكتوب يدويًا (مختلف عن هاتين القيمتين) يبقى كما هو. */
+  const dropIfLeaked = (current: string | undefined, leaked: string) => {
+    const a = (current || "").trim();
+    if (!a) return "";
+    return leaked && a === leaked ? "" : a;
+  };
   return {
     ...ws,
     profile: {
       institution: pick(ws.profile?.institution, live.institution),
       teacher: pick(ws.profile?.teacher, live.teacher),
-      director: pick(ws.profile?.director, live.director),
-      inspector: pick(ws.profile?.inspector, live.inspector),
+      director: dropIfLeaked(ws.profile?.director, liveDirection),
+      inspector: dropIfLeaked(ws.profile?.inspector, liveEmployeeId),
       academicYear: pick(ws.profile?.academicYear, live.academicYear),
     },
   };
