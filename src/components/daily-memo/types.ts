@@ -2,6 +2,8 @@
    أنواع بيانات أداة المذكرة اليومية — التعليم الصريح
    ============================================================ */
 
+import type { RoleGenders } from "@/lib/gender";
+
 export type MemoBlock = "morning" | "afternoon";
 
 export type FieldType = "text" | "textarea" | "date" | "time" | "number" | "select";
@@ -264,6 +266,8 @@ export interface MemoState {
   showSignatures: boolean;
   /** صف الخروج أسفل جدول الحصص؛ يُفعّل تلقائيًا عند دمج المستويات. */
   showDismissal?: boolean;
+  /** جنس صاحب كل توقيع — غيابه يعني المحايد «(ة)» */
+  genders?: RoleGenders;
   /** إشعارات الأيام غير الدراسية المتتالية — تُملأ في مسار طباعة الأسبوع فقط */
   nextHolidays?: HolidayNotice[];
   /** الحصة الأسبوعية المختارة من 1 إلى 5 (مستقلة عن اليوم). */
@@ -278,6 +282,8 @@ export interface Profile {
   inspector: string;
   academicYear: string;
   section: string;
+  /** جنس صاحب كل توقيع — يُحفظ مع الملف الشخصي */
+  genders?: RoleGenders;
 }
 
 export interface Preferences {

@@ -3,6 +3,7 @@
 import { Fragment } from "react";
 import type { HolidayNotice, MemoLesson, MemoState, TemplateConfig } from "./types";
 import { ArrowLeftRight, CalendarOff, Coffee, Flag, Info, MoonStar } from "lucide-react";
+import { genderLabel } from "@/lib/gender";
 import {
   breaksCountLabel,
   cx,
@@ -304,7 +305,9 @@ export default function MemoSheet({ memo, template }: Props) {
             <strong>{valueOrDash(memo.institution)}</strong>
           </div>
           <div>
-            <span>{fieldLabel(template, "teacher", "الأستاذ(ة)")}</span>
+            <span>
+              {genderLabel(fieldLabel(template, "teacher", "الأستاذ(ة)"), memo.genders?.teacher)}
+            </span>
             <strong>{valueOrDash(memo.teacher)}</strong>
           </div>
           <div>
@@ -404,7 +407,7 @@ export default function MemoSheet({ memo, template }: Props) {
                     : memo.inspector;
               return (
                 <div key={signature.key} className="ms-sign">
-                  <span>{signature.label_ar}</span>
+                  <span>{genderLabel(signature.label_ar, memo.genders?.[signature.key])}</span>
                   <strong>{valueOrDash(name)}</strong>
                   <em>التوقيع</em>
                 </div>

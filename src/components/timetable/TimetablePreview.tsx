@@ -12,6 +12,7 @@
    ============================================================ */
 import React from "react";
 import { ArrowRight, Coffee } from "lucide-react";
+import { genderLabel, normalizeGender, type Gender } from "@/lib/gender";
 import { DAYS, DEFAULT_TIMING } from "./defaults";
 import { resolveTheme } from "./theme";
 import {
@@ -169,8 +170,14 @@ export default function TimetablePreview({ state }: Props) {
   if (state.info.direction) instLeft.push(["المديرية الإقليمية", state.info.direction]);
   if (state.info.school) instLeft.push(["المؤسسة", state.info.school]);
 
+  /* جنس الدور: genders يتجاوز feminine، وفقدانه يعني «محايد» */
+  const genderOf = (role: "teacher" | "director" | "inspector"): Gender =>
+    state.design.genders?.[role] ??
+    normalizeGender(state.design.feminine === false ? "male" : "neutral");
+
   const metaItems: Array<[string, string]> = [];
-  if (state.info.teacher) metaItems.push(["الأستاذ(ة)", state.info.teacher]);
+  if (state.info.teacher)
+    metaItems.push([genderLabel("الأستاذ(ة)", genderOf("teacher")), state.info.teacher]);
 
   // المستويات والأفواج في سطر واحد مضغوط: "المستوى الرابع (فوج أ، فوج ب) · ..."
   const levelParts = (state.info.levels || [])
@@ -210,12 +217,12 @@ export default function TimetablePreview({ state }: Props) {
   const sign = (kind: "teacher" | "manager" | "inspector") => {
     const custom = (state.design.signLabels?.[kind] ?? "").trim();
     if (custom) return custom;
-    const f = state.design.feminine !== false;
-    return {
-      teacher: f ? "توقيع الأستاذ(ة)" : "توقيع الأستاذ",
-      inspector: f ? "توقيع المفتش(ة)" : "توقيع المفتش",
-      manager: f ? "طابع وتوقيع المدير(ة)" : "طابع وتوقيع المدير",
+    const base = {
+      teacher: "توقيع الأستاذ(ة)",
+      inspector: "توقيع المفتش(ة)",
+      manager: "طابع وتوقيع المدير(ة)",
     }[kind];
+    return genderLabel(base, genderOf(kind === "manager" ? "director" : kind));
   };
 
   const showNames = state.design.showSubjectNames !== false;

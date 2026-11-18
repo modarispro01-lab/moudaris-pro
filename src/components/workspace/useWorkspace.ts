@@ -79,6 +79,7 @@ function buildProfile(tt: TimetableState, legacy: LegacyProfile | null): Teacher
     director: "",
     inspector: "",
     academicYear: from(legacy?.schoolYear, info?.year),
+    genders: tt?.design?.genders,
   };
 }
 
@@ -124,6 +125,8 @@ function mergeLiveProfile(ws: Workspace): Workspace {
       director: dropIfLeaked(ws.profile?.director, liveDirection),
       inspector: dropIfLeaked(ws.profile?.inspector, liveEmployeeId),
       academicYear: pick(ws.profile?.academicYear, live.academicYear),
+      /* المحفوظ يدوياً يسبق، وإلا نأخذ من استعمال الزمن */
+      genders: ws.profile?.genders ?? live.genders,
     },
   };
 }

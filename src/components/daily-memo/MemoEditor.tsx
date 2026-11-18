@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { normalizeGender, type Gender } from "@/lib/gender";
 import {
   ArrowDown,
   ArrowUp,
@@ -840,6 +841,44 @@ export default function MemoEditor({
             <span />
             إظهار التوقيعات في الطباعة
           </label>
+        </div>
+
+        {/* جنس التوقيعات — لكل دور على حدة */}
+        <div className="mt-3">
+          <span className="mb-2 block text-[11px] font-bold text-muted">
+            جنس التوقيعات
+          </span>
+          <div className="memo-sign-grid">
+            {(
+              [
+                ["teacher", "الأستاذ"],
+                ["director", "المدير"],
+                ["inspector", "المفتش"],
+              ] as const
+            ).map(([role, label]) => (
+              <label key={role} className="block">
+                <span className="mb-1 block text-[11px] font-bold text-muted">
+                  {label}
+                </span>
+                <select
+                  className="memo-input"
+                  value={normalizeGender(memo.genders?.[role])}
+                  onChange={(event) =>
+                    onChange({
+                      genders: {
+                        ...(memo.genders ?? {}),
+                        [role]: event.target.value as Gender,
+                      },
+                    })
+                  }
+                >
+                  <option value="neutral">محايد «(ة)»</option>
+                  <option value="male">مذكر</option>
+                  <option value="female">مؤنث</option>
+                </select>
+              </label>
+            ))}
+          </div>
         </div>
 
         <div className="memo-sign-grid">

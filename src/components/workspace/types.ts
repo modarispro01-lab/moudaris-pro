@@ -3,6 +3,7 @@
    طبقة تخزين موحّدة جديدة: لا تعدّل أي مفتاح قديم في localStorage.
    ============================================================ */
 
+import type { RoleGenders } from "@/lib/gender";
 import type { TimetableState } from "@/components/timetable/types";
 import { makeInitialState } from "@/components/timetable/defaults";
 
@@ -30,6 +31,8 @@ export interface TeacherProfile {
   director: string;
   inspector: string;
   academicYear: string;
+  /** جنس صاحب كل توقيع — يُشتق من استعمال الزمن */
+  genders?: RoleGenders;
 }
 
 /** مرجع صنف دراسي: مادة × مستوى × فوج */

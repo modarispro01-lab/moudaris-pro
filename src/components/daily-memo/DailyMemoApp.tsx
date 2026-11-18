@@ -622,6 +622,7 @@ function buildGroupedMemo(
     director: profile.director,
     inspector: profile.inspector,
     academicYear: profile.academicYear || defaultAcademicYear(),
+    genders: profile.genders,
     level: plans.map((plan) => plan.level.levelLabel_ar).join(" · "),
     stage: activePlan.stage.title_ar,
     subject:
@@ -861,6 +862,8 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
       ...EMPTY_PROFILE,
       academicYear: defaultAcademicYear(),
       ...storedProfile,
+      /* القيمة الابتدائية من استعمال الزمن — تُحفظ فوراً فتصبح مستقلة بعد ذلك */
+      genders: storedProfile.genders ?? readTimetableState()?.design.genders,
     };
     const storedDrafts = readStorage<Record<string, MemoState>>(draftsKey, {});
     draftsRef.current =
@@ -1307,6 +1310,7 @@ export default function DailyMemoApp({ catalog }: { catalog: Catalog }) {
     if (patch.section !== undefined) profilePatch.section = patch.section;
     if (patch.director !== undefined) profilePatch.director = patch.director;
     if (patch.inspector !== undefined) profilePatch.inspector = patch.inspector;
+    if (patch.genders !== undefined) profilePatch.genders = patch.genders;
     if (Object.keys(profilePatch).length) {
       setProfile((previous) => ({ ...previous, ...profilePatch }));
     }

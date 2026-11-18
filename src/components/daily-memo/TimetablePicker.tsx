@@ -195,6 +195,7 @@ export function buildMemoFromTimetable(
     director: profile.director,
     inspector: profile.inspector,
     academicYear: profile.academicYear || defaultAcademicYear(),
+    genders: profile.genders,
     level: levelLabels.join(" · "),
     stage: anchorStage?.title_ar ?? "",
     subject: subjectNames.join(" · "),

@@ -29,6 +29,7 @@ import ProjectActions from "../ProjectActions";
 import InstitutionLogo from "../InstitutionLogo";
 import type { Design } from "../types";
 import { cx } from "../utils";
+import { genderLabel, normalizeGender, type Gender } from "@/lib/gender";
 
 /** تصغير الصورة المرفوعة قبل حفظها في المتصفح */
 function uploadLogo(
@@ -77,6 +78,11 @@ export default function DesignStep({
   const { state, dispatch } = useTimetable();
   const theme = resolveTheme(state.design);
   const set = (patch: Partial<Design>) => dispatch({ type: "SET_DESIGN", patch });
+
+  /* جنس الدور: genders يتجاوز feminine، وفقدانه يعني «محايد» */
+  const genderOf = (role: "teacher" | "director" | "inspector"): Gender =>
+    state.design.genders?.[role] ??
+    normalizeGender(state.design.feminine === false ? "male" : "neutral");
 
   return (
     <div className="space-y-6">
@@ -430,18 +436,47 @@ export default function DesignStep({
             </p>
           </div>
 
-          {/* صيغة التوقيعات */}
+          {/* جنس التوقيعات — لكل دور على حدة */}
           <div>
             <div className="mb-2 flex items-center justify-between gap-2">
-              <span className="text-xs font-bold text-muted">صيغة التوقيعات</span>
-              <Toggle
-                active={state.design.feminine !== false}
-                onClick={() => set({ feminine: state.design.feminine === false })}
-                label={state.design.feminine !== false ? "مؤنّث «(ة)»" : "مذكر «بدون (ة)»"}
-              />
+              <span className="text-xs font-bold text-muted">جنس التوقيعات</span>
+              <span className="text-[11px] text-muted">المحايد «(ة)» هو الافتراضي</span>
             </div>
 
-            <div className="space-y-2">
+            <div className="grid grid-cols-3 gap-2">
+              {(
+                [
+                  ["teacher", "الأستاذ"],
+                  ["director", "المدير"],
+                  ["inspector", "المفتش"],
+                ] as const
+              ).map(([role, label]) => (
+                <label key={role} className="block">
+                  <span className="mb-1 block text-[11px] font-bold text-muted">
+                    {label}
+                  </span>
+                  <select
+                    className={inputCls + " py-2 text-xs"}
+                    value={genderOf(role)}
+                    onChange={(e) =>
+                      set({
+                        genders: {
+                          ...(state.design.genders ?? {}),
+                          [role]: e.target.value as Gender,
+                        },
+                      })
+                    }
+                  >
+                    <option value="neutral">محايد «(ة)»</option>
+                    <option value="male">مذكر</option>
+                    <option value="female">مؤنث</option>
+                  </select>
+                </label>
+              ))}
+            </div>
+
+            {/* نصوص مخصّصة — تبقى كما هي، وتتجاوز الجنس عند الكتابة */}
+            <div className="mt-3 space-y-2">
               {(
                 [
                   ["teacher", "توقيع الأستاذ"],
@@ -456,11 +491,10 @@ export default function DesignStep({
                   <input
                     className={inputCls + " py-2 text-xs"}
                     value={state.design.signLabels?.[k] ?? ""}
-                    placeholder={
-                      state.design.feminine !== false
-                        ? `${label}(ة)`
-                        : `${label}`
-                    }
+                    placeholder={genderLabel(
+                      `${label}(ة)`,
+                      genderOf(k === "manager" ? "director" : k)
+                    )}
                     onChange={(e) =>
                       set({
                         signLabels: {

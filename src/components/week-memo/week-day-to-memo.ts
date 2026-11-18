@@ -90,6 +90,7 @@ export function dayToMemoSheets(day: DayDoc, opts: Options): WeekSheet[] {
         director: opts.profile.director,
         inspector: opts.profile.inspector,
         academicYear: opts.profile.academicYear,
+        genders: opts.profile.genders,
         level: levels.join(" · "),
         stage: `المرحلة رقم ${opts.stageIndex + 1}`,
         subject: subjects.join(" · "),

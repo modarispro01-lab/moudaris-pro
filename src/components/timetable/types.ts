@@ -2,6 +2,8 @@
    أنواع بيانات مولّد استعمال الزمن — التعليم الصريح
    ============================================================ */
 
+import type { RoleGenders } from "@/lib/gender";
+
 /** معرّف مادة (نصّي لتسهيل التوسيع) */
 export type SubjectId = string;
 
@@ -123,6 +125,8 @@ export interface Design {
   logoDataUrl?: string;
   /** صيغة المفردات: true = مؤنّث «الأستاذ(ة)»، false = مذكر «الأستاذ» */
   feminine: boolean;
+  /** جنس صاحب كل توقيع (الأستاذ/المدير/المفتش). غيابه = اتباع feminine ثم المحايد «(ة)». */
+  genders?: RoleGenders;
   /** نصوص التوقيعات المخصّصة (تُترك فارغة لاستعمال الافتراضي) */
   signLabels?: {
     teacher?: string;
