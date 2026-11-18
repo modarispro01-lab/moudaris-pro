@@ -4,8 +4,9 @@
    المكوّن الرئيسي — مولّد استعمال الزمن (التعليم الصريح)
    ============================================================ */
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { createPortal } from "react-dom";
-import { ArrowLeft, ArrowRight, Check, Printer, Redo2, Sparkles, Undo2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarClock, Check, Printer, Redo2, Sparkles, Undo2 } from "lucide-react";
 import { TimetableProvider, useTimetable } from "./store";
 import { ConfirmProvider } from "./ConfirmDialog";
 import Stepper, { STEPS } from "./Stepper";
@@ -171,13 +172,18 @@ function Shell() {
               <Check className="h-4 w-4" /> كل شيء جاهز — عُد للتعديل متى شئت، فالمشروع
               يُحفظ تلقائيًا في متصفّحك.
             </span>
-            <button
-              type="button"
-              onClick={() => go(3)}
-              className="edt-btn edt-btn-sm edt-btn-outline"
-            >
-              تعديل التوزيع
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => go(3)}
+                className="edt-btn edt-btn-sm edt-btn-outline"
+              >
+                تعديل التوزيع
+              </button>
+              <Link href="/tools/week-memo" className="edt-btn edt-btn-sm edt-btn-primary">
+                <CalendarClock className="h-4 w-4" /> أنشئ مذكرة الأسبوع
+              </Link>
+            </div>
           </div>
         )}
       </div>

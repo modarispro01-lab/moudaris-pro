@@ -1,13 +1,13 @@
 "use client";
 
 import { Fragment } from "react";
-import type { MemoLesson, MemoState, TemplateConfig } from "./types";
+import type { HolidayNotice, MemoLesson, MemoState, TemplateConfig } from "./types";
+import { ArrowLeftRight, CalendarOff, Coffee, Flag, Info, MoonStar } from "lucide-react";
 import {
   breaksCountLabel,
   cx,
   durationLabel,
   fieldLabel,
-  formatDuration,
   formatLongDate,
   lessonBreakMinutes,
   lessonsCountLabel,
@@ -21,6 +21,49 @@ interface Props {
 
 function valueOrDash(value: string): string {
   return value.trim() ? value : "—";
+}
+
+/** الأيقونة حسب نوع التوقف */
+function holidayIcon(kind: HolidayNotice["kind"]) {
+  if (kind === "religious-holiday") return MoonStar;
+  if (kind === "school-vacation") return CalendarOff;
+  if (kind === "official-holiday") return Flag;
+  return Info;
+}
+
+/** الكلمة التمهيدية للسطر الأول */
+function holidayLead(kind: HolidayNotice["kind"], tomorrow: boolean): string {
+  if (kind === "manual-skip") return tomorrow ? "غداً توقف" : "توقف قادم";
+  if (kind === "teacher-absence") return tomorrow ? "غداً غياب" : "غياب قادم";
+  return tomorrow ? "غداً عطلة" : "عطلة قادمة";
+}
+
+/** شارات الأيام غير الدراسية المتتالية داخل خانة الملاحظات */
+function HolidayBadges({ notices }: { notices: HolidayNotice[] }) {
+  const shown = notices.slice(0, 4);
+  return (
+    <div className={cx("ms-holiday", "ms-holiday-n" + Math.min(shown.length, 3))}>
+      {shown.map((notice, index) => {
+        const Icon = holidayIcon(notice.kind);
+        return (
+          <div key={notice.date} className={cx("ms-holiday-row", "ms-holiday-" + notice.kind)}>
+            <span className="ms-holiday-icon" aria-hidden="true">
+              <Icon size={10} strokeWidth={2.4} />
+            </span>
+            <b className="ms-holiday-lead">
+              {index === 0 ? holidayLead(notice.kind, notice.tomorrow) : "ثم"}
+            </b>
+            <span className="ms-holiday-label">{notice.label}</span>
+            <span className="ms-holiday-date">
+              {notice.endDate
+                ? `من ${formatLongDate(notice.date)} إلى ${formatLongDate(notice.endDate)}`
+                : formatLongDate(notice.date)}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 function ContentCell({
@@ -100,18 +143,16 @@ function lessonRow(lesson: MemoLesson, template: TemplateConfig, index: number) 
         }
         if (column.key === "component") {
           const axis = lesson.componentAxis?.trim() ?? "";
+          /* اسم المادة بنفس الخط لكل المواد (عريض 800 عبر ms-component-name)،
+             والمحور سطر ذهبي أصغر تحته إن وُجد */
           return (
             <td key={column.key} className="ms-center">
-              {axis ? (
-                <span className="ms-component">
-                  <span className="ms-component-name">
-                    {valueOrDash(lesson.component)}
-                  </span>
-                  <span className="ms-component-axis">{axis}</span>
+              <span className="ms-component">
+                <span className="ms-component-name">
+                  {valueOrDash(lesson.component)}
                 </span>
-              ) : (
-                valueOrDash(lesson.component)
-              )}
+                {axis ? <span className="ms-component-axis">{axis}</span> : null}
+              </span>
             </td>
           );
         }
@@ -145,16 +186,35 @@ function blankRow(template: TemplateConfig, rowKey: string) {
   );
 }
 
+/** صياغة عربية سليمة لمدة الانتقال: 1 → دقيقة واحدة، 2 → دقيقتان، 3–10 → دقائق، 11+ → دقيقة */
+function transitionMinutesLabel(minutes: number): string {
+  if (minutes === 1) return "دقيقة واحدة";
+  if (minutes === 2) return "دقيقتان";
+  if (minutes >= 3 && minutes <= 10) return `${minutes} دقائق`;
+  return `${minutes} دقيقة`;
+}
+
+/** عتبة اعتبار الفجوة استراحة حقيقية بدل انتقال قصير (بالدقائق)
+    الانتقال دايماً 5 دقائق، والاستراحة 10 فأكثر → 10 > 9 = استراحة */
+const BREAK_MINUTES_THRESHOLD = 9;
+
 function breakRow(lesson: MemoLesson, template: TemplateConfig) {
   const minutes = lessonBreakMinutes(lesson);
   if (!minutes) return null;
+  /* فجوة 10 دقائق فأكثر = استراحة، فجوة 5 دقائق = انتقال بين الحصتين */
+  const isBreak = minutes > BREAK_MINUTES_THRESHOLD;
+  const Icon = isBreak ? Coffee : ArrowLeftRight;
   return (
-    <tr key={`${lesson.id}-break`} className="ms-break-row">
+    <tr
+      key={`${lesson.id}-break`}
+      className={cx("ms-break-row", isBreak ? "ms-break-row-long" : "ms-break-row-short")}
+    >
       <td colSpan={template.tableColumns.length}>
         <span className="ms-break-inner">
-          <b>استراحة</b>
+          <Icon className="ms-break-icon" size={9} strokeWidth={2.4} aria-hidden="true" />
+          <b>{isBreak ? "استراحة" : "الانتقال بين الحصتين"}</b>
           <i aria-hidden="true" />
-          <em>{formatDuration(minutes)}</em>
+          <em>{transitionMinutesLabel(minutes)}</em>
         </span>
       </td>
     </tr>
@@ -325,6 +385,7 @@ export default function MemoSheet({ memo, template }: Props) {
             <span>{fieldLabel(template, "notes", "ملاحظات")}</span>
             <i aria-hidden="true" />
           </div>
+          {memo.nextHolidays?.length ? <HolidayBadges notices={memo.nextHolidays} /> : null}
           <div className={memo.notes.trim() ? "ms-notes-text" : "ms-notes-lines"}>
             {memo.notes.trim() || "\u00a0"}
           </div>

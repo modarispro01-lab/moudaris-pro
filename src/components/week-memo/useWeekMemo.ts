@@ -1,0 +1,453 @@
+"use client";
+
+/* ============================================================
+   Hook مذكرة الأسبوع — يربط المولّد النقي بمساحة العمل
+   - لا يكتب شيئاً في التخزين قبل ضغط المستخدم «أنشئ/أعد التوليد»
+     أو تعديل حصة (حفظ فوري عبر update).
+   - الأسبوع المحفوظ لا يتغير عند تغيّر استعمال الزمن، إلا بإعادة
+     التوليد الصريحة.
+   ============================================================ */
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { parseImported, STORAGE_KEY } from "@/components/timetable/store";
+import type { DayId, TimetableState } from "@/components/timetable/types";
+import type { Catalog } from "@/components/daily-memo/types";
+import { generateWeek } from "@/lib/week-memo-generator";
+import { buildNonSchoolDays, mondayOfIso } from "@/lib/moroccan-calendar";
+import { cyclePositions, sessionCarryFor, sessionWeekBaseFor } from "@/lib/cycle-days";
+import { sessionTripleKeys } from "@/lib/timetable-memo-bridge";
+import { buildStageWeeks } from "@/lib/stage-weeks";
+import type { StageWeeksResult } from "@/lib/stage-weeks";
+import type {
+  CalendarDay,
+  CalendarOverrides,
+  MindMapBranch,
+  MindMapDoc,
+  SkipReason,
+  WeekDoc,
+  TeacherProfile,
+} from "@/components/workspace/types";
+import { readWorkspace, useWorkspace } from "@/components/workspace/useWorkspace";
+
+/** ترتيب أيام العمل — يطابق ترتيب cycle-days.ts */
+const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat"] as const;
+
+export interface UseWeekMemoResult {
+  timetable: TimetableState | null;
+  ready: boolean;
+  /** ملف الأستاذ الموحّد — لورقة الطباعة (المؤسسة/الأستاذ/السنة) */
+  profile: TeacherProfile;
+  /** إزاحة الأسبوع ±7 أيام — تتعامل مع الحالة الفارغة */
+  shiftWeek: (days: number) => void;
+  /** الأسبوع المحفوظ في مساحة العمل بمفتاح weekStart — null إن لم يُولَّد */
+  week: WeekDoc | null;
+  warnings: string[];
+  weekStart: string;
+  setWeekStart: (v: string) => void;
+  stageIndex: number;
+  setStageIndex: (v: number) => void;
+  /** بداية المرحلة (تاريخ الاثنين ISO) — نقطة الصفر لحساب الأسبوع التربوي */
+  stageStart: string;
+  setStageStart: (v: string) => void;
+  generate: () => void;
+  regenerate: () => void;
+  updateLesson: (lessonId: string, patch: Partial<LessonDocPatch>) => void;
+  /** خريطة حصة محفوظة — مستقلة عن الأسبوع المحفوظ */
+  mindMapFor: (key: string) => MindMapDoc | undefined;
+  /** حفظ فروع خريطة حصة فوراً */
+  setMindMap: (key: string, branches: MindMapBranch[]) => void;
+  /** كل خرائط الحصص — لورقة الطباعة */
+  mindMaps: Record<string, MindMapDoc>;
+  setDaySkip: (date: string, skip: SkipReason | undefined) => void;
+  savedWeeks: number;
+  /** أسابيع المرحلة كاملة للطباعة: المحفوظ كما هو والباقي يُولَّد في الذاكرة */
+  stageWeeks: () => StageWeeksResult | null;
+  /** الرزمة الدراسية: العطل المضافة والمستثناة */
+  calendar: CalendarOverrides;
+  /** أيام الأسبوع المعروض غير الدراسية (تاريخ ← سبب) */
+  nonSchoolDays: Record<string, SkipReason>;
+  /** إضافة عطلة أو استبدالها (نفس التاريخ يُستبدل) */
+  addHoliday: (day: CalendarDay) => void;
+  /** حذف عطلة مضافة واستثناء تاريخها من العطل الثابتة */
+  removeHoliday: (date: string) => void;
+}
+
+/* رقعة جزئية للحصة — نفس حقول LessonDoc القابلة للتحرير */
+export type LessonDocPatch = Partial<{
+  timeFrom: string;
+  timeTo: string;
+  groupLabel: string;
+  component: string;
+  topic: string;
+  objectives: string;
+  stages: string;
+  materials: string;
+  note: string;
+}>;
+
+/** إضافة أيام على تاريخ ISO (نفس منطق المولّد — محلية لهذا الملف) */
+function shiftIso(iso: string, days: number): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!m) return iso;
+  const base = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return new Date(base + days * 86400000).toISOString().slice(0, 10);
+}
+
+/** اثنين الأسبوع الحالي (بداية أسبوع التدريس) — يُحسب بعد التركيب فقط */
+function currentMondayIso(): string {
+  const now = new Date();
+  const day = now.getUTCDay(); // 0=الأحد … 6=السبت
+  const offset = (day + 6) % 7; // الاثنين=0 … الأحد=6
+  const base = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return new Date(base - offset * 86400000).toISOString().slice(0, 10);
+}
+
+export function useWeekMemo(catalog: Catalog): UseWeekMemoResult {
+  const { workspace, update } = useWorkspace();
+  const calendar = workspace.calendar;
+
+  /* استعمال الزمن الحيّ: يُقرأ بعد التركيب فقط (localStorage غير متاح خادمياً) */
+  const [timetable, setTimetable] = useState<TimetableState | null>(null);
+  const [ready, setReady] = useState(false);
+
+  /* مدخلات المولّد */
+  const [weekStart, setWeekStart] = useState("");
+  const [stageIndex, setStageIndex] = useState(0);
+  const [stageStartState, setStageStartState] = useState("");
+
+  /* تحذيرات آخر توليد (تُعرض في الشريط الأعلى) */
+  const [warnings, setWarnings] = useState<string[]>([]);
+
+  /* أيام غير دراسية للأسبوع المعروض — تُشتق من الرزمة الدراسية */
+  const nonSchoolDays = useMemo(
+    () => (weekStart ? buildNonSchoolDays(calendar, weekStart) : {}),
+    [calendar, weekStart]
+  );
+
+  /* القراءة الأولى: استعمال الزمن من localStorage، والبديل مساحة العمل */
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      const parsed = raw ? parseImported(raw) : null;
+      setTimetable(parsed ?? readWorkspace().workspace.timetable);
+    } catch {
+      setTimetable(readWorkspace().workspace.timetable);
+    }
+    setWeekStart(currentMondayIso());
+    setReady(true);
+    /* workspace.timetable يُقرأ مرة واحدة عند الإقلاع فقط */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* الأسبوع المحفوظ المطابق لتاريخ الاثنين المختار */
+  const week = useMemo(
+    () => (weekStart ? workspace.weeks.find((w) => w.id === weekStart) ?? null : null),
+    [workspace.weeks, weekStart]
+  );
+
+  /* المرحلة الحالية وبدايتها: نقطة الصفر لحساب الأسبوع التربوي */
+  const stageId = "stage-" + (stageIndex + 1);
+  const stageStart =
+    stageStartState || workspace.stageStart?.[stageId] || weekStart || currentMondayIso();
+
+  /* القيمة الافتراضية: المخزّنة، وإلا أقدم أسبوع محفوظ في المرحلة، وإلا الاثنين الحالي */
+  useEffect(() => {
+    if (!ready) return;
+    const stored = workspace.stageStart?.[stageId];
+    if (stored) {
+      setStageStartState(stored);
+      return;
+    }
+    const earliest = workspace.weeks
+      .filter((w) => w.stageId === stageId)
+      .map((w) => w.isoWeekStart)
+      .sort()[0];
+    setStageStartState(earliest ?? currentMondayIso());
+  }, [ready, stageId, workspace.stageStart, workspace.weeks]);
+
+  const setStageStart = useCallback(
+    (value: string) => {
+      setStageStartState(value);
+      update((ws) => ({
+        ...ws,
+        stageStart: { ...(ws.stageStart ?? {}), [stageId]: value },
+      }));
+    },
+    [update, stageId]
+  );
+
+  /* الحفظ المشترك: يستبدل الأسبوع بنفس المعرّف داخل workspace.weeks */
+  const saveWeek = useCallback(
+    (newWeek: WeekDoc, wsWarnings: string[]) => {
+      /* ترقيم اليوم والأسبوع التربوي: العطلة لا تحجز رقمًا */
+      const positions = cyclePositions({
+        stageStartIso: stageStart,
+        targetWeekStart: newWeek.isoWeekStart,
+        calendar,
+      });
+      const decorated: WeekDoc = {
+        ...newWeek,
+        days: newWeek.days.map((day) => {
+          const pos = positions[day.dayId];
+          return pos ? { ...day, cycleDay: pos.day, weekNumber: pos.week } : day;
+        }),
+      };
+      update((ws) => ({
+        ...ws,
+        weeks: [decorated, ...ws.weeks.filter((w) => w.id !== decorated.id)],
+      }));
+      setWarnings(wsWarnings);
+    },
+    [update, calendar, stageStart]
+  );
+
+  /** التوليد الأول: إن وُجد أسبوع محفوظ يُسأل المستخدم قبل الاستبدال */
+  const generate = useCallback(() => {
+    if (!timetable) return;
+    const start = mondayOfIso(weekStart || currentMondayIso());
+    if (!start) return;
+    if (workspace.weeks.some((w) => w.id === start)) {
+      if (!window.confirm("توجد مذكرة محفوظة لهذا الأسبوع — استبدالها بالتوليد الجديد؟")) {
+        return;
+      }
+    }
+    /* سياق المرحلة: موضع كل يوم + حمل تسلسل الحصص قبل هذا الأسبوع */
+    const positions = cyclePositions({
+      stageStartIso: stageStart,
+      targetWeekStart: start,
+      calendar,
+    });
+    const cyclePosByDay: Record<string, { week: number; day: number }> = {};
+    const cycleDayByDay: Record<string, number> = {};
+    for (const [dayId, pos] of Object.entries(positions)) {
+      cyclePosByDay[dayId] = { week: pos.week, day: pos.day };
+      cycleDayByDay[dayId] = pos.day;
+    }
+    const sessionCarry = sessionCarryFor({
+      targetWeekStart: start,
+      stageStartIso: stageStart,
+      calendar,
+      dayOrder: DAY_ORDER,
+      keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
+    });
+    const sessionWeekBase = sessionWeekBaseFor({
+      targetWeekStart: start,
+      stageStartIso: stageStart,
+      calendar,
+      dayOrder: DAY_ORDER,
+      keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
+    });
+    const { week: newWeek, warnings: ws } = generateWeek({
+      state: timetable,
+      catalog,
+      stageIndex,
+      weekStart: start,
+      nonSchoolDays,
+      cycleDayByDay,
+      cyclePosByDay,
+      sessionCarry,
+      sessionWeekBase,
+    });
+    /* نهاية المرحلة: 6 أسابيع × 6 أيام = 36 يومًا دراسيًا */
+    if (Object.values(positions).some((p) => p.n > 36)) {
+      ws.push("انتهت المرحلة: تجاوزت 36 يومًا دراسيًا — بدّل المرحلة من القائمة أعلى الصفحة.");
+    }
+    setWeekStart(start);
+    saveWeek(newWeek, ws);
+  }, [timetable, catalog, stageIndex, stageStart, weekStart, workspace.weeks, saveWeek, nonSchoolDays, calendar]);
+
+  /** إعادة التوليد بلا سؤال — الزر في الواجهة يطلب التأكيد الصريح قبل ندائها */
+  const regenerate = useCallback(() => {
+    if (!timetable) return;
+    const start = mondayOfIso(weekStart || currentMondayIso());
+    if (!start) return;
+    /* سياق المرحلة: موضع كل يوم + حمل تسلسل الحصص قبل هذا الأسبوع */
+    const positions = cyclePositions({
+      stageStartIso: stageStart,
+      targetWeekStart: start,
+      calendar,
+    });
+    const cyclePosByDay: Record<string, { week: number; day: number }> = {};
+    const cycleDayByDay: Record<string, number> = {};
+    for (const [dayId, pos] of Object.entries(positions)) {
+      cyclePosByDay[dayId] = { week: pos.week, day: pos.day };
+      cycleDayByDay[dayId] = pos.day;
+    }
+    const sessionCarry = sessionCarryFor({
+      targetWeekStart: start,
+      stageStartIso: stageStart,
+      calendar,
+      dayOrder: DAY_ORDER,
+      keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
+    });
+    const sessionWeekBase = sessionWeekBaseFor({
+      targetWeekStart: start,
+      stageStartIso: stageStart,
+      calendar,
+      dayOrder: DAY_ORDER,
+      keysForDay: (dayId) => sessionTripleKeys(timetable, dayId as DayId),
+    });
+    const { week: newWeek, warnings: ws } = generateWeek({
+      state: timetable,
+      catalog,
+      stageIndex,
+      weekStart: start,
+      nonSchoolDays,
+      cycleDayByDay,
+      cyclePosByDay,
+      sessionCarry,
+      sessionWeekBase,
+    });
+    /* نهاية المرحلة: 6 أسابيع × 6 أيام = 36 يومًا دراسيًا */
+    if (Object.values(positions).some((p) => p.n > 36)) {
+      ws.push("انتهت المرحلة: تجاوزت 36 يومًا دراسيًا — بدّل المرحلة من القائمة أعلى الصفحة.");
+    }
+    setWeekStart(start);
+    saveWeek(newWeek, ws);
+  }, [timetable, catalog, stageIndex, stageStart, weekStart, saveWeek, nonSchoolDays, calendar]);
+
+  /** تعديل حصة داخل الأسبوع المحفوظ + وسم edited=true */
+  const updateLesson = useCallback(
+    (lessonId: string, patch: LessonDocPatch) => {
+      update((ws) => ({
+        ...ws,
+        weeks: ws.weeks.map((w) =>
+          w.id !== weekStart
+            ? w
+            : {
+                ...w,
+                days: w.days.map((d) => ({
+                  ...d,
+                  lessons: d.lessons.map((l) =>
+                    l.id === lessonId ? { ...l, ...patch, edited: true } : l
+                  ),
+                })),
+              }
+        ),
+      }));
+    },
+    [update, weekStart]
+  );
+
+  /** تخطي/إلغاء تخطي يوم من الأسبوع المحفوظ */
+  const setDaySkip = useCallback(
+    (date: string, skip: SkipReason | undefined) => {
+      update((ws) => ({
+        ...ws,
+        weeks: ws.weeks.map((w) =>
+          w.id !== weekStart
+            ? w
+            : {
+                ...w,
+                days: w.days.map((d) => (d.date === date ? { ...d, skip } : d)),
+              }
+        ),
+      }));
+    },
+    [update, weekStart]
+  );
+
+  /** اختيار يوم البداية: أي تاريخ يُسحب تلقائياً إلى اثنين أسبوعه */
+  const setWeekStartSafe = useCallback((v: string) => {
+    setWeekStart(v ? mondayOfIso(v) : v);
+  }, []);
+
+  /** إضافة عطلة إلى الرزمة (نفس التاريخ يُستبدل) */
+  const addHoliday = useCallback(
+    (day: CalendarDay) => {
+      update((ws) => ({
+        ...ws,
+        calendar: {
+          ...ws.calendar,
+          added: [...ws.calendar.added.filter((a) => a.date !== day.date), day].sort((a, b) =>
+            a.date.localeCompare(b.date)
+          ),
+          removed: ws.calendar.removed.filter((d) => d !== day.date),
+        },
+      }));
+    },
+    [update]
+  );
+
+  /** حذف عطلة مضافة واستثناء تاريخها */
+  const removeHoliday = useCallback(
+    (date: string) => {
+      update((ws) => ({
+        ...ws,
+        calendar: {
+          ...ws.calendar,
+          added: ws.calendar.added.filter((a) => a.date !== date),
+          removed: ws.calendar.removed.includes(date)
+            ? ws.calendar.removed
+            : [...ws.calendar.removed, date],
+        },
+      }));
+    },
+    [update]
+  );
+
+  /** قراءة خريطة حصة من المخزن (حاجز لمساحات قديمة بلا mindMaps) */
+  const mindMapFor = useCallback(
+    (key: string) => (workspace.mindMaps ?? {})[key],
+    [workspace.mindMaps]
+  );
+
+  /** حفظ فروع الخريطة فوراً في مساحة العمل */
+  const setMindMap = useCallback(
+    (key: string, branches: MindMapBranch[]) => {
+      update((ws) => ({
+        ...ws,
+        mindMaps: {
+          ...(ws.mindMaps ?? {}),
+          [key]: { key, branches, updatedAt: new Date().toISOString() },
+        },
+      }));
+    },
+    [update]
+  );
+
+  const shiftWeek = useCallback((days: number) => {
+    setWeekStart((prev) => shiftIso(prev || currentMondayIso(), days));
+  }, []);
+
+  /** أسابيع المرحلة كاملة للطباعة — لا تحفظ شيئًا */
+  const stageWeeks = useCallback((): StageWeeksResult | null => {
+    if (!timetable) return null;
+    return buildStageWeeks({
+      state: timetable,
+      catalog,
+      stageIndex,
+      stageStartIso: stageStart,
+      calendar,
+      savedWeeks: workspace.weeks,
+    });
+  }, [timetable, catalog, stageIndex, stageStart, calendar, workspace.weeks]);
+
+  return {
+    timetable,
+    ready,
+    profile: workspace.profile,
+    week,
+    warnings,
+    weekStart,
+    setWeekStart: setWeekStartSafe,
+    stageIndex,
+    setStageIndex,
+    stageStart,
+    setStageStart,
+    generate,
+    regenerate,
+    updateLesson,
+    mindMapFor,
+    setMindMap,
+    mindMaps: workspace.mindMaps ?? {},
+    setDaySkip,
+    shiftWeek,
+    savedWeeks: workspace.weeks.length,
+    stageWeeks,
+    calendar,
+    nonSchoolDays,
+    addHoliday,
+    removeHoliday,
+  };
+}

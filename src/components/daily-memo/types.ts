@@ -108,6 +108,12 @@ export interface LevelDay {
   content: {
     topic_ar: string;
     topic_fr?: string;
+    /** أهداف الدرس — اختيارية، تُملأ من عروض التعليم الصريح */
+    objectives_ar?: string;
+    /** مراحل سير الدرس — اختيارية */
+    stages_ar?: string;
+    /** الوسائل والوسائط — اختيارية */
+    materials_ar?: string;
   };
 }
 
@@ -224,6 +230,20 @@ export interface LessonSubjectOption {
   levels: LessonSubjectLevel[];
 }
 
+/** إشعار يوم غير دراسي — يُحسب وقت الطباعة من الرزمة الدراسية */
+export interface HolidayNotice {
+  /** أول يوم غير دراسي بصيغة ISO */
+  date: string;
+  /** آخر يوم إن كان النطاق أكثر من يوم */
+  endDate?: string;
+  /** الاسم كما هو في الرزمة أو في اليوم */
+  label: string;
+  /** نوع التوقف */
+  kind: "official-holiday" | "religious-holiday" | "school-vacation" | "manual-skip" | "teacher-absence";
+  /** هل يبدأ غداً؟ */
+  tomorrow: boolean;
+}
+
 export interface MemoState {
   institution: string;
   teacher: string;
@@ -244,6 +264,8 @@ export interface MemoState {
   showSignatures: boolean;
   /** صف الخروج أسفل جدول الحصص؛ يُفعّل تلقائيًا عند دمج المستويات. */
   showDismissal?: boolean;
+  /** إشعارات الأيام غير الدراسية المتتالية — تُملأ في مسار طباعة الأسبوع فقط */
+  nextHolidays?: HolidayNotice[];
   /** الحصة الأسبوعية المختارة من 1 إلى 5 (مستقلة عن اليوم). */
   sessionNumber?: number;
   lessons: MemoLesson[];
@@ -364,11 +386,12 @@ export function lessonBreakMinutes(lesson: MemoLesson): number {
   return Math.min(180, Math.round(value));
 }
 
+/** صياغة عربية سليمة لعدد مرات الانتقال بين الحصتين (نفس صف الجدول) */
 export function breaksCountLabel(count: number): string {
-  if (count === 1) return "استراحة واحدة";
-  if (count === 2) return "استراحتان";
-  if (count >= 3 && count <= 10) return `${count} استراحات`;
-  return `${count} استراحة`;
+  if (count === 1) return "انتقال واحد";
+  if (count === 2) return "انتقالان";
+  if (count >= 3 && count <= 10) return `${count} انتقالات`;
+  return `${count} انتقالاً`;
 }
 
 export function todayIso(): string {
