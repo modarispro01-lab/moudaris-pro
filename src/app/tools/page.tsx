@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FileText, Calendar, CalendarClock, Sparkles, ArrowRight, Layers, FolderTree, IdCard, Table2, NotebookPen, Award, Tags, ScrollText, Network, BookOpen, BookOpenCheck } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { Metadata } from "next";
 
 // ===== Meta Tags للـ SEO =====
@@ -18,7 +19,18 @@ export const metadata: Metadata = {
 };
 
 // ===== قائمة الأدوات =====
-const tools = [
+/* نوع بطاقة الأداة: isPrivate كتخلي البطاقة تعرض شارة «خاص» */
+type ToolCard = {
+  id: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  color: string;
+  status: string;
+  isPrivate?: boolean;
+};
+
+const tools: ToolCard[] = [
   {
     id: 'daily-lesson-plan',
     title: 'مولد المذكرة اليومية',
@@ -37,6 +49,7 @@ const tools = [
   },
   {
     id: 'daily-memo-explicit',
+    isPrivate: true,
     title: 'المذكرة اليومية الاحترافية',
     description: 'مذكرة يومية للتعليم الصريح في الرياضيات والنشاط العلمي: موضوع الدرس من التوزيع الرسمي، تعديل مباشر، وطباعة A4.',
     icon: BookOpenCheck,
@@ -61,6 +74,7 @@ const tools = [
   },
   {
     id: 'timetable-generator',
+    isPrivate: true,
     title: 'مولّد استعمال الزمن — التعليم الصريح',
     description: 'ابرمج كل يوم على حدة: توقيت حرّ لكل حصة ومواد مستقلة، مع طباعة A4.',
     icon: CalendarClock,
@@ -69,6 +83,7 @@ const tools = [
   },
   {
     id: 'week-memo',
+    isPrivate: true,
     title: 'مذكرة الأسبوع الكاملة',
     description: 'مذكرة أسبوعية كاملة مولّدة من استعمال الزمن: كل الأيام في شاشة واحدة قابلة للتعديل، مع طباعة A4 رسمية.',
     icon: CalendarClock,
@@ -205,6 +220,12 @@ export default function ToolsPage() {
                 <Link href={`/tools/${tool.id}`} className="absolute inset-0 z-10" />
               ) : null}
               
+              {tool.isPrivate && (
+                <span className="absolute top-4 left-4 text-xs font-bold px-2 py-1 rounded-full bg-purple-100 text-purple-700">
+                  🔒 خاص
+                </span>
+              )}
+
               <div className={`w-12 h-12 rounded-xl ${tool.color} text-on-primary flex items-center justify-center mb-4`}>
                 <tool.icon className="w-6 h-6" />
               </div>
