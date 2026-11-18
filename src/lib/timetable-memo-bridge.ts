@@ -98,7 +98,7 @@ const DAY_KEY_BY_ID: Record<DayId, string> = {
 
 /**
  * رمز التوزيع الرسمي لكل مادة معروفة في المولّد.
- * المواد الغائبة (fr, isl, soc, sport, art أو أي معرّف مجهول) تُعامل
+ * المواد الغائبة (isl, soc, sport, art أو أي معرّف مجهول) تُعامل
  * كمواد حرة: حصصها تبقى بموضوع فارغ ولا تُربط بتوزيع.
  */
 const SUBJECT_CODE_BY_ID: Record<string, string> = {
@@ -106,6 +106,7 @@ const SUBJECT_CODE_BY_ID: Record<string, string> = {
   ar: "arabic",
   sci: "science",
   amz: "tamazight",
+  fr: "french",
 };
 
 /* ============================ القراءة الآمنة ============================ */
