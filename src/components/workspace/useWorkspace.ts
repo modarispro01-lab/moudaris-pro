@@ -125,8 +125,8 @@ function mergeLiveProfile(ws: Workspace): Workspace {
       director: dropIfLeaked(ws.profile?.director, liveDirection),
       inspector: dropIfLeaked(ws.profile?.inspector, liveEmployeeId),
       academicYear: pick(ws.profile?.academicYear, live.academicYear),
-      /* المحفوظ يدوياً يسبق، وإلا نأخذ من استعمال الزمن */
-      genders: ws.profile?.genders ?? live.genders,
+      /* لا محرّر للأجناس في مذكرة الأسبوع: استعمال الزمن يسبق دائماً */
+      genders: live.genders ?? ws.profile?.genders,
     },
   };
 }
