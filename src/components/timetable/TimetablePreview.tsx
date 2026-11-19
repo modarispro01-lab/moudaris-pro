@@ -220,7 +220,7 @@ export default function TimetablePreview({ state }: Props) {
     const base = {
       teacher: "توقيع الأستاذ(ة)",
       inspector: "توقيع المفتش(ة)",
-      manager: "طابع وتوقيع المدير(ة)",
+      manager: "توقيع المدير(ة)",
     }[kind];
     return genderLabel(base, genderOf(kind === "manager" ? "director" : kind));
   };
@@ -1003,7 +1003,7 @@ export default function TimetablePreview({ state }: Props) {
           </div>
         )}
 
-        {/* ===== التوقيعات: الأستاذ + المفتش + المدير ===== */}
+        {/* ===== التوقيعات: الأستاذ + المدير + المفتش ===== */}
         {state.design.showSign && (
           <div
             className="tt-sign"
@@ -1021,7 +1021,7 @@ export default function TimetablePreview({ state }: Props) {
               flexShrink: 0,
             }}
           >
-            {(["teacher", "inspector", "manager"] as const).map((k) => (
+            {(["teacher", "manager", "inspector"] as const).map((k) => (
               <div
                 key={k}
                 style={{

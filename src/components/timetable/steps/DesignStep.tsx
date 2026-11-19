@@ -481,7 +481,7 @@ export default function DesignStep({
                 [
                   ["teacher", "توقيع الأستاذ"],
                   ["inspector", "توقيع المفتش"],
-                  ["manager", "طابع وتوقيع المدير"],
+                  ["manager", "توقيع المدير"],
                 ] as const
               ).map(([k, label]) => (
                 <label key={k} className="block">
